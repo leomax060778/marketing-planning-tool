@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL4" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="HL4_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="HL3_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL3_ID"/>
+    </attribute>
+    <attribute id="ACRONYM" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ACRONYM"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="ACRONYM"/>
+    </attribute>
+    <attribute id="HL4_CRM_DESCRIPTION" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_CRM_DESCRIPTION"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_CRM_DESCRIPTION"/>
+    </attribute>
+    <attribute id="HL4_DETAILS" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_DETAILS"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_DETAILS"/>
+    </attribute>
+    <attribute id="HL4_BUSINESS_DETAILS" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_BUSINESS_DETAILS"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_BUSINESS_DETAILS"/>
+    </attribute>
+    <attribute id="HL4_STATUS_DETAIL_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_STATUS_DETAIL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_STATUS_DETAIL_ID"/>
+    </attribute>
+    <attribute id="IS_SEND_MAIL" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IS_SEND_MAIL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="IS_SEND_MAIL"/>
+    </attribute>
+    <attribute id="HL4_PARENT_ID" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_PARENT_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_PARENT_ID"/>
+    </attribute>
+    <attribute id="IS_HL4" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IS_HL4"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="IS_HL4"/>
+    </attribute>
+    <attribute id="READ_ONLY" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="READ_ONLY"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="READ_ONLY"/>
+    </attribute>
+    <attribute id="USER_ID_SEND_MAIL" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USER_ID_SEND_MAIL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="USER_ID_SEND_MAIL"/>
+    </attribute>
+    <attribute id="COMMENTS" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="COMMENTS"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="COMMENTS"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL4"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL4" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

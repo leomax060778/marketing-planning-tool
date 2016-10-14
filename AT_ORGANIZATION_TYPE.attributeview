@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_ORGANIZATION_TYPE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_ORGANIZATION_TYPE"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="ORGANIZATION_TYPE_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_TYPE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ORGANIZATION_TYPE" columnName="ORGANIZATION_TYPE_ID"/>
+    </attribute>
+    <attribute id="NAME" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ORGANIZATION_TYPE" columnName="NAME"/>
+    </attribute>
+    <attribute id="TYPE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TYPE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ORGANIZATION_TYPE" columnName="TYPE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="ORGANIZATION_TYPE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="ORGANIZATION_TYPE" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

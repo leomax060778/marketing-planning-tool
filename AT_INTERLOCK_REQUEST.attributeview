@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_INTERLOCK_REQUEST" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_INTERLOCK_REQUEST"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="INTERLOCK_REQUEST_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="INTERLOCK_REQUEST_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="INTERLOCK_REQUEST_ID"/>
+    </attribute>
+    <attribute id="ENTITY_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENTITY_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="ENTITY_ID"/>
+    </attribute>
+    <attribute id="ORGANIZATION_TYPE_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_TYPE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="ORGANIZATION_TYPE_ID"/>
+    </attribute>
+    <attribute id="HL4_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="REQUESTED_RESOURCE" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REQUESTED_RESOURCE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="REQUESTED_RESOURCE"/>
+    </attribute>
+    <attribute id="REQUESTED_BUDGET" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REQUESTED_BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="REQUESTED_BUDGET"/>
+    </attribute>
+    <attribute id="INTERLOCK_STATUS_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="INTERLOCK_STATUS_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="INTERLOCK_STATUS_ID"/>
+    </attribute>
+    <attribute id="REQUESTED_USER_ID" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REQUESTED_USER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="REQUESTED_USER_ID"/>
+    </attribute>
+    <attribute id="HASH" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HASH"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="HASH"/>
+    </attribute>
+    <attribute id="SALT" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SALT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="SALT"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="INTERLOCK_REQUEST" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

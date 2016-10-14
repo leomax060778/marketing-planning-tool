@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_INTERLOCK_ENTITY" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_INTERLOCK_ENTITY"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="INTERLOCK_ENTITY_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="INTERLOCK_ENTITY_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_ENTITY" columnName="INTERLOCK_ENTITY_ID"/>
+    </attribute>
+    <attribute id="NAME" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_ENTITY" columnName="NAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_ENTITY"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="INTERLOCK_ENTITY" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>
