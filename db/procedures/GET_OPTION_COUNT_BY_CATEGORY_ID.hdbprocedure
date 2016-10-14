@@ -1,0 +1,12 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_COUNT_BY_CATEGORY_ID" (
+	IN in_category_id bigint,
+	OUT out_option int
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	SELECT COUNT(DISTINCT option_id) into out_option FROM option 
+	where category_id = in_category_id
+	AND deleted = 0 and enabled = 1;
+END;

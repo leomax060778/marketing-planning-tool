@@ -1,0 +1,32 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_PARTNER" (
+		IN in_hl4_id bigint,
+		IN in_value decimal,
+		IN in_region_id bigint,
+		IN in_created_user_id bigint,
+		IN in_partner_name nvarchar(512),
+		IN in_partner_type_id bigint,
+		OUT out_hl4_partner_id bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."HL4_PARTNER"(
+		hl4_id,
+		value,
+		region_id,
+		created_user_id,
+		partner_name,
+		partner_type_id
+		)
+	VALUES (
+		in_hl4_id,
+		in_value,
+		in_region_id,
+		in_created_user_id,
+		in_partner_name,
+		in_partner_type_id
+		);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_partner_id FROM "PLANNING_TOOL"."HL4_PARTNER";
+END;

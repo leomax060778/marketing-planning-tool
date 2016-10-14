@@ -1,0 +1,41 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BUDGET_BY_ID" ( 
+		IN in_hl4_id bigint,
+		OUT out_budget_region TABLE(
+			id BIGINT,
+			region_name NVARCHAR(255),
+			percentage decimal(19,2)
+		),
+		OUT out_budget_subregion TABLE(
+			id BIGINT,
+			subregion_name NVARCHAR(255),
+			percentage decimal(19,2)
+		),
+		OUT out_budget_global_team TABLE(
+			id BIGINT,
+			global_team_name NVARCHAR(100),
+			percentage decimal(19,2)
+		)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_budget_region = SELECT region.region_id as id,
+					region.region_name, HL4_BUDGET_REGION.percentage
+					from HL4_BUDGET_REGION INNER JOIN REGION region
+					ON HL4_BUDGET_REGION.region_id = region.region_id
+					where HL4_BUDGET_REGION.deleted = 0 and HL4_BUDGET_REGION.enabled = 1 and HL4_BUDGET_REGION.hl4_id = in_hl4_id;
+
+	out_budget_subregion = SELECT subregion.subregion_id as id,
+					subregion.subregion_name, HL4_BUDGET_SUBREGION.percentage
+					from HL4_BUDGET_SUBREGION INNER JOIN SUBREGION subregion
+					ON HL4_BUDGET_SUBREGION.subregion_id = subregion.subregion_id
+					where HL4_BUDGET_SUBREGION.deleted = 0 and HL4_BUDGET_SUBREGION.enabled = 1 and HL4_BUDGET_SUBREGION.hl4_id = in_hl4_id;
+
+	out_budget_global_team = SELECT hl3.hl3_id as id,
+					hl3.acronym as global_team_name, HL4_BUDGET_ROUTE.percentage
+					from HL4_BUDGET_ROUTE INNER JOIN HL3 hl3
+					ON HL4_BUDGET_ROUTE.route_id = hl3.hl3_id
+					where HL4_BUDGET_ROUTE.deleted = 0 and HL4_BUDGET_ROUTE.enabled = 1 and HL4_BUDGET_ROUTE.hl4_id = in_hl4_id;
+END;

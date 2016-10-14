@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK_SUBREGION" ( 
+	IN in_organization_id bigint,
+	IN in_interlock_request_id bigint,
+	IN in_created_user_id bigint,
+	OUT out_interlock_subregion_id bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."INTERLOCK_REQUEST_SUBREGION" (subregion_id,interlock_request_id,created_user_id)
+	VALUES (in_organization_id,in_interlock_request_id,in_created_user_id);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_interlock_subregion_id FROM "PLANNING_TOOL"."INTERLOCK_REQUEST_SUBREGION";
+END;

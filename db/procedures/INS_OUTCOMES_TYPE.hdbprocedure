@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_OUTCOMES_TYPE" ( 
+		IN in_outcomes_type_name NVARCHAR(127),
+		IN in_hierarchy_level_id BIGINT,
+		IN in_user_id BIGINT,
+		OUT out_outcomes_type_id BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	--DEFAULT SCHEMA <default_schema_name>
+	AS
+BEGIN
+		INSERT INTO "PLANNING_TOOL"."OUTCOMES_TYPE"(outcomes_type_name,hierarchy_level_id,created_user_id)
+		VALUES (in_outcomes_type_name,in_hierarchy_level_id,in_user_id);
+		
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_outcomes_type_id FROM "PLANNING_TOOL"."OUTCOMES_TYPE";
+END;

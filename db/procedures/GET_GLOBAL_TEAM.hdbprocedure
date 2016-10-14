@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_GLOBAL_TEAM" ( 
+	IN in_user_id BIGINT,
+	OUT out_result TABLE(hl3_id BIGINT, acronym NVARCHAR(25), description NVARCHAR(255), contactEmail NVARCHAR(255))	 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_result = SELECT HL3.hl3_id, 
+		   HL3.acronym,
+		   HL3.hl3_description as description, 
+		   'contact@email.com' as contactEmail
+	FROM HL3
+	INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
+	INNER JOIN HL2_USER HU ON HL2.HL2_ID = HU.HL2_ID
+
+	WHERE 
+      HU.user_id = in_user_id
+	  AND HL2.REGION_ID IS NULL AND HL2.SUBREGION_ID IS NULL
+	  AND HL3.deleted = 0
+	  AND HL3.enabled = 1;
+	
+END;

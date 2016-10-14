@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ROUTE_BY_PLAN_DESCRIPTION" (
+	IN in_description NVARCHAR(25),
+	IN in_plan_id BIGINT,
+	OUT out_result TABLE(route_id BIGINT, description NVARCHAR(25), plan_id BIGINT)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	out_result = 
+	
+	SELECT route_id, description, plan_id
+	FROM ROUTE
+	WHERE description = in_description
+	  AND deleted = 0
+	  AND enabled = 1;		
+	  	
+END;

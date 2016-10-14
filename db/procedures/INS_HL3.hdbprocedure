@@ -1,0 +1,53 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL3" (
+	IN in_acronym NVARCHAR(25), 
+	IN in_hl2_id BIGINT,
+	IN in_hl3_description NVARCHAR(100),
+	IN in_crm_id BIGINT,
+	IN in_business_owner_id BIGINT,
+	IN in_hl3_fnc_budget_total DECIMAL(19,2),
+	IN in_user_id BIGINT,
+	OUT out_hl3_id BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	DECLARE va_response BIGINT;
+	DECLARE va_message NVARCHAR(255);
+	
+	DECLARE va_hl3_id BIGINT;
+	
+	DECLARE va_exists_inserted_hl3 TINYINT; --User to verify the insertion of the HL3 register
+	
+	va_response := 0;
+	va_message := 'Success OK';
+	va_exists_inserted_hl3 := 0;
+	
+	IF va_response = 0
+	THEN
+		INSERT INTO HL3(hl3_description, acronym, business_owner_id, hl2_id, crm_id, hl3_hierarchy_id, hl3_status_detail_id, created_user_id)
+		VALUES (in_hl3_description, in_acronym, in_business_owner_id, in_hl2_id, in_crm_id, NULL, 1, in_user_id);
+		
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO va_hl3_id FROM "PLANNING_TOOL"."HL3";
+	END IF;
+	
+	--Verification of the insertion of the last processed hl3:
+	SELECT ::ROWCOUNT into va_exists_inserted_hl3 FROM DUMMY;
+	
+	IF va_exists_inserted_hl3 > 0
+	THEN
+		
+		INSERT INTO HL3_FNC(hl3_id, hl3_fnc_budget_total, created_user_id)
+		VALUES(va_hl3_id, in_hl3_fnc_budget_total, in_user_id);
+		
+		-- We insert the initial status in the status table
+		INSERT INTO HL3_STATUS_HISTORY(hl3_id, hl3_status_detail_id)
+		VALUES(va_hl3_id, 1); 
+		
+		out_hl3_id := va_hl3_id;
+	ELSE
+		out_hl3_id := 0;
+	END IF;
+END;

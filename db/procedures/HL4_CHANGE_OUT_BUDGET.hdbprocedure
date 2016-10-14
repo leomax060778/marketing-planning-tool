@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL4_CHANGE_OUT_BUDGET" (
+	IN in_hl4_id BIGINT,
+	OUT out_result BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	-- Updates the HL4 FNC given as input parameter
+	-- setting its in_budget value to 0 if its budget is
+	-- greater than 0
+	UPDATE HL4_FNC
+	SET in_budget = 0
+	WHERE hl4_fnc_budget_total_mkt <> 0
+	  AND in_budget = 1
+	  AND hl4_id = in_hl4_id
+	  AND deleted = 0
+	  AND enabled = 1;
+	  
+	SELECT ::ROWCOUNT into out_result FROM DUMMY;
+	
+	/* TODO: More logic needs to be provided in order to support
+			 updates to in_budget for the HL5 and HL6 childs 
+			 in further coming releases. Also the SPs HL5_CHANGE_OUT_BUDGET
+			 and HL6_CHANGE_OUT_BUDGET must be created.
+	*/
+END;

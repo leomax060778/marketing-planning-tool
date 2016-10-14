@@ -1,0 +1,30 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_EURO_CONVERSION" (
+	IN in_country NVARCHAR(127),
+	IN in_currency_abbreviation NVARCHAR(3),
+	IN in_currency_name NVARCHAR(255),
+	IN in_currency_value_admin DECIMAL(19,10),
+	IN in_user_id BIGINT,
+	OUT out_euro_conversion_id INTEGER
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	DECLARE va_response BIGINT;
+	DECLARE va_message NVARCHAR(255);
+	DECLARE va_euro_conversion_id BIGINT;
+	
+	va_response := 0;
+	va_message := 'Success OK';
+	
+	IF va_response = 0
+	THEN
+		INSERT INTO EURO_CONVERSIONS(country, currency_name, currency_abbreviation, currency_value, created_user_id)
+		VALUES (in_country, in_currency_name, in_currency_abbreviation, in_currency_value_admin, in_user_id);
+		
+		SELECT TOP 1 TO_INTEGER (CURRENT_IDENTITY_VALUE()) INTO out_euro_conversion_id FROM "PLANNING_TOOL"."EURO_CONVERSIONS";
+	END IF;
+
+END;

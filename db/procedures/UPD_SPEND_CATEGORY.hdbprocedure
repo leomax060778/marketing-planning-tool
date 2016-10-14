@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_SPEND_CATEGORY" ( 
+	IN in_spend_category_id BIGINT,
+	IN in_name NVARCHAR(60),
+	IN in_hierarchy_level_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+  	UPDATE spend_category
+        SET spend_category.name = in_name,
+        	spend_category.hierarchy_level_id = in_hierarchy_level_id,       
+            spend_category.modified_date_tz = CURRENT_TIMESTAMP,
+            spend_category.modified_user_id = in_user_id
+        FROM "PLANNING_TOOL"."SPEND_CATEGORY" spend_category
+        WHERE spend_category_id = in_spend_category_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

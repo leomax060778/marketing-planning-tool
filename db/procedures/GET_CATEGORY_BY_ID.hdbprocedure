@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_ID" (
+	IN in_category_id BIGINT,
+	OUT out_result TABLE (category_id BIGINT, hierarchy_level_id BIGINT, measure_id BIGINT, name NVARCHAR(60), description NVARCHAR(255)) 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	DECLARE response BIGINT;
+	DECLARE message NVARCHAR(255);
+	
+	response := 0;
+	message := 'Success OK';
+	
+	IF response = 0
+	THEN
+		out_result = SELECT category_id,
+			   hierarchy_level_id,
+			   measure_id,
+			   name,
+			   description
+		FROM "PLANNING_TOOL".category
+		WHERE category_id = in_category_id
+		  AND enabled = 1
+		  AND deleted = 0;
+	END IF;
+END;

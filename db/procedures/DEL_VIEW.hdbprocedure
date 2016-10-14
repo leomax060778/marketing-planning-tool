@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_VIEW" (
+	IN schemaname varchar(50), IN viewname VARCHAR(50)
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	declare myrowid integer;
+	myrowid := 0;
+
+	select count(*) into myrowid from views where schema_name = schemaname and view_name = viewname;
+
+	IF (:myrowid > 0 ) then
+		exec 'DROP VIEW '||:schemaname||'.'||:viewname;
+	END IF;
+END;

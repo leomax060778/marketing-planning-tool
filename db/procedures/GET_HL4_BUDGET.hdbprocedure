@@ -1,0 +1,69 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BUDGET" (
+IN in_hl4_id BIGINT,
+OUT out_result TABLE(hl3_budget DECIMAL(19,10), hl3_in_budget TINYINT, hl4_budget DECIMAL(19,10), hl4_fnc_budget_total_mkt DECIMAL(19,10))
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	 DECLARE va_hl3_budget DECIMAL (19,10);
+	 DECLARE va_hl4_budget DECIMAL (19,10);
+	 DECLARE va_hl4_fnc_budget_total_mkt DECIMAL (19,10);
+	 DECLARE va_hl3_in_budget TINYINT;
+	 DECLARE va_hl3_id BIGINT;
+	 DECLARE va_default DECIMAL (19,10);
+	 
+	 va_default := 0;
+	 va_hl3_in_budget := 1;
+ 
+ 	--Get the HL3 id
+ 	SELECT HL3.hl3_id
+ 	INTO va_hl3_id
+ 	FROM HL3
+ 	INNER JOIN HL4_HL3 ON HL4_HL3.hl3_id = HL3.hl3_id
+ 	INNER JOIN HL4 ON HL4_HL3.hl4_id = HL4.hl4_id
+ 	WHERE HL4.hl4_id = in_hl4_id
+ 	  AND HL4.deleted = 0
+ 	  AND HL4.enabled = 1;
+ 	
+ 	--Get the budget_mkt from current HL4
+ 	SELECT (hl4_fnc_budget_total_mkt * currency_value)
+ 	INTO va_hl4_fnc_budget_total_mkt
+ 	FROM HL4_FNC
+ 	WHERE hl4_id = in_hl4_id
+ 	  AND deleted = 0
+ 	  AND enabled = 1;
+ 	  
+ 	--Get the budget from HL3
+ 	
+ 	SELECT hl3_fnc_budget_total
+ 	INTO va_hl3_budget
+ 	FROM HL3
+ 	INNER JOIN HL3_FNC ON HL3_FNC.hl3_id = HL3.hl3_id
+ 	WHERE HL3.hl3_id = va_hl3_id
+ 	  AND HL3.deleted = 0
+ 	  AND HL3.enabled = 1;
+ 	  
+ 	--Get the budget from HL4s
+ 	
+ 	SELECT SUM(HL4_FNC.hl4_fnc_budget_total_mkt * HL4_FNC.currency_value)
+ 	INTO va_hl4_budget
+ 	FROM HL4_HL3
+ 	INNER JOIN HL4 ON HL4.hl4_id = HL4_HL3.hl4_id
+ 	INNER JOIN HL4_FNC ON HL4_FNC.hl4_id = HL4.hl4_id
+ 	WHERE HL4_HL3.hl3_id = va_hl3_id
+ 	  AND HL4.hl4_id <> in_hl4.id
+ 	  AND HL4_FNC.in_budget = 1
+ 	  AND HL4.deleted = 0
+ 	  AND HL4.enabled = 1;
+ 	  
+ 	va_hl3_budget := IFNULL(va_hl3_budget, 0);
+ 	va_hl4_budget := IFNULL(va_hl4_budget, 0);
+ 	
+ 	out_result = SELECT ROUND(IFNULL(va_hl3_budget, va_default), 2) AS hl3_budget, 
+ 						IFNULL(IFNULL(va_hl3_in_budget, va_default)) AS hl3_in_budget, 
+ 						ROUND(IFNULL(va_hl4_budget, va_default), 2) hl4_budget, 
+ 						ROUND(IFNULL(va_hl4_fnc_budget_total_mkt, va_default), 2) AS hl4_fnc_budget_total_mkt
+ 						FROM DUMMY;
+END;

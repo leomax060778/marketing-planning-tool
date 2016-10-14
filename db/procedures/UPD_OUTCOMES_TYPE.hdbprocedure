@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_OUTCOMES_TYPE" (
+	IN in_outcomes_type_id BIGINT,
+	IN in_outcomes_type_name NVARCHAR(127),
+	IN in_hierarchy_level_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+        UPDATE outcomes_type
+		SET outcomes_type_name = in_outcomes_type_name,
+		hierarchy_level_id = in_hierarchy_level_id,
+        modified_date_tz = CURRENT_TIMESTAMP,
+        modified_user_id = in_user_id
+		WHERE outcomes_type_id = in_outcomes_type_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END

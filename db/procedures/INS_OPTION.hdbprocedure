@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_OPTION" (
+	IN in_category_id BIGINT,
+	IN in_name NVARCHAR(3000),
+	IN in_order_option INTEGER,
+	IN in_user_id BIGINT,
+	OUT out_option_id BIGINT
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		INSERT INTO "PLANNING_TOOL"."OPTION"(name, category_id, order_option, created_user_id)
+		VALUES (in_name, in_category_id, in_order_option, in_user_id);
+		
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_option_id FROM "PLANNING_TOOL"."OPTION";
+END;

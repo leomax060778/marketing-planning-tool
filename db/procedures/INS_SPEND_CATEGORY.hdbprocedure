@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_SPEND_CATEGORY" ( 
+	IN in_name NVARCHAR(60),
+	IN in_hierarchy_level_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_spend_category_id BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 
+ 		INSERT INTO "PLANNING_TOOL"."SPEND_CATEGORY"(name, hierarchy_level_id,created_user_id)
+		VALUES(in_name, in_hierarchy_level_id, in_user_id);
+		
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_spend_category_id FROM "PLANNING_TOOL"."SPEND_CATEGORY";
+ 
+END;

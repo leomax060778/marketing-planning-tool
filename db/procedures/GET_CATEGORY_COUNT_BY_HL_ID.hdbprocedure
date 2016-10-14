@@ -1,0 +1,12 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_COUNT_BY_HL_ID" (
+	IN in_hl_id bigint,
+	OUT out_hl_category int
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	SELECT COUNT(DISTINCT category_id) into out_hl_category FROM category 
+	where hierarchy_level_id = in_hl_id
+	AND deleted = 0 and enabled = 1;
+END;

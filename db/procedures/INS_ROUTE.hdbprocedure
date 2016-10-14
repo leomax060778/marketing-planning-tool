@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_ROUTE" (
+	IN in_description NVARCHAR(25),
+	IN in_plan_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_route_id BIGINT,
+	OUT out_result BIGINT
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	INSERT INTO ROUTE(description, plan_id, created_user_id)
+	VALUES(in_description, in_plan_id, in_user_id);
+
+	--Number of affected rows
+	SELECT ::ROWCOUNT into out_result FROM DUMMY;
+	--Id of the inserted row
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_route_id FROM ROUTE;
+END;

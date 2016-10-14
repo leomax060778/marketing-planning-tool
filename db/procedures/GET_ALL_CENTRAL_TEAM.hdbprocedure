@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_CENTRAL_TEAM" ( 
+	OUT out_result TABLE (
+		hl3_id BIGINT
+		, acronym NVARCHAR(25)
+		)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	
+	out_result =	
+	SELECT 
+		HL3.hl3_id 
+		, HL3.ACRONYM
+	FROM HL2
+	INNER JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID 
+
+	WHERE 
+		 HL3.deleted = 0 
+		AND HL3.enabled = 1
+		AND HL2.deleted = 0 
+		AND HL2.enabled = 1
+		AND HL2.TEAM_TYPE_ID = 2
+	ORDER BY HL3.ACRONYM;
+	
+END;
+

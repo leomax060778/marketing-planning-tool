@@ -1,0 +1,761 @@
+<html>
+<head>
+<title>Documentation for package xsplanningtool.services.xsjs</title>
+<style> 
+    body { font-family: Arial, Helvetica, sans-serif; } 
+    td.head { background-color:#e0f2f4;  } 
+    td { padding: 5px; border: 1px dotted black; } 
+     .h2title { 
+        color: black; 
+        background: #e0f2f4; 
+        padding: 10px;  
+        margin: 0px; 
+    }  
+    .h1title { 
+    padding: 10px;  
+    padding-left: 0px;  
+    margin: 0px; 
+    } 
+    .divleft { 
+        float: right; 
+        width: 30%; 
+    } 
+    .divright { 
+        float: left; 
+        width: 65%; 
+    } 
+    .content { 
+        padding: 20px; 
+    } 
+</style>
+</head>
+<body>
+    <div><h1>Documentation for package xsplanningtool.services.xsjs</h1> 
+   <div class='divleft'> 
+   <h2 class='h1title'><a style='color: black;text-decoration: none;' name='methods' href='#methods'>Navigation</a></h2> 
+<h4>admin/borrar.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePut'>handlePut</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/ObtenerDatos' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/ObtenerDatos'>ObtenerDatos</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/getOriginParent2' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/getOriginParent2'>getOriginParent2</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion'>insertarEuroConversion</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion'>insertarEuroConversion</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleResponse'>handleResponse</a></li>
+</ul>
+<h4>admin/loginService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost,anonymous_0' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost,anonymous_0'>handlePost.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser'>validateUser</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser,anonymous_0' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser,anonymous_0'>validateUser.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken'>getUserToken</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken,anonymous_0' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken,anonymous_0'>getUserToken.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/createUserToken' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/createUserToken'>createUserToken</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/loginService.xsjs/deleteUserToken' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/deleteUserToken'>deleteUserToken</a></li>
+</ul>
+<h4>admin/mailtest.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/admin/mailtest.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/admin/mailtest.xsjs/handlePost'>handlePost</a></li>
+</ul>
+<h4>admin/test.xsjs</h4><ul>
+</ul>
+<h4>admin/xsZip.xsjs</h4><ul>
+</ul>
+<h4>settings/budgetYearService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateType'>validateType</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handlePut'>handlePut</a></li>
+</ul>
+<h4>settings/categoryService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateType'>validateType</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePut'>handlePut</a></li>
+</ul>
+<h4>settings/createCategoryService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters'>validateParameters</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters,anonymous_0'>validateParameters.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateType'>validateType</a></li>
+</ul>
+<h4>settings/euroConversionsService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/existsEuroConversion' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/existsEuroConversion'>existsEuroConversion</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateType'>validateType</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePut'>handlePut</a></li>
+</ul>
+<h4>settings/hlService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/hlService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/hlService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleGet'>handleGet</a></li>
+</ul>
+<h4>settings/measureService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/measureService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/measureService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleGet'>handleGet</a></li>
+</ul>
+<h4>settings/optionService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateType'>validateType</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePut'>handlePut</a></li>
+</ul>
+<h4>settings/updateBudgetYearService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters'>validateParameters</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters,anonymous_0'>validateParameters.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateType'>validateType</a></li>
+</ul>
+<h4>teamPlanHierarchy/level3Service.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePut'>handlePut</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleGet'>handleGet</a></li>
+</ul>
+<h4>teamPlanHierarchy/level4Service.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePost'>handlePost</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePut'>handlePut</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateType' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateType'>validateType</a></li>
+</ul>
+<h4>teamPlanHierarchy/planService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateType'>validateType</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+</ul>
+<h4>teamPlanHierarchy/regionService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGetMockUp' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGetMockUp'>handleGetMockUp</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/processRequest'>processRequest</a></li>
+</ul>
+<h4>teamPlanHierarchy/subRegionService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGetMockUp' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGetMockUp'>handleGetMockUp</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleResponse'>handleResponse</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/validateInput'>validateInput</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/processRequest'>processRequest</a></li>
+</ul>
+<h4>utils/LogError.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/LogError.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePut'>handlePut</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePost'>handlePost</a></li>
+</ul>
+<h4>utils/mailService.xsjs</h4><ul>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/mailService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/processRequest'>processRequest</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleGet'>handleGet</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePut'>handlePut</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleDelete'>handleDelete</a></li>
+<li> <a name='top/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePost'>handlePost</a></li>
+</ul>
+</div> 
+<div class='divright'><h2 class='h1title'><a style='color: black;'>Methods</a></h2> 
+<h3>admin/borrar.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=3' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of GET call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=9' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of POST call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=20' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Check Content type headers and parameters<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=44' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Request process<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/ObtenerDatos' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/ObtenerDatos'>ObtenerDatos</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/getOriginParent2' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/getOriginParent2'>getOriginParent2</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion'>insertarEuroConversion</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/insertarEuroConversion'>insertarEuroConversion</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/admin/borrar.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/borrar.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/borrar.xsjs&fileLine=218' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>handle response to request<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>admin/loginService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=10' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of GET call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=18' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of POST call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost,anonymous_0' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handlePost,anonymous_0'>handlePost.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=78' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of DELETE call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser'>validateUser</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=105' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Check if token corresponds with a given user<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser,anonymous_0' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateUser,anonymous_0'>validateUser.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=150' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Check Content type headers and parameters<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=176' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Request process<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken'>getUserToken</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken,anonymous_0' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/getUserToken,anonymous_0'>getUserToken.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/createUserToken' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/createUserToken'>createUserToken</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/loginService.xsjs/deleteUserToken' href='#/xsplanningtool/services/xsjs/admin/loginService.xsjs/deleteUserToken'>deleteUserToken</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/loginService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/loginService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>admin/mailtest.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/admin/mailtest.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/admin/mailtest.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/admin/mailtest.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/admin/mailtest.xsjs&fileLine=1' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of POST call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/budgetYearService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=50' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>if(keys === undefined || keys.legnth === 0 ){<br />erros = {"body": null};<br />handleResponse({"code": $.net.http.BAD_REQUEST, "errors": errors}, $.net.http.BAD_REQUEST);<br />isValid = false;<br />} else {<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/budgetYearService.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/budgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/budgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/categoryService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=63' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>if(keys.legnth === 0 || keys === undefined ){<br />erros = {"body": null};<br />handleResponse({"code": $.net.http.BAD_REQUEST, "errors": errors}, $.net.http.BAD_REQUEST);<br />isValid = false;<br />} else {<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/categoryService.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/categoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/categoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/createCategoryService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/createCategoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/createCategoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/createCategoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/createCategoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters'>validateParameters</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/createCategoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/createCategoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateParameters,anonymous_0'>validateParameters.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/createCategoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/createCategoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/createCategoryService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/createCategoryService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/createCategoryService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/euroConversionsService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=58' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>main function<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/existsEuroConversion' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/existsEuroConversion'>existsEuroConversion</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=90' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>validate if exists a object EuroConversions<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=115' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>validate request parameters<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=180' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Check data types<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=198' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>handle response to request<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=205' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>delete function, no implemented<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=212' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>get function<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/euroConversionsService.xsjs&fileLine=235' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>get function, no implemented<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/hlService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/hlService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/hlService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/hlService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/hlService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/hlService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/hlService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/hlService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/hlService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/hlService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/hlService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/hlService.xsjs&fileLine=64' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>function validateType(key, value) {<br />var isValidDataType = true;<br />switch (key) {<br />case 'START_DATE':<br />case 'END_DATE':<br />isValidDataType = !isNaN((new Date(value)).getDate());<br />break;<br />case 'DEFAULT_YEAR':<br />isValidDataType = value === 1 || value === 0;<br />break;<br />case 'DESCRIPTION':<br />isValidDataType = value.length >= 1 && value.length <= 255;<br />break;<br />case 'MODIFIED_USER_ID':<br />isValidDataType = value === $.session.getUsername();<br />break;<br />};<br />return isValidDataType;<br />}<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/measureService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/measureService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/measureService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/measureService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/measureService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/measureService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/measureService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/measureService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/measureService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/measureService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/measureService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/measureService.xsjs&fileLine=64' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>function validateType(key, value) {<br />var isValidDataType = true;<br />switch (key) {<br />case 'START_DATE':<br />case 'END_DATE':<br />isValidDataType = !isNaN((new Date(value)).getDate());<br />break;<br />case 'DEFAULT_YEAR':<br />isValidDataType = value === 1 || value === 0;<br />break;<br />case 'DESCRIPTION':<br />isValidDataType = value.length >= 1 && value.length <= 255;<br />break;<br />case 'MODIFIED_USER_ID':<br />isValidDataType = value === $.session.getUsername();<br />break;<br />};<br />return isValidDataType;<br />}<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/optionService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/settings/optionService.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/optionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/optionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>settings/updateBudgetYearService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters'>validateParameters</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters,anonymous_0' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateParameters,anonymous_0'>validateParameters.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/settings/updateBudgetYearService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>teamPlanHierarchy/level3Service.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs&fileLine=6' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>***************************************<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs&fileLine=29' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>not implemented<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level3Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>teamPlanHierarchy/level4Service.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=6' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>***************************************<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=12' target='_new'>show in editor</a>)<br><br>
+<b>Parameters</b>: 
+<table><tr><td class='head'>Name</td><td class='head'>Type</td><td class='head'>Description</td></tr><td>$.request.parameters.HL3_ID</td><td>bigInt</td><td>- Team ID</td></tr>
+<td>$.request.parameters.USER_ID</td><td>bigInt</td><td>- Loggin user_id</td></tr>
+<td>$.request.parameters.IS_DATA_ENTRYE</td><td>tinyInt</td><td>- Flag used to fliter by HL4 status_detail_id</td></tr>
+</table><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateType' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/level4Service.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>teamPlanHierarchy/planService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateInput,anonymous_0'>validateInput.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateType' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/validateType'>validateType</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/planService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>teamPlanHierarchy/regionService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs&fileLine=1' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of GET call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGetMockUp' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleGetMockUp'>handleGetMockUp</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs&fileLine=20' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>this method is a mockup to retrieve a custom list of regions<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs&fileLine=34' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>handle response to request<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs&fileLine=41' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>custom validate input request<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/regionService.xsjs&fileLine=46' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Request process<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>teamPlanHierarchy/subRegionService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs&fileLine=1' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of GET call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet,anonymous_0' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGet,anonymous_0'>handleGet.anonymous_0</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGetMockUp' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleGetMockUp'>handleGetMockUp</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs&fileLine=21' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>this method is a mockup to retrieve a custom list of regions<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleResponse' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/handleResponse'>handleResponse</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs&fileLine=73' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>handle response to request<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/validateInput' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/validateInput'>validateInput</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs&fileLine=80' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>custom validate input request<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/teamPlanHierarchy/subRegionService.xsjs&fileLine=85' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Request process<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>utils/LogError.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/LogError.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/LogError.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/LogError.xsjs&fileLine=8' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>***************************************<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/LogError.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/LogError.xsjs&fileLine=17' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Not Implemented Method<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/LogError.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/LogError.xsjs&fileLine=21' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Not Implemented Method<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/LogError.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/LogError.xsjs&fileLine=25' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Not Implemented Method<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/utils/LogError.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/LogError.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/LogError.xsjs&fileLine=31' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of POST call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3>utils/mailService.xsjs</h3>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/mailService.xsjs/processRequest' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/processRequest'>processRequest</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/mailService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/mailService.xsjs&fileLine=8' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>***************************************<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleGet' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleGet'>handleGet</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/mailService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/mailService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePut' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePut'>handlePut</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/mailService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/mailService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleDelete' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handleDelete'>handleDelete</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/mailService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/mailService.xsjs&fileLine=undefined' target='_new'>show in editor</a>)<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+<h3 class='h2title'>Method <a name='/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePost' href='#/xsplanningtool/services/xsjs/utils/mailService.xsjs/handlePost'>handlePost</a></h3>
+<div class='content'><b>Source file</b>: /xsplanningtool/services/xsjs/utils/mailService.xsjs (<a href='https://optv5p1942022624trial.hanatrial.ondemand.com/sap/hana/ide/editor/index.html?startURI=xsplanningtool/services/xsjs/utils/mailService.xsjs&fileLine=23' target='_new'>show in editor</a>)<br><br>
+<b>Description</b>:<br><br>Implementation of POST call<br><br>
+<a href='#methods'>Back to index</a>
+</div>
+</div></body>
+</html>

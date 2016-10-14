@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_BY_CATEGORY_ID" (
+	IN in_category_id BIGINT,
+	OUT out_result TABLE (option_id BIGINT, name nvarchar(255), category_id BIGINT, order_option INTEGER)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+	out_result = SELECT option_id,
+					   name,
+					   category_id,
+					   order_option
+				FROM "PLANNING_TOOL".option
+				WHERE category_id = in_category_id
+					AND enabled = 1
+					AND deleted = 0
+				ORDER BY name;
+END;

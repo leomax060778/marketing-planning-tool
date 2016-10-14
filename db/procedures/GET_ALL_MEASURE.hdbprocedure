@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_MEASURE" (
+	OUT out_result TABLE(measure_id BIGINT, measure_name NVARCHAR (255))
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	DECLARE response BIGINT;
+	DECLARE message NVARCHAR(255);
+	
+	response := 0;
+	message := 'Success OK';
+	
+	IF response = 0
+	THEN
+		out_result = SELECT measure_id,
+			   measure_name
+		FROM measure
+		WHERE deleted = 0
+		  AND enabled = 1;
+	END IF;
+
+END;

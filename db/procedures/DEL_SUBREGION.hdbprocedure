@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_SUBREGION" ( 
+	IN in_subregion_id BIGINT,
+	IN in_modified_user_id BIGINT,
+	OUT out_result INTEGER) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 		UPDATE subregion
+		SET subregion.deleted = 1,
+			subregion.modified_user_id = in_modified_user_id,
+			subregion.modified_date_tz = CURRENT_TIMESTAMP
+		FROM "PLANNING_TOOL"."SUBREGION" subregion
+		WHERE subregion_id = in_subregion_id;
+		
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+ 
+END;

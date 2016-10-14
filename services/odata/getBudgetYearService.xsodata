@@ -1,0 +1,8 @@
+service  { 
+   "sap-planning-tool.db.data.views::AT_BUDGET_YEAR"  
+   as "BudgetYear"     
+   key  ("BUDGET_YEAR_ID")
+   create forbidden
+   update forbidden
+   delete forbidden;
+}  

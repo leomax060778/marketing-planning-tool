@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL3_CAN_DELETE" ( 
+IN in_hl3_id bigint, 
+OUT out_result bigint
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+	
+	SELECT COUNT(HL4_ID) INTO out_result
+	FROM HL4
+	WHERE HL4.hl3_id = in_hl3_id 
+		AND HL4.deleted = 0 
+		AND HL4.enabled = 1;
+
+	
+END;

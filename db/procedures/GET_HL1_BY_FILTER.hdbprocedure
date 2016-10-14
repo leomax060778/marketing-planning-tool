@@ -1,0 +1,86 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_FILTER" ( 
+	 IN in_budget_year_id BIGINT
+	,IN in_plan_id BIGINT -- now is hl2 id
+	,IN in_region_id BIGINT 
+	,IN in_subregion_id BIGINT
+	,IN in_user_id BIGINT
+	,OUT out_result TABLE (
+		hl2_id BIGINT
+		, acronym NVARCHAR(25)
+		, description NVARCHAR(255)
+		, budget_year_id BIGINT
+		, region_id BIGINT 
+		, subregion_id BIGINT 
+		, REGION_NAME NVARCHAR(255)
+		, SUBREGION_NAME NVARCHAR(255)
+		, organization_acronym NVARCHAR(25)
+		, BUDGET_YEAR BIGINT
+		, hl2_budget_total DECIMAL(19,10)
+        , hl3_total_count BIGINT
+		)
+	, OUT out_total_budget DECIMAL(19,2)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	DECLARE va_total_budget DECIMAL(19,2);
+	va_total_budget := 0;
+	
+	out_result =	
+	SELECT 
+		HL2.hl2_id 
+		, UPPER(HL2.acronym) as acronym 
+		, HL2.description 
+		, HL2.budget_year_id
+		, HL2.region_id
+		, HL2.subregion_id
+		, R.REGION_NAME
+		, SR.SUBREGION_NAME
+		, REPLACE(HL2.organization_acronym, 'N/A', '') AS organization_acronym
+		, BUY.BUDGET_YEAR
+		, HL2.hl2_budget_total
+		, COUNT(HL3.hl3_id) AS hl3_total_count
+	FROM HL2 
+	INNER JOIN HL2_USER ON HL2_USER.HL2_ID = HL2.HL2_ID
+	LEFT JOIN REGION R ON R.region_id = HL2.region_id
+	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id
+	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
+	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID
+
+	WHERE 
+		HL2_USER.USER_ID = in_user_id 
+		AND HL2.deleted = 0 
+		AND HL2.enabled = 1
+		AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
+        AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
+	    AND (R.REGION_ID = in_region_id OR in_region_id = 0) 
+	    AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+	GROUP BY GROUPING SETS ((HL2.hl2_id, HL2.acronym, HL2.description, HL2.budget_year_id
+	, HL2.region_id, HL2.subregion_id, SR.SUBREGION_NAME, HL2.organization_acronym
+		, BUY.BUDGET_YEAR, R.REGION_NAME, HL2.hl2_budget_total))
+	ORDER BY HL2.acronym ASC;
+	  
+	SELECT COALESCE(SUM(HL2.hl2_budget_total),0) 
+	INTO va_total_budget
+	FROM HL2 
+	INNER JOIN HL2_USER HU ON HL2.hl2_id = HU.hl2_id 
+	LEFT JOIN REGION R ON R.region_id = HL2.region_id 
+	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id 
+	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id 
+	
+	
+	WHERE
+	HU.user_id = in_user_id
+	AND HL2.deleted = 0
+	AND HL2.enabled = 1
+	AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
+    AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
+	AND (R.REGION_ID = in_region_id OR in_region_id = 0) 
+	AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0);
+	
+	out_total_budget := va_total_budget;
+	
+END;
+

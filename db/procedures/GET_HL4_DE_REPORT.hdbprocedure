@@ -1,0 +1,42 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_DE_REPORT" (
+	OUT out_result TABLE
+	(
+		hl4_id BIGINT,
+		hl4_crm_description NVARCHAR(100),
+		budget DECIMAL(19,2),
+		hl4_modified_date TIMESTAMP,
+		hl4_path NVARCHAR(255)		
+	 ) 
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 
+ /*
+ NOTE: for now status are already set in the stored procedure. It doesn't worth to spend time for now 
+ to move the status selection into the service.
+ STATUS to be considered are 
+ */
+ out_result = SELECT HL4.HL4_ID, 
+ 		HL4.HL4_CRM_DESCRIPTION, 
+ 		HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET,
+  		HL4.MODIFIED_DATE_TZ AS hl4_modified_date,
+		CONCAT('CRM-', CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.ACRONYM), '-'), HL4.ACRONYM)) AS hl4_path  
+		FROM "PLANNING_TOOL".HL4 
+		INNER JOIN "PLANNING_TOOL".HL4_FNC ON HL4_FNC.HL4_ID = HL4.HL4_ID
+		INNER JOIN "PLANNING_TOOL".HL3 ON HL3.HL3_ID = HL4.HL3_ID
+		INNER JOIN "PLANNING_TOOL".HL2 ON HL2.HL2_ID = HL3.HL2_ID
+		INNER JOIN "PLANNING_TOOL".BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+		WHERE 
+		HL4.HL4_STATUS_DETAIL_ID IN (SELECT HL4_STATUS_DETAIL_ID
+					FROM "PLANNING_TOOL".HL4_STATUS_DETAIL
+					WHERE DETAIL IN ('Load Data Entry',  'Update In CRM')) AND
+		HL4.ENABLED = 1 AND
+		HL4.DELETED = 0;
+		
+END;

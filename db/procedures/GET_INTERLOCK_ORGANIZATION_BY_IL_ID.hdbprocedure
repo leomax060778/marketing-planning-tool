@@ -1,0 +1,27 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_INTERLOCK_ORGANIZATION_BY_IL_ID" ( 
+		IN in_interlock_id bigint,
+		OUT out_organization TABLE(
+			id BIGINT,
+			name NVARCHAR(100)
+		)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_organization = (SELECT region.region_id as id,
+					region.region_name as name from INTERLOCK_REQUEST_REGION ilrr INNER JOIN REGION region
+					ON ilrr.region_id = region.region_id
+					where ilrr.deleted = 0 and ilrr.enabled = 1 and ilrr.INTERLOCK_REQUEST_ID = in_interlock_id)
+					UNION
+					(SELECT subregion.subregion_id as id,
+					subregion.subregion_name as name from INTERLOCK_REQUEST_SUBREGION ilrs INNER JOIN SUBREGION subregion
+					ON ilrs.subregion_id = subregion.subregion_id
+					where ilrs.deleted = 0 and ilrs.enabled = 1 and ilrs.INTERLOCK_REQUEST_ID = in_interlock_id)
+					UNION
+					(SELECT hl3.hl3_id as id,
+					hl3.acronym as name from INTERLOCK_REQUEST_ROUTE ilrr INNER JOIN HL3 hl3
+					ON ilrr.route_id = hl3.hl3_id
+					where ilrr.deleted = 0 and ilrr.enabled = 1 and ilrr.INTERLOCK_REQUEST_ID = in_interlock_id);
+END;

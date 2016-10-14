@@ -1,0 +1,98 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_HL3_ID" (
+        IN in_hl3_id BIGINT,
+        OUT out_result TABLE(
+            HL4_ID BIGINT, HL4_CRM_DESCRIPTION NVARCHAR(100), HL4_ACRONYM NVARCHAR(25), CRM_ID NVARCHAR(25),
+            IN_BUDGET Tinyint, READ_ONLY TINYINT, STATUS_ID BIGINT, STATUS_DETAIL NVARCHAR(255), CREATED_BY NVARCHAR(255),
+            OWNER_EMAIL NVARCHAR(500), IS_SEND_MAIL BIGINT, HL4_BUDGET DECIMAL, EURO_CONVERSION_ID BIGINT
+            ,NUM INT,QUANTITY_HL5_IN_BUDGET INT, QUANTITY_HL5_OUT_BUDGET INT, HL5_TOTAL_IN_BUDGET DECIMAL
+            ,HL5_TOTAL_OUT_BUDGET DECIMAL
+        ),
+		OUT out_total_budget	DECIMAL(19,2)
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+	DECLARE va_total_budget DECIMAL(19,2);
+	va_total_budget := 0;
+	
+va_intermidate = SELECT
+        hl4.hl4_ID AS HL4_ID
+        ,hl4.hl4_crm_description AS HL4_CRM_DESCRIPTION
+        ,hl4.acronym AS HL4_ACRONYM
+        ,CONCAT(
+        	CONCAT(
+        		CONCAT(
+        			CONCAT(
+        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
+    					,'-')
+					, hl3.acronym)
+				,'-')
+			,hl4.acronym)
+		AS CRM_ID 
+        
+        ,hl4_fnc.IN_BUDGET as IN_BUDGET
+        ,hl4.READ_ONLY AS READ_ONLY
+        ,hl4.hl4_status_detail_id AS STATUS_ID
+        ,hl4_status_detail.detail  AS STATUS_DETAIL
+        ,CONCAT(CONCAT(userTable.FIRST_NAME, ' '),userTable.LAST_NAME) AS CREATED_BY
+        ,userTable.EMAIL AS OWNER_EMAIL
+        ,hl4.IS_SEND_MAIL AS IS_SEND_MAIL
+        ,(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT * euro_conversions.currency_value) AS HL4_BUDGET
+        ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
+        
+        FROM HL4 hl4
+    INNER JOIN HL4_FNC hl4_fnc ON hl4_fnc.hl4_id=hl4.hl4_id AND hl4_fnc.enabled=1 AND hl4_fnc.deleted=0
+    INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
+    INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
+    INNER JOIN BUDGET_YEAR BGY ON hl2.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
+    INNER JOIN EURO_CONVERSIONS euro_conversions ON hl4_fnc.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
+    INNER JOIN hl4_status_detail hl4_status_detail ON hl4_status_detail.hl4_status_detail_id = hl4.hl4_status_detail_id
+    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl4.created_user_id
+    WHERE hl4.enabled=1 AND hl4.deleted=0
+	AND hl3.hl3_id = in_hl3_id;
+
+out_result = SELECT
+        va_hl4.HL4_ID
+		,va_hl4.HL4_CRM_DESCRIPTION
+		,va_hl4.HL4_ACRONYM
+		,va_hl4.CRM_ID
+		,va_hl4.IN_BUDGET
+		,va_hl4.READ_ONLY
+		,va_hl4.STATUS_ID
+		,va_hl4.STATUS_DETAIL
+		,va_hl4.CREATED_BY
+		,va_hl4.OWNER_EMAIL
+		,va_hl4.IS_SEND_MAIL
+		,va_hl4.HL4_BUDGET
+		,va_hl4.EURO_CONVERSION_ID
+        ,COUNT(DISTINCT HL5.HL5_ID) AS NUM
+        ,SUM(CASE WHEN HL5_FNC.IN_BUDGET IS NULL THEN 0 WHEN HL5_FNC.IN_BUDGET = 1 THEN 1 ELSE 0 END) QUANTITY_HL5_IN_BUDGET
+        ,SUM(CASE WHEN  HL5_FNC.IN_BUDGET IS NULL THEN 0 WHEN HL5_FNC.IN_BUDGET = 0 THEN 1 ELSE 0 END) QUANTITY_HL5_OUT_BUDGET
+        ,SUM(IFNULL(CASE WHEN HL5_FNC.IN_BUDGET = 1 THEN (HL5_FNC.hl5_budget_total_mkt  * HL5_FNC.euro_worths_value ) ELSE 0 END,0)) AS HL5_TOTAL_IN_BUDGET -- HL5_TOTAL_IN_BUDGET
+        ,SUM(IFNULL(CASE WHEN HL5_FNC.IN_BUDGET = 0 THEN (HL5_FNC.hl5_budget_total_mkt  * HL5_FNC.euro_worths_value ) ELSE 0 END,0)) AS HL5_TOTAL_OUT_BUDGET -- HL5_TOTAL_OUT_BUDGET
+    FROM :va_intermidate va_hl4
+    LEFT JOIN HL5 hl5 ON hl5.HL4_ID = va_hl4.hl4_id AND hl5.enabled=1 AND hl5.deleted=0
+    LEFT JOIN HL5_FNC hl5_fnc ON hl5_fnc.HL5_ID=hl5.HL5_ID AND hl5_fnc.enabled=1 and hl5_fnc.deleted=0
+
+	GROUP BY va_hl4.HL4_ID,va_hl4.HL4_CRM_DESCRIPTION,va_hl4.HL4_ACRONYM,va_hl4.CRM_ID,va_hl4.IN_BUDGET,va_hl4.READ_ONLY,va_hl4.STATUS_ID,
+		va_hl4.STATUS_DETAIL,va_hl4.CREATED_BY,va_hl4.OWNER_EMAIL,va_hl4.IS_SEND_MAIL,va_hl4.HL4_BUDGET,
+		va_hl4.EURO_CONVERSION_ID;
+		
+		
+	SELECT 
+	COALESCE(SUM(HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT),0) 
+	INTO va_total_budget
+	FROM HL3 
+	LEFT JOIN HL4 ON HL4.HL3_ID = HL3.hl3_id 
+	LEFT JOIN HL4_FNC ON HL4_FNC.hl4_id=HL4.hl4_id 
+	WHERE 
+	HL3.enabled=1 
+	AND HL3.deleted=0
+	AND HL3.hl3_id = in_hl3_id
+	GROUP BY HL4.hl3_id;
+
+	out_total_budget := va_total_budget;
+		
+END;

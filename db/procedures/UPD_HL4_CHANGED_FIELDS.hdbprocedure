@@ -1,0 +1,26 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_CHANGED_FIELDS" ( 
+IN in_hl4_crm_binding_id BIGINT,
+IN in_hl4_id BIGINT,
+IN in_column_name NVARCHAR(255),
+IN in_changed TINYINT,
+IN in_user_id BIGINT,
+IN in_display_name NVARCHAR(255),
+OUT out_result BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	UPDATE HL4_CRM_BINDING SET
+		
+		hl4_id = in_hl4_id,
+		column_name = in_column_name,
+		column_changed = in_changed,
+		display_name = in_display_name,
+		
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where hl4_crm_binding_id = in_hl4_crm_binding_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

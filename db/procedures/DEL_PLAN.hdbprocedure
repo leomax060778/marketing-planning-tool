@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_PLAN" (
+	IN in_plan_id BIGINT,
+	IN in_modified_user_id BIGINT,
+	OUT out_result BIGINT
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+		UPDATE plan
+		SET deleted = 1,
+			modified_user_id = in_modified_user_id,
+			modified_date_tz = CURRENT_TIMESTAMP
+		WHERE plan_id = in_plan_id;
+		
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

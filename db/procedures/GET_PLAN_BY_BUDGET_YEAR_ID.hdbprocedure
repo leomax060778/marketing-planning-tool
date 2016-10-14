@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_PLAN_BY_BUDGET_YEAR_ID" ( 
+	IN in_budget_year_id BIGINT,
+	OUT out_result TABLE(budget_year_plan_id BIGINT, plan_name NVARCHAR(255)) 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+out_result = SELECT budget_year_plan.budget_year_plan_id, "plan".plan_name 
+				FROM "PLANNING_TOOL".budget_year_plan AS budget_year_plan
+				INNER JOIN "PLANNING_TOOL"."PLAN" as "plan" ON budget_year_plan.plan_id = "plan".plan_id  
+				WHERE budget_year_plan.budget_year_id = in_budget_year_id 
+				AND budget_year_plan.deleted = 0 AND budget_year_plan.enabled = 1;
+END;

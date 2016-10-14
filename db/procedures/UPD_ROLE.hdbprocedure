@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_ROLE" (
+	IN in_role_id bigint,
+	IN in_name nvarchar(255),
+	IN in_user_id bigint,
+	OUT out_result INTEGER
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 
+        UPDATE role
+        SET role.name = in_name,
+            role.modified_date_tz = CURRENT_TIMESTAMP,
+            role.modified_user_id = in_user_id
+        WHERE role.role_id = in_role_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

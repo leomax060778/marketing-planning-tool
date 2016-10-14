@@ -1,0 +1,13 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_EURO_CONVERSION_VALUE_BY_ID" (
+	IN in_euro_conversion_id BIGINT,
+	OUT out_currency_value DECIMAL(19,10)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	SELECT currency_value INTO out_currency_value
+	FROM EURO_CONVERSIONS
+	WHERE EURO_CONVERSION_ID = in_euro_conversion_id;
+END;

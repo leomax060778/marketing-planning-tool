@@ -1,0 +1,32 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK" ( 
+	IN in_entity_id bigint,
+	IN in_hl4_id bigint,
+	IN in_organization_type_id bigint,
+	IN in_requested_user_id bigint,
+	IN in_requested_resource nvarchar(300),
+	IN in_requested_budget decimal(19,2),
+	IN in_interlock_status_id bigint,
+	IN in_created_user_id bigint,
+	IN in_hash nvarchar(500),
+	IN in_salt nvarchar(500),
+	OUT out_interlock_id BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."INTERLOCK_REQUEST" (
+	entity_id,
+	hl4_id,
+	organization_type_id,
+	requested_user_id,
+	requested_resource,
+	requested_budget,
+	interlock_status_id,
+	created_user_id,
+	hash,
+	salt) 
+	VALUES (in_entity_id,in_hl4_id,in_organization_type_id,in_requested_user_id,in_requested_resource,in_requested_budget,in_interlock_status_id,in_created_user_id,in_hash,in_salt);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_interlock_id FROM "PLANNING_TOOL"."INTERLOCK_REQUEST";
+END;

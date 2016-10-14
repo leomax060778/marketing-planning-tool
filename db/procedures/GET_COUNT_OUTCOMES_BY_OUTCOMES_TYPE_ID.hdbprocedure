@@ -1,0 +1,11 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COUNT_OUTCOMES_BY_OUTCOMES_TYPE_ID" (
+		IN in_outcomes_type_id bigint,
+		OUT out_result bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	SELECT COUNT(DISTINCT outcomes_id) INTO out_result FROM outcomes
+	WHERE outcomes_type_id = in_outcomes_type_id AND enabled=1 AND deleted=0;
+END;

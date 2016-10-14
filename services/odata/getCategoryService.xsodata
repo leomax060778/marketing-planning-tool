@@ -1,0 +1,9 @@
+service  {
+	"sap-planning-tool.db.data.views::AV_CATEGORY"
+	as "Categories"
+	keys ("CATEGORY_ID")
+	parameters via entity
+	create forbidden
+	update forbidden
+	delete forbidden;  
+}

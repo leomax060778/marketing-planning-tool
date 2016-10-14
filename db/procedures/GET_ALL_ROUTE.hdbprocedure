@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_ROUTE" ( 
+	OUT out_result TABLE(hl3_id BIGINT, crm_long_hl3_id NVARCHAR(255), origin_plan_id BIGINT)
+) 
+	
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	out_result = 
+	
+	SELECT hl3_id, crm_long_hl3_id, origin_plan_id
+	FROM HL3
+	WHERE deleted = 0
+	  AND enabled = 1;			
+
+END;

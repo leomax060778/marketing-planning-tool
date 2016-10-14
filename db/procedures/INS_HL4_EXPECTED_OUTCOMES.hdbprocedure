@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_EXPECTED_OUTCOMES" (
+    IN in_hl4_id bigint,
+    IN in_comments NVARCHAR(3000),
+    IN in_created_user_id bigint, 
+    OUT out_hl4_expected_outcomes_id bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."HL4_EXPECTED_OUTCOMES" (hl4_id,comments,created_user_id)
+	VALUES (in_hl4_id,in_comments,in_created_user_id);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_expected_outcomes_id FROM "PLANNING_TOOL"."HL4_EXPECTED_OUTCOMES";
+END;

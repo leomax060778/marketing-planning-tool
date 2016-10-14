@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_BY_ID" (
+	IN in_option_id BIGINT,
+	OUT out_result TABLE (option_id BIGINT, name nvarchar(255), category_id BIGINT, order_option INTEGER, not_applicable TINYINT)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_result = SELECT option_id,
+					   name,
+					   category_id,
+					   order_option,
+					   not_applicable
+				FROM option
+				WHERE option_id = in_option_id
+					AND enabled = 1
+					AND deleted = 0;
+END;

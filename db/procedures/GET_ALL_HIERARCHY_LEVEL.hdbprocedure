@@ -1,0 +1,27 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HIERARCHY_LEVEL" (
+	OUT output_result TABLE(hierarchy_level_id BIGINT, description NVARCHAR(255)) 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	DECLARE response BIGINT;
+	DECLARE message NVARCHAR(255);
+	
+	response := 0;
+	message := 'Success OK';
+	
+	IF response = 0
+	THEN
+	
+	output_result = SELECT hierarchy_level_id,
+		   description
+	FROM hierarchy_level
+	WHERE deleted = 0
+	  AND enabled = 1;
+	
+	END IF;	
+
+END;

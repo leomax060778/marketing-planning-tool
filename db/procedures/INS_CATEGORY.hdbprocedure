@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CATEGORY" ( 
+	IN in_description NVARCHAR(255),
+	IN in_nametag NVARCHAR(255),
+	IN in_hierarchy_level_id BIGINT,
+	IN in_measure_id BIGINT,
+	IN in_not_applicable TINYINT,
+	IN in_user_id BIGINT,
+	OUT out_category_id BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	--DEFAULT SCHEMA <default_schema_name>
+	AS
+BEGIN
+		INSERT INTO "PLANNING_TOOL"."CATEGORY"(hierarchy_level_id, measure_id, name, description,not_applicable,created_user_id)
+		VALUES(in_hierarchy_level_id, in_measure_id, in_nametag, in_description, in_not_applicable, in_user_id);
+		
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_category_id FROM "PLANNING_TOOL"."CATEGORY";
+END;

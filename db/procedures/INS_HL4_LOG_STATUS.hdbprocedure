@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_LOG_STATUS" ( 
+	IN in_hl4_id BIGINT,
+	IN in_status_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_hl4_log_status_id bigint) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 
+ 	INSERT INTO "PLANNING_TOOL"."HL4_STATUS_HISTORY" (hl4_id, hl4_status_detail_id, created_user_id)
+	VALUES (in_hl4_id, in_status_id, in_user_id);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_log_status_id FROM "PLANNING_TOOL"."HL4_STATUS_HISTORY";
+ 
+END;

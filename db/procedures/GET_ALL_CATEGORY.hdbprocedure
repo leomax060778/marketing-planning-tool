@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_CATEGORY" (
+	OUT out_result TABLE (category_id BIGINT, hierarchy_level_id BIGINT, measure_id BIGINT, name NVARCHAR(60), description NVARCHAR(255))
+ 	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+		out_result = SELECT category_id,
+			   hierarchy_level_id,
+			   measure_id,
+			   name,
+			   description
+		FROM "PLANNING_TOOL".category
+		WHERE enabled = 1 AND
+		deleted = 0
+		ORDER BY name;
+
+END;

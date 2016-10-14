@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_OPTION_BY_CATEGORY_ID" (
+	IN in_hl4_category_id bigint,
+	OUT out_hl4_category_option TABLE (option_id BIGINT, name nvarchar(255), category_id BIGINT, amount decimal(19,2))
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	out_hl4_category_option = SELECT hl4_category_option.option_id, option.name, 
+	option.category_id, hl4_category_option.amount
+	FROM hl4_category_option
+	inner join option on hl4_category_option.option_id = option.option_id 
+	where hl4_category_option.hl4_category_id = in_hl4_category_id
+	AND hl4_category_option.deleted = 0 and hl4_category_option.enabled = 1;
+END;

@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION" ( ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	DECLARE response BIGINT;
+	DECLARE message NVARCHAR(255);
+	
+	response := 0;
+	message := 'Success OK';
+	
+	IF response = 0
+	THEN
+	
+	END IF;
+END;

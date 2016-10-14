@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_OTHER" ( 
+	IN in_hl4_id bigint,
+	IN in_description nvarchar(30),
+	IN in_amount decimal(19,2),
+	IN in_created_user_id bigint,
+	OUT out_hl4_sale_other_id bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."HL4_SALE_OTHER"(hl4_id,description,amount,created_user_id)
+	VALUES (in_hl4_id,in_description,in_amount,in_created_user_id);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_sale_other_id FROM "PLANNING_TOOL"."HL4_SALE_OTHER";
+END;

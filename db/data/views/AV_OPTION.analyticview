@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cube:cube xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Cube="http://www.sap.com/ndb/BiModelCube.ecore" schemaVersion="1.5" id="AV_OPTION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled">
+  <origin/>
+  <descriptions defaultDescription="AV_OPTION"/>
+  <metadata changedAt="2016-08-31 10:03:49.287"/>
+  <localVariables/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <privateMeasureGroup id="MeasureGroup">
+    <attributes>
+      <attribute id="CATEGORY_ID_1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CATEGORY_ID_1"/>
+        <keyMapping schemaName="PLANNING_TOOL" columnObjectName="CATEGORY" columnName="CATEGORY_ID"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies>
+        <tableProxy>
+          <table schemaName="PLANNING_TOOL" columnObjectName="CATEGORY"/>
+          <columnFilter columnName="ENABLED">
+            <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="1"/>
+          </columnFilter>
+          <columnFilter columnName="DELETED">
+            <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="0"/>
+          </columnFilter>
+        </tableProxy>
+      </tableProxies>
+      <joins/>
+      <layout>
+        <shapes>
+          <shape modelObjectName="CATEGORY" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+            <upperLeftCorner x="70" y="30"/>
+          </shape>
+        </shapes>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures>
+      <measure id="COUNT" hidden="false" order="1" aggregationType="sum" engineAggregation="sum" measureType="simple" calculateBeforeAggregation="true" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="COUNT"/>
+        <formula>&quot;OPTION_ID&quot;</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <sharedDimensions>
+      <logicalJoin associatedObjectUri="/xsplanningtool.db.data.views/attributeviews/AT_OPTION">
+        <attributes>
+          <attributeRef>#CATEGORY_ID_1</attributeRef>
+        </attributes>
+        <associatedAttributeNames>
+          <attributeName>CATEGORY_ID</attributeName>
+        </associatedAttributeNames>
+        <properties joinOperator="Equal" joinType="referential"/>
+        <associatedAttributeFeatures/>
+      </logicalJoin>
+    </sharedDimensions>
+    <layout>
+      <shapes>
+        <shape modelObjectName="MEASURE_GROUP" modelObjectType="repository">
+          <upperLeftCorner x="32" y="31"/>
+        </shape>
+        <shape modelObjectName="/xsplanningtool.db.data.views/attributeviews/AT_OPTION" modelObjectType="repository">
+          <upperLeftCorner x="449" y="30"/>
+        </shape>
+        <shape modelObjectName="LogicalView" modelObjectNameSpace="MeasureGroup" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateMeasureGroup>
+</Cube:cube>

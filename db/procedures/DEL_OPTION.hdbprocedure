@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_OPTION" (
+	IN in_option_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_response_id TINYINT
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	DECLARE va_response BIGINT;
+	DECLARE va_message NVARCHAR(255);
+	
+	va_response := 0;
+	va_message := 'Success';
+	
+	IF va_response = 0
+	THEN
+		UPDATE option
+		SET option.deleted = 1,
+			option.modified_user_id = in_user_id,
+			option.modified_date_tz = CURRENT_TIMESTAMP
+		FROM "PLANNING_TOOL"."OPTION" option
+		WHERE option_id = in_option_id;
+		
+		out_response_id := va_response;
+	END IF;
+END;

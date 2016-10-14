@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_USER_ROUTE" (
+	IN in_user_route_id BIGINT,
+	OUT out_result INTEGER) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	DELETE FROM "PLANNING_TOOL"."USER_ROUTE" user_route
+	WHERE user_route.user_route_id = in_user_route_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+	
+END;

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_REPORT1" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_REPORT1"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="BIGINT" id="HL4_ID"/>
+        <viewAttribute datatype="BIGINT" id="HL3_ID"/>
+        <viewAttribute datatype="VARCHAR" id="ACRONYM" length="50"/>
+        <viewAttribute datatype="VARCHAR" id="CRM_DESCRIPTION" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="INITIATIVE_CAMPAIGN_DETAILS" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="BUSINESS_VALUE" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="STATUS" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="COMMENTS" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="BUDGET_K_EUR" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="CREATED_BY" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="REQUESTED_RESOURCE" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="REQUESTED_BUDGET" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="ORGANIZATION_TYPE_NAME" length="255"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition>
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 
+ 	 var_out = 
+select 
+hl4.HL4_ID
+, hl4.HL3_ID
+, hl4.ACRONYM
+, hl4.HL4_CRM_DESCRIPTION AS CRM_DESCRIPTION
+, hl4.HL4_DETAILS AS INITIATIVE_CAMPAIGN_DETAILS
+, hl4.HL4_BUSINESS_DETAILS AS BUSINESS_VALUE
+, HL4SD.DETAIL AS STATUS
+, hl4.COMMENTS
+, HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
+, CONCAT(U.FIRST_NAME, CONCAT(' ', U.LAST_NAME)) AS CREATED_BY
+, IR.REQUESTED_RESOURCE
+, IR.REQUESTED_BUDGET
+, OT.NAME as ORGANIZATION_TYPE_NAME
+
+FROM  
+AT_HL4 
+LEFT JOIN AT_HL4_STATUS_DETAIL HL4SD  ON HL4SD.HL4_STATUS_DETAIL_ID = HL4.HL4_STATUS_DETAIL_ID --ESTADO DEL L4
+LEFT JOIN AT_HL4_FNC ON HL4_FNC.HL4_ID = hl4.HL4_ID -- BUDGET (K EUR)
+LEFT JOIN AT_USER U ON HL4.CREATED_USER_ID = U.USER_ID --USER
+LEFT JOIN AT_INTERLOCK_REQUEST IR ON IR.HL4_ID = hl4.HL4_ID
+LEFT JOIN AT_ORGANIZATION_TYPE OT ON IR.ORGANIZATION_TYPE_ID = OT.ORGANIZATION_TYPE_ID;
+
+END 
+/********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="HL4_ID" order="1">
+        <descriptions defaultDescription="HL4_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL4_ID"/>
+      </attribute>
+      <attribute id="HL3_ID" order="2">
+        <descriptions defaultDescription="HL3_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL3_ID"/>
+      </attribute>
+      <attribute id="ACRONYM" order="3">
+        <descriptions defaultDescription="ACRONYM"/>
+        <keyMapping columnObjectName="Script_View" columnName="ACRONYM"/>
+      </attribute>
+      <attribute id="CRM_DESCRIPTION" order="4">
+        <descriptions defaultDescription="CRM_DESCRIPTION"/>
+        <keyMapping columnObjectName="Script_View" columnName="CRM_DESCRIPTION"/>
+      </attribute>
+      <attribute id="INITIATIVE_CAMPAIGN_DETAILS" order="5">
+        <descriptions defaultDescription="INITIATIVE_CAMPAIGN_DETAILS"/>
+        <keyMapping columnObjectName="Script_View" columnName="INITIATIVE_CAMPAIGN_DETAILS"/>
+      </attribute>
+      <attribute id="BUSINESS_VALUE" order="6">
+        <descriptions defaultDescription="BUSINESS_VALUE"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUSINESS_VALUE"/>
+      </attribute>
+      <attribute id="STATUS" order="7">
+        <descriptions defaultDescription="STATUS"/>
+        <keyMapping columnObjectName="Script_View" columnName="STATUS"/>
+      </attribute>
+      <attribute id="COMMENTS" order="8">
+        <descriptions defaultDescription="COMMENTS"/>
+        <keyMapping columnObjectName="Script_View" columnName="COMMENTS"/>
+      </attribute>
+      <attribute id="BUDGET_K_EUR" order="9">
+        <descriptions defaultDescription="BUDGET_K_EUR"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_K_EUR"/>
+      </attribute>
+      <attribute id="CREATED_BY" order="10">
+        <descriptions defaultDescription="CREATED_BY"/>
+        <keyMapping columnObjectName="Script_View" columnName="CREATED_BY"/>
+      </attribute>
+      <attribute id="REQUESTED_RESOURCE" order="11">
+        <descriptions defaultDescription="REQUESTED_RESOURCE"/>
+        <keyMapping columnObjectName="Script_View" columnName="REQUESTED_RESOURCE"/>
+      </attribute>
+      <attribute id="REQUESTED_BUDGET" order="12">
+        <descriptions defaultDescription="REQUESTED_BUDGET"/>
+        <keyMapping columnObjectName="Script_View" columnName="REQUESTED_BUDGET"/>
+      </attribute>
+      <attribute id="ORGANIZATION_TYPE_NAME" order="13">
+        <descriptions defaultDescription="ORGANIZATION_TYPE_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_TYPE_NAME"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

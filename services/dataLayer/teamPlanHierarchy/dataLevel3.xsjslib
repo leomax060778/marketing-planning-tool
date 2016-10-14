@@ -1,0 +1,110 @@
+$.import("xsplanningtool.services.commonLib", "mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
+var db = mapper.getdbHelper();
+var ErrorLib = mapper.getErrors();
+/** ***********END INCLUDE LIBRARIES*************** */
+
+// STORE PROCEDURE LIST NAME
+var INS_HL3 = "INS_HL3";
+var GET_ALL_HL3 = "GET_ALL_HL3";
+var spGetHl3AllocatedBudget = "GET_HL3_ALLOCATED_BUDGET";
+var UPD_HL3 = "UPD_HL3";
+var GET_HL3 = "GET_HL3";
+var GET_GLOBAL_TEAM = "GET_GLOBAL_TEAM";
+var GET_HL3_BY_ACRONYM = "GET_HL3_BY_ACRONYM";
+var DEL_HL3 = "DEL_HL3";
+
+// Insert a new hl3
+function insertHl3(objHl3, userId) {
+	var parameters = {};
+	parameters.in_acronym = objHl3.IN_ACRONYM;
+	parameters.in_hl2_id = objHl3.IN_HL2_ID;
+	parameters.in_hl3_description = objHl3.IN_HL3_DESCRIPTION;
+	parameters.in_crm_id = objHl3.IN_CRM_ID;
+	parameters.in_business_owner_id = objHl3.IN_BUSINESS_OWNER_ID;
+	parameters.in_hl3_fnc_budget_total = objHl3.IN_HL3_FNC_BUDGET_TOTAL;
+	parameters.in_user_id = userId;
+	parameters.out_hl3_id = '?';
+	return db.executeScalarManual(INS_HL3, parameters, 'out_hl3_id');
+}
+
+/* Execute query to update an HL3 */
+function updateLevel3(objHl3, userId) {
+	var parameters = {};
+	var result = {};
+	parameters.in_hl3_id = objHl3.IN_HL3_ID;
+	parameters.in_acronym = objHl3.IN_ACRONYM;
+	parameters.in_hl3_description = objHl3.IN_HL3_DESCRIPTION;
+	parameters.in_business_owner_id = objHl3.IN_BUSINESS_OWNER_ID;
+	parameters.in_hl3_fnc_budget_total = objHl3.IN_HL3_FNC_BUDGET_TOTAL;
+	parameters.in_user_id = userId;	
+	//throw ErrorLib.getErrors().BadRequest("","hl3Services/handlePut",objHl3.IN_HL3_ID);
+	var list = db.executeProcedureManual(UPD_HL3, parameters);
+	result.out_result_hl3 = list.out_result_hl3;
+	result.out_result_hl3_fnc = list.out_result_hl3_fnc;
+	result.out_crm_id = list.out_crm_id;
+	result.out_budget_flag = list.out_budget_flag;
+	return result;
+}
+
+//Execute an Sp to retrieve HL3 data from HL2
+function getAllLevel3(objHl2, userId) {
+	var parameters = {};
+	var result = {};
+	parameters.in_hl2_id = objHl2.IN_HL2_ID;
+	parameters.in_user_id = userId;
+	var list = db.executeProcedure(GET_ALL_HL3, parameters);
+	result.out_result = db.extractArray(list.out_result);
+	result.out_total_budget = list.out_total_budget;
+	return result;
+}
+
+//Execute an SP to retrieve an HL3 by id
+function getLevel3ById(objHl3, userId) {
+	var parameters = {};
+	parameters.in_hl3_id = objHl3.IN_HL3_ID;
+	//parameters.in_user_id = userId;
+	var result = db.executeProcedure(GET_HL3, parameters);
+	var list = db.extractArray(result.out_result);
+	if(list.length)
+		return list[0];
+	
+	else
+		return {};
+}
+
+function getLevel3ByAcronym(objHl3, userId) {
+	var parameters = {};
+	parameters.in_acronym = objHl3.IN_ACRONYM.toUpperCase();
+	var result = db.executeProcedure(GET_HL3_BY_ACRONYM, parameters);
+	var list = db.extractArray(result.out_result);
+	if(list.length)
+		return list[0];
+	
+	else
+		return {};
+}
+
+function getGlobalTeams(userId) {
+	var parameters = {};
+	parameters.in_user_id = userId;
+	var result = db.executeProcedure(GET_GLOBAL_TEAM, parameters);
+	return db.extractArray(result.out_result);
+}
+
+function getHl3AllocatedBudget(hl3Id) {
+	if(hl3Id){
+		var rdo = db.executeDecimalManual(spGetHl3AllocatedBudget, {'in_hl3_id': hl3Id}, 'out_hl3_allocated_budget');
+		return rdo;
+	}
+	return null;
+}
+
+/* Execute query to update an HL3 */
+function deleteLevel3(objHl3, userId) {
+	var parameters = {};
+	var result = {};
+	parameters.in_hl3_id = objHl3.IN_HL3_ID;
+	parameters.in_user_id = userId;	
+	return db.executeScalar(DEL_HL3, parameters, 'out_result');
+}

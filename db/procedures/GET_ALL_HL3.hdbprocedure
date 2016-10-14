@@ -1,0 +1,74 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL3" ( 
+	IN in_hl2_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result TABLE(hl3_id BIGINT, 
+							 acronym NVARCHAR(25), 
+							 hl3_budget_total DECIMAL(19,2),
+							 hl3_budget_allocated DECIMAL(19,2),
+							 hl3_budget_remaining DECIMAL(19,2),
+							 hl4_total_count BIGINT,
+							 hl4_out_budget_count BIGINT),
+	OUT out_total_budget	DECIMAL(19,2)					 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	DECLARE va_total_budget DECIMAL(19,2);
+	va_total_budget := 0;
+	
+	
+	va_intermidate = SELECT COUNT(hl4.hl4_id) as numL4, hl3.hl3_id
+	FROM HL4 hl4
+    INNER JOIN HL4_FNC hl4_fnc ON hl4_fnc.hl4_id=hl4.hl4_id AND hl4_fnc.enabled=1 AND hl4_fnc.deleted=0
+    INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
+    INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
+    INNER JOIN BUDGET_YEAR BGY ON hl2.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
+    INNER JOIN EURO_CONVERSIONS euro_conversions ON hl4_fnc.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
+    INNER JOIN hl4_status_detail hl4_status_detail ON hl4_status_detail.hl4_status_detail_id = hl4.hl4_status_detail_id
+    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl4.created_user_id
+    WHERE hl4.enabled=1 AND hl4.deleted=0
+	AND hl3.hl2_id = in_hl2_id
+	group by hl3.hl3_id;
+	
+	
+	out_result = SELECT HL3.hl3_id, 
+		   HL3.acronym,
+		   COALESCE(HL3_FNC.hl3_fnc_budget_total,0) AS hl3_budget_total,
+		   COALESCE(SUM(HL4_FNC.hl4_fnc_budget_total_mkt * EC.currency_value),0) AS hl3_budget_allocated,
+		   COALESCE((HL3_FNC.hl3_fnc_budget_total - SUM(HL4_FNC.hl4_fnc_budget_total_mkt)),HL3_FNC.hl3_fnc_budget_total) AS hl3_budget_remaining,
+		   COALESCE(va_hl4.numL4,0) AS hl4_total_count,
+		   SUM(CASE WHEN COALESCE(HL4_FNC.in_budget, -1) = -1 THEN 0 
+		   				ELSE CASE WHEN HL4_FNC.in_budget = 1 THEN 0
+		   				ELSE 1 END
+   				END) AS hl4_out_budget_count
+	FROM HL3
+	INNER JOIN HL2_USER HU ON HL3.hl2_id = HU.hl2_id
+	INNER JOIN HL3_FNC ON HL3.hl3_id = HL3_FNC.hl3_id
+	LEFT JOIN HL4 ON HL3.hl3_id = HL4.hl3_id
+	LEFT JOIN HL4_FNC ON HL4.hl4_id = HL4_FNC.hl4_id
+	LEFT JOIN EURO_CONVERSIONS EC ON HL4_FNC.euro_conversion_id = EC.euro_conversion_id 
+	LEFT JOIN :va_intermidate va_hl4 ON va_hl4.hl3_id = HL3.hl3_id
+	WHERE HL3.hl2_id = in_hl2_id
+	  AND HU.user_id = in_user_id
+	  AND HL3.deleted = 0
+	  AND HL3.enabled = 1
+	GROUP BY GROUPING SETS ((HL3.hl3_id, HL3.acronym, HL3_FNC.hl3_fnc_budget_total
+	, va_hl4.numL4
+	))
+	ORDER BY HL3.acronym;
+	
+	SELECT COALESCE(SUM(HL3_FNC.hl3_fnc_budget_total),0)
+	INTO va_total_budget
+	FROM HL3
+	INNER JOIN HL2_USER HU ON HL3.hl2_id = HU.hl2_id
+	INNER JOIN HL3_FNC ON HL3.hl3_id = HL3_FNC.hl3_id
+	WHERE HL3.hl2_id = in_hl2_id
+	  AND HU.user_id = in_user_id
+	  AND HL3.deleted = 0
+	  AND HL3.enabled = 1;
+	
+	out_total_budget := va_total_budget;
+	
+END;

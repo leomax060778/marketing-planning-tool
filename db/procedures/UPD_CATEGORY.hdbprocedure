@@ -1,0 +1,26 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CATEGORY" (
+	IN in_category_id BIGINT,
+	IN in_description NVARCHAR(255),
+	IN in_nametag NVARCHAR(255),
+	IN in_hierarchy_level_id BIGINT,
+	IN in_measure_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+        UPDATE category
+        SET category.hierarchy_level_id = in_hierarchy_level_id,
+            category.measure_id = in_measure_id,
+            category.name = in_nametag,
+            category.description = in_description,
+            category.modified_date_tz = CURRENT_TIMESTAMP,
+            category.modified_user_id = in_user_id
+        FROM "PLANNING_TOOL"."CATEGORY" category
+        WHERE category_id = in_category_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END

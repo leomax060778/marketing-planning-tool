@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_OPTION" ( 
+	IN in_option_id BIGINT,
+	IN in_category_id BIGINT,
+	IN in_name NVARCHAR(3000),
+	IN in_order_option INT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+    	UPDATE option
+    	SET option.name = in_name,
+    		option.ORDER_OPTION = in_order_option,
+    		option.category_id = in_category_id,
+    		option."MODIFIED_USER_ID" = in_user_id,
+        	option."MODIFIED_DATE_TZ" = CURRENT_TIMESTAMP
+    	FROM "PLANNING_TOOL"."OPTION" option
+    	WHERE option.option_id = in_option_id;
+    	
+    	SELECT ::ROWCOUNT into out_result FROM DUMMY;
+END;

@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_SPEND_CATEGORY_BY_HL_ID" (
+	IN in_hl_id bigint,
+	OUT out_result TABLE (SPEND_CATEGORY_ID BIGINT, NAME NVARCHAR(60))
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+	out_result = SELECT sp.SPEND_CATEGORY_ID, sp.NAME
+						FROM SPEND_CATEGORY sp
+						WHERE sp.HIERARCHY_LEVEL_ID = in_hl_id AND
+						sp.enabled = 1 AND
+						sp.deleted = 0
+				ORDER BY sp.NAME;
+END;

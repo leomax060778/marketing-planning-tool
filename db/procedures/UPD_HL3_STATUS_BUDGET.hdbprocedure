@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL3_STATUS_BUDGET" ( 
+	IN in_hl3_id BIGINT,
+	IN in_status_budget BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+ 
+	UPDATE HL3_FNC
+	SET in_budget = in_status_budget,
+	modified_date_tz = CURRENT_TIMESTAMP,
+    modified_user_id = in_user_id
+	WHERE hl3_id = in_hl3_id
+	  AND in_budget = 0
+	  AND deleted = 0
+	  AND enabled = 1; 
+	  
+	SELECT ::ROWCOUNT into out_result FROM DUMMY;  
+		
+END;
