@@ -1,0 +1,5 @@
+role xsplanningtool::model_access {
+ application privilege: xsplanningtool::Basic;
+ application privilege: xsplanningtool::Execute;
+ catalog schema "PLANNING_TOOL": SELECT, INSERT, UPDATE, DELETE;
+}
