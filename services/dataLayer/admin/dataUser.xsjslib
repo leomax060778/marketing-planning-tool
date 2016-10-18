@@ -112,7 +112,7 @@ function updatePass(userId, pass, passSalt, modUser) {
 	param.in_modified_user_id = modUser;
 	param.out_result = '?';
 
-	return db.executeScalarManual(spUpdatePass, param, "out_result");
+	return db.executeScalar(spUpdatePass, param, "out_result");
 }
 
 function getPasswordHash(pass) {

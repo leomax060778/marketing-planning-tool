@@ -215,7 +215,7 @@ function getDefaultTemplate(body){
 
 
 //Send a email
-function sendMail(reqBody, defaultBody){
+function sendMail(reqBody, defaultBody, OptionalSender){
 	try{
 		
 		if(validate(reqBody)){
@@ -224,6 +224,9 @@ function sendMail(reqBody, defaultBody){
 			var mail = new $.net.Mail();
 				
 			    mail.sender = reqBody.FROM; 
+			    if(OptionalSender && validateEmail(OptionalSender)){
+			    	mail.sender = OptionalSender;
+			    }
 			    mail.to = reqBody.TO;  
 			    mail.subject = reqBody.SUBJECT;
 			    

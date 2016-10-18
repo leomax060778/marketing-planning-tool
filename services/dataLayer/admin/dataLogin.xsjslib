@@ -16,6 +16,7 @@ var spDelUserSessionToken = "DEL_USER_SESSION_TOKEN";
 var spGetTokenRecoveryByUserId = "GET_USER_RECOVERY_TOKEN_BY_USER";
 var spGetTokenRecoveryByToken = "GET_USER_RECOVERY_TOKEN_BY_TOKEN";
 var spDisableRecoveryToken = "UPD_DISABLE_RECOVERY_TOKEN";
+var spUPDUserSessionToken = "UPD_USER_SESSION_TOKEN";
 
 /** *************************************************** */
 
@@ -67,6 +68,16 @@ function saveRecovery(user, password, token){
 		'in_token_duration' : config.getTokenLifeTimeSeconds(),
 		'in_created_user_id':user
 	},"out_user_recovery_token_id");
+}
+
+function updateToken(userId, token){
+	var param = {};
+	param.in_token = token;
+	param.in_token_duration = config.getTokenLifeTimeSeconds();
+	param.in_modified_user_id = userId;
+	param.out_result = '?';
+
+	return db.executeScalar(spUPDUserSessionToken, param, "out_result");
 }
 
 function getUserToken(userId) {

@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_PARTNER_BY_HL4_ID" (
+	IN in_hl4_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+		UPDATE PARTNER
+		SET deleted = 1,
+			modified_user_id = in_user_id,
+			modified_date_tz = CURRENT_TIMESTAMP
+		WHERE PARTNER_ID in (
+			select DISTINCT PARTNER_ID FROM HL4_PARTNER 
+			WHERE hl4_id = in_hl4_id
+		);
+		
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

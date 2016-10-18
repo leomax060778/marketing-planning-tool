@@ -1,0 +1,12 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_ALL_BUDGET" 
+(
+OUT out_result TABLE(id bigint, name nvarchar(255), percentage DECIMAL(19,2), hl4_id bigint, budget_type bigint)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_result = SELECT *
+	FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_HL4_ALL_BUDGET" ;
+END;

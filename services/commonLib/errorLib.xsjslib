@@ -92,6 +92,18 @@ function getErrors(){
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
     }
+    
+    Errors.LoginError  = function(message,stack, details){
+    	var e={};
+        e.name = "Login Error";
+        e.message = message || "Login Error";
+        e.code = 451;
+        e.stack = stack || "";
+        e.details = details || "without details";
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+        	e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
 
     /******************* 500 **********************************************/
     Errors.InternalServerError  = function(message,stack, details){
@@ -155,6 +167,7 @@ function getErrors(){
         '408':  Errors.RequestTimeout(),
         '414':  Errors.RequestURITooLong(),
         '450':  Errors.CustomError(),
+        '451':  Errors.LoginError(),
         '500':  Errors.InternalServerError(),
         '501':  Errors.NotImplemented(),
         '503':  Errors.ServiceUnavailable(),

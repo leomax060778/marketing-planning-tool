@@ -715,7 +715,7 @@ function deleteHl4(hl4, userId){
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","Not enough privilege 666");
 	
 	var hl4StatusId = Number(dataHl4.getHl4StatusByHl4Id(hl4.in_hl4_id).hl4_status_detail_id);
-	if(hl4StatusId !== 3 && hl4StatusId !== 4)
+	if(hl4StatusId !== HL4_STATUS.IN_CRM && hl4StatusId !== HL4_STATUS.UPDATE_IN_CRM)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","Cannot delete this Item, status doesn´t allow it");
 	
 	if(dataHl4.getCountHl4Childrens(hl4.in_hl4_id) > 0)
@@ -736,6 +736,7 @@ function deleteHl4(hl4, userId){
 		dataInterlock.deleteInterlockSubregion(hl4);
 		dataInterlock.deleteInterlock(hl4);
 		dataHl4.deleteHl4Fnc(hl4);
+		level4DER.deleteL4ChangedFieldsByHl4Id(hl4_id);
 		dataHl4.deleteHl4CategoryOption(hl4);
 		dataHl4.deleteHl4Category(hl4);
 		dataHl4.deleteHl4BudgetRegion(hl4);

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_HL4_BUDGET_REGION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_HL4_BUDGET_REGION"/>
+  <localVariables>
+    <variable id="p_region_ids" parameter="true">
+      <descriptions defaultDescription="p_region_ids"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="''" length="5000" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="BIGINT" id="ID"/>
+        <viewAttribute datatype="NVARCHAR" id="REGION_NAME" length="255"/>
+        <viewAttribute datatype="DECIMAL" id="PERCENTAGE" length="19" scale="2"/>
+        <viewAttribute datatype="BIGINT" id="HL4_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <localVariable>#p_region_ids</localVariable>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out = 
+		SELECT 
+		  R.region_id AS ID
+		, R.region_name AS REGION_NAME
+		, HL4BR.percentage AS PERCENTAGE
+		, HL4BR.hl4_id AS HL4_ID
+		FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4BR 
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON HL4BR.region_id = R.region_id
+		INNER JOIN &quot;PLANNING_TOOL&quot;.&quot;xsplanningtool.db.functions::UDF_GET_LIST&quot;(:p_region_ids) T ON T.NRO = R.region_id
+		where 
+		HL4BR.deleted = 0 and HL4BR.enabled = 1;
+END 
+/*********/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="ID" order="1">
+        <descriptions defaultDescription="id"/>
+        <keyMapping columnObjectName="Script_View" columnName="ID"/>
+      </attribute>
+      <attribute id="REGION_NAME" order="2">
+        <descriptions defaultDescription="region_name"/>
+        <keyMapping columnObjectName="Script_View" columnName="REGION_NAME"/>
+      </attribute>
+      <attribute id="PERCENTAGE" order="3">
+        <descriptions defaultDescription="percentage"/>
+        <keyMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
+      </attribute>
+      <attribute id="HL4_ID" order="4">
+        <descriptions defaultDescription="hl4_id"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL4_ID"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

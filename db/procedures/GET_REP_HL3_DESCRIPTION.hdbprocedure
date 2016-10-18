@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_REP_HL3_DESCRIPTION" ( 
+IN in_p_filter nvarchar(255)
+, OUT out_result TABLE(HL4_ID bigint, HL3_ID bigint, ACRONYM nvarchar(255), CRM_DESCRIPTION nvarchar(255)
+, INITIATIVE_CAMPAIGN_DETAILS nvarchar(255), BUSINESS_VALUE nvarchar(255), STATUS NVARCHAR(255), BUDGET_K_EUR DECIMAL(19,2)
+, CREATED_BY NVARCHAR(255), USER_ID bigint)) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+declare v_filter nvarchar(255);
+v_filter :=in_p_filter;
+out_result=select *
+from "_SYS_BIC"."xsplanningtool.db.data.views/CV_L3_DESCRIPTION"( 'PLACEHOLDER' = ('$$p_filter$$', 'v_filter') ); 
+END;

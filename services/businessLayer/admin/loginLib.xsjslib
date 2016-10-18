@@ -47,10 +47,7 @@ function confirmToken(token,userId){
 		
 		var passwordRecovery = userRecovery['PASSWORD'];
 		var userId = userRecovery['USER_ID'];
-		
-			//get the user
-			var currentUser = userLib.getUserById(userId);
-			currentUser['PASSWORD'] = passwordRecovery;			
+					
 			var userUDP = {
 					'USER_ID': userId,
 					'PASSWORD':passwordRecovery,
@@ -87,7 +84,10 @@ function recoveryPassword(username,password, userId){
 function login(username,password){
 	
 	var currentUser = userLib.getUserByUserName(username);
-	//throw ErrorLib.getErrors().CustomError("","",currentUser);
+	if(!currentUser){
+		throw ErrorLib.getErrors().LoginError("",
+				"LoginLib/login", "Invalid credentials. Please log in again");	
+	}
 	var currentUserId = currentUser['USER_ID'];
 	var currentUserToken;
 	if (currentUser) {
@@ -99,7 +99,7 @@ function login(username,password){
 	var currentUserPassword = currentUser['PASSWORD'];
 	
 	if(userHashedPassword && currentUserPassword && userHashedPassword != currentUserPassword){
-		throw ErrorLib.getErrors().CustomError("",
+		throw ErrorLib.getErrors().LoginError("",
 				"LoginLib/login", "Invalid credentials. Please log in again");	
 	}
 	
@@ -110,18 +110,20 @@ function login(username,password){
 
 		currentUserToken = dbLogin.createUserToken(currentUserId);
 	}else{
-		//update token		
+		dbLogin.updateToken(currentUserId, currentUserToken);	
 	}
 	
 	var username = currentUser['USER_NAME'] !== "undefined" ? currentUser['USER_NAME'] : "";
 	var firstName = currentUser['FIRST_NAME'] !== "undefined" ? currentUser['FIRST_NAME'] : "";
 	var lastName = currentUser['LAST_NAME'] !== "undefined" ? currentUser['LAST_NAME'] : "";
+	var email = currentUser['EMAIL'] !== "undefined" ? currentUser['EMAIL'] : "";
 	
 	var rdo =  {
 			"USER_ID" : currentUserId,
 			"USER_NAME" : username,
 			"FIRST_NAME" : firstName,
 			"LAST_NAME" : lastName,
+			"EMAIL": email,
 			"TOKEN" : encodeURIComponent(currentUserToken)
 		};
 	

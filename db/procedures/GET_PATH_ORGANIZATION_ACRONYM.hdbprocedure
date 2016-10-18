@@ -1,0 +1,32 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_PATH_ORGANIZATION_ACRONYM" (
+	IN in_lh BIGINT,  		-- CURRENT LEVEL
+	IN in_parent_id BIGINT, -- PARENT LEVEL ID OF HL
+    OUT out_result TABLE (org_acronym_path NVARCHAR(255))) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 	DECLARE org_acronym NVARCHAR(255);
+	DECLARE org_acronym_path NVARCHAR(255) DEFAULT '';
+	
+	IF in_lh = 3 THEN
+		-- Special case for Global team
+		SELECT TOP 1
+		REPLACE(HL2.organization_acronym, 'N/A', '') 
+		INTO org_acronym
+		FROM HL2
+		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+		WHERE 
+		HL2.HL2_ID = in_parent_id;
+			
+		IF(LENGTH(org_acronym) > 1) THEN
+			out_result = SELECT org_acronym AS org_acronym_path FROM DUMMY;
+		END IF;
+	
+	END IF;			
+ 
+END;

@@ -1,0 +1,78 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BUDGET_FILTER" ( 
+IN in_region_ids nvarchar(5000)
+, IN in_subregion_ids nvarchar(5000)
+, IN in_globalTeam_ids nvarchar(5000)
+, OUT out_hl4_ids TABLE(hl4_id BIGINT))
+LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	--READS SQL DATA 
+	AS
+BEGIN
+
+	CREATE LOCAL TEMPORARY TABLE "#HL4_ID_TABLE_REGION" (HL4_ID BIGINT);
+	CREATE LOCAL TEMPORARY TABLE "#HL4_ID_TABLE_SUBREGION" (HL4_ID BIGINT);
+	CREATE LOCAL TEMPORARY TABLE "#HL4_ID_TABLE_GLOBALTEAM" (HL4_ID BIGINT);
+	
+	IF length(in_region_ids) > 0
+	THEN
+		INSERT INTO "#HL4_ID_TABLE_REGION" 
+		SELECT distinct(HL4BR.hl4_id) AS HL4_ID
+		FROM HL4_BUDGET_REGION HL4BR 
+		INNER JOIN REGION R ON HL4BR.region_id = R.region_id
+		INNER JOIN "PLANNING_TOOL"."xsplanningtool.db.functions::UDF_GET_LIST"(:in_region_ids) T ON T.NRO = R.region_id
+		where HL4BR.deleted = 0 and HL4BR.enabled = 1;
+	else
+		INSERT INTO "#HL4_ID_TABLE_REGION"
+		SELECT distinct(HL4BR.hl4_id) AS HL4_ID
+		FROM HL4_BUDGET_REGION HL4BR 
+		INNER JOIN REGION R ON HL4BR.region_id = R.region_id
+		where HL4BR.deleted = 0 and HL4BR.enabled = 1;
+	end if;
+	
+	IF length(in_subregion_ids) > 0
+	THEN
+		INSERT INTO "#HL4_ID_TABLE_SUBREGION" 
+		SELECT distinct(HL4BSR.hl4_id) AS HL4_ID
+		FROM HL4_BUDGET_SUBREGION HL4BSR 
+		INNER JOIN SUBREGION SR ON HL4BSR.subregion_id = SR.region_id
+		INNER JOIN "PLANNING_TOOL"."xsplanningtool.db.functions::UDF_GET_LIST"(:in_subregion_ids) T ON T.NRO = SR.subregion_id
+		where HL4BSR.deleted = 0 and HL4BSR.enabled = 1;
+	else
+		INSERT INTO "#HL4_ID_TABLE_SUBREGION" 
+		SELECT distinct(HL4BSR.hl4_id) AS HL4_ID
+		FROM HL4_BUDGET_SUBREGION HL4BSR 
+		INNER JOIN SUBREGION SR ON HL4BSR.subregion_id = SR.region_id
+		where HL4BSR.deleted = 0 and HL4BSR.enabled = 1;
+	end if;
+	
+	
+	IF length(in_subregion_ids) > 0
+	THEN
+		INSERT INTO "#HL4_ID_TABLE_GLOBALTEAM" 
+		SELECT 
+		distinct(HL4BRO.hl4_id) AS HL4_ID
+		from HL4_BUDGET_ROUTE HL4BRO 
+		INNER JOIN HL3 ON HL4BRO.route_id = HL3.hl3_id
+		INNER JOIN "PLANNING_TOOL"."xsplanningtool.db.functions::UDF_GET_LIST"(:in_globalTeam_ids) T ON T.NRO = HL3.HL3_ID
+		where HL4BRO.deleted = 0 and HL4BRO.enabled = 1;
+	else
+		INSERT INTO "#HL4_ID_TABLE_GLOBALTEAM" 
+		SELECT 
+		distinct(HL4BRO.hl4_id) AS HL4_ID
+		from HL4_BUDGET_ROUTE HL4BRO 
+		INNER JOIN HL3 ON HL4BRO.route_id = HL3.hl3_id
+		where HL4BRO.deleted = 0 and HL4BRO.enabled = 1;
+	end if;
+		
+	out_hl4_ids = 
+	SELECT HL4_ID FROM "#HL4_ID_TABLE_REGION"
+	UNION
+	SELECT HL4_ID FROM "#HL4_ID_TABLE_SUBREGION"
+	UNION
+	SELECT HL4_ID FROM "#HL4_ID_TABLE_GLOBALTEAM";
+	
+	DROP TABLE "#HL4_ID_TABLE_REGION"; 
+	DROP TABLE "#HL4_ID_TABLE_SUBREGION"; 
+	DROP TABLE "#HL4_ID_TABLE_GLOBALTEAM"; 
+END;

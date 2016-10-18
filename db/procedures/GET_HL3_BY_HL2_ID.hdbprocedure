@@ -1,0 +1,80 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_BY_HL2_ID" (
+	IN in_hl2_id BIGINT,
+	OUT out_result TABLE(
+		hl3_id BIGINT,
+		hl3_crm_description NVARCHAR(100),
+		hl3_acronym NVARCHAR(25),
+		hl3_crm NVARCHAR(25),
+		in_budget TINYINT,
+		--read_only TINYINT,
+		hl3_status_detail_id BIGINT,
+		hl3_status_detail NVARCHAR(100),
+		created_by NVARCHAR(100),
+		--owner_email NVARCHAR(100),
+		--is_send_mail BIGINT,
+		hl3_budget_total DECIMAL(19,5),
+		quantity_hl3 INT,
+		quantity_hl4_in_budget INT,
+		quantity_hl4_out_budget INT,
+		hl4_total_in_budget DECIMAL(19,5),
+		hl4_total_out_budget DECIMAL(19,5)
+	)
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	-- Grab all the HL3s and their main data
+	va_hl3_result_data = 
+	SELECT HL3.hl3_id
+		  ,CRM.description AS hl3_crm_description
+		  ,HL3.acronym AS hl3_acronym
+		  ,CONCAT(CONCAT(CONCAT(HL2.acronym, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.acronym) AS hl3_crm
+		  ,HL3_FNC.in_budget
+		  --,HL3.read_only
+		  ,HL3.hl3_status_detail_id
+		  ,HL3SD.detail AS hl3_status_detail
+		  ,CONCAT(CONCAT("USER".FIRST_NAME, ' '), "USER".LAST_NAME) AS created_by
+		  --,"USER".email AS owner_email
+		  --,HL3.is_send_mail AS is_send_mail
+		  ,HL3_FNC.hl3_fnc_budget_total AS hl3_budget_total
+	FROM HL3
+	INNER JOIN HL3_FNC ON HL3_FNC.hl3_id = HL3.hl3_id
+	INNER JOIN CRM ON HL3.crm_id = CRM.crm_id
+	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
+	INNER JOIN BUDGET_YEAR BGY ON HL2.budget_year_id = BGY.budget_year_id
+	INNER JOIN HL3_STATUS_DETAIL HL3SD ON HL3.hl3_status_detail_id = HL3SD.hl3_status_detail_id
+	INNER JOIN "USER" ON "USER".user_id = HL3.created_user_id
+	WHERE HL2.deleted = 0
+	  AND HL2.enabled = 1
+	  AND HL2.hl2_id = in_hl2_id;
+	  
+	-- Grab all the HL3 aggregation data
+	out_result =
+	SELECT HL3RD.hl3_id
+		  ,HL3RD.hl3_crm_description
+		  ,HL3RD.hl3_acronym
+		  ,HL3RD.hl3_crm
+		  ,HL3RD.in_budget
+		  --,HL3RD.read_only
+		  ,HL3RD.hl3_status_detail_id
+		  ,HL3RD.hl3_status_detail
+		  ,HL3RD.created_by
+		  --,HL3RD.owner_email
+		  --,HL3RD.is_send_mail
+		  ,HL3RD.hl3_budget_total
+		  ,COUNT(DISTINCT HL4.hl4_id) AS quantity_hl3
+          ,SUM(CASE WHEN HL4_FNC.in_budget IS NULL THEN 0 WHEN HL4_FNC.in_budget = 1 THEN 1 ELSE 0 END) quantity_hl4_in_budget
+          ,SUM(CASE WHEN HL4_FNC.in_budget IS NULL THEN 0 WHEN HL4_FNC.in_budget = 0 THEN 1 ELSE 0 END) quantity_hl4_out_budget
+          ,SUM(IFNULL(CASE WHEN HL4_FNC.IN_BUDGET = 1 THEN (HL4_FNC.hl4_fnc_budget_total_mkt) ELSE 0 END,0)) AS hl4_total_in_budget -- HL5_TOTAL_IN_BUDGET
+          ,SUM(IFNULL(CASE WHEN HL4_FNC.IN_BUDGET = 0 THEN (HL4_FNC.hl4_fnc_budget_total_mkt) ELSE 0 END,0)) AS hl4_total_out_budget -- HL5_TOTAL_OUT_BUDGET
+	FROM :va_hl3_result_data HL3RD
+	LEFT JOIN HL4 ON HL4.hl3_id = HL3RD.hl3_id
+	LEFT JOIN HL4_FNC ON HL4_FNC.hl4_id = HL4.hl4_id
+	WHERE HL4.deleted = 0
+	  AND HL4.enabled = 1
+	GROUP BY HL3RD.hl3_id, HL3RD.hl3_crm_description, HL3RD.hl3_acronym, HL3RD.hl3_crm, HL3RD.in_budget, HL3RD.hl3_status_detail_id, HL3RD.hl3_status_detail
+		  ,HL3RD.created_by, HL3RD.hl3_budget_total;
+
+END;

@@ -1,0 +1,28 @@
+FUNCTION "PLANNING_TOOL"."xsplanningtool.db.functions::UDF_GET_LIST" (
+	in_id_list NVARCHAR(5000))
+	RETURNS TABLE (nro bigint)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+	--This function return, an table 1 * n dimension, where n is the number of id´s inside the string 'in_id_list' with separated semicolon
+	-- ex: UDF_GET_LIST('34, 1, 5, 6') -> [34
+									 --   , 1
+									 --   , 5
+									 --   , 6]
+  declare _items bigint ARRAY;
+  declare _text NVARCHAR(5000);
+  declare _index integer;
+  _text := :in_id_list;
+  _index := 1;
+
+  WHILE LOCATE(:_text,',') > 0 DO
+  _items[:_index] := SUBSTR_BEFORE(:_text,',');
+  _text := SUBSTR_AFTER(:_text,',');
+  _index := :_index + 1;
+  END WHILE;
+  _items[:_index] := TO_BIGINT(:_text);
+
+  rst = UNNEST(:_items) AS ("NRO");
+  RETURN SELECT * FROM :rst;
+  
+END;

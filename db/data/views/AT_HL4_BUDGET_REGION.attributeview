@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL4_BUDGET_REGION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4_BUDGET_REGION"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="HL4_BUDGET_REGION_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_BUDGET_REGION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION" columnName="HL4_BUDGET_REGION_ID"/>
+    </attribute>
+    <attribute id="HL4_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="REGION_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REGION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION" columnName="REGION_ID"/>
+    </attribute>
+    <attribute id="PERCENTAGE" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PERCENTAGE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION" columnName="PERCENTAGE"/>
+    </attribute>
+    <attribute id="ENABLED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION" columnName="DELETED"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL4_BUDGET_REGION"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL4_BUDGET_REGION" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

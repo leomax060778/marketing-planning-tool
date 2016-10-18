@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CRM_NEW" ( 
+ IN in_path NVARCHAR(25),
+ OUT out_result TABLE (crm_id BIGINT, crm_path NVARCHAR(25), crm_description NVARCHAR (127))
+) 
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER 
+ DEFAULT SCHEMA "PLANNING_TOOL"
+ READS SQL DATA AS
+BEGIN
+
+ out_result =
+ 
+ SELECT crm_id, crm_long_hl3_id as crm_path, description as crm_description
+ FROM CRM
+ WHERE crm_long_hl3_id = in_path
+   AND deleted = 0
+   AND enabled = 1;
+
+END;

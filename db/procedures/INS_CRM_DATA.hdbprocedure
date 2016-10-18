@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CRM_DATA" (
+	IN in_path NVARCHAR(25),
+	IN in_description NVARCHAR(127),
+	IN in_user_id BIGINT,
+	OUT out_crm_id BIGINT
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	INSERT INTO CRM(crm_long_hl3_id, description, created_user_id, created_date_tz)
+	VALUES (in_path, in_description, in_user_id, CURRENT_TIMESTAMP);	
+	--Id of the inserted row
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_crm_id FROM "PLANNING_TOOL"."CRM";
+END;
+
+	
