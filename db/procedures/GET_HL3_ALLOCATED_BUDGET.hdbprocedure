@@ -1,5 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_ALLOCATED_BUDGET" (
 	IN in_hl3_id BIGINT,
+	IN in_hl4_id BIGINT,
 	OUT out_hl3_allocated_budget DECIMAL(19,5)
 ) 
 	LANGUAGE SQLSCRIPT
@@ -17,6 +18,7 @@ BEGIN
 	INNER JOIN HL4 ON HL4_FNC.hl4_id = HL4.hl4_id
 	INNER JOIN HL3 ON HL3.hl3_id = HL4.hl3_id
 	WHERE HL3.hl3_id = in_hl3_id
+	  AND HL4.hl4_id != in_hl4_id
 	  AND HL4.deleted = 0
 	  AND HL4.enabled = 1
 	  AND HL4_FNC.in_budget = 1;

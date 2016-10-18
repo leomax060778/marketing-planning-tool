@@ -7,6 +7,7 @@ var ErrorLib = mapper.getErrors();
 
 var spGetAll = "GET_ALL_USER";
 var spGetUserById = "GET_USER_BY_ID";
+var spGetUserByUserName = "GET_USER_BY_USERNAME";
 var spInseruser = "INS_USER";
 var spUpdateUser = "UPD_USER";
 var spDeleteUser = "DEL_USER";
@@ -29,6 +30,18 @@ function getUserById(id) {
 			'in_user_id' : id
 		});
 		return db.extractArray(rdo.USER);
+	}
+	return null;
+}
+
+function getUserByUserName(userName){
+	if (userName != "") {
+		var rdo = db.executeProcedure(spGetUserByUserName, {
+			'in_user_name' : userName
+		});
+		if(rdo['OUT_RESULT']){
+			return rdo['OUT_RESULT'][0];
+		}
 	}
 	return null;
 }

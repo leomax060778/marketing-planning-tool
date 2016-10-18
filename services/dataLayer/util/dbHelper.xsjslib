@@ -12,11 +12,14 @@ var HDB_CONNECTION = null;
 /************************ METHODS ***********************************/
 
 function extractArray(list){
-	 var spResult = [];
-	 Object.keys(list).forEach(function(key) {
-	  spResult.push(list[key]);
-	 });
-	 return spResult;
+	var spResult = [];
+	if(list){		
+		 Object.keys(list).forEach(function(key) {
+		  spResult.push(list[key]);
+		 });		 
+	}
+	
+	return spResult;
 }
 
 /*
@@ -36,7 +39,7 @@ function executeProcedure(spName, parameters){
 	}
 	catch(e){
 		HDB_CONNECTION.rollback();		
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",e.toString(),"dbHelper.executeProcedure");
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedure");
 	}
 	finally{
 		if (!HDB_CONNECTION.isClosed())

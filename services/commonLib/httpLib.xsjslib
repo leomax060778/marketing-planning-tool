@@ -55,14 +55,19 @@ function notImplementedMethod(){
 }
 
 //This function choose method, between Get, Put, Post or Delete. Catch all error throwed across the entired app and validate the user per XS call.
-function processRequest(getMethod, postMethod, putMethod, deleteMethod) {
+function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalidate) {
 	try {
 		
 		/**********here  - Validate User() -----***/
 		var userSessionID = null;
-		userSessionID = validateUser(getHeaderByName("x-csrf-token"));
-		if(!userSessionID)
-			throw ErrorLib.getErrors().Unauthorized(getHeaderByName("x-csrf-token"));
+		
+		if(!Notvalidate){
+			userSessionID = validateUser(getHeaderByName("x-csrf-token"));
+//			throw ErrorLib.getErrors().CustomError("","error","hola");
+			//userSessionID = 1;
+			if(!userSessionID)
+				throw ErrorLib.getErrors().Unauthorized(getHeaderByName("x-csrf-token"));
+		}		
 		/**************************************************/
 		
 		var reqBody = $.request.body ? JSON.parse($.request.body.asString()) : undefined;

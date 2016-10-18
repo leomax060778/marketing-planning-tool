@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_USER" (
 OUT USER TABLE(USER_ID bigint, USER_NAME nvarchar(255), FIRST_NAME nvarchar(255), LAST_NAME nvarchar(255)
-, EMAIL nvarchar(255), PHONE nvarchar(255), ROLE_ID BIGINT)) 
+, EMAIL nvarchar(255), PHONE nvarchar(255), ROLE_ID BIGINT, ROLE_NAME nvarchar(255))) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
@@ -9,9 +9,10 @@ BEGIN
 /***************************** 
 	Write your procedure logic 
  *****************************/
- USER = SELECT USER.USER_ID, USER.USER_NAME, USER.FIRST_NAME, USER.LAST_NAME, USER.EMAIL, USER.PHONE, USER_ROLE.ROLE_ID
- 
- 		FROM "USER" 
+ USER = SELECT USER.USER_ID, USER.USER_NAME, USER.FIRST_NAME, USER.LAST_NAME, USER.EMAIL, USER.PHONE, USER_ROLE.ROLE_ID, role.NAME as ROLE_NAME
+  		FROM "USER" 
+  		INNER JOIN USER_ROLE userRole ON userRole.user_id = USER.USER_ID
+		INNER JOIN ROLE role ON role.role_id = userRole.role_id
  		LEFT JOIN USER_ROLE ON "USER".USER_ID = USER_ROLE.USER_ID 
  		WHERE "USER".ENABLED = 1 AND 
  		"USER".deleted <> 1 

@@ -55,6 +55,18 @@
       <descriptions defaultDescription="COMMENTS"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="COMMENTS"/>
     </attribute>
+    <attribute id="CREATED_USER_ID" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CREATED_USER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="CREATED_USER_ID"/>
+    </attribute>
+    <attribute id="DELETED" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="DELETED"/>
+    </attribute>
+    <attribute id="ENABLED" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="ENABLED"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

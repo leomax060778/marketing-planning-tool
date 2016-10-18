@@ -13,7 +13,8 @@ BEGIN
 /***************************** 
 	Write your procedure logic 
  *****************************/
- 	
+ 	DECLARE va_response BIGINT;
+	
 		INSERT INTO "PLANNING_TOOL"."USER_SESSION_TOKEN"(user_id, token, token_created_date_tz, token_valid_until_date_tz, token_duration, created_user_id) 
 		VALUES(in_user_id, in_token, CURRENT_TIMESTAMP, ADD_SECONDS(CURRENT_TIMESTAMP, in_token_duration), in_token_duration, in_created_user_id);
 	

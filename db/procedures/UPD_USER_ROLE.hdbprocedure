@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_USER_ROLE" (
 	IN in_user_id bigint,
 	IN in_role_id bigint,
 	IN in_modified_user_id bigint,
-	OUT out_result bigint
+	OUT out_result integer
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
@@ -15,12 +15,13 @@ BEGIN
  *****************************/
 
     UPDATE user_role
-    SET user_role.user_id = in_user_id, 
+    SET user_role.user_role_id = in_user_role_id,
+	user_role.user_id = in_user_id, 
 	user_role.role_id = in_role_id, 
     user_role.modified_date_tz = CURRENT_TIMESTAMP,
     user_role.modified_user_id = in_modified_user_id
     FROM "USER_ROLE" user_role
-    WHERE user_role.user_role_id = in_user_role_id;
+    WHERE user_role.user_id = in_user_role_id;
 
     SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
         

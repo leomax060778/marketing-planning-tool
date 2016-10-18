@@ -92,7 +92,9 @@ function getHl4ById(id){
 		var myBudget = getHl4MyBudgetByHl4Id(id);//dataHl4.getHl4MyBudgetByHl4Id(id);
 		var sale = getHl4SalesByHl4Id(id);//dataHl4.getHl4SalesByHl4Id(id);
 		
-		hl4_fnc.totalBudget = Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) + Number(partner.total) + Number(myBudget.total) + Number(sale.total);
+		var currencyValue = dataEuroConversion.getEuroConversionValueById(hl4_fnc.EURO_CONVERSION_ID);
+		hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT = (Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) * Number(currencyValue)).toFixed(2);		
+		hl4_fnc.totalBudget = Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) + Number(partner.total) + Number(sale.total);
 		var hl4 = {
 			"hl4": parseObject(dataHl4.getHl4ById(id)),
 			"interlock": interlockLib.getInterlockByHl4Id(id),
@@ -117,6 +119,26 @@ function getUserById(id){
 		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","userServices/handleGet/getUserById",id);	
 	return dbUser.getUserById(id);
 	
+}
+
+function getLevel4ForSearch(){
+	var result = dataHl4.getLevel4ForSearch();
+	var resultRefactor = [];
+	result.forEach(function(object){
+		var aux = {};
+		
+		aux.ID = object.ID;
+		aux.PARENT_ID = object.PARENT_ID;
+		aux.BUDGET_YEAR = Number(ctypes.Int64(object.BUDGET_YEAR));
+		aux.ACRONYM = object.ACRONYM;
+		aux.ORGANIZATION_ACRONYM = object.ORGANIZATION_ACRONYM;
+		aux.REGION_NAME = object.REGION_NAME;
+		aux.SUBREGION_NAME = object.SUBREGION_NAME;
+		aux.PATH = "CRM-" + object.PATH;
+		
+		resultRefactor.push(aux);
+	});
+	return resultRefactor;
 }
 
 function insertHl4(data, userId){
@@ -154,12 +176,17 @@ function insertHl4(data, userId){
 			
 			if(hl4_id > 0){
 				data.hl4.in_hl4_id = hl4_id;
-				insertHl4CRMBinding(data);
+				insertHl4CRMBinding(data, 'insert');
 				setHl4Status(hl4_id, data.hl4.in_hl4_status_detail_id, userId);
 				var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
 				data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
 				data.hl4_fnc.in_hl4_id = hl4_id;
 				data.hl4_fnc.in_created_user_id = userId;
+				
+				data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1);
+				data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2);
+				data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3);
+				data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4);
 				
 				data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
 				data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
@@ -173,7 +200,7 @@ function insertHl4(data, userId){
 					var outcome = {};
 					outcome.in_created_user_id = userId;
 					outcome.in_hl4_id = hl4_id;
-					outcome.in_comments = data.hl4_expected_outcomes.in_comments;
+					outcome.in_comments = data.hl4_expected_outcomes.in_comments || "";
 					var hl4_expected_outcomes_id = dataExOut.insertHl4ExpectedOutcomes(outcome);
 					hl4_expected_outcomes = (hl4_expected_outcomes_id > 0);
 					if(hl4_expected_outcomes){
@@ -425,7 +452,7 @@ function updateHl4(data, userId){
 	        hl4.in_read_only = data.hl4.in_read_only;
 	        hl4.in_user_id = userId;
 	        hl4_id = data.hl4.in_hl4_id;
-	        insertHl4CRMBinding(data);
+	        insertHl4CRMBinding(data, 'update');
 	        var deleteParameters = {"in_hl4_id": hl4_id, "in_user_id": userId}; 
 	        var hl4RowsUpdated = dataHl4.updateHl4(hl4);
 	        if(hl4RowsUpdated > 0){
@@ -434,6 +461,11 @@ function updateHl4(data, userId){
 	            data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
 	            data.hl4_fnc.in_hl4_id = hl4_id;
 	            data.hl4_fnc.in_user_id = userId;
+	            
+	            data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1);
+	            data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2);
+	            data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3);
+	            data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4);
 
 	            data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
 	            data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
@@ -450,7 +482,7 @@ function updateHl4(data, userId){
 		            var outcome = {};
 		            outcome.in_created_user_id = userId;
 		            outcome.in_hl4_id = hl4_id;
-		            outcome.in_comments = data.hl4_expected_outcomes.in_comments;
+		            outcome.in_comments = data.hl4_expected_outcomes.in_comments || "";
 		            var hl4_expected_outcomes_id = dataExOut.insertHl4ExpectedOutcomes(outcome);
 		            hl4_expected_outcomes = (hl4_expected_outcomes_id > 0);
 		            if(hl4_expected_outcomes){
@@ -750,8 +782,8 @@ function validateHl4(data){
 	if(!data.hl4.in_hl4_id && hl4)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The Hl4 Acronym is duplicated");
 	
-	if(!data.hl4.in_acronym.length === 4)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The Hl4 Acronym length must be 4 leters");
+	if(data.hl4.in_acronym.length !== 3)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The Hl4 Acronym length must be 3 leters");
 	
 	if(!data.hl4.in_hl4_crm_description)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The Hl4 CRM description is not found");
@@ -888,7 +920,9 @@ function validateHl4(data){
 	var totalPercentage = 0;
 	
 	var categoryOptionComplete = false;
-	data.hl4_category.forEach(function(hl4Category){
+	for(var i =0; i <data.hl4_category.length;i++){
+		var hl4Category = data.hl4_category[i];
+	//data.hl4_category.forEach(function(hl4Category){
 		var percentagePerOption = 0;
 		if(!hl4Category.in_category_id || !Number(hl4Category.in_category_id))
 			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Category ID is invalid");
@@ -909,16 +943,16 @@ function validateHl4(data){
 			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Category total percentage should be less than or equal to 100%");
 		} else if (percentagePerOption < 100){
 			categoryOptionComplete = false;
-			return false;
+			break;
 		} else {
 			categoryOptionComplete = true;
 		}
-	});
+	};//);
 
 	var status = null;
 	if(data.hl4.in_hl4_id){
 		var hl4StatusId = dataHl4.getHl4StatusByHl4Id(data.hl4.in_hl4_id).HL4_STATUS_DETAIL_ID;
-		status = !categoryOptionComplete || !myBudgetComplete ? HL4_STATUS.IN_PROGRESS : hl4StatusId == HL4_STATUS.IN_CRM || hl4StatusId == HL4_STATUS.UPDATE_IN_CRM ? HL4_STATUS.UPDATE_IN_CRM : HL4_STATUS.LOAD_DATA_ENTRY;
+		status = !categoryOptionComplete || !myBudgetComplete ? HL4_STATUS.IN_PROGRESS : dataHl4.existsInCrm(data.hl4.in_hl4_id) ? HL4_STATUS.UPDATE_IN_CRM : HL4_STATUS.LOAD_DATA_ENTRY;
 	} else {
 		status = categoryOptionComplete && myBudgetComplete ? HL4_STATUS.LOAD_DATA_ENTRY : HL4_STATUS.IN_PROGRESS;
 	}
@@ -959,15 +993,14 @@ function checkBudgetStatus(objHl3, hl4_id, new_hl4_budget) {
 		objHl.IN_HL3_ID = Number(objHl3) ? objHl3 : objHl3.IN_HL3_ID;
 		objHl.IN_HL4_ID = hl4_id;
 		var hl3 =  dataHl3.getLevel3ById(objHl);
-		var hl3AllocatedBudget = dataHl3.getHl3AllocatedBudget(objHl.IN_HL3_ID);
-		return (hl3.HL3_FNC_BUDGET_TOTAL - hl3AllocatedBudget - new_hl4_budget) > 0 ? 1 : 0;
+		var hl3AllocatedBudget = dataHl3.getHl3AllocatedBudget(objHl.IN_HL3_ID, hl4_id);
+		return (Number(hl3.HL3_FNC_BUDGET_TOTAL) - Number(hl3AllocatedBudget) - Number(new_hl4_budget)) >= 0 ? 1 : 0;
 	} else {
 		var result = {};
 		result.out_result = 0;
 		//lists of hl4 changed to send email to client
 		result.emailListInBudget = [];
 		result.emailListOutBudget = [];
-		
 		//var parameters = {};
 		//parameters.in_hl3_id = objHl3.IN_HL3_ID;
 		var resultHl4 = dataHl4.getHl4(objHl3.IN_HL3_ID);// GET_HL4_BY_HL3_ID
@@ -987,9 +1020,9 @@ function checkBudgetStatus(objHl3, hl4_id, new_hl4_budget) {
 					dataHl4.updateHl4BudgetStatus(resultHl4.out_result[i].HL4_ID, 1);
 					total = total + parseFloat(resultHl4.out_result[i].HL4_BUDGET);
 					//is completed
-					if(resultHl4.out_result[i].STATUS_ID === 3){
+					/*if(resultHl4.out_result[i].STATUS_ID === 3){
 						dataHl4.changeStatusHl4(resultHl4.out_result[i].HL4_ID, 4, userId);
-					}
+					}*/
 					//store hl4id and users to be send email when register change to in budget
 					result.emailListInBudget.push(resultHl4.out_result[i]);
 				}
@@ -1142,7 +1175,7 @@ function insertHl4CRMBinding(hl4, action) {
 		"HL4_FNC_BUDGET_TOTAL_MKT": "Budget"
 	}
 	
-	if(hl4.hl4.in_hl4_status_detail_id == HL4_STATUS.LOAD_DATA_ENTRY){
+	if(action == 'insert'){
 		level4DER.deleteL4ChangedFieldsByHl4Id(hl4.hl4.in_hl4_id)
 		Object.keys(crmBindingFields).forEach(function(object){
 			crmBindingFields[object].forEach(function(field){
@@ -1153,28 +1186,38 @@ function insertHl4CRMBinding(hl4, action) {
 					"in_user_id": hl4.hl4.in_created_user_id,
 					"in_display_name": deReportDisplayName[field]
 				};
-				dataHl4.insertHl4CRMBinding(parameters)
+				dataHl4.insertHl4CRMBinding(parameters);
 			});
 		});
-	} else if (hl4.hl4.in_hl4_status_detail_id == HL4_STATUS.UPDATE_IN_CRM) {
-		var hl4CrmBinding = dataL4DER.getL4ChangedFieldsByHl4Id(hl4.hl4.in_hl4_id);
+	} else if (action == 'update') {
+		//var hl4CrmBinding = dataL4DER.getL4ChangedFieldsByHl4Id(hl4.hl4.in_hl4_id);
 		var oldHl4 = getHl4ById(hl4.hl4.in_hl4_id);
 		Object.keys(crmBindingFields).forEach(function(object){
 			crmBindingFields[object].forEach(function(field){
-				if(oldHl4[object]["in_" + field.toLowerCase()] != hl4[object]["in_" + field.toLowerCase()]){
-					var parameters = {
+				var parameters = {
 						"in_hl4_id": hl4.hl4.in_hl4_id,
 						"in_column_name": field,
 						"in_changed": 1,
 						"in_user_id": hl4.hl4.in_user_id,
 						"in_display_name": deReportDisplayName[field]
 					};
+				if(hl4.hl4.in_hl4_status_detail_id == HL4_STATUS.LOAD_DATA_ENTRY){
 					var in_hl4_crm_binding_id = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, field)[0] ? dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, field)[0].ID : null;
 					if(in_hl4_crm_binding_id){
 						parameters.in_hl4_crm_binding_id = in_hl4_crm_binding_id;
 						dataHl4.updateHl4CRMBinding(parameters);
 					} else {
 						dataHl4.insertHl4CRMBinding(parameters);
+					}				
+				} else if (hl4.hl4.in_hl4_status_detail_id == HL4_STATUS.UPDATE_IN_CRM){
+					if(oldHl4[object]["in_" + field.toLowerCase()] != hl4[object]["in_" + field.toLowerCase()]){
+						var in_hl4_crm_binding_id = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, field)[0] ? dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, field)[0].ID : null;
+						if(in_hl4_crm_binding_id){
+							parameters.in_hl4_crm_binding_id = in_hl4_crm_binding_id;
+							dataHl4.updateHl4CRMBinding(parameters);
+						} else {
+							dataHl4.insertHl4CRMBinding(parameters);
+						}
 					}
 				}
 			});

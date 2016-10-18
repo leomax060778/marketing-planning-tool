@@ -5,7 +5,7 @@ var httpUtil = mapper.getHttp();
 var hl4 = mapper.getLevel4();
 var ErrorLib = mapper.getErrors();
 /******************************************/
-
+var section = "FOR_SEARCH";
 var method = "method";
 var id = "id";
 var setStatusInCRM = "SETINCRM";
@@ -33,11 +33,16 @@ function processRequest(){
 function handleGet(params, userId) {
 	var in_hl3_id = httpUtil.getUrlParameters().get("HL3_ID");
 	var in_hl4_id = httpUtil.getUrlParameters().get("HL4_ID");
+	var param_section = httpUtil.getUrlParameters().get("section");
 	var result = {};
 	if(in_hl3_id){
 		result = hl4.getHl4(in_hl3_id);
 	} else if (in_hl4_id) {
 		result = hl4.getHl4ById(in_hl4_id);
+	} else if (param_section && param_section == section){
+		result = hl4.getLevel4ForSearch();
+	} else{
+		throw ErrorLib.getErrors().BadRequest("","level4Services/handleGet","invalid parameter name (can be: HL3_ID, HL4_ID or section)");
 	}
 	
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);

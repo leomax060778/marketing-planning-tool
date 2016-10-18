@@ -15,7 +15,6 @@ BEGIN
 	modified_date_tz = CURRENT_TIMESTAMP,
     modified_user_id = in_user_id
 	WHERE hl3_id = in_hl3_id
-	  AND in_budget = 0
 	  AND deleted = 0
 	  AND enabled = 1; 
 	  

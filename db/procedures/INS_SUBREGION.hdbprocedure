@@ -9,10 +9,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_SUBREGION" (
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-/***************************** 
-	Write your procedure logic 
- *****************************/
- 
+
 	INSERT INTO "PLANNING_TOOL"."SUBREGION"
 		(
 		SUBREGION_NAME,

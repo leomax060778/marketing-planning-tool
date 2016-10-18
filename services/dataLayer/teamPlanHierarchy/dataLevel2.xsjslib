@@ -8,6 +8,7 @@ var GET_HL2_BY_USER_ID = "GET_HL2_BY_USER_ID";
 var GET_ALL_HL2 = "GET_ALL_HL2";
 var GET_HL2_BY_ID = "GET_HL2_BY_ID";
 var GET_HL2_BY_ACRONYM = "GET_HL2_BY_ACRONYM";
+var spGetHl2ForSerach = "GET_HL2_FOR_SEARCH";
 var INS_HL2 = "INS_HL2";
 var UPD_HL2 = "UPD_HL2";
 var COUNT_HL3_BY_HL2_ID = "COUNT_HL3_BY_HL2_ID";
@@ -15,6 +16,7 @@ var DEL_HL2 = "DEL_HL2";
 var GET_HL2_BY_ORGANIZATION_ACRONYM = "GET_HL2_BY_ORGANIZATION_ACRONYM";
 var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
 var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM";
+var spGetHl2AllocatedBudget = "GET_HL2_ALLOCATED_BUDGET";
 
 function getLevel2ByUser(userId){
 	var result = {};
@@ -79,6 +81,20 @@ function getAllLevel2(){
 	
 	var parameters = {};	
 	var result = db.executeProcedureManual(GET_ALL_HL2, parameters);	
+	return db.extractArray(result.out_result);
+}
+
+function getHl2AllocatedBudget(hl2Id, hl3Id) {
+	if(hl2Id){
+		var rdo = db.executeDecimalManual(spGetHl2AllocatedBudget, {'in_hl2_id': hl2Id, 'in_hl3_id': hl3Id}, 'out_hl2_allocated_budget');
+		return rdo;
+	}
+	return null;
+}
+
+function getLevel2ForSearch(){
+	var parameters = {};
+	var result = db.executeProcedure(spGetHl2ForSerach,parameters);	
 	return db.extractArray(result.out_result);
 }
 

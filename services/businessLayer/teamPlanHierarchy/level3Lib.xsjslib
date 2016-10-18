@@ -6,6 +6,7 @@ var blLevel2 = mapper.getLevel2();
 var dlCrm = mapper.getDataCrm();
 var db = mapper.getdbHelper();
 var dataHl4 = mapper.getDataLevel4();
+var dataHl2 = mapper.getDataLevel2();
 var blPath = mapper.getPath();
 var hl4 = mapper.getLevel4();
 var dbUser = mapper.getDataUser();
@@ -27,6 +28,26 @@ function getLevel3ById(hl3Id, userId) {
 	var objHl3 = {};
 	objHl3.IN_HL3_ID = hl3Id;
 	return data.getLevel3ById(objHl3, userId);
+}
+
+function getLevel3ForSearch(){
+	var result = data.getLevel3ForSearch();
+	var resultRefactor = [];
+	result.forEach(function(object){
+		var aux = {};
+		
+		aux.ID = object.ID;
+		aux.PARENT_ID = object.PARENT_ID;
+		aux.BUDGET_YEAR = Number(ctypes.Int64(object.BUDGET_YEAR));
+		aux.ACRONYM = object.ACRONYM;
+		aux.ORGANIZATION_ACRONYM = object.ORGANIZATION_ACRONYM;
+		aux.REGION_NAME = object.REGION_NAME;
+		aux.SUBREGION_NAME = object.SUBREGION_NAME;
+		aux.PATH = "CRM-" + object.PATH;
+		
+		resultRefactor.push(aux);
+	});
+	return resultRefactor;
 }
 
 function getLevel3ByAcronym(objHl3, userId) {
@@ -109,6 +130,8 @@ function createHl3(objHl3, userId) {
 
 			// SET CRM ID
 			objHl3.IN_CRM_ID = crmId;
+			// hardcoded 0 is needed to pass HL3_ID that never exist to checkBudgetStatus function
+			objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, 0, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
 			// CREATE NEW HL3
 			result = data.insertHl3(objHl3, userId);
 			
@@ -137,6 +160,7 @@ function updateHl3(objHl3, userId) {
 		try {
 			//if(canUpdateL3(objHl3))
 				// update HL3 -> result = { 'out_result_hl3': X, 'out_result_hl3_fnc': Y, 'out_crm_id': W, 'out_budget_flag': Z}
+				objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, objHl3.IN_HL3_ID, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
 				result = data.updateLevel3(objHl3, userId);
 			//else
 				//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","Already exists other object with the same ACRONYM");
@@ -418,4 +442,46 @@ function canUpdateL3(objLevel3){
 		return false;
 	else
 		return true;
+}
+
+function checkBudgetStatus(hl2Id, userId, hl3Id, newHl3Budget) {
+	//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4",hl2Id + " --- " + newHl3Budget);
+	if(hl2Id && newHl3Budget){
+		var objHl = {};
+		objHl.IN_HL2_ID = hl2Id;
+		var hl2 = blLevel2.getLevel2ById(objHl);
+		var hl2AllocatedBudget = dataHl2.getHl2AllocatedBudget(hl2Id, hl3Id);
+		return (Number(hl2.HL2_BUDGET_TOTAL) - Number(hl2AllocatedBudget) - Number(newHl3Budget)) >= 0 ? 1 : 0;
+	} else {
+		var result = {};
+		result.hasChanged = 0;
+		result.emailListInBudget = [];
+		result.emailListOutBudget = [];
+		//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4","else cahnge status budget");
+		var resultHl3 = data.getAllLevel3(hl2Id,userId);
+
+		if (resultHl3.out_result.length) {
+			var objHl = {};
+			objHl.IN_HL2_ID = hl2Id;
+			var hl2 = blLevel2.getLevel2ById(objHl);
+			var hl2Budget = Number(hl2.HL2_BUDGET_TOTAL);
+			var total = 0;
+		
+			for (var i = 0; i < resultHl3.out_result.length; i++) {
+				if (hl2Budget < total	+ parseFloat(resultHl3.out_result[i].HL3_BUDGET_TOTAL)) {
+					data.updateHl3BudgetStatus(resultHl3.out_result[i].HL3_ID, userId, 0);
+					result.emailListOutBudget.push(resultHl3.out_result[i]);
+				} else {
+					data.updateHl3BudgetStatus(resultHl3.out_result[i].HL3_ID, userId, 1);
+					total = total + parseFloat(resultHl3.out_result[i].HL3_BUDGET_TOTAL);
+					/*if(resultHl3.out_result[i].STATUS_ID === 3){
+						dataHl4.changeStatusHl4(resultHl4.out_result[i].HL4_ID, 4, userId);
+					}*/
+					result.emailListInBudget.push(resultHl3.out_result[i]);
+				}
+			}
+			result.hasChanged = result.emailListInBudget.length || result.emailListOutBudget.length;
+		}
+		return result;
+	}
 }

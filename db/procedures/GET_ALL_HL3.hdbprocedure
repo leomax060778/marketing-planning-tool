@@ -4,10 +4,12 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL3" (
 	OUT out_result TABLE(hl3_id BIGINT, 
 							 acronym NVARCHAR(25), 
 							 hl3_budget_total DECIMAL(19,2),
+							 hl3_in_budget TINYINT,
 							 hl3_budget_allocated DECIMAL(19,2),
 							 hl3_budget_remaining DECIMAL(19,2),
 							 hl4_total_count BIGINT,
-							 hl4_out_budget_count BIGINT),
+							 hl4_out_budget_count BIGINT,
+							 hl3_description NVARCHAR(255)),
 	OUT out_total_budget	DECIMAL(19,2)					 
 ) 
 	LANGUAGE SQLSCRIPT
@@ -36,13 +38,15 @@ BEGIN
 	out_result = SELECT HL3.hl3_id, 
 		   HL3.acronym,
 		   COALESCE(HL3_FNC.hl3_fnc_budget_total,0) AS hl3_budget_total,
-		   COALESCE(SUM(HL4_FNC.hl4_fnc_budget_total_mkt * EC.currency_value),0) AS hl3_budget_allocated,
+		   HL3_FNC.in_budget as hl3_in_budget,
+		   COALESCE(SUM(HL4_FNC.hl4_fnc_budget_total_mkt),0) AS hl3_budget_allocated,
 		   COALESCE((HL3_FNC.hl3_fnc_budget_total - SUM(HL4_FNC.hl4_fnc_budget_total_mkt)),HL3_FNC.hl3_fnc_budget_total) AS hl3_budget_remaining,
 		   COALESCE(va_hl4.numL4,0) AS hl4_total_count,
 		   SUM(CASE WHEN COALESCE(HL4_FNC.in_budget, -1) = -1 THEN 0 
 		   				ELSE CASE WHEN HL4_FNC.in_budget = 1 THEN 0
 		   				ELSE 1 END
-   				END) AS hl4_out_budget_count
+   				END) AS hl4_out_budget_count,
+   				HL3.hl3_description
 	FROM HL3
 	INNER JOIN HL2_USER HU ON HL3.hl2_id = HU.hl2_id
 	INNER JOIN HL3_FNC ON HL3.hl3_id = HL3_FNC.hl3_id
@@ -54,8 +58,8 @@ BEGIN
 	  AND HU.user_id = in_user_id
 	  AND HL3.deleted = 0
 	  AND HL3.enabled = 1
-	GROUP BY GROUPING SETS ((HL3.hl3_id, HL3.acronym, HL3_FNC.hl3_fnc_budget_total
-	, va_hl4.numL4
+	GROUP BY GROUPING SETS ((HL3.hl3_id, HL3.acronym, HL3_FNC.hl3_fnc_budget_total, HL3_FNC.in_budget
+	, va_hl4.numL4, HL3.hl3_description
 	))
 	ORDER BY HL3.acronym;
 	

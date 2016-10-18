@@ -2,7 +2,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_ROLE" (
 	IN in_role_id bigint,
 	IN in_name nvarchar(255),
 	IN in_user_id bigint,
-	OUT out_result INTEGER
+	OUT out_response_id bigint
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
@@ -17,8 +17,9 @@ BEGIN
         SET role.name = in_name,
             role.modified_date_tz = CURRENT_TIMESTAMP,
             role.modified_user_id = in_user_id
+        FROM "ROLE" role
         WHERE role.role_id = in_role_id;
         
-        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+        out_response_id := in_role_id;
 
 END;

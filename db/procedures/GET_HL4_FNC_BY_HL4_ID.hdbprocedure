@@ -22,7 +22,7 @@ BEGIN
 
 out_result = 
 	SELECT hl4_fnc.hl4_fnc_id,
-	(hl4_fnc.hl4_fnc_budget_total_mkt * EC.currency_value) AS hl4_fnc_budget_total_mkt,
+	hl4_fnc.hl4_fnc_budget_total_mkt AS hl4_fnc_budget_total_mkt,
     hl4_fnc.hl4_fnc_budget_spend_q1,
     hl4_fnc.hl4_fnc_budget_spend_q2,
     hl4_fnc.hl4_fnc_budget_spend_q3,

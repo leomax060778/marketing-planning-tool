@@ -1,6 +1,6 @@
-PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_ID" (
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_ID" (  
 	IN in_category_id BIGINT,
-	OUT out_result TABLE (category_id BIGINT, hierarchy_level_id BIGINT, measure_id BIGINT, name NVARCHAR(60), description NVARCHAR(255)) 
+	OUT out_result TABLE (category_id BIGINT, hierarchy_level_id BIGINT, measure_id BIGINT, name NVARCHAR(60), description NVARCHAR(255))
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -21,7 +21,7 @@ BEGIN
 			   measure_id,
 			   name,
 			   description
-		FROM "PLANNING_TOOL".category
+		FROM category
 		WHERE category_id = in_category_id
 		  AND enabled = 1
 		  AND deleted = 0;

@@ -7,17 +7,15 @@ var CRM_ACRONYM = "CRM";
 
 // Get complete path of specific level and parent id of HL
 function getPathByLevelParent(levelId, parentId) {
-	
+
 	var result = {};
 	var levelPath = "Plan Level 1";
 	var path = dataPath.getPathByLevelParent(levelId, parentId);
-
+	
 	/*
-	 * Determine current plan level
-	 * correspondence between 
-	 * Parameter Level 2 = means Level 1 in SAP 
-	 * Parameter Level 3 = means Level 2
-	 * Parameter Level 4 = means Level 3
+	 * Determine current plan level correspondence between Parameter Level 2 =
+	 * means Level 1 in SAP Parameter Level 3 = means Level 2 Parameter Level 4 =
+	 * means Level 3
 	 * 
 	 */
 	switch (parseInt(levelId)) {
@@ -41,23 +39,34 @@ function getPathByLevelParent(levelId, parentId) {
 	}
 
 	// Build the path to return
-	if (path.length > 0)
+	if (path.length > 0) {
 		result.PATH_TPH = levelPath + ": " + CRM_ACRONYM + "-"
 				+ path[0].PATH_TPH;
-	else
+
+		// Special case for Central Team
+		if (parseInt(levelId) == 3) {
+			var pathOrgAcronym = dataPath.getPathOrganizationAcronym(levelId, parentId);
+			var isCentralTeam = !pathOrgAcronym[0] ? false : true;
+			if (isCentralTeam) {
+				result.PATH_TPH = levelPath + ": " + CRM_ACRONYM + "-"
+						+ path[0].PATH_TPH + "-"
+						+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
+			}
+		}
+	} else
 		result.PATH_TPH = levelPath;
 
 	return result;
 }
 
-//Get complete path of specific level and parent id of HL to CRM
+// Get complete path of specific level and parent id of HL to CRM
 function getPathByLevelParentToCRM(levelId, parentId) {
-    var result = {};
-    var path = dataPath.getPathByLevelParent(levelId, parentId);
-    result.PATH_TPH =  CRM_ACRONYM + path[0].PATH_TPH;
-    if(path.length > 0)
-        result.PATH_TPH =  CRM_ACRONYM + "-" + path[0].PATH_TPH;
-    else
-        result.PATH_TPH =  CRM_ACRONYM;
-    return result;
+	var result = {};
+	var path = dataPath.getPathByLevelParent(levelId, parentId);
+	result.PATH_TPH = CRM_ACRONYM + path[0].PATH_TPH;
+	if (path.length > 0)
+		result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+	else
+		result.PATH_TPH = CRM_ACRONYM;
+	return result;
 }

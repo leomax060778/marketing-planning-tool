@@ -24,18 +24,18 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FILTER" (
 BEGIN
 
 	out_result =
-	SELECT HL3.hl3_id
-		   ,HL3.acronym
-		   ,CRM.crm_id
-		   ,CRM.crm_long_hl3_id
-		   ,HL3.business_owner_id
-		   ,BO.description AS business_owner_description
-		   --HL3.hl3_hierarchy_id,
-		   --HH.hl3_hierarchy_description_1,
-		   --HH.hl3_hierarchy_description_2,
-		   --HH.hl3_hierarchy_description_3,
-		   ,HL3_FNC.hl3_fnc_budget_total
-		   ,HL2.hl2_id
+	SELECT HL3.hl3_id,
+		   HL3.acronym,
+		   CRM.crm_id,
+		   CRM.crm_long_hl3_id,
+		   HL3.business_owner_id,
+		   BO.description AS business_owner_description,
+		   HL3.hl3_hierarchy_id,
+		   HH.hl3_hierarchy_description_1,
+		   HH.hl3_hierarchy_description_2,
+		   HH.hl3_hierarchy_description_3,
+		   HL3_FNC.hl3_fnc_budget_total,
+		   HL2.hl2_id
 	FROM HL3
 	INNER JOIN HL3_FNC ON HL3.hl3_id = HL3_FNC.hl3_id
 	INNER JOIN CRM ON HL3.crm_id = CRM.crm_id

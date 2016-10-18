@@ -25,6 +25,14 @@ function getUserById(id) {
 
 }
 
+function getUserByUserName(userName) {
+	if (!userName)
+		throw ErrorLib.getErrors().BadRequest("The Parameter userName is not found",
+				"userServices/handleGet/getUserByUserName", userName);
+	return dbUser.getUserByUserName(userName);
+}
+
+
 function getUserByHl2Id(hl2Id) {
 	if (!hl2Id)
 		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
@@ -179,6 +187,23 @@ function updateUserPassword(value, modUser) {
 		return dbUser.updatePass(value.USER_ID, userPassHashed.HASH,
 				value.PASSWORD_SALT, modUser);
 	}
+}
+
+function updateUserPasswordHashed(value, modUser) {
+	if (!value)
+		throw ErrorLib.getErrors().CustomError("",
+				"userServices/handlePost/insertUser", "The USER is not found");
+	if (!value.USER_ID)
+		throw ErrorLib.getErrors().CustomError("",
+				"userServices/handlePost/insertUser",
+				"The USER_ID is not found");
+	if (!value.PASSWORD)
+		throw ErrorLib.getErrors().CustomError("",
+				"userServices/handlePost/insertUser",
+				"The PASSWORD is not found");		
+		return dbUser.updatePass(value.USER_ID, value.PASSWORD,
+				value.PASSWORD_SALT, modUser);
+	
 }
 
 function resetPassword(user, modUser) {

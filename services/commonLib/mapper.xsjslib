@@ -135,7 +135,12 @@ function getResource(){
 	$.import("xsplanningtool.services.businessLayer.admin","resourceLib");
     return $.xsplanningtool.services.businessLayer.admin.resourceLib;
 }
-    
+
+function getBudgetReport(){
+	$.import("xsplanningtool.services.businessLayer.reports","budgetLib");
+    return $.xsplanningtool.services.businessLayer.reports.budgetLib;
+}
+
 /************Data Layer Mapper*****************/
 
 function getdbHelper(){
@@ -289,4 +294,7 @@ function getDataResource(){
 	return $.xsplanningtool.services.dataLayer.admin.dataResource;
 }
 
-	 
+function getDataBudgetReports(){
+	$.import("xsplanningtool.services.dataLayer.reports","dataBudget");
+	return $.xsplanningtool.services.dataLayer.reports.dataBudget;
+}

@@ -39,7 +39,7 @@ va_intermidate = SELECT
         ,CONCAT(CONCAT(userTable.FIRST_NAME, ' '),userTable.LAST_NAME) AS CREATED_BY
         ,userTable.EMAIL AS OWNER_EMAIL
         ,hl4.IS_SEND_MAIL AS IS_SEND_MAIL
-        ,(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT * euro_conversions.currency_value) AS HL4_BUDGET
+        ,hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
         ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
         
         FROM HL4 hl4

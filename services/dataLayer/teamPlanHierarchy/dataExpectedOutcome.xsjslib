@@ -8,7 +8,6 @@ var spGetExpOutByHl4Id = "GET_EXPECTED_OUTCOMES_BY_HL4_ID";
 var spGetExpOutDetail = "GET_EXPECTED_OUTCOMES_DETAILS_EO_ID";
 var spGetExpOutcomeById = "GET_EXPECTED_OUTCOME_BY_ID";
 var spGetAllOutcomeType = "GET_ALL_OUTCOMES_TYPE";
-var spGetOutcomesTypeByHlId = "GET_OUTCOMES_TYPE_BY_HL_ID";
 var spGetAllOutcome = "GET_ALL_OUTCOMES";
 var spInsertExpOutcome = "INS_HL4_EXPECTED_OUTCOMES";
 var spInsertExpOutcomeDetail = "INS_HL4_EXPECTED_OUTCOMES_DETAIL";
@@ -49,9 +48,9 @@ function getAllOutcomes(parametrs){
 	return null;
 };
 
-function getOutcomesTypeByHlId(id){
-	if(id){
-		var rdo = db.executeProcedure(spGetOutcomesTypeByHlId,{'in_hl_id': id});
+function getAllOutcomesType(parametrs){
+	if(parametrs.HL_ID != ""){
+		var rdo = db.executeProcedure(spGetAllOutcomeType,parametrs);
 		return db.extractArray(rdo.out_outcomes_type);
 	}	
 	return null;

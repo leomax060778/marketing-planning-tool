@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_USER_ROLE" (
 	IN in_user_role_id BIGINT,
-	OUT out_result bigint) 
+	OUT out_result INTEGER) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"

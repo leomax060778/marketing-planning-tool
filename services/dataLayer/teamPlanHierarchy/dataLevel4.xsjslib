@@ -17,6 +17,7 @@ var spGetHl4StatusByHl4Id = "GET_HL4_STATUS_BY_HL4_ID";
 var spGetHl4CRMBindingByHlId = "GET_HIERARCHY_CRM_BINDING_BY_HL_ID";
 var spGetHl4MyBudgetByHl4Id = "GET_HL4_BUDGET_BY_ID";
 var spGetHl4SalesByHl4Id = "GET_HL4_SALE_BY_ID";
+var spGetHl4ForSerach = "GET_HL4_FOR_SEARCH";
 
 var spInsertHl4 = "INS_HL4";
 var spInsertHl4_fnc = "INS_HL4_FNC";
@@ -166,6 +167,12 @@ function getHl4CRMBinding(hl_id){
 		return db.extractArray(rdo.out_result);
 	}	
 	return null;
+}
+
+function getLevel4ForSearch(){
+	var parameters = {};
+	var result = db.executeProcedure(spGetHl4ForSerach,parameters);	
+	return db.extractArray(result.out_result);
 }
 
 function insertHl4(parameters){
@@ -356,10 +363,11 @@ function deleteHl4CRMBinding(parameters){
 //	return result;
 //}
 
-function existsInCrm(objHl4) {
-	var parameters = {};
-	parameters.in_hl4_id = objHl4.HL4_ID;
-	return db.executeScalarManual(HL4_EXISTS_IN_CRM, parameters, 'out_result');
+function existsInCrm(hl4Id) {
+	if(hl4Id){
+		return db.executeScalarManual(HL4_EXISTS_IN_CRM, {'in_hl4_id': hl4Id}, 'out_result');
+	}
+	return null;
 }
 
 function changeStatusHl4(hl4_id, status, userId){

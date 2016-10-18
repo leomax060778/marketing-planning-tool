@@ -25,10 +25,10 @@ function getAllPlan(){
 
 function insertPlan(planName, createUser) {
 	var param = {};
-	param.in_name = planName;
+	param.in_name = userId;
 	param.in_user_id = createUser; // User that insert.
 	
-	return db.executeScalar(spInsertPlan, param, "out_plan_id");
+	return db.executeScalarManual(spInsertPlan, param, "out_plan_id");
 }
 
 function updatePlan(planId, planName, modUser) {
@@ -37,7 +37,7 @@ function updatePlan(planId, planName, modUser) {
 	param.in_name = planName;
 	param.in_user_id = modUser; // User that updates
 
-	return db.executeScalar(spUpdatePlan, param, "out_result");
+	return db.executeScalarManual(spUpdatePlan, param, "out_result");
 }
 
 function deletePlan(planId, modUser) {
@@ -45,5 +45,5 @@ function deletePlan(planId, modUser) {
 	param.in_plan_id = planId;
 	param.in_modified_user_id = modUser; // User that insert.
 
-	return db.executeScalar(spDeletePlan, param, "out_result");
+	return db.executeScalarManual(spDeletePlan, param, "out_result");
 }

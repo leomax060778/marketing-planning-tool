@@ -117,35 +117,6 @@ function getUserToken(userId) {
 	}
 }
 
-function getPasswordHash(userPassword) {
-	var conn = $.hdb.getConnection();
-
-	try {
-		// Get password hash
-		var spHash256 = conn.loadProcedure('PLANNING_TOOL',
-				'xsplanningtool.db.procedures::GET_HASH_SHA256');
-		var result = spHash256(userPassword);
-		var spResult = result['out_result'];
-		var userPassHashed = [];
-		Object.keys(spResult).forEach(function(key) {
-			userPassHashed.push(spResult[key]);
-		});
-		conn.close();
-
-		if (userPassHashed.length > 0) {
-			var passHashed = userPassHashed[0];
-			return passHashed['HASH'];
-		}
-
-		return null
-
-	} catch (e) {
-		conn.rollback();
-		conn.close();
-		throw new Error($.net.http.INTERNAL_SERVER_ERROR + " " + e.toString());
-	}
-}
-
 function handleResponse(body, code) {
 	$.response.contentType = "application/json";
 	$.response.status = code;
@@ -308,6 +279,69 @@ function updateUserRole(){
 	}
 }
 
+
+/*********************************************** GET CMS PATHE **************************************************/
+
+function getCMSPath(){
+	var conn2 = $.hdb.getConnection();
+	
+	try {
+		// Look for user token
+		var spGetPath = conn2
+				.loadProcedure('PLANNING_TOOL',
+						'xsplanningtool.db.procedures::GET_PATH_ORGANIZATION_ACRONYM');
+
+		var result = spGetPath(4,4);
+		conn2.close();
+
+		var spResult = result['out_result'];
+		var servicePath = [];
+		Object.keys(spResult).forEach(function(key) {
+			servicePath.push(spResult[key]);
+		});
+		
+		var isCentralTeam = !servicePath[0] ? false : true;
+
+		if (isCentralTeam) {
+			var servicePathInfo = servicePath[0];
+			var currentPath = servicePathInfo['ORG_ACRONYM_PATH'];
+			
+			$.response.status = $.net.http.CREATED;
+		
+			handleResponse({
+				"code" : $.net.http.OK,
+				"data" : {
+					"results" : [ {
+						"PATH" : currentPath,
+						"IS CENTRAL TEAM" : isCentralTeam
+					} ]
+				}
+			}, $.net.http.OK);
+		}
+		
+		
+		handleResponse({
+			"code" : $.net.http.OK,
+			"data" : {
+				"results" : [ {
+					"PATH" : servicePath,
+					"IS CENTRAL TEAM" : isCentralTeam
+				} ]
+			}
+		}, $.net.http.OK);
+		
+
+	} catch (e) {
+		conn2.close();
+		handleResponse({
+			"code" : $.net.http.INTERNAL_SERVER_ERROR,
+			"errors" : {
+				"INTERNAL_SERVER_ERROR" : e.toString()
+			}
+		}, $.net.http.INTERNAL_SERVER_ERROR);
+	}
+}
+
 /****************************************************************************************************************/
 function getRequestDetails() {
 	var queryParameterDetails = 'QUERY PARAMETER DETAILS:' +" <br><br>";
@@ -382,6 +416,9 @@ switch (aCmd) {
     	break;
     case "updateUserRole":
     	updateUserRole();
+    	break;
+    case "getpath":
+    	getCMSPath();
     	break;
     default:
     	$.response.status = $.net.http.BAD_REQUEST;

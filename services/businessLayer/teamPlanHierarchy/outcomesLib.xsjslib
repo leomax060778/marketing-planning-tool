@@ -26,13 +26,3 @@ function getAllOutcomes(parametrs, userId){
 function getAllOutcomesType(parametrs, userId){
 	return dataOutcomes.getAllOutcomesType(parametrs);
 }
-
-function getOutcomesTypeByHlId(outcomesTypeId, userId){
-	if(!outcomesTypeId) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","outcomesServices/handleGet/getByHlId",outcomesTypeId);
-	try{
-		return dataOutcomes.getAllOutcomesType(outcomesTypeId);
-	} catch(e) {
-		throw e;
-	}
-};

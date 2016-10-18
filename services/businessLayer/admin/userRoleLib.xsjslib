@@ -8,10 +8,10 @@ var db = mapper.getdbHelper();
 /*************************************************/
 
 function getUserRoleByUserId(userId) {
-	if (!id)
-		throw ErrorLib.getErrors().BadRequest("The parameter ID is not found",
-				"userRoleServices/handleGet/getUserRoleByUserId", id);
-	return dbUserRole.getUserRoleByUserId(id);
+	if (!userId)
+		throw ErrorLib.getErrors().BadRequest("",
+				"userRoleServices/handleGet/getUserRoleByUserId", "The parameter ID is not found");
+	return dbUserRole.getUserRoleByUserId(userId);
 
 }
 

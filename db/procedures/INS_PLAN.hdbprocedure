@@ -11,7 +11,7 @@ BEGIN
 /***************************** 
 	Write your procedure logic 
  *****************************/
- 		INSERT INTO "PLANNING_TOOL"."PLAN"(plan_name, plan_iso, created_user_id)
+ INSERT INTO "PLANNING_TOOL"."PLAN"(plan_name, plan_iso, created_user_id)
 		VALUES(in_name, in_name, in_user_id);
 		
 		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_plan_id FROM "PLANNING_TOOL"."PLAN";

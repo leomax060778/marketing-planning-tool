@@ -5,6 +5,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL3" (
 	IN in_crm_id BIGINT,
 	IN in_business_owner_id BIGINT,
 	IN in_hl3_fnc_budget_total DECIMAL(19,2),
+	IN in_in_budget TINYINT,
 	IN in_user_id BIGINT,
 	OUT out_hl3_id BIGINT
 ) 
@@ -39,8 +40,8 @@ BEGIN
 	IF va_exists_inserted_hl3 > 0
 	THEN
 		
-		INSERT INTO HL3_FNC(hl3_id, hl3_fnc_budget_total, created_user_id)
-		VALUES(va_hl3_id, in_hl3_fnc_budget_total, in_user_id);
+		INSERT INTO HL3_FNC(hl3_id, hl3_fnc_budget_total, in_budget, created_user_id)
+		VALUES(va_hl3_id, in_hl3_fnc_budget_total, in_in_budget, in_user_id);
 		
 		-- We insert the initial status in the status table
 		INSERT INTO HL3_STATUS_HISTORY(hl3_id, hl3_status_detail_id)

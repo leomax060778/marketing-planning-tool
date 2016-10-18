@@ -2,6 +2,7 @@ $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataHl2 = mapper.getDataLevel2();
 var dataHl2User = mapper.getDataLevel2User();
+var hl3 = mapper.getLevel3();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
 var db = mapper.getdbHelper();
@@ -66,7 +67,7 @@ function insertHl2(objLevel2, userId){
 			}
 		}
 		else
-			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","The object HL2 already exists");	
+			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","Another L1 with the same acronym already exists");	
 	}	
 }
 
@@ -75,7 +76,9 @@ function updateHl2(objLevel2, userId){
 		if(validateUpdateHl2(objLevel2)){
 			
 			var updated = 0;
-		
+			var objHl2 = {};
+			objHl2.IN_HL2_ID = objLevel2.IN_HL2_ID;
+			var budgetChanged = dataHl2.getLevel2ById(objHl2).HL2_BUDGET_TOTAL != objLevel2.IN_HL2_BUDGET_TOTAL;
 			if(canUpdate(objLevel2)){
 				if(canUpdateOrganization(objLevel2))
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
@@ -86,6 +89,21 @@ function updateHl2(objLevel2, userId){
 				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2","Already exists other object with the same ACRONYM");
 			
 			if(updated > 0){
+				if(budgetChanged){
+					var resBudgetStatus = hl3.checkBudgetStatus(objLevel2.IN_HL2_ID,userId);
+					if(resBudgetStatus.hasChanged){
+						//send all emails
+						try 
+						{
+							sendEmail(resBudgetStatus, userId);
+						}
+						catch(e){
+							//when error email exist, log error
+							businessError.log(ErrorLib.getErrors().CustomError("","level2Lib/sendEmail",e),userId);
+							//throw ErrorLib.getErrors().CustomError("","PRUEBA...",e);
+						}
+					}
+				}
 				var listObjHl2User = objLevel2.USERS;
 				if(listObjHl2User){					
 					if(validateHl2User(listObjHl2User)){
@@ -155,6 +173,25 @@ function getLevelByOrganizationAcronym(acronym){
 
 function getAllLevel2(){
 	return dataHl2.getAllLevel2();
+}
+
+function getLevel2ForSearch(){
+	var result = dataHl2.getLevel2ForSearch();
+	var resultRefactor = [];
+	result.forEach(function(object){
+		var aux = {};
+		
+		aux.ID = object.ID;
+		aux.BUDGET_YEAR = Number(ctypes.Int64(object.BUDGET_YEAR));
+		aux.ACRONYM = object.ACRONYM;
+		aux.ORGANIZATION_ACRONYM = object.ORGANIZATION_ACRONYM;
+		aux.REGION_NAME = object.REGION_NAME;
+		aux.SUBREGION_NAME = object.SUBREGION_NAME;
+		aux.PATH = "CRM-" + object.PATH;
+		
+		resultRefactor.push(aux);
+	});
+	return resultRefactor;
 }
 
 function existHl2(objLevel2){
@@ -229,7 +266,7 @@ function validateInsertHl2(objLevel2) {
 		        ];
 	
 	if(!objLevel2)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","The object HL2 is not found");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","The object L1 is not found");
 	
 	try {
 		keys.forEach(function(key) {
@@ -287,7 +324,7 @@ function validateUpdateHl2(objLevel2) {
 	    		        'IN_ORGANIZATION_NAME'
 	    		        ];
 	if(!objLevel2)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePut/updateHl2","The object HL2 is not found");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePut/updateHl2","The object L1 is not found");
 	
 	try {
 		keys.forEach(function(key) {
@@ -408,4 +445,45 @@ function validateHl2UserPair(objHl2User, objLevel2){
 
 function isCentralTeam(objLevel2){
 	return objLevel2['IN_TEAM_TYPE_ID'] > 1;
+}
+
+function sendEmail(resBudgetStatus, userId){
+	var stringInHl4 = "List In Budget: ";
+	var stringOutHl4 = "List Out Budget: ";
+	
+	if(resBudgetStatus){
+		try{
+			if(resBudgetStatus.emailListInBudget.length > 0){
+				for (var i = 0; i < resBudgetStatus.emailListInBudget.length; i++) {
+					var objHl3 = resBudgetStatus.emailListInBudget[i];
+					if(objHl3)
+						stringInHl3 = stringInHl3 + "<p>" + i + " - " + "ACRONYM: " +  objHl3.ACRONYM + ", DESCRIPTION: " + objHl3.HL3_DESCRIPTION + "</p>";
+				}
+			}		
+			
+			if(resBudgetStatus.emailListOutBudget.length > 0){
+				for (var i = 0; i < resBudgetStatus.emailListOutBudget.length; i++) {
+					var objHl3 = resBudgetStatus.emailListOutBudget[i];
+					if(objHl3)
+						stringOutHl3 = stringOutHl3 + "<p>" + i + " - " + "ACRONYM: " +  objHl3.ACRONYM + ", DESCRIPTION: " + objHl3.HL3_DESCRIPTION + "</p>";
+				}
+			}	
+			
+			//get owner email
+			//TODO: find owner created hl4
+			//var ownerTo = 
+			var to = 'framirez@folderit.net';
+			var body = '<p> Dear Colleague </p><p>We send the list of INITIATIVE/CAMPAIGN shipped in or out of budget</p>';
+			body = body + stringInHl3;
+			body = body + stringOutHl3;
+			var mailObject = mail.getJson([ {
+				"address" : to
+			} ], "Marketing Planning Tool - Lits of TEAM/PRIORITY shipped in or out of budget", body);
+			
+			mail.sendMail(mailObject,true);
+		}
+		catch(e){
+			throw e;
+		}
+	}
 }

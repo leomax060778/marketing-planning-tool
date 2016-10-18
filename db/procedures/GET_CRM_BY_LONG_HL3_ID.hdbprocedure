@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CRM_BY_LONG_HL3_ID" ( 
  IN in_long_hl3_id NVARCHAR(25),
- OUT out_result TABLE (crm_id BIGINT, crm_long_hl3_id NVARCHAR(25), description NVARCHAR (127), h1_id BIGINT, origin_plan_id BIGINT)
+ OUT out_result TABLE (crm_id BIGINT, crm_long_hl3_id NVARCHAR(25), description NVARCHAR (127), origin_plan_id BIGINT)
 ) 
  LANGUAGE SQLSCRIPT
  SQL SECURITY INVOKER 
@@ -10,7 +10,7 @@ BEGIN
 
  out_result =
  
- SELECT crm_id, crm_long_hl3_id, description, h1_id, origin_plan_id
+ SELECT crm_id, crm_long_hl3_id, description, origin_plan_id
  FROM CRM
  WHERE crm_long_hl3_id LIKE in_long_hl3_id
    AND deleted = 0

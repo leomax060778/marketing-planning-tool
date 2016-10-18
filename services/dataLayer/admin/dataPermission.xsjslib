@@ -9,6 +9,6 @@ var GET_ALL_PERMISSION = "GET_ALL_PERMISSION";
 
 function getAllPermission() {
 	var parameters = {};
-	var result = db.executeProcedure(GET_ALL_PERMISSION, {});
+	var result = db.executeProcedureManual(GET_ALL_PERMISSION, {});
 	return db.extractArray(result.out_result);
 }

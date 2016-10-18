@@ -9,5 +9,5 @@ create column table "PLANNING_TOOL".hierarchy_crm_binding (
 	created_user_id bigint not null,
 	modified_user_id bigint,
 	enabled tinyint default 1,
-	deleted tinyint default 0
+	deleted tinyint default 0,
 );

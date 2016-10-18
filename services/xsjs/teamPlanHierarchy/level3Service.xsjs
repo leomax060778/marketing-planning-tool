@@ -5,7 +5,7 @@ var httpUtil = mapper.getHttp();
 var businessLavel3 = mapper.getLevel3();
 var ErrorLib = mapper.getErrors();
 /** *************************************** */
-
+var section = "FOR_SEARCH";
 var GET_ALL_HL3 = "GET_ALL_HL3";
 var GET_BY_HL3_ID = "GET_BY_HL3_ID";
 
@@ -33,6 +33,9 @@ function handleGet(parameters, userSessionID) {
 			// get by hl3 and userid
 			rdo = businessLavel3.getLevel3ById(parameters[0].value,
 					userSessionID);
+			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+		} else if (parameters[0].value == section){
+			var rdo = businessLavel3.getLevel3ForSearch();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		} else {
 			throw ErrorLib.getErrors().BadRequest(

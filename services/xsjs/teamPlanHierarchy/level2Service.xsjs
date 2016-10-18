@@ -8,6 +8,7 @@ var businessLavel3 = mapper.getLevel3();
 /******************************************/
 
 var method = "GET_ALL";
+var section = "FOR_SEARCH";
 var hl2Id = "HL2_ID";
 var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
 var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM";
@@ -19,6 +20,7 @@ function processRequest(){
 //Implementation of GET call -- GET HL2
 function handleGet(parameters, userSessionID){
 	if(parameters.length > 0){
+		//throw ErrorLib.getErrors().BadRequest("","userServices/handleGet",JSON.stringify(parameters));
 		if(parameters[0].name == method){		
 			var rdo = blLevel2.getAllLevel2();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);				
@@ -53,6 +55,10 @@ function handleGet(parameters, userSessionID){
 			}
 			
 			var rdo = blLevel2.getLevel2ByFilters(objFilter, userSessionID)
+			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+		}
+		else if (parameters[0].value == section){
+			var rdo = blLevel2.getLevel2ForSearch();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else{

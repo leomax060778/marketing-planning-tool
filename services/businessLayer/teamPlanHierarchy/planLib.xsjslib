@@ -35,7 +35,7 @@ function deletePlan(plan, deleteUser) {
 		throw ErrorLib.getErrors().CustomError("",
 				"planServices/handleDelete/deletePlan", "The PLAN_ID is invalid");
 
-	return data.deletePlan(plan.PLAN_ID, deleteUser);
+	return data.deleteUserRole(plan.PLAN_ID, deleteUser);
 }
 
 function validatePlan(plan) {
