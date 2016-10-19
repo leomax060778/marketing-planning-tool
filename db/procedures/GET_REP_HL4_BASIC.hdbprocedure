@@ -1,0 +1,34 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_REP_HL4_BASIC" ( 
+IN in_filter VARCHAR(5000)
+, OUT out_result TABLE(
+	HL4_ID bigint
+	,HL3_ID bigint
+	,ACRONYM nvarchar(255)
+	,CRM_DESCRIPTION nvarchar(255)
+	,INITIATIVE_CAMPAIGN_DETAILS nvarchar(255)
+	,BUSINESS_VALUE nvarchar(255)
+	,STATUS nvarchar(255)
+	,BUDGET_K_EUR DECIMAL(19,2)
+	,CREATED_BY nvarchar(255)
+	,USER_ID bigint
+	,HL2_ID bigint
+	,PLAN nvarchar(255)
+	,PLAN_DESCRIPTION nvarchar(255)
+	,BUDGET_YEAR_ID bigint
+	,REGION_ID bigint
+	,REGION_NAME nvarchar(255)
+	,SUBREGION_ID bigint
+	,SUBREGION_NAME nvarchar(255)
+	,ORGANIZATION_ACRONYM nvarchar(255)
+	,ORGANIZATION_NAME nvarchar(255)
+	,TEAM_TYPE_ID bigint
+	)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_result = 
+	APPLY_FILTER("_SYS_BIC"."xsplanningtool.db.data.views/CV_L3_DESCRIPTION", :in_filter);
+END;

@@ -7,7 +7,7 @@ var ErrorLib = mapper.getErrors();
 
 // Todo: this is a hardcode.
 var AppUrl = "http://OPT.Hana.com";
-var SMTPAccount = "fsavat@folderit.net"//"lpeccin@folderit.net"; //adderes configured  - SMTP server
+var SMTPAccount = "lpeccin@folderit.net"; //adderes configured  - SMTP server
 //TODO: move this to configuration
 var tokenLifeTimeSeconds = 43200;
 //*************************
