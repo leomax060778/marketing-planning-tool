@@ -4,6 +4,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_FILTER" (
 	,IN in_region_id BIGINT 
 	,IN in_subregion_id BIGINT
 	,IN in_user_id BIGINT
+	,IN in_is_SuperAdmin Tinyint
 	,OUT out_result TABLE (
 		hl2_id BIGINT
 		, acronym NVARCHAR(25)
@@ -50,7 +51,7 @@ BEGIN
 	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID
 
 	WHERE 
-		HL2_USER.USER_ID = in_user_id 
+		(HL2_USER.USER_ID = in_user_id OR in_is_SuperAdmin = 1) 
 		AND HL2.deleted = 0 
 		AND HL2.enabled = 1
 		AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
@@ -72,7 +73,7 @@ BEGIN
 	
 	
 	WHERE
-	HU.user_id = in_user_id
+	(HU.user_id = in_user_id OR in_is_SuperAdmin = 1) 
 	AND HL2.deleted = 0
 	AND HL2.enabled = 1
 	AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 

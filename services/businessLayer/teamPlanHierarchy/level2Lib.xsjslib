@@ -8,6 +8,7 @@ var util = mapper.getUtil();
 var db = mapper.getdbHelper();
 var blPath = mapper.getPath();
 var dlCrm = mapper.getDataCrm();
+var userbl = mapper.getUser();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 var LEVEL3 = 3;
@@ -144,8 +145,15 @@ function deleteHl2(objLevel2, deleteUser){
 
 function getLevel2ByUser(userId){
 	if(!userId) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found","level2Services/handleGet/getLevel2ByUser",userId);	
-	return dataHl2.getLevel2ByUser(userId);
+		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found","level2Services/handleGet/getLevel2ByUser",userId);
+	
+	var user = userbl.getUserById(userId);
+	var isSuperAdmin = false;
+	 
+	if(user && user[0]['ROLENAME'] === 'SuperAdmin' ) {
+		isSuperAdmin = true;
+	}
+	return dataHl2.getLevel2ByUser(userId, isSuperAdmin);	
 }
 
 function getLevel2ById(objLevel2){
@@ -156,7 +164,13 @@ function getLevel2ById(objLevel2){
 
 //Get an Level 2 data by filter (in_budget_year_id, in_plan_id, in_region_id, in_subregion_id can be null)
 function getLevel2ByFilters(objFilter, userId) {
-	return dataHl2.getLevel2ByFilters(objFilter, userId);
+	var user = userbl.getUserById(userId);
+	var isSuperAdmin = false;
+	 
+	if(user && user[0]['ROLENAME'] === 'SuperAdmin' ) {
+		isSuperAdmin = true;
+	}
+	return dataHl2.getLevel2ByFilters(objFilter, userId, isSuperAdmin);
 }
 
 function getLevel2ByAcronym(acronym){

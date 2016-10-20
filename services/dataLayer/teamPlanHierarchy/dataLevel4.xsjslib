@@ -18,6 +18,8 @@ var spGetHl4CRMBindingByHlId = "GET_HIERARCHY_CRM_BINDING_BY_HL_ID";
 var spGetHl4MyBudgetByHl4Id = "GET_HL4_BUDGET_BY_ID";
 var spGetHl4SalesByHl4Id = "GET_HL4_SALE_BY_ID";
 var spGetHl4ForSerach = "GET_HL4_FOR_SEARCH";
+var spGetAllHl4Category = "GET_ALL_HL4_CATEGORY";
+var spGetAllHl4 = "GET_ALL_HL4";
 
 var spInsertHl4 = "INS_HL4";
 var spInsertHl4_fnc = "INS_HL4_FNC";
@@ -64,6 +66,11 @@ var HL4_EXISTS_IN_CRM = "HL4_EXISTS_IN_CRM";
 var HL4_CHANGE_STATUS = "HL4_CHANGE_STATUS";
 /******************************************************/
 
+function getAllHl4(){
+	var rdo = db.executeProcedure(spGetAllHl4,{});
+	return db.extractArray(rdo.out_hl4);
+}
+
 function getHl4(id){	
 	var result = {};
 	var list = db.executeProcedureManual(spGetHl4Byhl3Id, {"in_hl3_id": id});
@@ -99,6 +106,10 @@ function getHl4MyBudgetByHl4Id(id){
 		return myBudget;
 	}	
 	return null;
+}
+function getAllHl4Category(){
+	var rdo = db.executeProcedure(spGetAllHl4Category,{});
+	return db.extractArray(rdo.out_hl4_category);
 }
 
 function getHl4SalesByHl4Id(id){
@@ -186,7 +197,9 @@ function insertHl4_fnc(parameters){
 }
 
 function insertHl4Category(parameters){
+	//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4Category",JSON.stringify(parameters));
 		var rdo = db.executeScalarManual(spInsertHl4_Category, parameters, 'out_hl4_category_id');
+		//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePostData/insertHl4Category",JSON.stringify(rdo));
 		return rdo;
 }
 

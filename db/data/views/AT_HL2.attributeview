@@ -43,6 +43,14 @@
       <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="HL2_BUDGET_TOTAL"/>
     </attribute>
+    <attribute id="ENABLED" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="DELETED"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

@@ -3,6 +3,7 @@ $.import("xsplanningtool.services.commonLib","mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataBudget = mapper.getDataBudgetReports();
 var ErrorLib = mapper.getErrors();
+var util = mapper.getUtil();
 /*************************************************/
 
 function getAllBudget(){
@@ -10,29 +11,17 @@ function getAllBudget(){
 	return myBudget;	
 }
 
-/*
-function getAllBudget(filterText, filterRegion, filterSubRegion, filterGlobal){
-	var result = {};
-	
-	//get all hl4
-	var allHl4 = dataBudget.getAllHl4(filterText);
-	
-	//get mybudget by filters
-	var myBudget = dataBudget.getAllBudget(filterRegion, filterSubRegion, filterGlobal);
-	
-	var j = 0;
-	var result = {};
-	for (var int = 0; int < allHl4.length; int++) {
-		
-		result[allHl4[i].HL4_ID] = { 'description': allHl4[i].description };
-		
-		while (allHl4[i].HL4_ID === myBudget[j].HL4_ID) {
-			result[allHl4[i].HL4_ID][myBudget[j].type] =
-		}
-
+function getHl4ByFilter(reqBody,userSessionID){
+	var result = [];
+	var myBudget = dataBudget.getHl4ByFilter(reqBody.arrPlan, reqBody.arrRegion, reqBody.arrSubRegion, reqBody.arrCentralTeam, userSessionID);
+	if(myBudget){
+		myBudget.forEach(function(obj) {
+			var aux = util.extractObject(obj);
+			aux.budget_region = dataBudget.getBudgetRegionByHl4(aux.HL4_ID);
+			aux.budget_subregion = dataBudget.getBudgetSubRegionByHl4(aux.HL4_ID);
+			aux.budget_globalteam = dataBudget.getBudgetGlobalTeamByHl4(aux.HL4_ID);
+			result.push(aux);
+		});
 	}
-	
-	
-	return myBudget;	
+	return result;	
 }
-*/

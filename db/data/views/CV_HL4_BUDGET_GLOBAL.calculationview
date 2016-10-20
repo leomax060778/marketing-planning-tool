@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_HL4_BUDGET_GLOBAL" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_HL4_BUDGET_GLOBAL"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="BIGINT" id="ID"/>
+        <viewAttribute datatype="NVARCHAR" id="GLOBAL_NAME" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="PERCENTAGE" length="255"/>
+        <viewAttribute datatype="BIGINT" id="HL4_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition>/********* Begin Procedure Script ************/ &#xD;
+ BEGIN &#xD;
+ 	 var_out = &#xD;
+	SELECT &#xD;
+	  HL3.hl3_id AS ID&#xD;
+	, HL3.acronym AS GLOBAL_NAME&#xD;
+	, RO.percentage AS PERCENTAGE&#xD;
+	, RO.HL4_ID&#xD;
+	FROM 	&quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_ROUTE&quot; RO &#xD;
+	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.hl3_id = RO.route_id&#xD;
+ 	WHERE		&#xD;
+		HL3.deleted = 0 and HL3.enabled = 1;&#xD;
+&#xD;
+&#xD;
+END &#xD;
+/********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="ID" order="1">
+        <descriptions defaultDescription="ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="ID"/>
+      </attribute>
+      <attribute id="GLOBAL_NAME" order="2">
+        <descriptions defaultDescription="NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="GLOBAL_NAME"/>
+      </attribute>
+      <attribute id="PERCENTAGE" order="3">
+        <descriptions defaultDescription="PERCENTAGE"/>
+        <keyMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
+      </attribute>
+      <attribute id="HL4_ID" order="4">
+        <descriptions defaultDescription="HL4_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL4_ID"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

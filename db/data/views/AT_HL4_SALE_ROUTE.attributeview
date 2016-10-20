@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL4_SALE_ROUTE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4_SALE_ROUTE"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="HL4_SALE_ROUTE_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_SALE_ROUTE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE" columnName="HL4_SALE_ROUTE_ID"/>
+    </attribute>
+    <attribute id="HL4_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="ROUTE_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ROUTE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE" columnName="ROUTE_ID"/>
+    </attribute>
+    <attribute id="AMOUNT" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="AMOUNT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE" columnName="AMOUNT"/>
+    </attribute>
+    <attribute id="ENABLED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE" columnName="DELETED"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_ROUTE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL4_SALE_ROUTE" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

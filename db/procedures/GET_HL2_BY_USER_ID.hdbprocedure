@@ -1,5 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_USER_ID" ( 
-	IN in_user_id BIGINT
+	IN in_user_id BIGINT,
+	IN in_is_SuperAdmin Tinyint
 	,OUT out_result TABLE (
 		hl2_id BIGINT
 		, acronym NVARCHAR(25)
@@ -32,7 +33,7 @@ BEGIN
 	va_total_budget := 0;
 	
 	out_result =	
-	SELECT 
+	SELECT DISTINCT
 		HL2.hl2_id 
 		, UPPER(HL2.acronym) as acronym 
 		, HL2.description 
@@ -59,7 +60,7 @@ BEGIN
 	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
 
 	WHERE 
-		HL2_USER.USER_ID = in_user_id 
+		(HL2_USER.USER_ID = in_user_id OR in_is_SuperAdmin = 1) 
 		AND HL2.deleted = 0 
 		AND HL2.enabled = 1
 	ORDER BY HL2.acronym;
@@ -69,7 +70,7 @@ BEGIN
 	FROM HL2
 	INNER JOIN HL2_USER HU ON HL2.hl2_id = HU.hl2_id
 	WHERE
-	HU.user_id = in_user_id
+	(HU.user_id = in_user_id OR in_is_SuperAdmin = 1)
 	AND HL2.deleted = 0
 	AND HL2.enabled = 1;
 	

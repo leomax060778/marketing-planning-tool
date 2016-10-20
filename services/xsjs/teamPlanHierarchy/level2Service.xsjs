@@ -21,17 +21,20 @@ function processRequest(){
 function handleGet(parameters, userSessionID){
 	if(parameters.length > 0){
 		//throw ErrorLib.getErrors().BadRequest("","userServices/handleGet",JSON.stringify(parameters));
-		if(parameters[0].name == method){		
+		if(parameters[0].name == method){	
+			
 			var rdo = blLevel2.getAllLevel2();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);				
 		}
 		else if (parameters[0].name == hl2Id){
 			var objLevel2 = {};
 			objLevel2.IN_HL2_ID = parameters[0].value;
+			
 			var rdo = blLevel2.getLevel2ById(objLevel2)
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].name == GET_ALL_CENTRAL_TEAM){
+			
 			var rdo = blLevel2.getAllCentralTeam();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
@@ -58,6 +61,7 @@ function handleGet(parameters, userSessionID){
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].value == section){
+			
 			var rdo = blLevel2.getLevel2ForSearch();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
@@ -65,6 +69,7 @@ function handleGet(parameters, userSessionID){
 			throw ErrorLib.getErrors().BadRequest("","userServices/handleGet","invalid parameter name (can be: GET_ALL, HL2_ID or GET_HL1_BY_FILTER)");
 		}
 	}else{
+		
 		var rdo = blLevel2.getLevel2ByUser(userSessionID);
 		httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 	}	

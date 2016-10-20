@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_HL4_BUDGET_REGION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
-  <descriptions defaultDescription="CV_HL4_BUDGET_REGION"/>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_HL4_BUDGET_SUBREGION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_HL4_BUDGET_SUBREGION"/>
   <localVariables/>
   <variableMappings/>
   <informationModelLayout relativeWidthScenario="27"/>
@@ -10,25 +10,26 @@
       <descriptions/>
       <viewAttributes>
         <viewAttribute datatype="BIGINT" id="ID"/>
-        <viewAttribute datatype="NVARCHAR" id="REGION_NAME" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="SUBREGION_NAME" length="255"/>
         <viewAttribute datatype="DECIMAL" id="PERCENTAGE" length="19" scale="2"/>
         <viewAttribute datatype="BIGINT" id="HL4_ID"/>
       </viewAttributes>
       <calculatedViewAttributes/>
-      <definition> 
- /********* Begin Procedure Script ************/ 
- BEGIN 
- 	 var_out = 
-		SELECT 
-		  R.region_id AS ID
-		, R.region_name AS REGION_NAME
-		, HL4BR.percentage AS PERCENTAGE
-		, HL4BR.HL4_ID
-		FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4BR 
-		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON HL4BR.region_id = R.region_id
-		where 
-		HL4BR.deleted = 0 and HL4BR.enabled = 1;
-END 
+      <definition>/********* Begin Procedure Script ************/ &#xD;
+ BEGIN &#xD;
+ 	 var_out = &#xD;
+		SELECT &#xD;
+		  SR.subregion_id AS ID&#xD;
+		, SR.subregion_name AS SUBREGION_NAME&#xD;
+		, HL4BSR.percentage AS PERCENTAGE&#xD;
+		, HL4BSR.HL4_ID&#xD;
+		FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_SUBREGION&quot; HL4BSR &#xD;
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; SR ON HL4BSR.subregion_id = SR.subregion_id&#xD;
+		WHERE		&#xD;
+		HL4BSR.deleted = 0 and HL4BSR.enabled = 1;&#xD;
+&#xD;
+		&#xD;
+END &#xD;
 /*********/</definition>
     </calculationView>
   </calculationViews>
@@ -36,15 +37,15 @@ END
     <descriptions/>
     <attributes>
       <attribute id="ID" order="1">
-        <descriptions defaultDescription="id"/>
+        <descriptions defaultDescription="ID"/>
         <keyMapping columnObjectName="Script_View" columnName="ID"/>
       </attribute>
-      <attribute id="REGION_NAME" order="2">
-        <descriptions defaultDescription="region_name"/>
-        <keyMapping columnObjectName="Script_View" columnName="REGION_NAME"/>
+      <attribute id="SUBREGION_NAME" order="2">
+        <descriptions defaultDescription="SUBREGION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="SUBREGION_NAME"/>
       </attribute>
       <attribute id="PERCENTAGE" order="3">
-        <descriptions defaultDescription="percentage"/>
+        <descriptions defaultDescription="PERCENTAGE"/>
         <keyMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
       </attribute>
       <attribute id="HL4_ID" order="4">

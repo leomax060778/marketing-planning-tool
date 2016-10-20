@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_L3_DESCRIPTION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
   <descriptions defaultDescription="CV_L3_DESCRIPTION"/>
-  <localVariables>
-    <variable id="p_filter" parameter="true">
-      <descriptions defaultDescription="p_filter"/>
-      <variableProperties datatype="NVARCHAR" defaultValue="-1" length="5000" mandatory="false">
-        <valueDomain type="empty"/>
-        <selection multiLine="false" type="SingleValue"/>
-        <internalExternalConversion convertToInternalFunction="" orderPreserving="true"/>
-      </variableProperties>
-    </variable>
-  </localVariables>
+  <localVariables/>
   <variableMappings/>
   <informationModelLayout relativeWidthScenario="27"/>
   <dataSources/>
@@ -28,20 +19,29 @@
         <viewAttribute datatype="DECIMAL" id="BUDGET_K_EUR" length="19" scale="2"/>
         <viewAttribute datatype="VARCHAR" id="CREATED_BY" length="255"/>
         <viewAttribute datatype="BIGINT" id="USER_ID"/>
+        <viewAttribute datatype="BIGINT" id="HL2_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="PLAN" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="PLAN_DESCRIPTION" length="255"/>
+        <viewAttribute datatype="BIGINT" id="BUDGET_YEAR_ID"/>
+        <viewAttribute datatype="BIGINT" id="REGION_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="REGION_NAME" length="255"/>
+        <viewAttribute datatype="BIGINT" id="SUBREGION_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="SUBREGION_NAME" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_ACRONYM" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_NAME" length="255"/>
+        <viewAttribute datatype="BIGINT" id="TEAM_TYPE_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="BUDGET_YEAR" length="255"/>
       </viewAttributes>
       <calculatedViewAttributes/>
-      <localVariable>#p_filter</localVariable>
       <definition> 
  /********* Begin Procedure Script ************/ 
- /*
-L3 search records according to p_filter parameter, that match the string in ACRONYM, HL4_CRM_DESCRIPTION, 
-HL4_DETAILS or columns HL4_BUSINESS_DETAILS
-*/
+
  BEGIN 
  	 var_out = 
 
 SELECT 
-  AT_HL4.HL4_ID AS HL4_ID 
+--HL4 INFO
+ DISTINCT AT_HL4.HL4_ID AS HL4_ID 
 , AT_HL4.HL3_ID AS HL3_ID
 , AT_HL4.ACRONYM AS ACRONYM
 , AT_HL4.HL4_CRM_DESCRIPTION AS CRM_DESCRIPTION
@@ -51,17 +51,38 @@ SELECT
 , AT_HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
 , CONCAT(U.FIRST_NAME, CONCAT(' ', U.LAST_NAME)) AS CREATED_BY
 , U.USER_ID
+-- PLAN INFO
+, AT_HL2.HL2_ID
+,AT_HL2.ACRONYM AS PLAN
+,AT_HL2.DESCRIPTION AS PLAN_DESCRIPTION
+,AT_HL2.BUDGET_YEAR_ID
+-- REGION INFO
+,AT_HL2.REGION_ID
+,AT_REGION.REGION_NAME
+-- SUBREGION INFO
+,AT_HL2.SUBREGION_ID
+,AT_SUBREGION.SUBREGION_NAME
+--,AT_HL2.CREATED_USER_ID
+--CENTRAL TEAM INFO
+,AT_HL2.ORGANIZATION_ACRONYM
+,AT_HL2.ORGANIZATION_NAME
+,AT_HL2.TEAM_TYPE_ID
+,AT_BUDGET_YEAR.BUDGET_YEAR
+, SUM(AT_HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT) AS BUDGET_IVESTMENT
 FROM  
 &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; AT_HL4  
-LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_STATUS_DETAIL&quot; HL4SD  ON HL4SD.HL4_STATUS_DETAIL_ID = AT_HL4.HL4_STATUS_DETAIL_ID --ESTADO DEL L4
-LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; AT_HL4_FNC ON AT_HL4_FNC.HL4_ID = AT_HL4.HL4_ID -- BUDGET (K EUR)
-LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_USER&quot; U ON AT_HL4.CREATED_USER_ID = U.USER_ID --USER
-WHERE 
-(LOWER(AT_HL4.ACRONYM) LIKE CONCAT(CONCAT('%', LOWER(:p_filter)),'%'))
-OR (LOWER(AT_HL4.HL4_CRM_DESCRIPTION) LIKE CONCAT(CONCAT('%', LOWER(:p_filter)),'%'))
-OR (LOWER(AT_HL4.HL4_BUSINESS_DETAILS) LIKE CONCAT(CONCAT('%', LOWER(:p_filter)),'%'))
-OR :p_filter = '-1'
-;	 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_STATUS_DETAIL&quot; HL4SD  ON HL4SD.HL4_STATUS_DETAIL_ID = AT_HL4.HL4_STATUS_DETAIL_ID --ESTADO DEL L4 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; AT_HL4_FNC ON AT_HL4_FNC.HL4_ID = AT_HL4.HL4_ID -- BUDGET (K EUR) 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_USER&quot; U ON AT_HL4.CREATED_USER_ID = U.USER_ID --USER 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; AT_HL3 ON AT_HL3.HL3_ID = AT_HL4.HL3_ID 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; AT_HL2 ON AT_HL2.HL2_ID = AT_HL3.HL2_ID 
+	AND AT_HL2.ENABLED = 1 AND AT_HL2.DELETED = 0
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; AT_REGION ON AT_HL2.REGION_ID = AT_REGION.REGION_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; AT_SUBREGION ON AT_HL2.SUBREGION_ID = AT_SUBREGION.SUBREGION_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; AT_BUDGET_YEAR ON AT_BUDGET_YEAR.BUDGET_YEAR_ID = AT_HL2.BUDGET_YEAR_ID
+	
+ORDER BY AT_HL4.HL4_ID;
+
 END /********* End Procedure Script ************/</definition>
     </calculationView>
   </calculationViews>
@@ -107,6 +128,54 @@ END /********* End Procedure Script ************/</definition>
       <attribute id="USER_ID" order="10">
         <descriptions defaultDescription="USER_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="USER_ID"/>
+      </attribute>
+      <attribute id="HL2_ID" order="11">
+        <descriptions defaultDescription="HL2_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL2_ID"/>
+      </attribute>
+      <attribute id="PLAN" order="12">
+        <descriptions defaultDescription="PLAN"/>
+        <keyMapping columnObjectName="Script_View" columnName="PLAN"/>
+      </attribute>
+      <attribute id="PLAN_DESCRIPTION" order="13">
+        <descriptions defaultDescription="PLAN_DESCRIPTION"/>
+        <keyMapping columnObjectName="Script_View" columnName="PLAN_DESCRIPTION"/>
+      </attribute>
+      <attribute id="BUDGET_YEAR_ID" order="14">
+        <descriptions defaultDescription="BUDGET_YEAR_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR_ID"/>
+      </attribute>
+      <attribute id="REGION_ID" order="15">
+        <descriptions defaultDescription="REGION_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="REGION_ID"/>
+      </attribute>
+      <attribute id="REGION_NAME" order="16">
+        <descriptions defaultDescription="REGION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="REGION_NAME"/>
+      </attribute>
+      <attribute id="SUBREGION_ID" order="17">
+        <descriptions defaultDescription="SUBREGION_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="SUBREGION_ID"/>
+      </attribute>
+      <attribute id="SUBREGION_NAME" order="18">
+        <descriptions defaultDescription="SUBREGION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="SUBREGION_NAME"/>
+      </attribute>
+      <attribute id="ORGANIZATION_ACRONYM" order="19">
+        <descriptions defaultDescription="ORGANIZATION_ACRONYM"/>
+        <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_ACRONYM"/>
+      </attribute>
+      <attribute id="ORGANIZATION_NAME" order="20">
+        <descriptions defaultDescription="ORGANIZATION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_NAME"/>
+      </attribute>
+      <attribute id="TEAM_TYPE_ID" order="21">
+        <descriptions defaultDescription="TEAM_TYPE_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="TEAM_TYPE_ID"/>
+      </attribute>
+      <attribute id="BUDGET_YEAR" order="22">
+        <descriptions defaultDescription="BUDGET_YEAR"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR"/>
       </attribute>
     </attributes>
     <calculatedAttributes/>

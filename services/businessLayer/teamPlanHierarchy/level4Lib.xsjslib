@@ -1128,6 +1128,60 @@ function getHl4CategoryOption(hl4_id){
 	return result;
 }
 
+function insertHl4Category(categoryId, userId){
+	try{
+		if(categoryId && userId){
+			var hl4Collection = dataHl4.getAllHl4();
+			//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4Category",JSON.stringify(hl4Collection));
+			hl4Collection.forEach(function(hl4){
+				var parameters = {
+						'in_hl4_id': hl4.HL4_ID,
+					    'in_category_id': categoryId,
+					    'in_created_user_id': userId
+				};
+				var id = dataHl4.insertHl4Category(parameters);
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4Category",id + " ---");
+				//if(!dataHl4.insertHl4Category(parameters))
+					//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4Category","Error while trying to save Category.");
+			});
+		} else {
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4Category","Category ID or User ID is invalid.");
+		}
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4Category","end insertHl4Category forEach.");
+		db.commit();
+	} catch(e) {
+		db.rollback();
+		throw e;
+	}
+}
+
+function insertHl4CategoryOption(optionId, userId){
+	try{
+		if(optionId && userId){
+			var hl4CategoryCollection = dataHl4.getAllHl4Category();
+			hl4CategoryCollection.forEach(function(hl4Category){
+				var parameters = {
+						'in_hl4_category_id': hl4Category.HL4_CATEGORY_id,
+					    'in_option_id': optionId,
+					    'in_amount': 0,
+					    'in_created_user_id': userId
+				};
+				
+				if(!dataHl4.insertHl4CategoryOption(parameters))
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4CategoryOption","Error while trying to save Option.");
+				
+				setHl4Status(hl4Category.HL4_id, HL4_STATUS.IN_PROGRESS, userId);
+			});
+		} else {
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4CategoryOption","Option ID or User ID is invalid.");
+		}
+		db.commit();
+	} catch(e) {
+		db.rollback();
+		throw e;
+	}
+}
+
 function getHl4MyBudgetByHl4Id(id){
 	var myBudgets = dataHl4.getHl4MyBudgetByHl4Id(id);
 	var hl4MyBudgetKeys = Object.keys(myBudgets);
