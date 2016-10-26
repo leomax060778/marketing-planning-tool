@@ -16,14 +16,20 @@ var config = mapper.getDataConfig();
 var LEVEL3 = 3;
 var TEAM_TYPE_CENTRAL = "2";
 
+var L1_MSG_CENTRAL_TEAM_EXISTS = "Another Central Team with the same acronym already exists.";  
+var L1_MSG_PLAN_EXISTS = "Another Plan with the same acronym already exists";
+var L1_MSG_PLAN_NO_CREATED = "The Plan could not be created."; 
+var L1_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";
+var L1_MSG_PLAN_NOT_FOUND = "The Plan can not be found."; 
+var L1_MSG_PLAN_CANT_DELETE = "The selected Plan can not be deleted because has childs.";
+var L1_MSG_USER_NOT_FOUND = "The User can not be found."
+
 /*INSERT A NEW HL2 WITH CREO O MORE USERS ASICIATIONS*/
 function insertHl2(objLevel2, userId){
 	if(validateInsertHl2(objLevel2)){
 		if(isCentralTeam(objLevel2) || !existHl2ByAcronym(objLevel2.IN_ACRONYM)){		
-			//if(isCentralTeam(objLevel2)){	
 			if(objLevel2.IN_ORGANIZATION_ACRONYM && existOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM))
-					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","The central team with acronym already exists");	
-			//}
+				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_CENTRAL_TEAM_EXISTS);	
 			
 			try{
 				
@@ -62,19 +68,18 @@ function insertHl2(objLevel2, userId){
 						return objLevel2.IN_HL2_ID;
 					}
 					else
-						throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", "Can not Insert data HL2");
+						throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_PLAN_NO_CREATED);
 				}
 				else
-					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", "Can not Insert data HL2");
+					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_PLAN_NO_CREATED);
 			}
 			catch(e){
 				db.rollback();
 				throw e;
-				//throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", e.toString());
 			}
 		}
 		else
-			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","Another L1 with the same acronym already exists");	
+			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_PLAN_EXISTS);	
 	}	
 }
 
@@ -95,7 +100,6 @@ function completeUsers(users){
 	return users;
 }
 
-
 function contains(a, obj) {
 	    var i = a.length;
 	    while (i--) {
@@ -105,7 +109,6 @@ function contains(a, obj) {
 	    }
 	    return false;
 }
-
 
 function updateHl2(objLevel2, userId){
 	try{
@@ -119,10 +122,10 @@ function updateHl2(objLevel2, userId){
 				if(canUpdateOrganization(objLevel2))
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
 				else
-					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2","Already exists other object with the same ORGANIZATION ACRONYM");
+					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2", L1_MSG_CENTRAL_TEAM_EXISTS);
 			}
 			else
-				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2","Already exists other object with the same ACRONYM");
+				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2", L1_MSG_PLAN_EXISTS);
 			
 			if(updated > 0){
 				if(budgetChanged){
@@ -136,7 +139,6 @@ function updateHl2(objLevel2, userId){
 						catch(e){
 							//when error email exist, log error
 							businessError.log(ErrorLib.getErrors().CustomError("","level2Lib/sendEmail",e),userId);
-							//throw ErrorLib.getErrors().CustomError("","PRUEBA...",e);
 						}
 					}
 				}
@@ -162,12 +164,11 @@ function updateHl2(objLevel2, userId){
 	}
 	catch(e){
 		db.rollback();
-		throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePost/updateHl2", e.toString());
+		throw e;
 	}
 }
 
 function deleteHl2(objLevel2, userId){
-	//throw JSON.stringify(objLevel2.IN_HL2_ID);
 	//verify if userId is SUPERADMIN, then can delete
 	var rol = userRoleLib.getUserRoleByUserId(userId);
 	var userRoleId = 0;
@@ -175,38 +176,28 @@ function deleteHl2(objLevel2, userId){
 		userRoleId = Number(rol[0]['ROLE_ID']);
 	}
 	if(userRoleId !== 1 && userRoleId !== 2)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","Not enough privilege");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_NO_PRIVILEGE);
 	
-/*
-	//verify if userId is SUPERADMIN, then can delete
-	var rol = userRoleLib.getUserRoleByUserId(userId);
-	var userRoleId = 0;
-	if(rol){
-		userRoleId = Number(rol[0]['ROLE_ID']);
-	}
-	if(userRoleId !== 1 && userRoleId !== 2)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","Not enough privilege");
-	*/
 	if(!objLevel2.IN_HL2_ID)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The HL2_ID is not found");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_PLAN_NOT_FOUND);
 	if(!util.validateIsNumber(objLevel2.IN_HL2_ID))
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The HL2_ID is invalid");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_PLAN_NOT_FOUND);
 	if(hasChild(objLevel2))
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The item can not be deleted because has childs");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_PLAN_CANT_DELETE);
 	
 	return dataHl2.deleteHl2(objLevel2,userId);
 }
 
 function getLevel2ByUser(userId){
 	if(!userId) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found","level2Services/handleGet/getLevel2ByUser",userId);
+		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found","level2Services/handleGet/getLevel2ByUser", L1_MSG_USER_NOT_FOUND);
 	
 	return dataHl2.getLevel2ByUser(userId);	
 }
 
 function getLevel2ById(objLevel2){
 	if(!objLevel2) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter hl2Id is not found","level2Services/handleGet/getLevel2ById",objLevel2);	
+		throw ErrorLib.getErrors().BadRequest("The Parameter hl2Id is not found","level2Services/handleGet/getLevel2ById", L1_MSG_PLAN_NOT_FOUND);	
 	return dataHl2.getLevel2ById(objLevel2);
 }
 
@@ -223,7 +214,7 @@ function getLevel2ByAcronym(acronym){
 
 function getLevelByOrganizationAcronym(acronym){
 	if(!acronym) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter acronym is not found","level2Services/handleGet/getLevelByOrganizationAcronym",acronym);	
+		throw ErrorLib.getErrors().BadRequest("The Parameter acronym is not found","level2Services/handleGet/getLevelByOrganizationAcronym", L1_MSG_PLAN_NOT_FOUND);	
 	return dataHl2.getLevelByOrganizationAcronym(acronym);
 }
 
@@ -322,7 +313,7 @@ function validateInsertHl2(objLevel2) {
 		        ];
 	
 	if(!objLevel2)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","The object L1 is not found");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_PLAN_NOT_FOUND);
 	
 	try {
 		keys.forEach(function(key) {
@@ -380,7 +371,7 @@ function validateUpdateHl2(objLevel2) {
 	    		        'IN_ORGANIZATION_NAME'
 	    		        ];
 	if(!objLevel2)
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePut/updateHl2","The object L1 is not found");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePut/updateHl2", L1_MSG_PLAN_NOT_FOUND);
 	
 	try {
 		keys.forEach(function(key) {
@@ -417,7 +408,6 @@ function validateUpdateHl2(objLevel2) {
 		isValid = true;
 	} catch (e) {
 		if (e !== BreakException)
-			//throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2", e.toString());
 			throw e;
 		else
 			throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2"
@@ -450,12 +440,11 @@ function validateType(key, value) {
 		valid = regex.test(value) && value > 0;
 		break;
 	case 'IN_ORGANIZATION_ACRONYM':
-		valid = value.length == 3;
+		valid = value.replace(/\s/g, "").length == 3;
 		break;
 	}
 	return valid;
 }
-
 
 /*VALIDATE TYPES VALUES OF RELATED OBJECT TO HL2_USER*/
 function validateHl2User(listObjHl2User){

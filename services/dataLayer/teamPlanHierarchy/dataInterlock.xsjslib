@@ -23,6 +23,12 @@ var spDeleteInterlockLogStatus = "DEL_INTERLOCK_LOG_STATUS";
 var spDeleteInterlockRoute = "DEL_INTERLOCK_GLOBAL_TEAM_BY_HL4_ID";
 var spDeleteInterlockRegion = "DEL_INTERLOCK_REGION_BY_HL4_ID";
 var spDeleteInterlockSubregion = "DEL_INTERLOCK_SUBREGION_BY_HL4_ID";
+
+var spDeleteInterlockByIlId = "DEL_INTERLOCK_BY_IL_ID";
+var spDeleteInterlockLogStatusByIlId = "DEL_INTERLOCK_LOG_STATUS_BY_IL_ID";
+var spDeleteInterlockRouteByIlId = "DEL_INTERLOCK_GLOBAL_TEAM_BY_IL_ID";
+var spDeleteInterlockRegionByIlId = "DEL_INTERLOCK_REGION_BY_IL_ID";
+var spDeleteInterlockSubregionByIlId = "DEL_INTERLOCK_SUBREGION_BY_IL_ID";
 /******************************************************/
 
 /********** GET **********/
@@ -114,5 +120,30 @@ function deleteInterlockRegion(parameters){
 
 function deleteInterlockSubregion(parameters){
     var rdo = !parameters.in_hl4_id ? 0 : db.executeScalarManual(spDeleteInterlockSubregion, parameters, 'out_result');
+    return rdo;
+}
+
+function deleteInterlockByIlId(id, userId){
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    return rdo;
+}
+
+function deleteInterlockLogStatusByIlId(id, userId){
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockLogStatusByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    return rdo;
+}
+
+function deleteInterlockRouteByIlId(id, userId){
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockRouteByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    return rdo;
+}
+
+function deleteInterlockRegionByIlId(id, userId){
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockRegionByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    return rdo;
+}
+
+function deleteInterlockSubregionByIlId(id, userId){
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockSubregionByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
     return rdo;
 }

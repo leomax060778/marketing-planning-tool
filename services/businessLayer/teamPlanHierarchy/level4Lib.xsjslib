@@ -375,6 +375,7 @@ function insertHl4(data, userId){
 								"in_created_user_id": userId
 						}
 						dataInterlock.insertInterlockLogStatus(parameter);
+						notifyInterlockEmail(interlock.in_contact_data,il.in_hash);
 					}
 				});
 				transactionOk = !!hl4_id && !!hl4_fnc_id && hl4_expected_outcomes && hl4_expected_outcomes_detail && hl4_budget_regions && hl4_budget_subregions && hl4_budget_route && hl4_sale_regions && hl4_sale_subregions && hl4_sale_route && hl4_sale_other_regions && hl4_sale_other_subregions && hl4_sale_other && partnerOK && hl4_partner && hl4_category && hl4_category_option && interlockResult;
@@ -618,64 +619,90 @@ function updateHl4(data, userId){
 	            });
 
 	            //dataInterlock.deleteInterlockLogStatus(hl4_id);
-	            dataInterlock.deleteInterlockRoute(deleteParameters);
-	            dataInterlock.deleteInterlockRegion(deleteParameters);
-	            dataInterlock.deleteInterlockSubregion(deleteParameters);
-	            dataInterlock.deleteInterlock(deleteParameters);
+	            //dataInterlock.deleteInterlockRoute(deleteParameters);
+	            //dataInterlock.deleteInterlockRegion(deleteParameters);
+	            //dataInterlock.deleteInterlockSubregion(deleteParameters);
+	            //dataInterlock.deleteInterlock(deleteParameters);
 
 	            data.interlock.forEach(function(interlock){
-	                var il = {};
-	                var hash = getSYSUUID();
-	                il.in_entity_id= interlock.in_entity_id;
-	                il.in_hl4_id = hl4_id;
-	                il.in_organization_type_id= interlock.organization.type === 'globalTeam' ? 1 :
-						interlock.organization.type === 'region' ? 2 :
-							interlock.organization.type === 'subregion' ? 3 : 0;
-					/*
-					 * TODO: remove hardcoded in_requested_user_id
-					 */
-	                //il.in_requested_user_id= interlock.in_requested_user_id;
-					il.in_requested_user_id= 1;
-	                
-	                il.in_requested_resource= interlock.in_requested_resource;
-	                il.in_requested_budget= Number(interlock.in_requested_budget) / conversionValue;
-	                il.in_created_user_id= userId;
-	                il.in_interlock_status_id = 1;
-	                il.in_hash = hash;
-	                il.in_salt = hash;
+	            	if(!interlock.in_interlock_request_id){
+	            		var il = {};
+		                var hash = getSYSUUID();
+		                il.in_entity_id= interlock.in_entity_id;
+		                il.in_hl4_id = hl4_id;
+		                il.in_organization_type_id= interlock.organization.type === 'globalTeam' ? 1 :
+							interlock.organization.type === 'region' ? 2 :
+								interlock.organization.type === 'subregion' ? 3 : 0;
+						/*
+						 * TODO: remove hardcoded in_requested_user_id
+						 */
+		                //il.in_requested_user_id= interlock.in_requested_user_id;
+						il.in_requested_user_id= 1;
+		                
+		                il.in_requested_resource= interlock.in_requested_resource;
+		                il.in_requested_budget= Number(interlock.in_requested_budget) / conversionValue;
+		                il.in_created_user_id= userId;
+		                il.in_interlock_status_id = 1;
+		                il.in_hash = hash;
+		                il.in_salt = hash;
 
-	                var interlock_id = dataInterlock.insertInterlock(il);
-	                
-	                var id = null;
-	                
-	                if(interlock_id && interlock.organization.id){
-	                    var interlock_organization = {};
-	                    interlock_organization.in_organization_id = interlock.organization.id
-	                    interlock_organization.in_interlock_request_id = interlock_id
-	                    interlock_organization.in_created_user_id= userId;
-	                    switch(interlock.organization.type){
-	                        case 'globalTeam':
-	                            id = dataInterlock.insertInterlockRoute(interlock_organization);
-	                            break;
-	                        case 'region':
-	                            id = dataInterlock.insertInterlockRegion(interlock_organization);
-	                            break;
-	                        case 'subregion':
-	                            id = dataInterlock.insertInterlockSubregion(interlock_organization);
-	                            break;
-	                    };
-	                }
-	                
-	                interlockResult = interlockResult && interlock_id && id;
-	                if(interlockResult){
-	                 var parameter = {
-	                 "in_interlock_request_id": interlock_id,
-	                 "in_interlock_status_id": il.in_interlock_status_id,
-	                 "in_created_user_id": userId
-	                 }
-	                 dataInterlock.insertInterlockLogStatus(parameter);
-	                 }
+		                var interlock_id = dataInterlock.insertInterlock(il);
+		                
+		                var id = null;
+		                
+		                if(interlock_id && interlock.organization.id){
+		                    var interlock_organization = {};
+		                    interlock_organization.in_organization_id = interlock.organization.id
+		                    interlock_organization.in_interlock_request_id = interlock_id
+		                    interlock_organization.in_created_user_id= userId;
+		                    switch(interlock.organization.type){
+		                        case 'globalTeam':
+		                            id = dataInterlock.insertInterlockRoute(interlock_organization);
+		                            break;
+		                        case 'region':
+		                            id = dataInterlock.insertInterlockRegion(interlock_organization);
+		                            break;
+		                        case 'subregion':
+		                            id = dataInterlock.insertInterlockSubregion(interlock_organization);
+		                            break;
+		                    };
+		                }
+		                
+		                interlockResult = interlockResult && interlock_id && id;
+		                if(interlockResult){
+			                 var parameter = {
+				                 "in_interlock_request_id": interlock_id,
+				                 "in_interlock_status_id": il.in_interlock_status_id,
+				                 "in_created_user_id": userId
+			                 }
+			                 dataInterlock.insertInterlockLogStatus(parameter);
+			                 notifyInterlockEmail(interlock.in_contact_data,il.in_hash);
+		                 }
+	            	}
 	            });
+	            
+	            var hl4Interlock = dataInterlock.getInterlockByHl4Id(hl4_id);
+	            var ilToDelete = [];
+	            if(hl4Interlock && hl4Interlock.length){
+	            	hl4Interlock.forEach(function(il){
+	            		var deleted = true;
+	            		data.interlock.forEach(function(interlock){
+	    	            	if(interlock.in_interlock_request_id && interlock.in_interlock_request_id == il.INTERLOCK_REQUEST_ID){
+	    	            		deleted = false;
+	    	            	};
+    	            	});
+	            		if(deleted)
+	            			ilToDelete.push(il.INTERLOCK_REQUEST_ID);
+	            	});
+	            	
+	            	ilToDelete.forEach(function(IlId){
+	            		//dataInterlock.deleteInterlockLogStatusByIlId(IlId, userId);
+	            		dataInterlock.deleteInterlockRouteByIlId(IlId, userId);
+	            		dataInterlock.deleteInterlockRegionByIlId(IlId, userId);
+	            		dataInterlock.deleteInterlockSubregionByIlId(IlId, userId);
+	            		dataInterlock.deleteInterlockByIlId(IlId, userId);
+	            	});
+	            };
 
 	            transactionOk = !!hl4RowsUpdated && !!hl4FncRowsUpdated && hl4_expected_outcomes && hl4_expected_outcomes_detail && hl4_budget_regions && hl4_budget_subregions && hl4_budget_route && hl4_sale_regions && hl4_sale_subregions && hl4_sale_route && hl4_sale_other_regions && hl4_sale_other_subregions && hl4_sale_other && partnerOK && hl4_partner && hl4_category && hl4_category_option && interlockResult;
 	            if(transactionOk){
@@ -789,7 +816,7 @@ function validateHl4(data){
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", "The " + levelCampaign + "Acronym length must be 3 leters");
 	
 	if(!data.hl4.in_hl4_crm_description)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Crm description can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Crm description can not be empty.");
 	
 	if(!data.hl4_fnc)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Budget data can not be found.");
@@ -1430,3 +1457,15 @@ function notifyChangeByEmail(data, userId, event){
 	}
 
 }
+
+function notifyInterlockEmail(TO,token){
+	 var appUrl = config.getAppUrl();
+	 var body = '<p> Dear Colleague </p>';
+	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
+	 body += '<p>' + appUrl + '/interlock/' + token + '</p>';
+	 var mailObject = mail.getJson([ {
+	  "address" : TO
+	 } ], "Marketing Planning Tool - Interlock Process", body);
+	 
+	 mail.sendMail(mailObject,true);
+	}
