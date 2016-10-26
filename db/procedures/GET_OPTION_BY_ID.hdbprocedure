@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_BY_ID" (
 	IN in_option_id BIGINT,
-	OUT out_result TABLE (option_id BIGINT, name nvarchar(255), category_id BIGINT, order_option INTEGER, not_applicable TINYINT)
+	OUT out_result TABLE (option_id BIGINT, name nvarchar(255), category_id INTEGER, order_option INTEGER)
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -10,8 +10,7 @@ BEGIN
 	out_result = SELECT option_id,
 					   name,
 					   category_id,
-					   order_option,
-					   not_applicable
+					   order_option
 				FROM option
 				WHERE option_id = in_option_id
 					AND enabled = 1

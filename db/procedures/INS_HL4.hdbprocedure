@@ -11,13 +11,14 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4" (
 	IN in_is_send_mail tinyint,
 	IN in_user_id_send_mail bigint,
 	IN in_created_user_id bigint,
+	IN in_is_annual_plan TINYINT,
 	OUT out_hl4_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-	INSERT INTO "PLANNING_TOOL"."HL4" (hl3_id,acronym,hl4_crm_description,hl4_details,read_only,hl4_business_details,is_hl4,hl4_status_detail_id,hl4_parent_id,is_send_mail,user_id_send_mail,created_user_id)
-	VALUES (in_hl3_id,in_acronym,in_hl4_crm_description,in_hl4_details,in_read_only,in_hl4_business_details,in_is_hl4,in_hl4_status_detail_id,in_hl4_parent_id,in_is_send_mail,in_user_id_send_mail,in_created_user_id);
+	INSERT INTO "PLANNING_TOOL"."HL4" (hl3_id,acronym,hl4_crm_description,hl4_details,read_only,hl4_business_details,is_hl4,hl4_status_detail_id,hl4_parent_id,is_send_mail,user_id_send_mail,created_user_id, is_annual_plan)
+	VALUES (in_hl3_id,in_acronym,in_hl4_crm_description,in_hl4_details,in_read_only,in_hl4_business_details,in_is_hl4,in_hl4_status_detail_id,in_hl4_parent_id,in_is_send_mail,in_user_id_send_mail,in_created_user_id, in_is_annual_plan);
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_id FROM "PLANNING_TOOL"."HL4";
 END;

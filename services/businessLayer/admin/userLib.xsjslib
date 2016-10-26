@@ -249,6 +249,10 @@ function resetPassword(user, modUser) {
 	}
 }
 
+function getUserByRoleId(id){
+	return dbUser.getUserByRoleId(id);
+}
+
 function validatePassword(pass) {
 	// TODO: set regex to validate pass
 	// Business rules: SAP wants to set the default password and it might be 6

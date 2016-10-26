@@ -70,11 +70,7 @@ function handlePut(reqBody, userId){
 
 //Implementation of DELETE call -- Delete HL4
 function handleDelete(reqBody, userId){
-	var in_hl4_id = httpUtil.getUrlParameters().get("HL4_ID");
-	var urlParametrs = {
-		    "in_hl4_id": in_hl4_id,
-		};
-	var result =  hl4.deleteHl4(urlParametrs, userId);
+	var result =  hl4.deleteHl4(reqBody, userId);
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 };
 

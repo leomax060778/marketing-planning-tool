@@ -11,6 +11,7 @@ var spGetHl4ByAcronym = "GET_HL4_BY_ACRONYM";
 //var spGetHl3DifferentialBudget = "GET_HL3_ALLOCATED_BUDGET";
 var spGetCountHl5ByHl4Id = "GET_COUNT_HL5_BY_HL4_ID";
 var spGetHl4CategoryByHl4Id = "GET_HL4_CATEGORY_BY_HL4_ID";
+var spGetHl4CategoryByHl4CategoryId = "GET_HL4_CATEGORY_BY_HL4_CATEGORY_ID";
 var spGetHl4Category = "GET_HL4_CATEGORY";
 var spGetHl4CategoryOption = "GET_HL4_OPTION_BY_CATEGORY_ID";
 var spGetHl4StatusByHl4Id = "GET_HL4_STATUS_BY_HL4_ID";
@@ -21,6 +22,7 @@ var spGetHl4ForSerach = "GET_HL4_FOR_SEARCH";
 var spGetHl4CategoryByCategoryId = "GET_HL4_CATEGORY_BY_CATEGORY_ID";
 //var spGetAllHl4Category = "GET_ALL_HL4_CATEGORY";
 var spGetAllHl4 = "GET_ALL_HL4";
+var spGetHl4CategoryOptionByHl4IdOptionId = "GET_HL4_CATEGORY_OPTION_BY_HL4_ID_OPTION_ID";
 
 var spInsertHl4 = "INS_HL4";
 var spInsertHl4_fnc = "INS_HL4_FNC";
@@ -77,6 +79,7 @@ function getHl4(id){
 	var list = db.executeProcedureManual(spGetHl4Byhl3Id, {"in_hl3_id": id});
 	result.out_result = db.extractArray(list.out_result);
 	result.out_total_budget = list.out_total_budget;
+	result.out_remaining_budget = list.out_remaining_budget;
 	return result;
 }
 
@@ -138,22 +141,28 @@ function getHl4ByAcronym(acronym){
 	return null;
 }
 
-function getHl4Category(hl4_id,category_id){
+function getHl4Category(hl4_id,category_id,hl4CategoryId){
 	if(hl4_id && category_id){
 		var rdo = db.executeProcedureManual(spGetHl4Category,{'in_hl4_id':hl4_id, 'in_category_id':category_id});
 		return db.extractArray(rdo.out_hl4_category);
 	} else if (hl4_id && !category_id){
 		var rdo = db.executeProcedureManual(spGetHl4CategoryByHl4Id,{'in_hl4_id':hl4_id});
 		return db.extractArray(rdo.out_hl4_category);
+	} else if (!hl4_id && !category_id && hl4CategoryId){
+		var rdo = db.executeProcedureManual(spGetHl4CategoryByHl4CategoryId,{'in_hl4_category_id':hl4CategoryId});
+		return db.extractArray(rdo.out_hl4_category);
 	}
 	return null;
 }
 
-function getHl4CategoryOption(id){
-	if(id){
-		var rdo = db.executeProcedureManual(spGetHl4CategoryOption,{'in_hl4_category_id':id});
+function getHl4CategoryOption(hl4CategoryId,hl4Id,optionId){
+	if(hl4CategoryId && !hl4Id && !optionId){
+		var rdo = db.executeProcedureManual(spGetHl4CategoryOption,{'in_hl4_category_id':hl4CategoryId});
 		return db.extractArray(rdo.out_hl4_category_option);
-	}	
+	} else if (!hl4CategoryId && hl4Id && optionId){
+		var rdo = db.executeProcedureManual(spGetHl4CategoryOptionByHl4IdOptionId,{'in_hl4_id':hl4Id, 'in_option_id':optionId});
+		return db.extractArray(rdo.out_hl4_category_option);
+	}
 	return null;
 }
 
@@ -356,7 +365,8 @@ function deleteHl4SaleOtherSubRegion(parameters){
 }
 
 function deleteHl4SaleOther(parameters){
-	var rdo = db.executeScalarManual(spDeleteHl4SaleOther, parameters, 'out_result');
+	var param = {'in_hl4_id': parameters.in_hl4_id}
+	var rdo = db.executeScalarManual(spDeleteHl4SaleOther, param, 'out_result');
 	return rdo;
 }
 

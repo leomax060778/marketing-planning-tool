@@ -8,7 +8,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ID" (
 	hl4_details NVARCHAR(3000),
 	hl4_business_details NVARCHAR(3000),
 	hl4_status_detail_id bigint,
-	acronym NVARCHAR(25)
+	acronym NVARCHAR(25),
+	is_annual_plan TINYINT
 	) 
 ) 
 	LANGUAGE SQLSCRIPT
@@ -24,7 +25,8 @@ out_hl4 =
 		   HL4.hl4_details,
 		   HL4.hl4_business_details,
 		   HL4.hl4_status_detail_id,
-		   HL4.acronym
+		   HL4.acronym,
+		   HL4.is_annual_plan
 	FROM HL4
 	WHERE HL4.hl4_id = in_hl4_id
 	  AND HL4.deleted = 0

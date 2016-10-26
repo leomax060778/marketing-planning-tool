@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_CATEGORY" (
+	IN in_category_id BIGINT,
+	IN in_in_processing_report TINYINT,
+	IN in_user_id BIGINT,
+	OUT out_result integer
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+	UPDATE hl4_category
+        SET in_processing_report = in_in_processing_report,
+            modified_date_tz = CURRENT_TIMESTAMP,
+            modified_user_id = in_user_id
+        WHERE category_id = in_category_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

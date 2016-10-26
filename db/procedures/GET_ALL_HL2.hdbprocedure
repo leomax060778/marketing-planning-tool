@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL2" (
 		hl2_id BIGINT
 		, acronym NVARCHAR(25)
 		, description NVARCHAR(255)
-		, budget_year_id BIGINT
+		, budget_year_id INTEGER
 		, region_id BIGINT 
 		, subregion_id BIGINT 
 		, created_date_tz TIMESTAMP 
@@ -14,7 +14,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL2" (
 		, deleted TINYINT
 		, REGION_NAME NVARCHAR(255)
 		, SUBREGION_NAME NVARCHAR(255)
-		, BUDGET_YEAR BIGINT
+		, BUDGET_YEAR INTEGER
 		, hl2_budget_total DECIMAL(19,2)
 		, organization_acronym NVARCHAR(25)
 		, organization_name NVARCHAR(255)

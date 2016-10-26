@@ -15,7 +15,7 @@ BEGIN
 		INNER JOIN ROLE role ON role.role_id = userRole.role_id
  		LEFT JOIN USER_ROLE ON "USER".USER_ID = USER_ROLE.USER_ID 
  		WHERE "USER".ENABLED = 1 AND 
- 		"USER".deleted <> 1 
+ 		"USER".deleted = 0 
  		ORDER BY "USER".USER_NAME;
 END;
 

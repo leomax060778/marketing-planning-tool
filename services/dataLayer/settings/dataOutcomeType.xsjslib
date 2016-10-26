@@ -38,7 +38,6 @@ function deleteOutcomesType(id, userId){
 	return null;
 }
 
-
 /*function getExpectedOutcomeDetailById(id){	
 	if(id){
 		var rdo = db.executeProcedure(spGetExpOutDetail, {'in_hl4_expected_outcomes_id':id});

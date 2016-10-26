@@ -11,7 +11,13 @@ function processRequest(){
 }
 
 function handleGet(parameters, userSessionID){
-	var rdo = blBudgetReport.getAllBudget();
+	//var rdo = blBudgetReport.getAllBudget();
+	var arrPlan = ['2'];
+	var arrRegion = [];
+	var arrSubRegion = [];
+	var arrCentralTeam = [];
+	var arrCentralTeam = [];
+	var rdo = blBudgetReport.getHl4ByFilter(arrPlan, arrRegion, arrSubRegion, arrCentralTeam ,userSessionID);
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };
 

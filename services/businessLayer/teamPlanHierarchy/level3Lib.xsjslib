@@ -13,6 +13,7 @@ var dbUser = mapper.getDataUser();
 var dataHl3User = mapper.getDataLevel3User();
 var mail = mapper.getMail();
 var businessError = mapper.getLogError();
+var userRoleLib = mapper.getUserRole();
 /** ***********END INCLUDE LIBRARIES*************** */
 var LEVEL3 = 3;
 
@@ -64,9 +65,8 @@ function existsHl3(objHl3, userId){
 
 // determine if hl3 has childs
 function hl3HasChilds(objHl3){
-	var param = { "in_hl3_id": objHl3.IN_HL3_ID };
-	var result = hl4.getHl4(param);
-	if(result.length)
+	var result = hl4.getHl4(objHl3.IN_HL3_ID);
+	if(result.results.length)
 		return true;
 	else
 		return false;
@@ -79,25 +79,49 @@ function getGlobalTeams(userId) {
 //delete an hl3 is user is admin and not has childs
 function deleteHl3(objHl3, userId){
 	
-	//verify if userId is ADMIN, then can delete
-	//TODO:
-	var userRole = {};//dbUser.getUserRoleByUserId(userId);
-	userRole.ROLE_ID = 1;
+	if(!objHl3.IN_HL3_ID)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl3","The HL3_ID is not found");
 	
-	if(userRole.ROLE_ID !== 1 && userRole.ROLE_ID !== 2)
+	//verify if exist entity
+	var hl3 = data.getLevel3ById(objHl3, userId);
+		
+	if(!hl3)
+		throw ErrorLib.getErrors().CustomError("",
+				"hl3Services/handlePost/deleteHl3",
+				"The item not exits");
+	
+	//TODO:
+	//verify if userId is USPERADMIN, then can delete
+	var rol = userRoleLib.getUserRoleByUserId(userId);
+	var userRoleId = 0;
+	if(rol){
+		userRoleId = Number(rol[0]['ROLE_ID']);
+	}
+	
+	if(userRoleId !== 1 && userRoleId !== 2)
 		throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/deleteHl3","Not enough privilege");
 	
 	var result = 0;
 	if(!hl3HasChilds(objHl3)){
-		//delete in HL3_STATUS_HISTORY	
-		//delete on HL3_FNC
-		//delete on HL3
-		result = data.deleteLevel3(objHl3, userId);
+		try{
+			//delete in HL3_STATUS_HISTORY	
+			//delete on HL3_FNC
+			//delete on HL3
+			result = result + data.deleteLevel3Fnc(objHl3, userId);
+			result = result + data.deleteLevel3(objHl3, userId);
+			db.commit();
+		} catch (e) {
+			db.rollback();
+			throw ErrorLib.getErrors().CustomError("",
+					"hl3Services/handlePost/insertHl3",e);
+		} finally {
+			db.closeConnection();
+		}
 	}
 	else
 		throw ErrorLib.getErrors().CustomError("",
 				"hl3Services/handlePost/deleteHl3",
-				"The object HL3_ID ca not be deleted because has childs");
+				"The item can not be deleted because has childs");
 	return result;
 }
 

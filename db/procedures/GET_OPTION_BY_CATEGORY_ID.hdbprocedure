@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_BY_CATEGORY_ID" (
 	IN in_category_id BIGINT,
-	OUT out_result TABLE (option_id BIGINT, name nvarchar(255), category_id BIGINT, order_option INTEGER)
+	OUT out_result TABLE (option_id BIGINT, name nvarchar(255), category_id INTEGER, order_option INTEGER)
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 

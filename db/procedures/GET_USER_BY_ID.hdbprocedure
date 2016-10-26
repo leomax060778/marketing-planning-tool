@@ -16,5 +16,6 @@ BEGIN
  		LEFT JOIN USER_ROLE ON "USER".USER_ID = USER_ROLE.USER_ID
  		LEFT JOIN "ROLE" ON "ROLE".ROLE_ID = USER_ROLE.ROLE_ID
  		WHERE "USER".USER_ID = in_user_id AND 
- 		"USER".deleted <> 1;
+ 		"USER".enabled = 1 AND
+ 		"USER".deleted = 0;
 END;

@@ -1,7 +1,7 @@
 /***************Import Library*******************/
 $.import("xsplanningtool.services.commonLib","mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
-var dataBudget = mapper.getDataBudgetReports();
+var dataBudget = mapper.getDataBudgetDistributionReports();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
 /*************************************************/
@@ -28,22 +28,7 @@ function getHl4ByFilter2(reqBody,userSessionID){
 
 function getHl4ByFilter(reqBody,userSessionID){
 	var result = [];
-	var arrPlan = [];
-	var arrRegion = [];
-	var arrBudgetYear = [];
-	
-	//if has filter plan then apply filter by parameter, else apply filter to related user plan
-	if(reqBody.arrPlan)
-		arrPlan = reqBody.arrPlan;
-	else
-		arrPlan = dataBudget.getPlansUser(userSessionID);
-		
-	if(reqBody.arrRegion)
-		arrRegion = reqBody.arrRegion;
-	if(reqBody.arrBudgetYear)
-		arrBudgetYear = reqBody.arrBudgetYear;
-	
-	var myBudget = dataBudget.getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userSessionID);
+	var myBudget = dataBudget.getHl4ByFilter();
 	
 	if(myBudget){
 		var aux = {};

@@ -15,6 +15,7 @@ var GET_GLOBAL_TEAM = "GET_GLOBAL_TEAM";
 var GET_HL3_BY_ACRONYM = "GET_HL3_BY_ACRONYM";
 var DEL_HL3 = "DEL_HL3";
 var spUpdateHl3BudgetStatus = "UPD_HL3_STATUS_BUDGET";
+var DEL_HL3_FNC = "DEL_HL3_FNC";
 
 // Insert a new hl3
 function insertHl3(objHl3, userId) {
@@ -60,6 +61,7 @@ function getAllLevel3(objHl2, userId) {
 	var list = db.executeProcedure(GET_ALL_HL3, parameters);
 	result.out_result = db.extractArray(list.out_result);
 	result.out_total_budget = list.out_total_budget;
+	result.out_remaining_budget = list.out_remaining_budget;
 	return result;
 }
 
@@ -116,8 +118,17 @@ function deleteLevel3(objHl3, userId) {
 	var result = {};
 	parameters.in_hl3_id = objHl3.IN_HL3_ID;
 	parameters.in_user_id = userId;	
-	return db.executeScalar(DEL_HL3, parameters, 'out_result');
+	return db.executeScalarManual(DEL_HL3, parameters, 'out_result');
 }
+
+function deleteLevel3Fnc(objHl3, userId) {
+	var parameters = {};
+	var result = {};
+	parameters.in_hl3_id = objHl3.IN_HL3_ID;
+	parameters.in_user_id = userId;	
+	return db.executeScalarManual(DEL_HL3_FNC, parameters, 'out_result');
+}
+
 
 function updateHl3BudgetStatus(hl3_id, userId, nextStatus){
 	var parameters = {"in_hl3_id": hl3_id, "in_in_budget": nextStatus, "in_user_id": userId};

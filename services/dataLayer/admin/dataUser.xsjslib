@@ -15,6 +15,7 @@ var spUpdatePass = "UPD_USER_PASSWORD";
 var spGetUsersByHl2Id = "GET_USERS_BY_HL2_ID";
 var spGetUsersByHl3Id = "GET_USERS_BY_HL3_ID";
 var spGetHash = "GET_HASH_SHA256";
+var spGetUserByRoleId = "GET_USER_BY_ROLE_ID";
 
 /** *************************************************** */
 
@@ -30,6 +31,17 @@ function getUserById(id) {
 			'in_user_id' : id
 		});
 		return db.extractArray(rdo.USER);
+	}
+	return null;
+}
+
+
+function getUserByRoleId(id) {
+	if (id != "") {
+		var rdo = db.executeProcedure(spGetUserByRoleId, {
+			'in_role_id' : id
+		});
+		return db.extractArray(rdo.USER_ROLE);
 	}
 	return null;
 }

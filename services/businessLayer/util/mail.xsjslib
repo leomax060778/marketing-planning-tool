@@ -212,7 +212,13 @@ function getDefaultTemplate(body){
 		 
 }
 
+function sendEventMail(reqBody){
+	return sendMail(reqBody, true, config.getSMTPAccount());
+}
 
+function sendIncidentMail(reqBody){
+	return sendMail(reqBody, true, config.getSupportAccount());
+}
 
 //Send a email
 function sendMail(reqBody, defaultBody, OptionalSender){

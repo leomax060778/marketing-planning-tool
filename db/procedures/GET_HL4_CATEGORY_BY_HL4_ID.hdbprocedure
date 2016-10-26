@@ -1,13 +1,17 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_CATEGORY_BY_HL4_ID" (
 	IN in_hl4_id BIGINT,
-	OUT out_hl4_category TABLE (category_id BIGINT, hl4_id BIGINT, hl4_category_id BIGINT, category_name nvarchar(60)) 
+	OUT out_hl4_category TABLE (hl4_category_id BIGINT, category_id BIGINT, hl4_id BIGINT, category_name nvarchar(60), in_processing_report TINYINT) 
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	out_hl4_category = SELECT category.category_id, hl4_category.hl4_id, hl4_category.hl4_category_id,category.name as category_name
+	out_hl4_category = SELECT hl4_category.hl4_category_id
+	, category.category_id
+	, hl4_category.hl4_id
+	,category.name as category_name
+	, hl4_category.in_processing_report
 	FROM hl4_category inner join category
 	on hl4_category.category_id = category.category_id
 	WHERE hl4_id = in_hl4_id

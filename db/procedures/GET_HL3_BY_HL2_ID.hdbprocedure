@@ -25,7 +25,6 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_BY_HL2_ID" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-
 	-- Grab all the HL3s and their main data
 	va_hl3_result_data = 
 	SELECT HL3.hl3_id

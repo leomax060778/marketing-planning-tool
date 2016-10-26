@@ -18,14 +18,11 @@ var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
 var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM";
 var spGetHl2AllocatedBudget = "GET_HL2_ALLOCATED_BUDGET";
 
-function getLevel2ByUser(userId, isSuperAdmin){
+function getLevel2ByUser(userId){
 	
-	var sa = 0;
-	if(isSuperAdmin){
-		sa = 1;
-	}
+	
 	var result = {};
-	var parameters = {'IN_USER_ID': userId, 'in_is_SuperAdmin': sa};	
+	var parameters = {'IN_USER_ID': userId};	
 	var list = db.executeProcedure(GET_HL2_BY_USER_ID, parameters);	
 	result.out_result = db.extractArray(list.out_result);
 	result.out_total_budget = list.out_total_budget;
@@ -157,10 +154,7 @@ function countRelatedObjects(objLevel2){
 }
 
 function getLevel2ByFilters(objFilter, userId, isSuperAdmin) {
-	var sa = 0;
-	if(isSuperAdmin){
-		sa = 1;
-	}
+	
 	var parameters = {};
 	var result = {};
 	if(objFilter){
@@ -170,7 +164,7 @@ function getLevel2ByFilters(objFilter, userId, isSuperAdmin) {
 		if(objFilter.IN_SUBREGION_ID) parameters.in_subregion_id = objFilter.IN_SUBREGION_ID;
 	}
 	parameters.in_user_id = userId;
-	parameters.in_is_SuperAdmin = sa;
+	
 
 	var list = db.executeProcedure(GET_HL1_BY_FILTER, parameters);
 	result.out_result = db.extractArray(list.out_result);

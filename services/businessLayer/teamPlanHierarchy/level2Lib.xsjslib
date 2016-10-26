@@ -9,6 +9,8 @@ var db = mapper.getdbHelper();
 var blPath = mapper.getPath();
 var dlCrm = mapper.getDataCrm();
 var userbl = mapper.getUser();
+var userRoleLib = mapper.getUserRole();
+var config = mapper.getDataConfig();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 var LEVEL3 = 3;
@@ -17,11 +19,11 @@ var TEAM_TYPE_CENTRAL = "2";
 /*INSERT A NEW HL2 WITH CREO O MORE USERS ASICIATIONS*/
 function insertHl2(objLevel2, userId){
 	if(validateInsertHl2(objLevel2)){
-		if(!existHl2ByAcronym(objLevel2.IN_ACRONYM)){		
-			if(isCentralTeam(objLevel2)){			
-				if(existOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM))
+		if(isCentralTeam(objLevel2) || !existHl2ByAcronym(objLevel2.IN_ACRONYM)){		
+			//if(isCentralTeam(objLevel2)){	
+			if(objLevel2.IN_ORGANIZATION_ACRONYM && existOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM))
 					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","The central team with acronym already exists");	
-			}
+			//}
 			
 			try{
 				
@@ -43,6 +45,9 @@ function insertHl2(objLevel2, userId){
 						//INSERT USERS RELATED TO HL2
 						objLevel2.IN_HL2_ID = objhl2;
 						var listObjHl2User = objLevel2.USERS;
+						/******************/
+						listObjHl2User = completeUsers(listObjHl2User); //add SA users
+						/******************/
 						if(listObjHl2User){
 							if(validateHl2User(listObjHl2User)){
 								for (var i = 0; i < listObjHl2User.length; i++) {								
@@ -64,13 +69,43 @@ function insertHl2(objLevel2, userId){
 			}
 			catch(e){
 				db.rollback();
-				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", e.toString());
+				throw e;
+				//throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", e.toString());
 			}
 		}
 		else
 			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2","Another L1 with the same acronym already exists");	
 	}	
 }
+
+function completeUsers(users){
+	var id = config.getRoleEnum().SuperAdmin;
+	var listUsers = [];
+	for ( var j = 0; j < users.length; j++){
+		listUsers.push(users[j]['IN_USER_ID']);
+	}
+	var saUsers =  userbl.getUserByRoleId(id);
+	
+	for (var i = 0; i < saUsers.length; i++){
+		if(!contains(listUsers, saUsers[i]['USER_ID'])){
+			users.push(saUsers[i]);
+		}
+	}
+	
+	return users;
+}
+
+
+function contains(a, obj) {
+	    var i = a.length;
+	    while (i--) {
+	       if (a[i] === obj) {
+	           return true;
+	       }
+	    }
+	    return false;
+}
+
 
 function updateHl2(objLevel2, userId){
 	try{
@@ -131,29 +166,42 @@ function updateHl2(objLevel2, userId){
 	}
 }
 
-function deleteHl2(objLevel2, deleteUser){
+function deleteHl2(objLevel2, userId){
+	//throw JSON.stringify(objLevel2.IN_HL2_ID);
+	//verify if userId is SUPERADMIN, then can delete
+	var rol = userRoleLib.getUserRoleByUserId(userId);
+	var userRoleId = 0;
+	if(rol){
+		userRoleId = Number(rol[0]['ROLE_ID']);
+	}
+	if(userRoleId !== 1 && userRoleId !== 2)
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","Not enough privilege");
 	
+/*
+	//verify if userId is SUPERADMIN, then can delete
+	var rol = userRoleLib.getUserRoleByUserId(userId);
+	var userRoleId = 0;
+	if(rol){
+		userRoleId = Number(rol[0]['ROLE_ID']);
+	}
+	if(userRoleId !== 1 && userRoleId !== 2)
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","Not enough privilege");
+	*/
 	if(!objLevel2.IN_HL2_ID)
 		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The HL2_ID is not found");
 	if(!util.validateIsNumber(objLevel2.IN_HL2_ID))
 		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The HL2_ID is invalid");
 	if(hasChild(objLevel2))
-		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The HL2 contains related childs HL3");
+		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2","The item can not be deleted because has childs");
 	
-	return dataHl2.deleteHl2(objLevel2,deleteUser);
+	return dataHl2.deleteHl2(objLevel2,userId);
 }
 
 function getLevel2ByUser(userId){
 	if(!userId) 
 		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found","level2Services/handleGet/getLevel2ByUser",userId);
 	
-	var user = userbl.getUserById(userId);
-	var isSuperAdmin = false;
-	 
-	if(user && user[0]['ROLENAME'] === 'SuperAdmin' ) {
-		isSuperAdmin = true;
-	}
-	return dataHl2.getLevel2ByUser(userId, isSuperAdmin);	
+	return dataHl2.getLevel2ByUser(userId);	
 }
 
 function getLevel2ById(objLevel2){
@@ -163,14 +211,8 @@ function getLevel2ById(objLevel2){
 }
 
 //Get an Level 2 data by filter (in_budget_year_id, in_plan_id, in_region_id, in_subregion_id can be null)
-function getLevel2ByFilters(objFilter, userId) {
-	var user = userbl.getUserById(userId);
-	var isSuperAdmin = false;
-	 
-	if(user && user[0]['ROLENAME'] === 'SuperAdmin' ) {
-		isSuperAdmin = true;
-	}
-	return dataHl2.getLevel2ByFilters(objFilter, userId, isSuperAdmin);
+function getLevel2ByFilters(objFilter, userId) {	
+	return dataHl2.getLevel2ByFilters(objFilter, userId);
 }
 
 function getLevel2ByAcronym(acronym){
@@ -233,7 +275,7 @@ function getAllCentralTeam(){
 function canUpdate(objLevel2){
 	var currentL2 = getLevel2ById(objLevel2);
 	var objHl2Other = getLevel2ByAcronym(objLevel2.IN_ACRONYM);
-	if(!objHl2Other) return true;
+	if(isCentralTeam(objLevel2) || !objHl2Other) return true;
 	//check the same object
 	if(currentL2.HL2_ID!==objHl2Other.HL2_ID 
 			&& objLevel2.IN_ACRONYM.toUpperCase()===objHl2Other.ACRONYM.toUpperCase())
@@ -247,7 +289,7 @@ function canUpdateOrganization(objLevel2){
 	//candidate to update
 	var currentL2 = getLevel2ById(objLevel2);
 	//other in database
-	var objHl2Other = getLevelByOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM);
+	var objHl2Other = isCentralTeam(objLevel2) && getLevelByOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM);
 	if(!objHl2Other) return true;
 	//check the same object
 	if(currentL2.HL2_ID !== objHl2Other.HL2_ID
@@ -260,7 +302,7 @@ function canUpdateOrganization(objLevel2){
 }
 
 function hasChild(objLevel2){
-	return dataHl2.countRelatedObjects(objLevel2).length >0;
+	return dataHl2.countRelatedObjects(objLevel2) > 0;
 }
 
 function validateInsertHl2(objLevel2) {
@@ -375,7 +417,8 @@ function validateUpdateHl2(objLevel2) {
 		isValid = true;
 	} catch (e) {
 		if (e !== BreakException)
-			throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2", e.toString());
+			//throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2", e.toString());
+			throw e;
 		else
 			throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2"
 					,JSON.stringify(errors));

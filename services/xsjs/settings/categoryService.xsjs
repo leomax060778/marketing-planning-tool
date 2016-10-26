@@ -145,6 +145,7 @@ function handlePost(reqBody) {
 		var measure_id = reqBody.MEASURE_ID;
 		var name = reqBody.NAME;
 		var description = reqBody.DESCRIPTION;
+		var inProcessingReport = reqBody.IN_PROCESSING_REPORT;
 		var created_user_id = reqBody.CREATED_USER_ID;
 		
 		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CATEGORY"(?,?,?,?,?,?)';
@@ -177,7 +178,8 @@ function handlePost(reqBody) {
 				cst = conn.prepareCall(query);
 				cst.setBigInt(1, hl4.HL4_ID);
 				cst.setBigInt(2,categoryId);
-				cst.setBigInt(3,created_user_id);
+				cst.setInteger(3,inProcessingReport);
+				cst.setBigInt(4,created_user_id);
 				cst.execute();
 			});
 			//l4Lib.insertHl4Category(spResult,created_user_id);
@@ -230,6 +232,7 @@ function handlePut(reqBody) {
 		var name = reqBody.NAME;
 		var description = reqBody.DESCRIPTION;
 		var modified_user_id = reqBody.MODIFIED_USER_ID;
+		var inProcessingReport = reqBody.IN_PROCESSING_REPORT;
 
 		var cst = conn.prepareCall(query);
 
@@ -241,8 +244,17 @@ function handlePut(reqBody) {
 		cst.setBigInt(6,modified_user_id);
 
 		cst.execute();
-		conn.commit();
+		
 		var spResult  = Number(ctypes.Int64(cst.getBigInt(7)));
+		//if(spResult){			
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_CATEGORY"(?,?,?,?)';
+			cst = conn.prepareCall(query);
+			cst.setBigInt(1,category_id);
+			cst.setInteger(2,inProcessingReport);
+			cst.setBigInt(3,modified_user_id);
+			cst.execute();
+		//}
+		conn.commit();
 		conn.close();
 		handleResponse({"code": $.net.http.OK, "data": {"results": [{"CATEGORY_ID": spResult}]}}, $.net.http.OK);
 	} catch (e) {

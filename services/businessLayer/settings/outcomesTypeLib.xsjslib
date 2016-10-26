@@ -44,7 +44,7 @@ function deleteOutcomesType(outcomeTypeId, userId){
 	if(!outcomeTypeId || !Number(outcomeTypeId))
 		throw ErrorLib.getErrors().CustomError("","outcomesTypeServices/handlePost/deleteOutcomesType","The Outcomes Type ID is invalid");
 	
-	if(dataOutcome.getOutcomesByOutcomesTypeId(outcomeType.in_outcomes_type_id) > 0)
+	if(dataOutcome.getOutcomesCountByOutcomesTypeId(outcomeTypeId))
 		throw ErrorLib.getErrors().CustomError("","outcomesTypeServices/handleDelete/deleteOutcomesType","Cannot delete this Item, it has associated Outcomes");
 	
 	try{

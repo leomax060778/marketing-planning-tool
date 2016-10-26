@@ -9,6 +9,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4" (
 	IN in_user_id_send_mail bigint,
 	IN in_hl4_parent_id bigint,
 	IN in_read_only tinyint,
+	IN in_is_annual_plan tinyint,
 	IN in_user_id bigint,
 	OUT out_result int
 )
@@ -27,6 +28,7 @@ BEGIN
 		read_only = in_read_only,
 		hl4_parent_id = in_hl4_parent_id,
 		modified_user_id = in_user_id,
+		is_annual_plan = in_is_annual_plan,
 		modified_date_tz = CURRENT_TIMESTAMP
 		where hl4_id = in_hl4_id;
         

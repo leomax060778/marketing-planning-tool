@@ -7,10 +7,11 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL3" (
 							 hl3_in_budget TINYINT,
 							 hl3_budget_allocated DECIMAL(19,2),
 							 hl3_budget_remaining DECIMAL(19,2),
-							 hl4_total_count BIGINT,
-							 hl4_out_budget_count BIGINT,
+							 hl4_total_count INTEGER,
+							 hl4_out_budget_count INTEGER,
 							 hl3_description NVARCHAR(255)),
-	OUT out_total_budget	DECIMAL(19,2)					 
+	OUT out_total_budget	DECIMAL(19,2),
+	OUT out_remaining_budget	DECIMAL(19,2)					 
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -18,7 +19,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL3" (
 	READS SQL DATA AS
 BEGIN
 	DECLARE va_total_budget DECIMAL(19,2);
+	DECLARE va_remaining_budget DECIMAL(19,2);
 	va_total_budget := 0;
+	va_remaining_budget := 0;
 	
 	
 	va_intermidate = SELECT COUNT(hl4.hl4_id) as numL4, hl3.hl3_id
@@ -75,4 +78,9 @@ BEGIN
 	
 	out_total_budget := va_total_budget;
 	
+	SELECT (hl2_budget_total - out_total_budget)
+	into va_remaining_budget FROM hl2
+	where hl2_id = in_hl2_id;
+	
+	out_remaining_budget := va_remaining_budget;
 END;

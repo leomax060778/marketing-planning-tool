@@ -8,8 +8,6 @@ var ErrorLib = mapper.getErrors();
 /******************************************/
 
 
-
-
 function processRequest(){
 	httpUtil.processRequest(handlePost,handlePost,handlePost,handlePost);
 }

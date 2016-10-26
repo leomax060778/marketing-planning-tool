@@ -10,6 +10,7 @@ BEGIN
 
 		UPDATE HL3
 		SET deleted = 1,
+			enabled = 0,
 			modified_user_id = in_user_id,
 			modified_date_tz = CURRENT_TIMESTAMP
 		WHERE hl3_id = in_hl3_id;

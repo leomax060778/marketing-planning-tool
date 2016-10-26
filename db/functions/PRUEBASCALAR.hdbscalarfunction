@@ -1,0 +1,9 @@
+FUNCTION "LHILDT"."xsplanningtool.db.functions::PRUEBASCALAR" ( ) 
+	RETURNS <return_parameter_list>
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+/***************************** 
+	Write your function logic
+ *****************************/
+END;

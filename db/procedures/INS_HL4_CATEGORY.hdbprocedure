@@ -2,14 +2,15 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY" (
     IN in_hl4_id bigint,
     IN in_category_id bigint,
     IN in_created_user_id bigint,
+    IN in_in_processing_report TINYINT,
     OUT out_hl4_category_id bigint
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-	INSERT INTO "PLANNING_TOOL"."HL4_CATEGORY" (hl4_id,category_id,created_user_id)
-	VALUES (in_hl4_id,in_category_id,in_created_user_id);
+	INSERT INTO "PLANNING_TOOL"."HL4_CATEGORY" (hl4_id,category_id,created_user_id,in_processing_report)
+	VALUES (in_hl4_id,in_category_id,in_created_user_id,in_in_processing_report);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_category_id FROM "PLANNING_TOOL"."HL4_CATEGORY";
 END;

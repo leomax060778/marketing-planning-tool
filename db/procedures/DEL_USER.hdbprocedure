@@ -10,6 +10,7 @@ BEGIN
 
 		UPDATE user
 		SET user.deleted = 1,
+			user.enabled = 0,
 			user.modified_user_id = in_modified_user_id,
 			user.modified_date_tz = CURRENT_TIMESTAMP
 		FROM "PLANNING_TOOL"."USER" user
