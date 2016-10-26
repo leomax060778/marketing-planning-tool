@@ -34,7 +34,7 @@ var spDeleteInterlockSubregionByIlId = "DEL_INTERLOCK_SUBREGION_BY_IL_ID";
 /********** GET **********/
 function getInterlockByHl4Id(id){	
 	if(id){
-		var rdo = db.executeProcedure(spGetInterlockByHl4Id, {'in_hl4_id':id});
+		var rdo = db.executeProcedureManual(spGetInterlockByHl4Id, {'in_hl4_id':id});
 		return db.extractArray(rdo.out_interlock);
 	}	
 	return null;
@@ -124,26 +124,26 @@ function deleteInterlockSubregion(parameters){
 }
 
 function deleteInterlockByIlId(id, userId){
-    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockByIlId, {'in_il_id': id, 'in_user_id': userId}, 'out_result');
     return rdo;
 }
 
 function deleteInterlockLogStatusByIlId(id, userId){
-    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockLogStatusByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockLogStatusByIlId, {'in_il_id': id, 'in_user_id': userId}, 'out_result');
     return rdo;
 }
 
 function deleteInterlockRouteByIlId(id, userId){
-    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockRouteByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockRouteByIlId, {'in_il_id': id, 'in_user_id': userId}, 'out_result');
     return rdo;
 }
 
 function deleteInterlockRegionByIlId(id, userId){
-    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockRegionByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockRegionByIlId, {'in_il_id': id, 'in_user_id': userId}, 'out_result');
     return rdo;
 }
 
 function deleteInterlockSubregionByIlId(id, userId){
-    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockSubregionByIlId, {'in_interlock_request_id': id, 'in_user_id': userId}, 'out_result');
+    var rdo = !id && !userId ? null : db.executeScalarManual(spDeleteInterlockSubregionByIlId, {'in_il_id': id, 'in_user_id': userId}, 'out_result');
     return rdo;
 }

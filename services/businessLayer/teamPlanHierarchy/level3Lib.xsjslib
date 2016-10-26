@@ -16,6 +16,11 @@ var businessError = mapper.getLogError();
 var userRoleLib = mapper.getUserRole();
 /** ***********END INCLUDE LIBRARIES*************** */
 var LEVEL3 = 3;
+var L2_MSG_TEAM_NOT_FOUND = "The Team/Priority can not be found.";
+var L2_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";
+var L2_MSG_TEAM_CANT_DELETE = "The selected Team/Priority can not be deleted because has childs.";
+var L2_MSG_PLAN_NOT_FOUND = "The Plan to new Team/Priority can not be found.";
+var L2_MSG_TEAM_EXISTS = "Another Team/Priority with the same acronym already exists.";
 
 // Get all Level 3 data by level 2 id
 function getAllLevel3(hl2Id, userId) {
@@ -80,7 +85,7 @@ function getGlobalTeams(userId) {
 function deleteHl3(objHl3, userId){
 	
 	if(!objHl3.IN_HL3_ID)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl3","The HL3_ID is not found");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl3", L2_MSG_TEAM_NOT_FOUND);
 	
 	//verify if exist entity
 	var hl3 = data.getLevel3ById(objHl3, userId);
@@ -88,7 +93,7 @@ function deleteHl3(objHl3, userId){
 	if(!hl3)
 		throw ErrorLib.getErrors().CustomError("",
 				"hl3Services/handlePost/deleteHl3",
-				"The item not exits");
+				L2_MSG_TEAM_NOT_FOUND);
 	
 	//TODO:
 	//verify if userId is USPERADMIN, then can delete
@@ -99,7 +104,7 @@ function deleteHl3(objHl3, userId){
 	}
 	
 	if(userRoleId !== 1 && userRoleId !== 2)
-		throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/deleteHl3","Not enough privilege");
+		throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/deleteHl3", L2_MSG_NO_PRIVILEGE);
 	
 	var result = 0;
 	if(!hl3HasChilds(objHl3)){
@@ -112,8 +117,7 @@ function deleteHl3(objHl3, userId){
 			db.commit();
 		} catch (e) {
 			db.rollback();
-			throw ErrorLib.getErrors().CustomError("",
-					"hl3Services/handlePost/insertHl3",e);
+			throw e;
 		} finally {
 			db.closeConnection();
 		}
@@ -121,7 +125,7 @@ function deleteHl3(objHl3, userId){
 	else
 		throw ErrorLib.getErrors().CustomError("",
 				"hl3Services/handlePost/deleteHl3",
-				"The item can not be deleted because has childs");
+				L2_MSG_TEAM_CANT_DELETE);
 	return result;
 }
 
@@ -133,12 +137,12 @@ function createHl3(objHl3, userId) {
 		if (!blLevel2.existHl2(objHl3))
 			throw ErrorLib.getErrors().CustomError("",
 					"hl3Services/handlePost/insertHl3",
-					"The object HL2_ID is not found");
+					L2_MSG_PLAN_NOT_FOUND);
 
 		if(existsHl3(objHl3, userId))
 			throw ErrorLib.getErrors().CustomError("",
 					"hl3Services/handlePost/insertHl3",
-					"The object HL3_ID already exists");
+					L2_MSG_TEAM_EXISTS);
 		
 		// validate exist CRM
 		var objPath = blPath.getPathByLevelParentToCRM(LEVEL3, objHl3.IN_HL2_ID);
@@ -165,8 +169,7 @@ function createHl3(objHl3, userId) {
 			db.commit();
 		} catch (e) {
 			db.rollback();
-			throw ErrorLib.getErrors().CustomError("",
-					"hl3Services/handlePost/insertHl3",e);
+			throw e;
 		}
 	}
 	return result;
@@ -180,6 +183,11 @@ function updateHl3(objHl3, userId) {
 	var result = {};
 	var resBudgetStatus = {};
 	if (validateUpdateHl3(objHl3)) {
+		
+		if(existsHl3(objHl3, userId))
+			throw ErrorLib.getErrors().CustomError("",
+					"hl3Services/handlePost/updateHl3",
+					L2_MSG_TEAM_EXISTS);
 		
 		try {
 			//if(canUpdateL3(objHl3))
@@ -227,13 +235,12 @@ function updateHl3(objHl3, userId) {
 					catch(e){
 						//when error email exist, log error
 						businessError.log(ErrorLib.getErrors().CustomError("","level3Lib/sendEmail",e),userId);
-						//throw ErrorLib.getErrors().CustomError("","PRUEBA...",e);
 					}
 				}
 			}			
 		} catch (e) {
 			db.rollback();
-			throw ErrorLib.getErrors().BadRequest("","hl3Services/handlePut",e.toString());
+			throw e;
 		}
 	}
 	return result;
@@ -259,7 +266,7 @@ function setUsersHl3(objHl3, userId){
 		}
 	}
 	catch(e){
-		throw ErrorLib.getErrors().CustomError("","hl3Services/setUsersHl3",e.toString());
+		throw e;
 	}
 }
 
@@ -347,7 +354,7 @@ function validateType(key, value) {
 
 	switch (key) {
 	case 'IN_ACRONYM':
-		valid = value.length > 0 && value.length <= 3;
+		valid = value.replace(/\s/g, "").length > 0 && value.replace(/\s/g, "").length <= 3; //up to 3 characters
 		break;
 	case 'IN_HL2_ID':
 		valid = !isNaN(value) && value > 0;

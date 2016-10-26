@@ -623,7 +623,7 @@ function updateHl4(data, userId){
 	            //dataInterlock.deleteInterlockRegion(deleteParameters);
 	            //dataInterlock.deleteInterlockSubregion(deleteParameters);
 	            //dataInterlock.deleteInterlock(deleteParameters);
-
+	            var hl4Interlock = dataInterlock.getInterlockByHl4Id(hl4_id);
 	            data.interlock.forEach(function(interlock){
 	            	if(!interlock.in_interlock_request_id){
 	            		var il = {};
@@ -647,7 +647,7 @@ function updateHl4(data, userId){
 		                il.in_salt = hash;
 
 		                var interlock_id = dataInterlock.insertInterlock(il);
-		                
+		            	
 		                var id = null;
 		                
 		                if(interlock_id && interlock.organization.id){
@@ -681,20 +681,23 @@ function updateHl4(data, userId){
 	            	}
 	            });
 	            
-	            var hl4Interlock = dataInterlock.getInterlockByHl4Id(hl4_id);
+	            
 	            var ilToDelete = [];
+	            
 	            if(hl4Interlock && hl4Interlock.length){
 	            	hl4Interlock.forEach(function(il){
 	            		var deleted = true;
+	            		var a = 0;
 	            		data.interlock.forEach(function(interlock){
 	    	            	if(interlock.in_interlock_request_id && interlock.in_interlock_request_id == il.INTERLOCK_REQUEST_ID){
-	    	            		deleted = false;
+	            				deleted = false;
 	    	            	};
     	            	});
-	            		if(deleted)
+	            		if(deleted){
+	            			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4",il.INTERLOCK_REQUEST_ID + "----" + il.REQUESTED_BUDGET);
 	            			ilToDelete.push(il.INTERLOCK_REQUEST_ID);
+	            		}
 	            	});
-	            	
 	            	ilToDelete.forEach(function(IlId){
 	            		//dataInterlock.deleteInterlockLogStatusByIlId(IlId, userId);
 	            		dataInterlock.deleteInterlockRouteByIlId(IlId, userId);

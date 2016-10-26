@@ -11,7 +11,8 @@ BEGIN
 	out_result =
 	SELECT HL3.hl3_id
 	FROM HL3
-	WHERE HL3.acronym = in_acronym
+	WHERE 
+      UPPER(HL3.acronym)= UPPER(in_acronym) 
 	  AND HL3.deleted = 0
 	  AND HL3.enabled = 1;
 	
