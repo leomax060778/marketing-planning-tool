@@ -3,29 +3,29 @@
   <descriptions defaultDescription="AT_HL4_SALE_REGION"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
-    <attribute id="REGION_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="REGION_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="REGION_ID"/>
-    </attribute>
-    <attribute id="AMOUNT" order="2" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="AMOUNT"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="AMOUNT"/>
-    </attribute>
-    <attribute id="HL4_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL4_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="HL4_ID"/>
-    </attribute>
-    <attribute id="HL4_SALE_REGION_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="HL4_SALE_REGION_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="HL4_SALE_REGION_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="HL4_SALE_REGION_ID"/>
     </attribute>
-    <attribute id="DELETED" order="5" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="DELETED"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="DELETED"/>
+    <attribute id="HL4_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="HL4_ID"/>
     </attribute>
-    <attribute id="ENABLED" order="6" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="REGION_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REGION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="REGION_ID"/>
+    </attribute>
+    <attribute id="AMOUNT" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="AMOUNT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="AMOUNT"/>
+    </attribute>
+    <attribute id="ENABLED" order="5" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="ENABLED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_REGION" columnName="DELETED"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>

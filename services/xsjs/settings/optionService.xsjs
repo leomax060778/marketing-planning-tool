@@ -1,3 +1,11 @@
+/****** libs ************/
+$.import("xsplanningtool.services.commonLib","mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
+var httpUtil = mapper.getHttp();
+var l4Lib = mapper.getLevel4();
+var ErrorLib = mapper.getErrors();
+/******************************************/
+
 function processRequest(){
 	try {
 		var reqBody = $.request.body ? JSON.parse($.request.body.asString()) : undefined;
@@ -119,7 +127,47 @@ function handlePost(reqBody) {
 		cst.setBigInt(4,created_user_id);
 		
 		cst.execute();
-		var spResult  = Number(ctypes.Int64(cst.getBigInt(5)));
+		var optionId = cst.getBigInt(5);
+		var spResult  = Number(ctypes.Int64(optionId));
+		
+		if(spResult){
+			var in_category_id = category_id;
+			var connHdb = $.hdb.getConnection();
+			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_HL4_CATEGORY_BY_CATEGORY_ID');
+		  	var result = fnSell(in_category_id);		  
+		  	var spResult = result['out_hl4_category'];		
+			var result = [];
+			Object.keys(spResult).forEach(function(key) {
+				result.push(spResult[key]);
+			});
+			connHdb.close();
+			
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY_OPTION"(?,?,?,?,?)';
+			var changeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::HL4_CHANGE_STATUS"(?,?,?,?)';
+			var logChangeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_LOG_STATUS"(?,?,?,?)';
+			result.forEach(function(hl4Category){
+				cst = conn.prepareCall(query);
+				cst.setBigInt(1, hl4Category.HL4_CATEGORY_ID);
+				cst.setBigInt(2,optionId);
+				cst.setString(3,"0");
+				cst.setBigInt(4,created_user_id);
+				cst.execute();
+				
+				cst = conn.prepareCall(changeStatusQuery);
+				cst.setBigInt(1, hl4Category.HL4_ID);
+				cst.setBigInt(2, 1);
+				cst.setBigInt(3, created_user_id);
+				cst.execute();
+				
+				cst = conn.prepareCall(logChangeStatusQuery);
+				cst.setBigInt(1, hl4Category.HL4_ID);
+				cst.setBigInt(2, 1);
+				cst.setBigInt(3, created_user_id);
+				cst.execute();
+			});
+		}
+		//l4Lib.insertHl4CategoryOption(spResult, created_user_id);
+		
 		conn.commit();
 		conn.close();
 		handleResponse({"code": $.net.http.OK, "data": {"results": [{"OPTION_ID": spResult}]}}, $.net.http.OK);

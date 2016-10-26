@@ -1,3 +1,11 @@
+/****** libs ************/
+$.import("xsplanningtool.services.commonLib","mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
+var httpUtil = mapper.getHttp();
+var l4Lib = mapper.getLevel4();
+var ErrorLib = mapper.getErrors();
+/******************************************/
+
 function processRequest(){
 	try {
 		var reqBody = $.request.body ? JSON.parse($.request.body.asString()) : undefined;
@@ -108,8 +116,6 @@ function validateType(key, value) {
 function handleGet(reqBody) {
 	var conn = $.hdb.getConnection();
 	try{
-		//var reqBody = JSON.parse($.request.body.asString());
-		
 		var hierarchy_level_id = $.request.parameters.get("HIERARCHY_LEVEL_ID");
 				
 		  var fnSell = conn.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_CATEGORY_BY_HIERARCHY_LEVEL_ID');
@@ -124,32 +130,6 @@ function handleGet(reqBody) {
 		  
 		  conn.close();
 		  handleResponse({"code": $.net.http.OK, "data": {"results": result}}, $.net.http.OK);
-		  
-
-		/*var conn = $.db.getConnection();
-		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_HIERARCHY_LEVEL_ID"(?,?)';
-
-		var cst = conn.prepareCall(query);
-
-		cst.setBigInt(1,hierarchy_level_id);
-
-		cst.execute();
-		var spResultSet = cst.getResultSet();
-		
-		var spResult = [];
-		
-		while(spResultSet.next()) {
-		    spResult.push({
-		    	    "CATEGORY_ID": spResultSet.getInteger(1),
-		    	    "HIERARCHY_LEVEL_ID": spResultSet.getInteger(2),
-		    	    "MEASURE_ID": spResultSet.getInteger(3),
-		    	    "NAME": spResultSet.getString(4),
-		    	    "DESCRIPTION": spResultSet.getString(5)
-		    });
-		}
-		
-		conn.close();
-		handleResponse({"code": $.net.http.OK, "data": {"results": spResult}}, $.net.http.OK);*/
 	} catch (e) {
 		conn.close();
 	    handleResponse({"code": $.net.http.INTERNAL_SERVER_ERROR, "errors":{"INTERNAL_SERVER_ERROR": e.toString()}}, $.net.http.INTERNAL_SERVER_ERROR);
@@ -178,7 +158,31 @@ function handlePost(reqBody) {
 		cst.setBigInt(5,created_user_id);
 
 		cst.execute();
-		var spResult  = Number(ctypes.Int64(cst.getBigInt(6)));
+		var categoryId = cst.getBigInt(6);
+		var spResult  = Number(ctypes.Int64(categoryId));
+		
+		if(spResult){
+			var connHdb = $.hdb.getConnection();
+			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_ALL_HL4');
+		  	var result = fnSell();		  
+		  	var spResult = result['out_hl4'];		
+			var result = [];
+			Object.keys(spResult).forEach(function(key) {
+				result.push(spResult[key]);
+			});
+			connHdb.close();
+			
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY"(?,?,?,?)';
+			result.forEach(function(hl4){
+				cst = conn.prepareCall(query);
+				cst.setBigInt(1, hl4.HL4_ID);
+				cst.setBigInt(2,categoryId);
+				cst.setBigInt(3,created_user_id);
+				cst.execute();
+			});
+			//l4Lib.insertHl4Category(spResult,created_user_id);
+		}
+		
 		conn.commit();
 		conn.close();
 		handleResponse({"code": $.net.http.OK, "data": {"results": [{"CATEGORY_ID": spResult}]}}, $.net.http.OK);

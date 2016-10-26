@@ -13,5 +13,5 @@ BEGIN
    	out_result = SELECT user_id, password, token, token_valid_until_date_tz
  		FROM "USER_RECOVERY_TOKEN" 
  		WHERE token = CAST(in_token AS NVARCHAR) AND
- 		deleted = 0 AND enabled = 1;
+ 		deleted = 0;
 END;

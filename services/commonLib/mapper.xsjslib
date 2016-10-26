@@ -141,6 +141,11 @@ function getBudgetReport(){
     return $.xsplanningtool.services.businessLayer.reports.budgetLib;
 }
 
+function getDetailedReport(){
+	$.import("xsplanningtool.services.businessLayer.reports","detailedReportLib");
+    return $.xsplanningtool.services.businessLayer.reports.detailedReportLib;
+}
+
 /************Data Layer Mapper*****************/
 
 function getdbHelper(){
@@ -297,4 +302,9 @@ function getDataResource(){
 function getDataBudgetReports(){
 	$.import("xsplanningtool.services.dataLayer.reports","dataBudget");
 	return $.xsplanningtool.services.dataLayer.reports.dataBudget;
+}
+
+function getDataDetailedReport(){
+	$.import("xsplanningtool.services.dataLayer.reports","dataDetailedReport");
+    return $.xsplanningtool.services.dataLayer.reports.dataDetailedReport;
 }

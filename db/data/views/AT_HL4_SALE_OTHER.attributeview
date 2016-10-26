@@ -3,29 +3,29 @@
   <descriptions defaultDescription="AT_HL4_SALE_OTHER"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
-    <attribute id="HL4_SALE_OTHER_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL4_SALE_OTHER_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="HL4_SALE_OTHER_ID"/>
-    </attribute>
-    <attribute id="HL4_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="HL4_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="HL4_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="HL4_ID"/>
     </attribute>
-    <attribute id="AMOUNT" order="3" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="AMOUNT"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="AMOUNT"/>
-    </attribute>
-    <attribute id="DESCRIPTION" order="4" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="DESCRIPTION" order="2" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="DESCRIPTION"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="DESCRIPTION"/>
     </attribute>
-    <attribute id="DELETED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="DELETED" order="3" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="DELETED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="DELETED"/>
     </attribute>
-    <attribute id="ENABLED" order="6" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="ENABLED" order="4" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="ENABLED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="AMOUNT" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="AMOUNT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="AMOUNT"/>
+    </attribute>
+    <attribute id="HL4_SALE_OTHER_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_SALE_OTHER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_SALE_OTHER" columnName="HL4_SALE_OTHER_ID"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>

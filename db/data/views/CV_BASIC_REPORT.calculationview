@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_BASIC_REPORT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_BASIC_REPORT"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="BIGINT" id="BUDGET_YEAR_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="BUDGET_YEAR" length="255"/>
+        <viewAttribute datatype="BIGINT" id="PLAN_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="PLAN" length="255"/>
+        <viewAttribute datatype="BIGINT" id="REGION_ID"/>
+        <viewAttribute datatype="VARCHAR" id="REGION_NAME" length="255"/>
+        <viewAttribute datatype="BIGINT" id="SUBREGION_ID"/>
+        <viewAttribute datatype="VARCHAR" id="SUBREGION_NAME" length="255"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_TOTAL" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="REMAINING" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="ALLOCATED" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="VALUE" length="19" scale="2"/>
+        <viewAttribute datatype="NVARCHAR" id="BG_REGION_NAME" length="55"/>
+        <viewAttribute datatype="DECIMAL" id="PERCENTAGE" length="19" scale="2"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out = 
+ SELECT 
+  T.BUDGET_YEAR_ID
+, T.BUDGET_YEAR
+, T.HL2_ID AS PLAN_ID
+, T.PLAN
+, T.REGION_ID
+, T.REGION_NAME
+, T.SUBREGION_ID
+, T.SUBREGION_NAME
+, T.BUDGET_TOTAL
+, T.BUDGET_TOTAL - SUM(T.BUDGET_K_EUR) AS REMAINING
+, SUM(T.BUDGET_K_EUR) AS ALLOCATED
+, SUM(T.VALOR) AS VALUE
+, T.BG_REGION_NAME
+--, (SUM(T.VALOR) * 100)/T.BUDGET_TOTAL AS &quot;PERCENTAGE&quot;
+, (SUM(T.VALOR) * 100)/SUM(T.BUDGET_K_EUR) AS &quot;PERCENTAGE&quot;
+
+FROM
+
+(SELECT 
+  HL2.HL2_ID
+, HL2.ACRONYM AS PLAN
+, BUY.BUDGET_YEAR_ID
+, BUY.BUDGET_YEAR
+, HL2.REGION_ID
+, REG.REGION_NAME
+, HL2.SUBREGION_ID
+, SREG.SUBREGION_NAME
+, HL3_FNC.HL3_FNC_BUDGET_TOTAL AS BUDGET_TOTAL
+, HL4.HL4_ID
+, HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
+, R.REGION_NAME AS BG_REGION_NAME
+, HL4_BR.REGION_ID AS BR_REGION_ID
+, HL4_BR.percentage AS PERCENTAGE
+,(HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100 AS valor
+FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; REG ON REG.REGION_ID = HL2.REGION_ID 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; SREG ON SREG.SUBREGION_ID = HL2.SUBREGION_ID 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BUY ON BUY.BUDGET_YEAR_ID = HL2.BUDGET_YEAR_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL2_ID = HL2.HL2_ID 
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3_FNC&quot; HL3_FNC ON HL3_FNC.HL3_ID = HL3.HL3_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4 ON HL4.HL3_ID = HL3.HL3_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; HL4_FNC ON HL4.HL4_ID = HL4_FNC.HL4_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4_BR ON HL4_BR.HL4_ID = HL4.HL4_ID
+LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON R.REGION_ID = HL4_BR.REGION_ID
+WHERE 
+HL2.CREATED_USER_ID = 24 AND
+ HL2.TEAM_TYPE_ID = 1 -- ALL PLAN ARE REGIONAL
+AND HL4_BR.DELETED = 0 AND HL4_BR.ENABLED = 1
+) T
+GROUP BY 
+  T.HL2_ID
+  , T.BUDGET_YEAR_ID
+, T.BR_REGION_ID
+, T.REGION_NAME
+, T.BUDGET_TOTAL
+--, T.BUDGET_K_EUR;
+, T.PLAN
+, T.REGION_ID
+,T.BG_REGION_NAME
+, T.SUBREGION_ID
+, T.SUBREGION_NAME
+,T.BUDGET_YEAR;
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="BUDGET_YEAR_ID" order="1">
+        <descriptions defaultDescription="BUDGET_YEAR_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR_ID"/>
+      </attribute>
+      <attribute id="BUDGET_YEAR" order="2">
+        <descriptions defaultDescription="BUDGET_YEAR"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR"/>
+      </attribute>
+      <attribute id="PLAN_ID" order="3">
+        <descriptions defaultDescription="PLAN_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="PLAN_ID"/>
+      </attribute>
+      <attribute id="PLAN" order="4">
+        <descriptions defaultDescription="PLAN"/>
+        <keyMapping columnObjectName="Script_View" columnName="PLAN"/>
+      </attribute>
+      <attribute id="REGION_ID" order="5">
+        <descriptions defaultDescription="REGION_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="REGION_ID"/>
+      </attribute>
+      <attribute id="REGION_NAME" order="6">
+        <descriptions defaultDescription="REGION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="REGION_NAME"/>
+      </attribute>
+      <attribute id="SUBREGION_ID" order="7">
+        <descriptions defaultDescription="SUBREGION_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="SUBREGION_ID"/>
+      </attribute>
+      <attribute id="SUBREGION_NAME" order="8">
+        <descriptions defaultDescription="SUBREGION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="SUBREGION_NAME"/>
+      </attribute>
+      <attribute id="BUDGET_TOTAL" order="9">
+        <descriptions defaultDescription="BUDGET_TOTAL"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_TOTAL"/>
+      </attribute>
+      <attribute id="REMAINING" order="10">
+        <descriptions defaultDescription="REMAINING"/>
+        <keyMapping columnObjectName="Script_View" columnName="REMAINING"/>
+      </attribute>
+      <attribute id="BG_REGION_NAME" order="13">
+        <descriptions defaultDescription="BG_REGION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="BG_REGION_NAME"/>
+      </attribute>
+      <attribute id="PERCENTAGE" order="14">
+        <descriptions defaultDescription="PERCENTAGE"/>
+        <keyMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="ALLOCATED" order="11" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="ALLOCATED"/>
+        <measureMapping columnObjectName="Script_View" columnName="ALLOCATED"/>
+      </measure>
+      <measure id="VALUE" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="VALUE"/>
+        <measureMapping columnObjectName="Script_View" columnName="VALUE"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

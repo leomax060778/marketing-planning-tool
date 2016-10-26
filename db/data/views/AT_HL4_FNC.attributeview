@@ -59,6 +59,14 @@
       <descriptions defaultDescription="SPEND_CATEGORY_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_FNC" columnName="SPEND_CATEGORY_ID"/>
     </attribute>
+    <attribute id="DELETED" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_FNC" columnName="DELETED"/>
+    </attribute>
+    <attribute id="ENABLED" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_FNC" columnName="ENABLED"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

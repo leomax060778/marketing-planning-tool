@@ -5,7 +5,6 @@ var db = mapper.getdbHelper();
 var ErrorLib = mapper.getErrors();
 /*************************************************/
 var spGetOutcomesByOtId = "GET_OUTCOMES_BY_OUTCOMES_TYPE_ID";
-var spGetOutcomesByOutcomesTypeId = "GET_COUNT_OUTCOMES_BY_OUTCOMES_TYPE_ID";
 var spInsertOutcomes = "INS_OUTCOMES";
 var spUpdateOutcomes = "UPD_OUTCOMES";
 var spDeleteOutcomes = "DEL_OUTCOMES";
@@ -18,13 +17,6 @@ function getOutcomesByOtId(outcomeTypeId){
         }
         return null;
 };
-
-function getOutcomesCountByOutcomesTypeId(id){
-	if(id){
-		return db.executeScalar(spGetOutcomesByOutcomesTypeId, {'in_outcomes_type_id': id}, 'out_result');
-	}	
-	return null;
-}
 
 function insertOutcomes(parameters){
         return db.executeScalar(spInsertOutcomes, parameters, 'out_outcomes_id');

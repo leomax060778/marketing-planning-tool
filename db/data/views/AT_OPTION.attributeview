@@ -2,7 +2,6 @@
 <Dimension:dimension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_OPTION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
   <origin/>
   <descriptions defaultDescription="AT_OPTION"/>
-  <metadata changedAt="2016-08-31 09:44:07.713"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
     <attribute id="OPTION_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
@@ -20,10 +19,6 @@
     <attribute id="ORDER_OPTION" order="4" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="ORDER_OPTION"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="OPTION" columnName="ORDER_OPTION"/>
-    </attribute>
-    <attribute id="NOT_APPLICABLE" order="5" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="NOT_APPLICABLE"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="OPTION" columnName="NOT_APPLICABLE"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
@@ -47,7 +42,7 @@
         </shape>
         <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
           <upperLeftCorner x="40" y="85"/>
-          <rectangleSize/>
+          <rectangleSize height="0" width="0"/>
         </shape>
       </shapes>
     </layout>
