@@ -4,6 +4,8 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var login = mapper.getLogin();
+var permissions = mapper.getPermission();
+var config = mapper.getDataConfig();
 /******************************************/
 
 //constants
@@ -55,7 +57,7 @@ function notImplementedMethod(){
 }
 
 //This function choose method, between Get, Put, Post or Delete. Catch all error throwed across the entired app and validate the user per XS call.
-function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalidate) {
+function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalidate, ResourceID, WithOutPermission) {
 	try {
 		
 		/**********here  - Validate User() -----***/
@@ -63,10 +65,10 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 		
 		if(!Notvalidate){
 			userSessionID = validateUser(getHeaderByName("x-csrf-token"));
-//			throw ErrorLib.getErrors().CustomError("","error","hola");
-			//userSessionID = 1;
+	
 			if(!userSessionID)
-				throw ErrorLib.getErrors().Unauthorized(getHeaderByName("x-csrf-token"));
+				throw ErrorLib.getErrors().Unauthorized(getHeaderByName("x-csrf-token"));		
+			
 		}		
 		/**************************************************/
 		
@@ -74,18 +76,43 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 		
 		
 		    switch ($.request.method) {
-		        case $.net.http.GET:
+		        case $.net.http.GET:{
+		        	//Check Read Permission
+		        	if(!WithOutPermission){
+			        	permissions.isAuthorized(userSessionID,
+	        			config.getPermissionIdByName(config.ReadPermission()),
+	        			ResourceID);	
+		        	}
 		        	return getMethod(getUrlParameters(),userSessionID);
 		            break;
-		        case $.net.http.PUT:
+		        }		        	
+		        case $.net.http.PUT:{
+		        	if(!WithOutPermission){
+		        	permissions.isAuthorized(userSessionID,
+       		    	config.getPermissionIdByName(config.EditPermission()),
+         			ResourceID);
+		        	}
 		        	return putMethod(reqBody,userSessionID);
 		            break;
-	            case $.net.http.POST:
+		        }		        	
+	            case $.net.http.POST:{
+	            	if(!WithOutPermission){
+		        	permissions.isAuthorized(userSessionID,
+        			config.getPermissionIdByName(config.CreatePermission()),
+        			ResourceID);
+	            	}
 	            	return postMethod(reqBody,userSessionID);
 		            break;
-		        case $.net.http.DEL:
+	            }	            	
+		        case $.net.http.DEL:{
+		        	if(!WithOutPermission){
+		        	permissions.isAuthorized(userSessionID,
+        			config.getPermissionIdByName(config.DeletePermission()),
+        			ResourceID);
+		        	}
 		        	return deleteMethod(reqBody,userSessionID);
 		            break;
+		        }		        	
 		        default:
 		        	return notImplementedMethod();
 			    	break;

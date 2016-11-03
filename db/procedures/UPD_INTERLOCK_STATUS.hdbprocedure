@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_INTERLOCK_STATUS" (
+	IN in_interlock_id BIGINT,
+	IN in_status_id BIGINT,
+	IN in_email nvarchar(255),
+	OUT out_result BIGINT) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		UPDATE INTERLOCK_REQUEST
+		SET interlock_status_id = in_status_id,
+			modified_date_tz = CURRENT_TIMESTAMP,
+			requester_email = in_email
+		WHERE interlock_request_id = in_interlock_id;
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

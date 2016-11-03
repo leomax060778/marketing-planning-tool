@@ -4,10 +4,12 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var blBudgetReport = mapper.getBudgetReport();
+var config = mapper.getDataConfig();
 /******************************************/
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.dereport()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(parameters, userSessionID){

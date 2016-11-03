@@ -2,14 +2,15 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK_LOG_STATU
 	IN in_interlock_request_id BIGINT,
 	IN in_interlock_status_id BIGINT,
 	IN in_created_user_id BIGINT,
+	IN in_requester_email nvarchar(255),
 	OUT out_interlock_log_status_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-	INSERT INTO "PLANNING_TOOL"."LOG_INTERLOCK_REQUEST_STATUS" (interlock_request_id,interlock_status_id,created_user_id)
-	VALUES (in_interlock_request_id,in_interlock_status_id,in_created_user_id);
+	INSERT INTO "PLANNING_TOOL"."LOG_INTERLOCK_REQUEST_STATUS" (interlock_request_id,interlock_status_id,created_user_id, requester_email)
+	VALUES (in_interlock_request_id,in_interlock_status_id,in_created_user_id, in_requester_email);
 
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_interlock_log_status_id FROM "PLANNING_TOOL"."LOG_INTERLOCK_REQUEST_STATUS";
 END;

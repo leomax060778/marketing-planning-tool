@@ -1,0 +1,57 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_DETAILED_REPORT_WITH_COMMENT_CAMPAIGNFORECASTING" ( 
+		OUT out_result TABLE(
+							TEAM_TYPE_NAME NVARCHAR(255),
+                            HL2_ACRONYM NVARCHAR(25),
+                            HL2_DESCRIPTION NVARCHAR(255),
+                            BUDGET_YEAR INTEGER,
+                            REGION_NAME NVARCHAR(255),
+                            SUBREGION_NAME NVARCHAR(255),
+                            ORGANIZATION_ACRONYM NVARCHAR(25),
+                            ORGANIZATION_NAME NVARCHAR(255),
+                            HL2_BUDGET DECIMAL(19,2),
+                            HL3_ACRONYM NVARCHAR(25),
+                            HL3_DESCRIPTION NVARCHAR(255),
+                            HL3_BUDGET DECIMAL(19,2),
+                            HL4_ID BIGINT,
+                            HL4_ACRONYM NVARCHAR(25),
+                            HL4_CRM_DESCRIPTION NVARCHAR(100),
+                            HL4_STATUS_DETAIL NVARCHAR(255),
+                            INITIATIVE_DETAILS NVARCHAR(3000), 
+							BUSINESS_VALUE NVARCHAR(3000),
+                            BUDGET_Q1 DECIMAL(19,2),
+                            BUDGET_Q2 DECIMAL(19,2),
+                            BUDGET_Q3 DECIMAL(19,2),
+                            BUDGET_Q4 DECIMAL(19,2),
+                            HL4_BUDGET DECIMAL(19,2),
+                            SPEND_CATEGORY NVARCHAR(60),
+                            CATEGORY_NAME NVARCHAR(60),
+                            OPTION_NAME NVARCHAR(255),
+                            OPTION_AMOUNT DECIMAL(19,2),
+                            BUDGET_REGION_NAME NVARCHAR(255),
+                            BUDGET_REGION_PERCENTAGE DECIMAL(19,2),
+                            BUDGET_ROUTE_ACRONYM NVARCHAR(25),
+                            BUDGET_ROUTE_PERCENTAGE DECIMAL(19,2),
+                            SALE_REGION_NAME NVARCHAR(255),
+                            SALE_REGION_AMOUNT DECIMAL(19,2),
+                            SALE_ROUTE_ACRONYM NVARCHAR(25),
+                            SALE_ROUTE_AMOUNT DECIMAL(19,2),
+                            SALE_OTHER_DESCRIPTION NVARCHAR(255),
+                            SALE_OTHER_AMOUNT DECIMAL(19,2),
+                            OUTCOMES_TYPE_NAME NVARCHAR(127),
+                            OUTCOMES_NAME NVARCHAR(255),
+                            HL4_EXPECTED_OUTCOMES_EURO_VALUE DECIMAL(19,2),
+                            HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE DECIMAL(19,2),
+                            TOTAL_MY_BUDGET DECIMAL(19,2),
+                            TOTAL_SALE DECIMAL(19,2),
+                            TOTAL_PARTNER DECIMAL(19,2),
+                            TOTAL_BUDGET DECIMAL(19,2),
+                            COMMENTS NVARCHAR(255)
+							)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_result=select *	from "_SYS_BIC"."xsplanningtool.db.data.views/CV_DETAILED_REPORT_WITH_COMMENT_CAMPAIGNFORECASTING"; 
+END;

@@ -26,7 +26,50 @@ var pathBL = mapper.getPath();
 var config = mapper.getDataConfig();
 /*************************************************/
 
-var levelCampaign = "Initiative / Campaign";
+var levelCampaign = "Initiative/Campaign";
+var L3_MSG_INITIATIVE_NOT_FOUND = "The Initiative/Campaign can not be found.";
+var L3_MSG_USER_NOT_FOUND = "The User can not be found.";
+var L3_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";	
+var L3_MSG_CANNOT_DEL_STATUS = "Cannot delete this selected Initiative/Campaign, because the status doesn´t allow it.";
+var L3_MSG_INITIATIVE_CANT_DEL_CHILD = "The selected Initiative/Campaign can not be deleted because has childs.";
+var L3_MSG_INITIATIVE_DETAIL = "The Initiative/Campaign details can not be null or empty.";
+var L3_MSG_INITIATIVE_BUSINESS = "The Initiative/Campaign business value can not be null or empty.";
+var L3_MSG_INITIATIVE_ACRONYM = "The Initiative/Campaign acronym can not be null or empty.";
+var L3_MSG_INITIATIVE_IN_CRM = "Cannot modified CRM ID if already exists in CRM.";
+var L3_MSG_INITIATIVE_EXISTS = "Another Initiative/Campaign with the same acronym already exists.";
+var L3_MSG_INITIATIVE_ACRONYM_LENGTH = "The Initiative/Campaign Acronym length must be 3 character.";
+var L3_MSG_INITIATIVE_CRM_DESCRIPTION = "The Initiative/Campaign CRM description can not be null or empty.";
+var L3_MSG_INITIATIVE_BUDGET_DATA = "The Initiative/Campaign Budget data can not be found.";
+var L3_MSG_INITIATIVE_BUDGET_VALUE = "The Initiative/Campaign Budget value must be greater than zero.";
+var L3_MSG_INITIATIVE_CURRENCY = "The Initiative/Campaign Currency can not be found.";
+var L3_MSG_INITIATIVE_BUDGET_SPEND = "The Initiative/Campaign Budget spend must be set.";
+var L3_MSG_INITIATIVE_BUDGET_SPEND_PERCENT = "The Initiative/Campaign Budget Spend must be 100%.";
+var L3_MSG_INITIATIVE_MY_BUDGET = " The Initiative/Campaign in My Budget can not be found.";
+var L3_MSG_INITIATIVE_BUDGET_PERCENT = "The Initiative/Campaign in My Budget percentage should be less than or equal to 100%.";
+var L3_MSG_INITIATIVE_SALES_OTHER = "The Initiative/Campaign in Sales Other has not attributes.";
+var L3_MSG_INTERLOCK_ENTITY = "Interlock entity can not be found.";
+var L3_MSG_INTERLOCK_REQ_RESOURCE = "Interlock request resource and budget can not be found.";
+var L3_MSG_INTERLOCK_REQ_BUDGET = "Interlock request budget can not be found.";
+var L3_MSG_INTERLOCK_ORGANIZATION = "Interlock organization can not be found.";
+var L3_MSG_INTERLOCK_ORGANIZATION_TYPE = "Interlock organization type can not be found.";
+var L3_CAMPAIGN_FORECASTING_KPIS_DETAILS = "Campaign Forecasting / KPIS details amount value is not valid."; 
+var L3_CAMPAIGN_FORECASTING_KPIS_DETAILS_EURO = "Campaign Forecasting / KPIS details euro value is not valid.";
+var L3_CAMPAIGN_FORECASTING_KPIS_NOT_VALID = "Campaign Forecasting / KPIS is not valid.";
+var L3_PARTNER_TYPE_NOT_VALID = "Partner type is not valid.";
+var L3_PARTNER_NAME_NOT_FOUND = "Partner name can not be found.";
+var L3_PARTNER_REGION_NOT_VALID = "Partner region is not valid.";
+var L3_PARTNER_VALUE_NOT_VALID = "Partner value is not valid.";
+var L3_CATEGORY_NOT_EMPTY = "Category cannot be empty.";
+var L3_CATEGORY_INCORRECT_NUMBER = "Incorrect number of categories.";
+var L3_CATEGORY_NOT_VALID = "Category is not valid.";
+var L3_CATEGORY_OPTIONS_NOT_EMPTY = "Category Options cannot be empty.";
+var L3_CATEGORY_OPTIONS_INCORRECT_NUMBER = "Incorrect number of options.";
+var L3_CATEGORY_OPTION_NOT_VALID = "Option is not valid.";
+var L3_CATEGORY_NOT_VALID = "Category is not valid.";
+var L3_CATEGORY_TOTAL_PERCENTAGE = "Category total percentage should be less than or equal to 100%.";
+var L3_CATEGORY_OPTION = "Error while trying to save Option.";
+var L3_CATEGORY_OPTION_NOT_VALID = "Option or User is not valid.";
+
 var HL4_STATUS = {
 	IN_PROGRESS : 1,
 	LOAD_DATA_ENTRY : 2,
@@ -34,6 +77,13 @@ var HL4_STATUS = {
 	UPDATE_IN_CRM : 4,
 	EXCEED_BUDGET : 5,
 	COMPLETE : 6
+};
+
+var INTERLOCK_STATUS = {
+		NO_RESPONSE: 1,
+		APPROVED: 2,
+		REJECTED: 3,
+		MORE_INFOR: 4
 };
 
 /** ****************END CONSTANTS***************** */
@@ -85,7 +135,7 @@ function getHl4(id){
 
 function getHl4ById(id){
 	if(!id) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","hl4Services/handleGet/getHl4ById", "The " + levelCampaign + " can not be found." );
+		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","hl4Services/handleGet/getHl4ById", L3_MSG_INITIATIVE_NOT_FOUND);
 	try{
 		var hl4_fnc = util.extractObject(dataHl4.getHl4FncByHl4Id(id));
 		var partner = partnerLib.getPartnerByHl4Id(id);
@@ -117,7 +167,7 @@ function getHl4ById(id){
 
 function getUserById(id){
 	if(!id) 
-		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","userServices/handleGet/getUserById", "User can not be found.");	
+		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","userServices/handleGet/getUserById", L3_MSG_USER_NOT_FOUND);	
 	return dbUser.getUserById(id);
 	
 }
@@ -328,26 +378,17 @@ function insertHl4(data, userId){
 						});
 					}
 				});
-				
 				data.interlock.forEach(function(interlock){
 					var il = {};
-					var hash = getSYSUUID();
 					il.in_entity_id= interlock.in_entity_id;
 					il.in_hl4_id = hl4_id;
 					il.in_organization_type_id= interlock.organization.type === 'globalTeam' ? 1 :
 						interlock.organization.type === 'region' ? 2 :
 							interlock.organization.type === 'subregion' ? 3 : 0;
-					/*
-					 * TODO: remove hardcoded in_requested_user_id
-					 */
-					il.in_requested_user_id= 1;
 					il.in_requested_resource= interlock.in_requested_resource;
 					il.in_requested_budget= Number(interlock.in_requested_budget) / conversionValue;
 					il.in_created_user_id= userId;
-					il.in_interlock_status_id = 1;
-					il.in_hash = hash;
-					il.in_salt = hash;
-					
+					il.in_interlock_status_id = INTERLOCK_STATUS.NO_RESPONSE;					
 					var interlock_id = dataInterlock.insertInterlock(il);
 					var id = null;
 					if((interlock_id > 0) && !!interlock.organization.id){
@@ -369,13 +410,17 @@ function insertHl4(data, userId){
 					}
 					interlockResult = interlockResult && (interlock_id > 0) && (id > 0);
 					if(interlockResult){
-						var parameter = {
-								"in_interlock_request_id": interlock_id,
-								"in_interlock_status_id": il.in_interlock_status_id,
-								"in_created_user_id": userId
-						}
-						dataInterlock.insertInterlockLogStatus(parameter);
-						notifyInterlockEmail(interlock.in_contact_data,il.in_hash);
+						dataInterlock.insertInterlockLogStatus(interlock_id,  il.in_interlock_status_id, userId, "");
+						var contactEmails = interlock.in_contact_data.split(";");
+						var contactData = [];
+						contactEmails.forEach(function(email){
+							contactData.push({'email': email, 'hash': getSYSUUID()});
+						});
+						dataInterlock.insertInterlockContactData(interlock_id, contactData, userId);
+						contactData.forEach(function(contact){
+							notifyInterlockEmail(contact.email,contact.hash);
+							dataInterlock.setSentMailByHash(contact.hash, userId);
+						});
 					}
 				});
 				transactionOk = !!hl4_id && !!hl4_fnc_id && hl4_expected_outcomes && hl4_expected_outcomes_detail && hl4_budget_regions && hl4_budget_subregions && hl4_budget_route && hl4_sale_regions && hl4_sale_subregions && hl4_sale_route && hl4_sale_other_regions && hl4_sale_other_subregions && hl4_sale_other && partnerOK && hl4_partner && hl4_category && hl4_category_option && interlockResult;
@@ -400,13 +445,13 @@ function insertHl4(data, userId){
 
 function updateHl4(data, userId){
 	if(!data.hl4.in_hl4_id)
-	    throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4","The " + levelCampaign + " is not found.");
+	    throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4", L3_MSG_INITIATIVE_NOT_FOUND);
 
 	if(!util.validateIsNumber(data.hl4.in_hl4_id))
-	    throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4","The " + levelCampaign + " is invalid.");
+	    throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4", L3_MSG_INITIATIVE_NOT_FOUND);
 	
 	if(!userId)
-	    throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4","The User can not be found.");
+	    throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4", L3_MSG_USER_NOT_FOUND);
 	
 	try{
 		
@@ -618,34 +663,21 @@ function updateHl4(data, userId){
 	                });
 	            });
 
-	            //dataInterlock.deleteInterlockLogStatus(hl4_id);
-	            //dataInterlock.deleteInterlockRoute(deleteParameters);
-	            //dataInterlock.deleteInterlockRegion(deleteParameters);
-	            //dataInterlock.deleteInterlockSubregion(deleteParameters);
-	            //dataInterlock.deleteInterlock(deleteParameters);
 	            var hl4Interlock = dataInterlock.getInterlockByHl4Id(hl4_id);
 	            data.interlock.forEach(function(interlock){
 	            	if(!interlock.in_interlock_request_id){
+	            		
 	            		var il = {};
-		                var hash = getSYSUUID();
-		                il.in_entity_id= interlock.in_entity_id;
-		                il.in_hl4_id = hl4_id;
-		                il.in_organization_type_id= interlock.organization.type === 'globalTeam' ? 1 :
-							interlock.organization.type === 'region' ? 2 :
-								interlock.organization.type === 'subregion' ? 3 : 0;
-						/*
-						 * TODO: remove hardcoded in_requested_user_id
-						 */
-		                //il.in_requested_user_id= interlock.in_requested_user_id;
-						il.in_requested_user_id= 1;
-		                
-		                il.in_requested_resource= interlock.in_requested_resource;
-		                il.in_requested_budget= Number(interlock.in_requested_budget) / conversionValue;
-		                il.in_created_user_id= userId;
-		                il.in_interlock_status_id = 1;
-		                il.in_hash = hash;
-		                il.in_salt = hash;
-
+	            		il.in_entity_id= interlock.in_entity_id;
+	            		il.in_hl4_id = hl4_id;
+	            		il.in_organization_type_id= interlock.organization.type === 'globalTeam' ? 1 :
+	            			interlock.organization.type === 'region' ? 2 :
+	            				interlock.organization.type === 'subregion' ? 3 : 0;
+	            		il.in_requested_resource= interlock.in_requested_resource;
+	            		il.in_requested_budget= Number(interlock.in_requested_budget) / conversionValue;
+	            		il.in_created_user_id= userId;
+	            		il.in_interlock_status_id = INTERLOCK_STATUS.NO_RESPONSE;
+	            			                
 		                var interlock_id = dataInterlock.insertInterlock(il);
 		            	
 		                var id = null;
@@ -669,14 +701,20 @@ function updateHl4(data, userId){
 		                }
 		                
 		                interlockResult = interlockResult && interlock_id && id;
-		                if(interlockResult){
-			                 var parameter = {
-				                 "in_interlock_request_id": interlock_id,
-				                 "in_interlock_status_id": il.in_interlock_status_id,
-				                 "in_created_user_id": userId
-			                 }
-			                 dataInterlock.insertInterlockLogStatus(parameter);
-			                 notifyInterlockEmail(interlock.in_contact_data,il.in_hash);
+		                if(interlockResult){               
+			                 
+			                 dataInterlock.insertInterlockLogStatus(interlock_id,  il.in_interlock_status_id, userId, "");
+
+							var contactEmails = interlock.in_contact_data.split(";");
+							var contactData = [];
+							contactEmails.forEach(function(email){
+								contactData.push({'email': email, 'hash': getSYSUUID()});
+							});
+							dataInterlock.insertInterlockContactData(interlock_id, contactData, userId);
+							contactData.forEach(function(contact){
+								notifyInterlockEmail(contact.email,contact.hash);
+								dataInterlock.setSentMailByHash(contact.hash, userId);
+							});
 		                 }
 	            	}
 	            });
@@ -694,15 +732,15 @@ function updateHl4(data, userId){
 	    	            	};
     	            	});
 	            		if(deleted){
-	            			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4",il.INTERLOCK_REQUEST_ID + "----" + il.REQUESTED_BUDGET);
 	            			ilToDelete.push(il.INTERLOCK_REQUEST_ID);
 	            		}
 	            	});
 	            	ilToDelete.forEach(function(IlId){
-	            		//dataInterlock.deleteInterlockLogStatusByIlId(IlId, userId);
 	            		dataInterlock.deleteInterlockRouteByIlId(IlId, userId);
 	            		dataInterlock.deleteInterlockRegionByIlId(IlId, userId);
 	            		dataInterlock.deleteInterlockSubregionByIlId(IlId, userId);
+	            		dataInterlock.deleteInterlockContactDataByIlId(IlId, userId);//delete il contact data
+	            		dataInterlock.deleteInterlockRequestMessageByIlId(IlId, userId);//delete il message
 	            		dataInterlock.deleteInterlockByIlId(IlId, userId);
 	            	});
 	            };
@@ -731,21 +769,21 @@ function updateHl4(data, userId){
 
 function deleteHl4(hl4, userId, rollBack){
 	if(!hl4.in_hl4_id && !rollBack)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","The "+ levelCampaign + " can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4", L3_MSG_INITIATIVE_NOT_FOUND);
 	
 	if(!rollBack && !util.validateIsNumber(hl4.in_hl4_id))
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","The " + levelCampaign + " can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4", L3_MSG_INITIATIVE_NOT_FOUND);
 
 	var userRoleId = Number(dbUser.getUserRoleByUserId(userId)[0].ROLE_ID);
 	if(!rollBack && userRoleId !== 1 && userRoleId !== 2)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","Not enough privilege to do this action.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4", L3_MSG_NO_PRIVILEGE);
 	
 	var hl4StatusId = !rollBack ? Number(dataHl4.getHl4StatusByHl4Id(hl4.in_hl4_id).HL4_STATUS_DETAIL_ID) : 0;
 	if(!rollBack && hl4StatusId !== HL4_STATUS.IN_CRM && hl4StatusId !== HL4_STATUS.UPDATE_IN_CRM)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","Cannot delete this Item, status doesn´t allow it.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4",L3_MSG_CANNOT_DEL_STATUS);
 	
 	if(!rollBack && dataHl4.getCountHl4Childrens(hl4.in_hl4_id) > 0)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4","Cannot delete this " + levelCampaign + ", it has associated to Level 4.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4", L3_MSG_INITIATIVE_CANT_DEL_CHILD);
 	
 	try{
 		hl4.in_user_id = userId;
@@ -759,7 +797,10 @@ function deleteHl4(hl4, userId, rollBack){
 		dataInterlock.deleteInterlockRoute(hl4);		
 		dataInterlock.deleteInterlockRegion(hl4);
 		dataInterlock.deleteInterlockSubregion(hl4);
+		dataInterlock.deleteInterlockContacDataByHl4Id(hl4);
+		dataInterlock.deleteInterlockRequestMessageByHl4Id(hl4);
 		dataInterlock.deleteInterlock(hl4);
+		
 		dataHl4.deleteHl4Fnc(hl4);
 		level4DER.deleteL4ChangedFieldsByHl4Id(hl4_id);
 		dataHl4.deleteHl4CategoryOption(hl4);
@@ -790,51 +831,51 @@ function deleteHl4(hl4, userId, rollBack){
 function validateHl4(data){
 	var existInCrm = 0;
 	if(!data)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_NOT_FOUND);
 	
 	if(!data.hl4.in_hl4_details)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " details can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_DETAIL);
 	
 	if(!data.hl4.in_hl4_business_details)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " business Value can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUSINESS);
 	
 	if(!data.hl4.in_acronym)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " acronym can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_ACRONYM);
 	
 	var hl4 = dataHl4.getHl4ByAcronym(data.hl4.in_acronym)[0];var existInCrm = 0;
 	
 	if(data.hl4.in_hl4_id){
 		existInCrm = dataHl4.existsInCrm(data.hl4.in_hl4_id);
 		if(existInCrm && data.hl4.in_acronym != hl4.ACRONYM)
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", "Cannot modified CRM ID if already exists in CRM.");
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_IN_CRM);
 	}
 	
 	if(data.hl4.in_hl4_id && hl4 && hl4.HL4_ID != data.hl4.in_hl4_id)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", "The " + levelCampaign + " Acronym already exists.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_EXISTS);
 	
 	if(!data.hl4.in_hl4_id && hl4)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", "The " + levelCampaign + " Acronym already exists.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_EXISTS);
 	
 	if(data.hl4.in_acronym.length !== 3)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", "The " + levelCampaign + "Acronym length must be 3 leters");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_ACRONYM_LENGTH);
 	
 	if(!data.hl4.in_hl4_crm_description)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Crm description can not be empty.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CRM_DESCRIPTION);
 	
 	if(!data.hl4_fnc)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Budget data can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_DATA);
 	
 	if(!data.hl4_fnc.in_hl4_fnc_budget_total_mkt)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Budget value must be greater than zero.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_VALUE);
 	
 	if(!data.hl4_fnc.in_euro_conversion_id)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Currency can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
 	
 	if(!Number(data.hl4_fnc.in_euro_conversion_id))
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Currency can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
 	
 	if(!data.hl4_fnc.in_hl4_fnc_budget_spend_q1 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q2 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q3 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q4)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Budget spend must be set.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND);
 	
 	var q1 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) || 0;
 	var q2 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) || 0;
@@ -844,10 +885,10 @@ function validateHl4(data){
 	var budgetSpend = q1 + q2 + q3 +q4;
 	
 	if(budgetSpend < 100)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " Budget Spend must be 100%.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND_PERCENT);
 
 	if(!data.hl4_budget)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", levelCampaign + " My Budget can not be found.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_MY_BUDGET);
 	var hl4MyBudgetKeys = Object.keys(data.hl4_budget);
 	var myBudgetTotalPercentage = 0;
 	var myBudgetComplete = false;
@@ -869,7 +910,7 @@ function validateHl4(data){
 		}
 	});
 	if(myBudgetTotalPercentage > 100)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","The " + levelCampaign + " in My Budget percentage should be less than or equal to 100%");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_PERCENT);
 	if(myBudgetTotalPercentage < 100)
 		myBudgetTotalPercentage = 0;
 	
@@ -897,18 +938,18 @@ function validateHl4(data){
 	if(data.interlock && data.interlock.length){
 		data.interlock.forEach(function(interlock){
 			if(!interlock.in_entity_id)
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Interlock entity can not be found.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INTERLOCK_ENTITY);
 			if(!interlock.in_requested_budget && !interlock.in_requested_resource)
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Interlock request resource and budget can not be found.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INTERLOCK_REQ_RESOURCE);
 			if(!Number(interlock.in_requested_budget))
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Interlock request budget can not be found.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INTERLOCK_REQ_BUDGET);
 			if(!interlock.organization) {
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Interlock organization can not be found.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INTERLOCK_ORGANIZATION);
 			} else {
 				if(!interlock.organization.type)
-					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Interlock organization type can not be found.");
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INTERLOCK_ORGANIZATION_TYPE);
 				if(!interlock.organization.id)
-					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Interlock organization can not be found.");
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INTERLOCK_ORGANIZATION);
 			}
 			
 		})
@@ -917,32 +958,32 @@ function validateHl4(data){
 	if(data.hl4_expected_outcomes && data.hl4_expected_outcomes.hl4_expected_outcomes_detail.length){
 			data.hl4_expected_outcomes.hl4_expected_outcomes_detail.forEach(function(hl4ExpectedOutcomesDetail){
 				if(hl4ExpectedOutcomesDetail.in_amount_value != 0 && !Number(hl4ExpectedOutcomesDetail.in_amount_value))
-					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Expected Outcomes details amount value is not valid.");
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CAMPAIGN_FORECASTING_KPIS_DETAILS);
 				if(!hl4ExpectedOutcomesDetail.in_euro_value || !Number(hl4ExpectedOutcomesDetail.in_euro_value))
-					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Expected Outcomes details euro value is not valid.");
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CAMPAIGN_FORECASTING_KPIS_DETAILS_EURO);
 				if(!hl4ExpectedOutcomesDetail.in_outcomes_id || !Number(hl4ExpectedOutcomesDetail.in_outcomes_id))
-					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Expected Outcome is not valid.");
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CAMPAIGN_FORECASTING_KPIS_NOT_VALID);
 			});
 	}
 	
 	if(data.partners && data.partners.length){
 		data.partners.forEach(function(partner){
 			if(!partner.in_partner_type_id || !Number(partner.in_partner_type_id))
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Partner type is not valid.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_PARTNER_TYPE_NOT_VALID);
 			if(!partner.in_partner_name)
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Partner name can not be found.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_PARTNER_NAME_NOT_FOUND);
 			if(!partner.in_region_id || !Number(partner.in_region_id))
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Partner region is not valid.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_PARTNER_REGION_NOT_VALID);
 			if(!partner.in_value || !Number(partner.in_value))
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Partner value is not valid.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_PARTNER_VALUE_NOT_VALID);
 		});
 	}
 		
 	if(!data.hl4_category)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Category cannot be empty.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4",L3_CATEGORY_NOT_EMPTY);
 	
 	if(data.hl4_category.length !== dataCategory.getCountByHlId("hl4"))
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Incorrect number of categories.");
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_INCORRECT_NUMBER);
 	
 	var totalPercentage = 0;
 	
@@ -951,14 +992,14 @@ function validateHl4(data){
 		var hl4Category = data.hl4_category[i];
 		var percentagePerOption = 0;
 		if(!hl4Category.in_category_id || !Number(hl4Category.in_category_id))
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Category is not invalid.");
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_NOT_VALID);
 		if(!hl4Category.hl4_category_option.length)
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Category Options cannot be empty.");
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_OPTIONS_NOT_EMPTY);
 		if(hl4Category.hl4_category_option.length !== dataOption.getOptionCountByCategoryId(hl4Category.in_category_id))
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Incorrect number of options.");
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_OPTIONS_INCORRECT_NUMBER);
 		hl4Category.hl4_category_option.forEach(function(option){
 			if(!option.in_option_id || !Number(option.in_option_id))
-				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Option is not valid.");
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_OPTION_NOT_VALID);
 			if((parseFloat(option.in_amount) && !Number(option.in_amount)) || Number(option.in_amount) > 100 || Number(option.in_amount) < 0)
 				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Option value is not valid (actual value " + option.in_amount + ")");
 
@@ -966,7 +1007,7 @@ function validateHl4(data){
 
 		});
 		if(percentagePerOption > 100){
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4","Category total percentage should be less than or equal to 100%.");
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_TOTAL_PERCENTAGE);
 		} else if (percentagePerOption < 100){
 			categoryOptionComplete = false;
 			break;
@@ -994,7 +1035,7 @@ function validateSaleOthers(others){
 			keys.forEach(function(key) {
 				if (obj[key] === null || obj[key] === undefined) {
 					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4"
-							,"The " + levelCampaign + " in Sales Other has not attributes.");
+							, L3_MSG_INITIATIVE_SALES_OTHER);
 				} else {
 					// validate attribute type
 					if(key === "in_description")
@@ -1242,12 +1283,12 @@ function insertHl4CategoryOption(optionId, userId){
 				};
 				
 				if(!dataHl4.insertHl4CategoryOption(parameters))
-					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4CategoryOption","Error while trying to save Option.");
+					throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4CategoryOption", L3_CATEGORY_OPTION);
 				
 				setHl4Status(hl4Category.HL4_id, HL4_STATUS.IN_PROGRESS, userId);
 			});
 		} else {
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4CategoryOption","Option or User is not valid.");
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4CategoryOption", L3_CATEGORY_OPTION_NOT_VALID);
 		}
 		db.commit();
 	} catch(e) {
@@ -1461,14 +1502,37 @@ function notifyChangeByEmail(data, userId, event){
 
 }
 
+function sendProcessingReportEmail(hl4Id){
+	var objHl3 = {};
+	objHl3.IN_HL3_ID = hl4.HL4_ID;
+		
+	var hl4 = dataHl4.getHl4ById(hl4Id);
+	var hl3 = dataHl3.getLevel3ById(objHl3);
+	var hl3OwnerEmail = getUserById(hl3.CREATED_USER_ID).EMAIL;
+	
+	/*TODO: change TO email for a real email account*/
+	var TO = 'fsavat@folderit.net';
+	 var body = '<p> Dear Colleague </p>';
+	 body += '<p>An initiative has been created in CRM.</p><br>';
+	 body += '<p>' + appUrl + '/TeamPlanHierarchy/Level3/edit/' + hl4.HL3_ID + '/' + hl4Id + '</p>';
+	 
+	 //body +='http://localhost:63342/sap-fiori/webapp/index.html#/TeamPlanHierarchy/Level3/edit/' + hl4.HL3_ID + '/' + hl4Id;
+	
+	 var mailObject = mail.getJson([ {
+		  "address" : hl3OwnerEmail
+		 } ], "Marketing Planning Tool - Interlock Process", body);
+		 
+		 mail.sendMail(mailObject,true);
+}
+
 function notifyInterlockEmail(TO,token){
 	 var appUrl = config.getAppUrl();
 	 var body = '<p> Dear Colleague </p>';
 	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/interlock/' + token + '</p>';
+	 body += '<p>' + appUrl + '/InterlockManagement/' + token + '</p>';
 	 var mailObject = mail.getJson([ {
 	  "address" : TO
 	 } ], "Marketing Planning Tool - Interlock Process", body);
 	 
 	 mail.sendMail(mailObject,true);
-	}
+}

@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_INTERLOCK_CONTACT_DATA_BY_HASH" ( 
+	in in_hash nvarchar(255),
+	OUT out_result TABLE
+	(INTERLOCK_CONTACT_DATA_ID bigint
+	, INTERLOCK_REQUEST_ID bigint
+	, EMAIL nvarchar(255)
+	, HASH nvarchar(255)
+	, CREATED_USER_ID bigint
+	)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+  out_result = select 
+	INTERLOCK_CONTACT_DATA_ID
+	,INTERLOCK_REQUEST_ID
+	,EMAIL
+	,HASH
+	,CREATED_USER_ID
+	FROM INTERLOCK_CONTACT_DATA
+	WHERE 
+	HASH = in_hash
+	and ENABLED = 1 and DELETED = 0;
+END;

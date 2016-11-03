@@ -67,6 +67,8 @@ var spDeleteHl4CRMBinding = "DEL_HL4_CRM_BINDING";
 
 var HL4_EXISTS_IN_CRM = "HL4_EXISTS_IN_CRM";
 var HL4_CHANGE_STATUS = "HL4_CHANGE_STATUS";
+
+var spInsInterlockDataContact = "INS_INTERLOCK_DATA_CONTACT";
 /******************************************************/
 
 function getAllHl4(){
@@ -408,4 +410,16 @@ function getHl4Childrens(hl4_id){
 	var parameters = {"in_hl4_id": hl4_id};
 	var totalHl5 = db.executeScalarManual(spGetCountHl5ByHl4Id, parameters, 'out_total_hl5');
 	return totalHl5;
+}
+
+function insertInterlockDataContact(Interlock_id, email, user_id){
+	
+	var parameters = {
+			"IN_INTERLOCK_ENTITY_ID": Interlock_id,
+			"IN_FIRST_NAME" : "",
+			"IN_LAST_NAME" : "",
+			"IN_EMAIL" : email,
+			"IN_CREATED_USER_ID" : user_id
+			};
+	return db.executeProcedure(spInsInterlockDataContact, parameters);	
 }

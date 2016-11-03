@@ -20,8 +20,8 @@ BEGIN
 					ON ilrs.subregion_id = subregion.subregion_id
 					where ilrs.deleted = 0 and ilrs.enabled = 1 and ilrs.INTERLOCK_REQUEST_ID = in_interlock_id)
 					UNION
-					(SELECT hl3.hl3_id as id,
-					hl3.acronym as name from INTERLOCK_REQUEST_ROUTE ilrr INNER JOIN HL3 hl3
-					ON ilrr.route_id = hl3.hl3_id
+					(SELECT hl2.hl2_id as id,
+					hl2.organization_acronym as name from INTERLOCK_REQUEST_ROUTE ilrr INNER JOIN HL2 hl2
+					ON ilrr.route_id = hl2.hl2_id
 					where ilrr.deleted = 0 and ilrr.enabled = 1 and ilrr.INTERLOCK_REQUEST_ID = in_interlock_id);
 END;

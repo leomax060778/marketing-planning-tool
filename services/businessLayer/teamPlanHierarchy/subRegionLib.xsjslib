@@ -8,6 +8,10 @@ function getSubRegionsByRegionId(regionId){
 	return dataSubRegion.getSubRegionsByRegionId(regionId);
 }
 
+function getAllSubRegions(){
+	return dataSubRegion.getAllSubRegions();
+}
+
 function insertSubregion(subregion, createUser) {
 	if (validateSubregion(subregion)) {
 		return dataSubRegion.insertSubregion(subregion, createUser);

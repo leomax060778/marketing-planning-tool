@@ -4,6 +4,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CATEGORY" (
 	IN in_nametag NVARCHAR(255),
 	IN in_hierarchy_level_id BIGINT,
 	IN in_measure_id BIGINT,
+	IN in_in_processing_report TINYINT,
 	IN in_user_id BIGINT,
 	OUT out_result BIGINT
 )
@@ -18,7 +19,8 @@ BEGIN
             category.name = in_nametag,
             category.description = in_description,
             category.modified_date_tz = CURRENT_TIMESTAMP,
-            category.modified_user_id = in_user_id
+            category.modified_user_id = in_user_id,
+            category.in_processing_report = in_in_processing_report
         FROM "PLANNING_TOOL"."CATEGORY" category
         WHERE category_id = in_category_id;
         

@@ -45,7 +45,6 @@ function getTokenSession(reqBody){
 		}
 		
 		var testUserToken = "token found";
-		
 		if (!currentUserToken) {
 			testUserToken = "no token found";
 		}
@@ -105,7 +104,7 @@ function getUserToken(userId) {
 			// Validate token is still valid
 			var userSessionInfo = userToken[0];
 			var currentUserToken = userSessionInfo['TOKEN_VALID_UNTIL_DATE_TZ'];
-			throw new Error($.net.http.INTERNAL_SERVER_ERROR + " " + JSON.stringify(userSessionInfo));
+			//throw new Error($.net.http.INTERNAL_SERVER_ERROR + " " + JSON.stringify(userSessionInfo));
 			if (new Date(currentUserToken) >= new Date())
 				return userSessionInfo['TOKEN'];
 		}
@@ -113,7 +112,7 @@ function getUserToken(userId) {
 		return null;
 	} catch (e) {
 		conn2.close();
-		throw new Error($.net.http.INTERNAL_SERVER_ERROR + " " + e.toString());
+		throw new Error($.net.http.INTERNAL_SERVER_ERROR + " getUserToken - " + e.toString());
 	}
 }
 

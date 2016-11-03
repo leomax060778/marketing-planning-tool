@@ -5,11 +5,12 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var businessError = mapper.getLogError();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /******************************************/
 
 
 function processRequest(){
-	httpUtil.processRequest(handlePost,handlePost,handlePost,handlePost);
+	httpUtil.processRequest(handlePost,handlePost,handlePost,handlePost, false,"",true);
 }
 
 //Not Implemented Method

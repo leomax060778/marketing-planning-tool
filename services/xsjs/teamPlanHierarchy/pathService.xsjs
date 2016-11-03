@@ -4,13 +4,14 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var blPath = mapper.getPath();
+var config = mapper.getDataConfig();
 /******************************************/
 
 var LEVEL = "LEVEL";
 var HL_ID = "HL_ID";
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, "", true);
 }
 
 //Implementation of GET call

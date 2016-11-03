@@ -14,10 +14,8 @@ BEGIN
 			   measure_id,
 			   name,
 			   description,
-				hl4Category.IN_PROCESSING_REPORT
+				IN_PROCESSING_REPORT
 		FROM "PLANNING_TOOL".category category
-		INNER JOIN HL4_CATEGORY hl4Category 
-		on hl4Category.category_id = category.category_id
 		WHERE hierarchy_level_id = in_hierarchy_level_id
 		  AND category.enabled = 1
 		  AND category.deleted = 0;

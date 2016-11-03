@@ -4,6 +4,7 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var businessLavel3 = mapper.getLevel3();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /** *************************************** */
 var section = "FOR_SEARCH";
 var GET_ALL_HL3 = "GET_ALL_HL3";
@@ -11,7 +12,8 @@ var GET_BY_HL3_ID = "GET_BY_HL3_ID";
 
 // Main function
 function processRequest() {
-	httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete);
+	return httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete,false, config.getResourceIdByName(config.level2()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 // function to manage an post request

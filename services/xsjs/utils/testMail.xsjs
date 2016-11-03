@@ -6,6 +6,7 @@ var httpUtil = mapper.getHttp();
 var businessError = mapper.getLogError();
 var ErrorLib = mapper.getErrors();
 var businessMail = mapper.getMail();
+var config = mapper.getDataConfig();
 /******************************************/
 
 /* JSON para testear
@@ -18,7 +19,7 @@ var businessMail = mapper.getMail();
  * */
 
 function processRequest(){
-	httpUtil.processRequest(handlePost,handlePost,handlePost,handlePost, true);
+	httpUtil.processRequest(handlePost,handlePost,handlePost,handlePost, true,"",true);
 }
 
 //Not Implemented Method

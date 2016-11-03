@@ -4,23 +4,46 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var l4Lib = mapper.getLevel4();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
+var permissions = mapper.getPermission();
 /******************************************/
 
-function processRequest(){
+function processRequest(Notvalidate){
 	try {
+		
+		var userSessionID = null;		
+		if(!Notvalidate){
+			userSessionID = httpUtil.validateUser(httpUtil.getHeaderByName("x-csrf-token"));	
+			if(!userSessionID)
+				throw ErrorLib.getErrors().Unauthorized(httpUtil.getHeaderByName("x-csrf-token"));		
+			
+		}	
+		
 		var reqBody = $.request.body ? JSON.parse($.request.body.asString()) : undefined;
 		if (!reqBody || validateInput(reqBody,$.request.method)){
 		    switch ($.request.method) {
 		        case $.net.http.GET:
+		        	permissions.isAuthorized(userSessionID,
+		        			config.getPermissionIdByName(config.ReadPermission()),
+		        			config.getResourceIdByName(config.settings()));
 		        	handleGet(reqBody);
 		            break;
 		        case $.net.http.POST:
+		        	permissions.isAuthorized(userSessionID,
+		        			config.getPermissionIdByName(config.CreatePermission()),
+		        			config.getResourceIdByName(config.settings()));
 		        	handlePost(reqBody);
 		            break;
 		        case $.net.http.PUT:
+		        	permissions.isAuthorized(userSessionID,
+		        			config.getPermissionIdByName(config.EditPermission()),
+		        			config.getResourceIdByName(config.settings()));
 		        	handlePut(reqBody);
 		            break;
 		        case $.net.http.DEL:
+		        	permissions.isAuthorized(userSessionID,
+		        			config.getPermissionIdByName(config.DeletePermission()),
+		        			config.getResourceIdByName(config.settings()));
 		        	handleDelete(reqBody);
 		            break;
 		        default:
@@ -29,7 +52,7 @@ function processRequest(){
 		    }
 		}
 	} catch (e) {
-		handleResponse({"code": $.net.http.INTERNAL_SERVER_ERROR, "errors":{"INTERNAL_SERVER_ERROR": e.toString()}}, $.net.http.INTERNAL_SERVER_ERROR);
+		httpUtil.handleErrorResponse(e);	
 	}
 }
 
@@ -148,7 +171,7 @@ function handlePost(reqBody) {
 		var inProcessingReport = reqBody.IN_PROCESSING_REPORT;
 		var created_user_id = reqBody.CREATED_USER_ID;
 		
-		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CATEGORY"(?,?,?,?,?,?)';
+		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CATEGORY"(?,?,?,?,?,?,?)';
 
 		var cst = conn.prepareCall(query);
 
@@ -156,10 +179,11 @@ function handlePost(reqBody) {
 		cst.setString(2,name);
 		cst.setBigInt(3,hierarchy_level_id);
 		cst.setBigInt(4,measure_id);
-		cst.setBigInt(5,created_user_id);
+		cst.setInteger(5,inProcessingReport);
+		cst.setBigInt(6,created_user_id);
 
 		cst.execute();
-		var categoryId = cst.getBigInt(6);
+		var categoryId = cst.getBigInt(7);
 		var spResult  = Number(ctypes.Int64(categoryId));
 		
 		if(spResult){
@@ -224,7 +248,7 @@ function handleDelete(reqBody) {
 function handlePut(reqBody) {
 	var conn = $.db.getConnection();
 	try{
-		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CATEGORY"(?,?,?,?,?,?,?)';
+		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CATEGORY"(?,?,?,?,?,?,?,?)';
 
 		var hierarchy_level_id = reqBody.HIERARCHY_LEVEL_ID;
 		var category_id = reqBody.CATEGORY_ID;
@@ -241,11 +265,12 @@ function handlePut(reqBody) {
 		cst.setString(3,name);
 		cst.setBigInt(4,hierarchy_level_id);
 		cst.setBigInt(5,measure_id);
-		cst.setBigInt(6,modified_user_id);
+		cst.setInteger(6,inProcessingReport);
+		cst.setBigInt(7,modified_user_id);
 
 		cst.execute();
 		
-		var spResult  = Number(ctypes.Int64(cst.getBigInt(7)));
+		var spResult  = Number(ctypes.Int64(cst.getBigInt(8)));
 		//if(spResult){			
 			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_CATEGORY"(?,?,?,?)';
 			cst = conn.prepareCall(query);

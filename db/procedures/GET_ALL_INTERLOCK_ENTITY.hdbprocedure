@@ -6,5 +6,6 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_INTERLOCK_ENTIT
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
 	out_interlock_entity = SELECT interlock_entity_id, name FROM INTERLOCK_ENTITY
-							WHERE enabled = 1 and deleted = 0;
+							WHERE enabled = 1 and deleted = 0
+							order by NAME asc;
 END;

@@ -13,10 +13,9 @@ function getPathByLevelParent(levelId, parentId) {
 	var path = dataPath.getPathByLevelParent(levelId, parentId);
 	
 	/*
-	 * Determine current plan level correspondence 
-	 * Parameter Level 2 = means Level 1 
-	 * Parameter Level 3 = means Level 2 
-	 * Parameter Level 4 = means Level 3
+	 * Determine current plan level correspondence between Parameter Level 2 =
+	 * means Level 1 in SAP Parameter Level 3 = means Level 2 Parameter Level 4 =
+	 * means Level 3
 	 * 
 	 */
 	switch (parseInt(levelId)) {

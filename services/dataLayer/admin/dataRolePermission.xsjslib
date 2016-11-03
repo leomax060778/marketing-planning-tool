@@ -48,7 +48,7 @@ function existsRolePermission(roleId, resourceId, permissionId) {
 		'in_permission_id' : permissionId
 	};
 
-	var result = db.executeProcedureManual(
+	var result = db.executeProcedure(
 			spGetRolePermissionByRoleAndResource, parameters);
 	var list = db.extractArray(result.out_result);
 	exists = list.length > 0;

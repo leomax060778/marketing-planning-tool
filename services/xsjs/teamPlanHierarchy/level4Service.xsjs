@@ -4,20 +4,21 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var hl4 = mapper.getLevel4();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /******************************************/
 var section = "FOR_SEARCH";
 var method = "method";
 var id = "id";
 var setStatusInCRM = "SETINCRM";
+var sendInCrmNotificationMail = "SENDMAIL"
 
 /******************************************/
 
 function processRequest(){
-	try{
-		httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
-	} catch (e) {
-		return ErrorLib.getErrors().CustomError("Error","level4Services/","Error when attempted to process the request");
-	}
+	
+		return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.level3()));
+		//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
+	
 };
 
 /**
@@ -55,6 +56,9 @@ function handlePut(reqBody, userId){
 		var aCmd = parameters.get('method');
 		var hl4Id = parameters.get('HL4_ID');
 		switch (aCmd) {
+			case sendInCrmNotificationMail:
+					hl4.sendProcessingReportEmail(hl4Id, userId);
+					//fallthrough
 		    case setStatusInCRM: //set status In CRM
 		    	var rdo = hl4.setHl4StatusInCRM(hl4Id, userId);
 				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);

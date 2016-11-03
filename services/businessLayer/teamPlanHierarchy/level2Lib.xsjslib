@@ -11,6 +11,7 @@ var dlCrm = mapper.getDataCrm();
 var userbl = mapper.getUser();
 var userRoleLib = mapper.getUserRole();
 var config = mapper.getDataConfig();
+var contactDataLib = mapper.getContactData();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 var LEVEL3 = 3;
@@ -35,10 +36,12 @@ function insertHl2(objLevel2, userId){
 				
 				var objhl2 = dataHl2.insertLevel2(objLevel2, userId);
 				
+					
 				if(objhl2)
 				{
 					if(objhl2 > 0){
-						
+						if(isCentralTeam(objLevel2) && objLevel2.contactData && objLevel2.contactData.length)
+							contactDataLib.insertContactData(objLevel2.contactData,userId,objhl2);
 						//get path from level and hlid
 						var path = blPath.getPathByLevelParentToCRM(LEVEL3, objhl2);
 						//insert into CRM, with path
@@ -119,10 +122,17 @@ function updateHl2(objLevel2, userId){
 			objHl2.IN_HL2_ID = objLevel2.IN_HL2_ID;
 			var budgetChanged = dataHl2.getLevel2ById(objHl2).HL2_BUDGET_TOTAL != objLevel2.IN_HL2_BUDGET_TOTAL;
 			if(canUpdate(objLevel2)){
-				if(canUpdateOrganization(objLevel2))
+				if(canUpdateOrganization(objLevel2)){
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
-				else
+				
+					if(isCentralTeam(objLevel2) &&  objLevel2.contactData && objLevel2.contactData.length) {
+						contactDataLib.deleteContactDataByContactTypeId("hard", "CENTRAL", objLevel2.IN_HL2_ID);
+						contactDataLib.insertContactData(objLevel2.contactData,userId);
+					}
+					
+				} else {
 					throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2", L1_MSG_CENTRAL_TEAM_EXISTS);
+				}
 			}
 			else
 				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/updateHl2", L1_MSG_PLAN_EXISTS);
@@ -184,6 +194,8 @@ function deleteHl2(objLevel2, userId){
 		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_PLAN_NOT_FOUND);
 	if(hasChild(objLevel2))
 		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_PLAN_CANT_DELETE);
+
+	contactDataLib.deleteContactDataByContactTypeId("CENTRAL", objLevel2.IN_HL2_ID);
 	
 	return dataHl2.deleteHl2(objLevel2,userId);
 }
@@ -258,8 +270,8 @@ function existOrganizationAcronym(organizationAcronym){
 	else return false;
 }
 
-function getAllCentralTeam(){
-	return dataHl2.getAllCentralTeam();
+function getAllCentralTeam(centralTeamId){
+	return dataHl2.getAllCentralTeam(centralTeamId);
 }
 
 /*check if can update object because is not same another in db*/

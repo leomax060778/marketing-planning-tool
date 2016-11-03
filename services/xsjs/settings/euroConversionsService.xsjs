@@ -1,3 +1,13 @@
+/****** libs ************/
+$.import("xsplanningtool.services.commonLib","mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
+var httpUtil = mapper.getHttp();
+var l4Lib = mapper.getLevel4();
+var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
+var permissions = mapper.getPermission();
+/******************************************/
+
 function handlePost() {
 	var reqBody = JSON.parse($.request.body.asString());
 	var output = "";
@@ -56,19 +66,39 @@ function handlePost() {
 }
 
 //main function
-function processRequest() {
+function processRequest(Notvalidate) {
 	try {
+		var userSessionID = null;		
+		if(!Notvalidate){
+			userSessionID = httpUtil.validateUser(httpUtil.getHeaderByName("x-csrf-token"));	
+			if(!userSessionID)
+				throw ErrorLib.getErrors().Unauthorized(httpUtil.getHeaderByName("x-csrf-token"));		
+			
+		}
+		
 		switch ($.request.method) {
 		case $.net.http.GET:
+			permissions.isAuthorized(userSessionID,
+        			config.getPermissionIdByName(config.ReadPermission()),
+        			config.getResourceIdByName(config.settings()));
 			handleGet();			
 			break;
 		case $.net.http.POST:
+			permissions.isAuthorized(userSessionID,
+        			config.getPermissionIdByName(config.CreatePermission()),
+        			config.getResourceIdByName(config.settings()));
 			handlePost();
 			break;
 		case $.net.http.PUT:
+			permissions.isAuthorized(userSessionID,
+        			config.getPermissionIdByName(config.EditPermission()),
+        			config.getResourceIdByName(config.settings()));
 			handlePut();
 			break;
 		case $.net.http.DELETE:
+			permissions.isAuthorized(userSessionID,
+        			config.getPermissionIdByName(config.DeletePermission()),
+        			config.getResourceIdByName(config.settings()));
 			handleDelte();
 			break;
 		default:
@@ -78,12 +108,7 @@ function processRequest() {
 			break;
 		}
 	} catch (e) {
-		handleResponse({
-			"code" : $.net.http.INTERNAL_SERVER_ERROR,
-			"errors" : {
-				"INTERNAL_SERVER_ERROR" : e.toString()
-			}
-		}, $.net.http.INTERNAL_SERVER_ERROR);
+		httpUtil.handleErrorResponse(e);	
 	}
 }
 

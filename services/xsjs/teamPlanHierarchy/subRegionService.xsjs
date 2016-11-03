@@ -4,12 +4,14 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var blSubRegion = mapper.getSubRegion();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /** ******************************************************/
 
 var regionId = "REGION_ID";
 
 function processRequest() {
-	httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete);
+	return httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete,false, config.getResourceIdByName(config.settings()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(parameters) {
@@ -18,10 +20,16 @@ function handleGet(parameters) {
 			var rdo = blSubRegion.getSubRegionsByRegionId(parameters[0].value);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
-	} else {
-		throw ErrorLib.getErrors().BadRequest("",
-				"subRegionServices/handleGet", "invalid parameter REGION_ID");
+		else {
+			throw ErrorLib.getErrors().BadRequest("",
+					"subRegionServices/handleGet", "invalid parameter REGION_ID");
+		} 
 	}
+	else{
+		var rdo = blSubRegion.getAllSubRegions();
+		httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+	}
+		
 };
 
 function handlePost(reqBody, userSessionID){

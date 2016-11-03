@@ -19,7 +19,7 @@
         <viewAttribute datatype="NVARCHAR" id="BG_REGION_NAME" length="55"/>
         <viewAttribute datatype="DECIMAL" id="VALUE" length="19" scale="2"/>
         <viewAttribute datatype="DECIMAL" id="PERCENTAGE" length="19" scale="2"/>
-		<viewAttribute datatype="BIGINT" id="REGION_ID"/>
+        <viewAttribute datatype="BIGINT" id="REGION_ID"/>
       </viewAttributes>
       <calculatedViewAttributes/>
       <definition> 
@@ -65,18 +65,18 @@ FROM
 	, HL4_BR.percentage AS PERCENTAGE
 	, (HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100 AS valor
 	, REG.REGION_ID
-	FROM "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL2" HL2 
-    LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_REGION" REG ON REG.REGION_ID = HL2.REGION_ID 
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_BUDGET_YEAR" BUY ON BUY.BUDGET_YEAR_ID = HL2.BUDGET_YEAR_ID
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL3" HL3 ON HL3.HL2_ID = HL2.HL2_ID 
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL3_FNC" HL3_FNC ON HL3_FNC.HL3_ID = HL3.HL3_ID
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL4" HL4 ON HL4.HL3_ID = HL3.HL3_ID
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL4_FNC" HL4_FNC ON HL4.HL4_ID = HL4_FNC.HL4_ID
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION" HL4_BR ON HL4_BR.HL4_ID = HL4.HL4_ID
-	LEFT JOIN "_SYS_BIC"."xsplanningtool.db.data.views/AT_REGION" R ON R.REGION_ID = HL4_BR.REGION_ID
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 
+    LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; REG ON REG.REGION_ID = HL2.REGION_ID 
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BUY ON BUY.BUDGET_YEAR_ID = HL2.BUDGET_YEAR_ID
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL2_ID = HL2.HL2_ID 
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3_FNC&quot; HL3_FNC ON HL3_FNC.HL3_ID = HL3.HL3_ID
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4 ON HL4.HL3_ID = HL3.HL3_ID
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; HL4_FNC ON HL4.HL4_ID = HL4_FNC.HL4_ID
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4_BR ON HL4_BR.HL4_ID = HL4.HL4_ID
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON R.REGION_ID = HL4_BR.REGION_ID
 	WHERE 
-	 HL2.TEAM_TYPE_ID = 1 -- ALL PLAN ARE REGIONAL
-	AND HL4_BR.DELETED = 0 AND HL4_BR.ENABLED = 1
+	-- HL2.TEAM_TYPE_ID = 1 -- ALL PLAN ARE REGIONAL	AND 
+	HL4_BR.DELETED = 0 AND HL4_BR.ENABLED = 1
 	) T 
 	GROUP BY 
 	    T.HL2_ID
@@ -128,7 +128,7 @@ END /********* End Procedure Script ************/
         <descriptions defaultDescription="PERCENTAGE"/>
         <keyMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
       </attribute>
-	        <attribute id="REGION_ID" order="11">
+      <attribute id="REGION_ID" order="11">
         <descriptions defaultDescription="REGION_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="REGION_ID"/>
       </attribute>

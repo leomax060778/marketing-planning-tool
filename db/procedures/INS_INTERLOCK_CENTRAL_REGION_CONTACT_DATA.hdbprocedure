@@ -1,0 +1,34 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK_CENTRAL_REGION_CONTACT_DATA" (
+ IN in_bmo_leads nvarchar(255)
+,IN in_employee_number nvarchar(255)
+,IN in_email nvarchar(255)
+,IN in_contact_type bigint
+,IN in_contact_type_id bigint
+,IN in_user_id bigint
+, OUT out_result bigint
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	insert into "PLANNING_TOOL"."INTERLOCK_CENTRAL_REGION_CONTACT_DATA"
+	(
+	 bmo_leads,
+	 employee_number,
+     email,
+     contact_type,
+     contact_type_id,
+     created_user_id
+	)
+	VALUES
+	(
+	 in_bmo_leads,
+	 in_employee_number,
+	 in_email,
+	 in_contact_type,
+	 in_contact_type_id,
+	 in_user_id
+	);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM "PLANNING_TOOL"."INTERLOCK_CENTRAL_REGION_CONTACT_DATA";
+END;

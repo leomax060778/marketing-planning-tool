@@ -4,12 +4,14 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var interlockLib = mapper.getInterlock();
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /** *************************************** */
 
 var METHOD = "GET_GLOBALS_TEAM";
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.level3()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(parameters, userId){

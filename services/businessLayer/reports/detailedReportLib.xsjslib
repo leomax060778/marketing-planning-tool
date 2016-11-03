@@ -9,3 +9,13 @@ function getDetailedReport(){
 	var detailedReport = dataDetailedReport.getDetailedReport();
 	return detailedReport;	
 }
+
+function getDetailedReportWithDetails(){
+	var detailedReport = dataDetailedReport.getDetailedReportWithDetails();
+	return detailedReport;	
+}
+
+function getDetailedReportWithCommentCampaignForecastingKpis(){
+	var detailedReport = dataDetailedReport.getDetailedReportWithCommentCampaignForecastingKpis();
+	return detailedReport;	
+}

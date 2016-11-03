@@ -81,6 +81,31 @@ function recoveryPassword(username,password, userId){
 	}
 }
 
+function validateCurrentPassword(username, password){
+	var currentUser = userLib.getUserByUserName(username);
+	if(!currentUser){
+		throw ErrorLib.getErrors().LoginError("",
+				"LoginLib/validateCurrentPassword", "Invalid User Name.");	
+	}
+	
+	var currentUserId = currentUser['USER_ID'];
+	// Validate user password
+	if(!password){
+		throw ErrorLib.getErrors().LoginError("",
+				"LoginLib/login", "Invalid Current Password.");	
+	}
+	
+	var userHashedPassword = dbLogin.getPasswordHash(password);
+	var currentUserPassword = currentUser['PASSWORD'];
+	
+	if(userHashedPassword && currentUserPassword && userHashedPassword != currentUserPassword){
+		throw ErrorLib.getErrors().LoginError("",
+				"LoginLib/login", "Invalid Current Password.");	
+	}
+	
+	return true;
+}
+
 function login(username,password){
 	
 	var currentUser = userLib.getUserByUserName(username);
@@ -89,7 +114,7 @@ function login(username,password){
 				"LoginLib/login", "Invalid credentials. Please log in again");	
 	}
 	var currentUserId = currentUser['USER_ID'];
-	var currentUserToken;
+	var currentUserToken = null;
 	if (currentUser) {
 		currentUserToken = dbLogin.getUserToken(currentUserId);
 	}
@@ -103,13 +128,14 @@ function login(username,password){
 				"LoginLib/login", "Invalid credentials. Please log in again");	
 	}
 	
-	// If not, proceeds to create the token
-	if (!currentUserToken) {
+	// Check user token session
+	if(!currentUserToken){
 		// Delete any existing token for this user
 		deleteUserToken(currentUserId);
 
-		currentUserToken = dbLogin.createUserToken(currentUserId);
+		currentUserToken = dbLogin.createUserToken(currentUserId);	
 	}else{
+		// Update current user token
 		dbLogin.updateToken(currentUserId, currentUserToken);	
 	}
 	

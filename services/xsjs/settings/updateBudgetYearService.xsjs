@@ -1,3 +1,13 @@
+/****** libs ************/
+$.import("xsplanningtool.services.commonLib","mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
+var httpUtil = mapper.getHttp();
+var l4Lib = mapper.getLevel4();
+var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
+var permissions = mapper.getPermission();
+/******************************************/
+
 function handlePost() {
 	var output = "";
 	try{

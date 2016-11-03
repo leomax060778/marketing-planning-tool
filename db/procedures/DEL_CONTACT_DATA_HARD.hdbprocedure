@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_CONTACT_DATA_HARD" ( 
+		IN in_contact_type INTEGER,
+		IN in_contact_type_id BIGINT,
+		OUT out_result INTEGER
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	DELETE FROM INTERLOCK_CENTRAL_REGION_CONTACT_DATA
+	WHERE contact_type = contact_type AND contact_type_id = contact_type_id; 
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

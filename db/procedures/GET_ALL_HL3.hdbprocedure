@@ -78,9 +78,12 @@ BEGIN
 	
 	out_total_budget := va_total_budget;
 	
+	-- Calculate the budget remaining
 	SELECT (hl2_budget_total - out_total_budget)
-	into va_remaining_budget FROM hl2
-	where hl2_id = in_hl2_id;
+	INTO va_remaining_budget 
+	FROM hl2
+	WHERE hl2_id = in_hl2_id;
 	
 	out_remaining_budget := va_remaining_budget;
+	
 END;

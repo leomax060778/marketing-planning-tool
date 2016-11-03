@@ -46,11 +46,10 @@ BEGIN
 		, COUNT(HL3.hl3_id) AS hl3_total_count
 	FROM HL2
 	INNER JOIN HL2_USER ON HL2_USER.HL2_ID = HL2.HL2_ID
+	INNER JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
 	LEFT JOIN REGION R ON R.region_id = HL2.region_id
 	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id
-	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
-	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID
-
+	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID AND HL3.deleted = 0 AND HL3.enabled = 1
 	WHERE 
 		HL2_USER.USER_ID = in_user_id 
 		AND HL2.deleted = 0 
@@ -64,13 +63,14 @@ BEGIN
 	, BUY.BUDGET_YEAR, R.REGION_NAME, HL2.hl2_budget_total))
 	ORDER BY HL2.acronym ASC;
 	  
+	-- Calculate the total budget
 	SELECT COALESCE(SUM(HL2.hl2_budget_total),0) 
 	INTO va_total_budget
 	FROM HL2 
 	INNER JOIN HL2_USER HU ON HL2.hl2_id = HU.hl2_id 
+	INNER JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
 	LEFT JOIN REGION R ON R.region_id = HL2.region_id 
 	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id 
-	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id 
 	WHERE
 	HU.user_id = in_user_id 
 	AND HL2.deleted = 0

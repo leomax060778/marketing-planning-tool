@@ -5,11 +5,12 @@ $.import("xsplanningtool.services.commonLib","mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var businessMail = mapper.getMail();
+var config = mapper.getDataConfig();
 /******************************************/
 
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(){

@@ -1,0 +1,30 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK_CONTACT_DATA" ( 
+   IN in_interlock_request_id bigint
+ , IN in_email nvarchar(255)
+ , IN in_hash nvarchar(255)
+ , IN in_user_id bigint
+ , OUT out_interlock_contact_data_id bigint
+) 
+LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+	
+BEGIN
+
+	INSERT INTO INTERLOCK_CONTACT_DATA(
+     INTERLOCK_REQUEST_ID
+	,EMAIL
+	,HASH
+	,CREATED_USER_ID
+	)
+	VALUES
+	(
+	   in_interlock_request_id
+	 , in_email
+	 , in_hash
+	 , in_user_id
+	);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_interlock_contact_data_id FROM "PLANNING_TOOL"."INTERLOCK_CONTACT_DATA";
+
+END;

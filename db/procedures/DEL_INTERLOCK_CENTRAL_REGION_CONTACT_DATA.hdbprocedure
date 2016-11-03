@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_INTERLOCK_CENTRAL_REGION_CONTACT_DATA" ( 
+IN in_interlock_central_region_contact_data_id bigint
+,IN in_user_id bigint 
+,OUT out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+ 
+	UPDATE INTERLOCK_CENTRAL_REGION_CONTACT_DATA
+	SET deleted = 1
+		,enabled = 0
+		,modified_user_id = in_user_id
+		,modified_date_tz = CURRENT_TIMESTAMP
+	WHERE interlock_central_region_contact_data_id = in_interlock_central_region_contact_data_id;
+		
+   SELECT ::ROWCOUNT INTO out_result FROM DUMMY; 
+END;

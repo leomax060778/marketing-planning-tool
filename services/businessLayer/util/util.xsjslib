@@ -11,9 +11,35 @@ function validateIsEmail(value){
 	 return re.test(value);
 }
 
+function validateIsSapEmail(value){
+	var emailParts = value.split('@sap.com');
+	return emailParts.length == 2 && !emailParts[1]; 
+};
+
+/********************another options**********************************/
+//Minimum 8 characters at least 1 Alphabet, 1 Number and 1 Special Character://
+//	"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$"
+
+//	Minimum 8 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet and 1 Number://
+//	"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+
+//	Minimum 8 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet, 1 Number and 1 Special Character:
+//  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}"
+//	
+//  Minimum 8 and Maximum 10 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet, 1 Number and 1 Special Character:
+//	"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,10}"
+/**************************************************************************/
 function validateIsPassword(value){
 //	var re = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 //	return re.test(value);
+
+//Minimum 6 characters at least 1 Alphabet and 1 Number:
+	var re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+	if(! re.test(value)){
+		throw ErrorLib.getErrors()
+		.CustomError("", "util/validateIsPassword",
+				"The PASSWORD should have minimum 6 characters at least, 1 alphabet and 1 number.");
+	};
 	return true;
 }
 
@@ -23,9 +49,15 @@ function validateIsDecimal(value){
 
 function validateLength(value, max, min){
 	if(max)
-		if(value.length > max) return false;
+		if(value.length > max) throw ErrorLib.getErrors()
+		.CustomError("", "util/validateLength",
+		"The PASSWORD should have between "+min+" and "+max+" characters");
+
 	if(min)
-		if(value.length < min) return false;
+		if(value.length < min) throw ErrorLib.getErrors()
+		.CustomError("", "util/validateLength",
+				"The PASSWORD should have between "+min+" and "+max+" characters");
+		
 		
 	return true;
 }

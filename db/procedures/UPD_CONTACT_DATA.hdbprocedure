@@ -1,0 +1,28 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CONTACT_DATA" ( 
+		IN in_interlock_central_region_contact_data_id BIGINT,
+		IN in_bmo_leads NVARCHAR(255),
+		IN in_employee_number NVARCHAR(255),
+		IN in_email NVARCHAR(255),
+		IN in_contact_type INTEGER,
+		IN in_contact_type_id BIGINT,
+		IN in_user_id BIGINT,
+		OUT out_result BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	UPDATE INTERLOCK_CENTRAL_REGION_CONTACT_DATA SET 
+		bmo_leads = in_bmo_leads,
+		employee_number = in_employee_number,
+		email = in_email,
+		contact_type = in_contact_type,
+		contact_type_id = in_contact_type_id,
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where interlock_central_region_contact_data_id = in_interlock_central_region_contact_data_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

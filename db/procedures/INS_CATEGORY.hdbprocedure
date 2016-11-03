@@ -3,7 +3,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CATEGORY" (
 	IN in_nametag NVARCHAR(255),
 	IN in_hierarchy_level_id BIGINT,
 	IN in_measure_id BIGINT,
+	IN in_in_processing_report TINYINT,
 	IN in_user_id BIGINT,
+	
 	OUT out_category_id BIGINT
 ) 
 	LANGUAGE SQLSCRIPT
@@ -11,8 +13,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CATEGORY" (
 	--DEFAULT SCHEMA <default_schema_name>
 	AS
 BEGIN
-		INSERT INTO "PLANNING_TOOL"."CATEGORY"(hierarchy_level_id, measure_id, name, description,created_user_id)
-		VALUES(in_hierarchy_level_id, in_measure_id, in_nametag, in_description, in_user_id);
+		INSERT INTO "PLANNING_TOOL"."CATEGORY"(hierarchy_level_id, measure_id, name, description,created_user_id, in_processing_report)
+		VALUES(in_hierarchy_level_id, in_measure_id, in_nametag, in_description, in_user_id, in_in_processing_report);
 		
 		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_category_id FROM "PLANNING_TOOL"."CATEGORY";
 END;

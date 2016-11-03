@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_CONTACT_DATA_BY_CONTACT_TYPE_ID" ( 
+		IN in_contact_type INTEGER,
+		IN in_contact_type_id BIGINT,
+		IN in_user_id BIGINT,
+		OUT out_result BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	UPDATE INTERLOCK_CENTRAL_REGION_CONTACT_DATA SET 
+		enabled = 0,
+		deleted = 1,
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where contact_type = in_contact_type
+		AND contact_type_id = in_contact_type;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

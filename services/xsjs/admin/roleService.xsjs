@@ -4,6 +4,7 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var businessRole = mapper.getRole();
+var config = mapper.getDataConfig();
 /** *************************************** */
 
 var getAll = "ALL";
@@ -12,7 +13,7 @@ var method = "method";
 var id = "id";
 
 function processRequest() {
-	httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete);
+	return httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete,false,config.getResourceIdByName(config.administration()));
 }
 
 // Not Implemented Method

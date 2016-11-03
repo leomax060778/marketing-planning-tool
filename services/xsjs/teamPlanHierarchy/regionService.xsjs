@@ -4,12 +4,14 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var blRegion = mapper.getRegion();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /******************************************/
 
 var regionId = "REGION_ID";
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.settings()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(parameters){

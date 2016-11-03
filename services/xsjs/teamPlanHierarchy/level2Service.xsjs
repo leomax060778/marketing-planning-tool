@@ -5,6 +5,7 @@ var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var blLevel2 = mapper.getLevel2();
 var businessLavel3 = mapper.getLevel3();
+var config = mapper.getDataConfig();
 /******************************************/
 
 var method = "GET_ALL";
@@ -14,7 +15,8 @@ var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
 var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM";
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.level1()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 //Implementation of GET call -- GET HL2
@@ -35,7 +37,7 @@ function handleGet(parameters, userSessionID){
 		}
 		else if (parameters[0].name == GET_ALL_CENTRAL_TEAM){
 			
-			var rdo = blLevel2.getAllCentralTeam();
+			var rdo = blLevel2.getAllCentralTeam(0);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].name == GET_HL1_BY_FILTER){

@@ -4,6 +4,7 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var user = mapper.getUser();
+var config = mapper.getDataConfig();
 /******************************************/
 
 var getAll = "ALL";
@@ -17,7 +18,7 @@ var getUsersByHl3Id = "USERSBYHL3ID";
 var hl2Id = "hl2Id";
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,config.getResourceIdByName(config.administration()));
 }
 
 function handleGet(parameters, userId){
@@ -56,7 +57,7 @@ function handlePut(reqBody, userId){
 		var aCmd = parameters.get('method');
 		switch (aCmd) {
 		    case "updateUser":
-				var rdo =  user.updateUser(reqBody,userId);
+		    	var rdo =  user.updateUser(reqBody,userId);
 				return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 		        break;
 		    case "updatePassword":

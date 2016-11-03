@@ -4,15 +4,14 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var outcomesLib = mapper.getOutcomes();
 var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
 /******************************************/
 var methodGetAll = "getAll";
 
 function processRequest(){
-	try{
-		httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
-	} catch (e) {
-		return ErrorLib.getErrors().CustomError("Error","outcomeServices/","Error when attempted to process the request");
-	}
+	
+		return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
+	
 };
 
 function handlePost(reqBody, userId) {	

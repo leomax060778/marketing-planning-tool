@@ -4,13 +4,14 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var ErrorLib = mapper.getErrors();
 var blRolePermission = mapper.getRolePermission();
+var config = mapper.getDataConfig();
 /******************************************/
 
 var GET_PERMISSION_BY_ROLE_ID = "ROLE_ID";
 var GET_ALL_PERMISSIONS = "ALL";
 
 function processRequest(){
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,config.getResourceIdByName(config.administration()));
 }
 
 //Implementation of GET call -- Get Role Permission

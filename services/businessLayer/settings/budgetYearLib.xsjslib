@@ -1,11 +1,16 @@
 /***************Import Library*******************/
 $.import("xsplanningtool.services.commonLib","mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
-var dbRolePermission = mapper.getRolePermission();
 var ErrorLib = mapper.getErrors();
+var dbBudget = mapper.getDataBudgetYear();
 /*************************************************/
 
-function getAll(){
-	return dbRolePermission.getAllPermissionByRole();
+
+
+function getAllBudgetYear(){
+	return dbBudget.getAllBudgetYear();
 }
 
+function updateBudgetYear(budgetYear){
+	return dbBudget.updateBudgetYear(budgetYear);
+}

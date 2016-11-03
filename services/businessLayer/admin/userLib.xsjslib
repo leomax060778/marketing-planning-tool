@@ -10,8 +10,7 @@ var dbUserRole = mapper.getDataUserRole();
 var config = mapper.getDataConfig();
 /** ********************************************** */
 
-// TODO: move to configuration table
-var defaultPassword = "123456";
+var defaultPassword = config.getDefaultPassword();
 
 function getAll() {
 	return dbUser.getAllUser();
@@ -259,7 +258,7 @@ function validatePassword(pass) {
 	// letters
 	// New passwords must be 6 letters (and/or numbers and/or most special
 	// characters) in length
-	if (!util.validateLength(pass, 6, 6) || !util.validateIsPassword(pass))
+	if (!util.validateLength(pass, 15, 6) || !util.validateIsPassword(pass))
 		throw ErrorLib.getErrors()
 				.CustomError("", "userServices/handlePost/insertUser",
 						"The PASSWORD is invalid");
@@ -325,8 +324,10 @@ function validateUser(user) {
 }
 
 function notifyInsertByEmail(TO,username,password){
-	var appUrl = config.getAppUrl();
-	var body = ' <p> Dear Colleague </p>  <p>Here is your username and password for your Marketing Planning Tool login</p>  <p>Username: <span>'+username+'</span></p>  <p>Password: <span>'+password+'</span></p>   <p>To log on</p>  <p>To log on to Marketing Planning Tool visit the homepage ('+appUrl+') and enter your username and password in the login area.</p>';
+	var appUrl = config.getLoginUrl();
+	var siteAdminAccount = config.getSiteAdminAccount();
+	
+	var body = ' <p> Dear Colleague </p>  <p>You have been granted user rights to the Marketing Planning Tool. Your login information is as follows:</p>  <p>User ID: <span>'+username+'</span></p>  <p>Password: <span>'+password+'</span></p> <p>You may change your password after you logon to the Marketing Plan Tool. To logon to the Marketing Planning Tool use the following link '+appUrl+'.</p> <p>If you have any questions please contact the Site Administrator '+siteAdminAccount+'.</p> <p> Thank you</p>';
 	var mailObject = mail.getJson([ {
 		"address" : TO
 	} ], "Marketing Planning Tool - Account Created", body);

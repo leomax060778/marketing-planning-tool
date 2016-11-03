@@ -62,7 +62,7 @@ function getLevel3ByAcronym(objHl3, userId) {
 
 function existsHl3(objHl3, userId){
 	var hl3 = getLevel3ByAcronym(objHl3, userId);
-	if (hl3.HL3_ID) 
+	if (hl3.HL3_ID && Number(hl3.HL3_ID) !== Number(objHl3.IN_HL3_ID)) 
 		return true;
 	else 
 		return false;
@@ -139,6 +139,7 @@ function createHl3(objHl3, userId) {
 					"hl3Services/handlePost/insertHl3",
 					L2_MSG_PLAN_NOT_FOUND);
 
+		objHl3.IN_HL3_ID = 0;
 		if(existsHl3(objHl3, userId))
 			throw ErrorLib.getErrors().CustomError("",
 					"hl3Services/handlePost/insertHl3",

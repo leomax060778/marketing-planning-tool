@@ -10,3 +10,6 @@ function getAllPermission() {
 	return data.getAllPermission();
 }
 
+function isAuthorized(UserId, PermissionId, ResourceId){
+	return data.isAuthorized(UserId, PermissionId, ResourceId);
+}

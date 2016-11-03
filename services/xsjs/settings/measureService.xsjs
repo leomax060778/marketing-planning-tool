@@ -1,9 +1,29 @@
-function processRequest(){
+/****** libs ************/
+$.import("xsplanningtool.services.commonLib","mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
+var httpUtil = mapper.getHttp();
+var l4Lib = mapper.getLevel4();
+var ErrorLib = mapper.getErrors();
+var config = mapper.getDataConfig();
+var permissions = mapper.getPermission();
+/******************************************/
+
+function processRequest(Notvalidate){
 	try {
+		var userSessionID = null;		
+		if(!Notvalidate){
+			userSessionID = httpUtil.validateUser(httpUtil.getHeaderByName("x-csrf-token"));	
+			if(!userSessionID)
+				throw ErrorLib.getErrors().Unauthorized(httpUtil.getHeaderByName("x-csrf-token"));		
+			
+		}
 		var reqBody = $.request.body ? JSON.parse($.request.body.asString()) : undefined;
 		if (!reqBody || validateInput(reqBody)){
 		    switch ($.request.method ) {
 		        case $.net.http.GET:
+		        	permissions.isAuthorized(userSessionID,
+		        			config.getPermissionIdByName(config.ReadPermission()),
+		        			config.getResourceIdByName(config.settings()));
 		        	handleGet();
 		            break;
 		        

@@ -5,12 +5,14 @@ var httpUtil = mapper.getHttp();
 var businessPlan = mapper.getPlan();
 var ErrorLib = mapper.getErrors();
 var blLevel2 = mapper.getLevel2();
+var config = mapper.getDataConfig();
 /** *************************************** */
 var GET_ALL_BY_USER = "GET_ALL_BY_USER";
 
 function processRequest() {
 	return httpUtil.processRequest(handleGet, handlePost, handlePut,
-			handleDelete);
+			handleDelete,false, config.getResourceIdByName(config.level1()));
+	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(parameters, userSessionID) {

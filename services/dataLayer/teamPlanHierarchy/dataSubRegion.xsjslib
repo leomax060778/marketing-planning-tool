@@ -8,7 +8,7 @@ var spGetSubregionByRegionId = "GET_SUBREGION_BY_REGION_ID";
 var spInsertSubregion = "INS_SUBREGION";
 var spUpdateSubregion = "UPD_SUBREGION";
 var spDeleteSubregion = "DEL_SUBREGION";
-
+var spGetAllSubRegion = "GET_ALL_SUBREGION";
 
 /*****************END STORED PROCEDURES*******************/
 
@@ -25,6 +25,11 @@ function getSubRegionsByRegionId(regionId){
 		});
 	}
 	return spResult;
+}
+
+function getAllSubRegions(){	
+	var result = db.executeProcedureManual(spGetAllSubRegion, {});	
+	return db.extractArray(result.out_result);
 }
 
 function insertSubregion(subregion, createUser) {

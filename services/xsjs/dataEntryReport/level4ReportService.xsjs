@@ -4,10 +4,12 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var httpUtil = mapper.getHttp();
 var businessPlan = mapper.getLevel4DEReport();
 var errors = mapper.getErrors();
+var config = mapper.getDataConfig();
 /******************************************/
 
 function processRequest(){
-return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete);
+return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false, config.getResourceIdByName(config.level3()));
+//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(param){

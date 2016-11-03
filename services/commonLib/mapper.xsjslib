@@ -81,8 +81,8 @@ function getUserRole(){
 }
 
 function getInterlock(){
-     $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","interlockLib");
-     return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.interlockLib;
+     $.import("xsplanningtool.services.businessLayer.interlock","interlockLib");
+     return $.xsplanningtool.services.businessLayer.interlock.interlockLib;
 }
   
 function getPartner(){
@@ -144,6 +144,22 @@ function getBudgetReport(){
 function getDetailedReport(){
 	$.import("xsplanningtool.services.businessLayer.reports","detailedReportLib");
     return $.xsplanningtool.services.businessLayer.reports.detailedReportLib;
+}
+
+function getContactData(){
+	$.import("xsplanningtool.services.businessLayer.interlock","contactDataLib");
+    return $.xsplanningtool.services.businessLayer.interlock.contactDataLib;
+}
+
+function getBudgetYear(){
+	$.import("xsplanningtool.services.businessLayer.settings","budgetYearLib");
+    return $.xsplanningtool.services.businessLayer.settings.budgetYearLib;
+}
+
+
+function getHl(){
+	$.import("xsplanningtool.services.businessLayer.settings","hlLib");
+    return $.xsplanningtool.services.businessLayer.settings.hlLib;
 }
 
 /************Data Layer Mapper*****************/
@@ -308,3 +324,20 @@ function getDataDetailedReport(){
 	$.import("xsplanningtool.services.dataLayer.reports","dataDetailedReport");
     return $.xsplanningtool.services.dataLayer.reports.dataDetailedReport;
 }
+
+function getDataContactData(){
+	$.import("xsplanningtool.services.dataLayer.interlock","dataContactData");
+    return $.xsplanningtool.services.dataLayer.interlock.dataContactData;
+}
+
+
+function getDataBudgetYear(){
+	$.import("xsplanningtool.services.dataLayer.settings","dataBudgetYear");
+    return $.xsplanningtool.services.dataLayer.settings.dataBudgetYear;
+}
+
+function getDataHl(){
+	$.import("xsplanningtool.services.dataLayer.settings","dataHl");
+    return $.xsplanningtool.services.dataLayer.settings.dataHl;
+}
+
