@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_INTERLOCK_PROCESS_REPORT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_INTERLOCK_PROCESS_REPORT"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_TYPE_NAME" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="INTERLOCK_ENTITY_NAME" length="100"/>
+        <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_ACRONYM" length="25"/>
+        <viewAttribute datatype="NVARCHAR" id="CONTACT_DATA" length="1000"/>
+        <viewAttribute datatype="NVARCHAR" id="REQUESTED_RESOURCE" length="140"/>
+        <viewAttribute datatype="DECIMAL" id="REQUESTED_BUDGET" length="19" scale="2"/>
+        <viewAttribute datatype="NVARCHAR" id="STATUS_DETAIL" length="50"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 --var_out = 
+	-- INTERLOCK REQUEST
+	va_interlockRequest = 
+	SELECT 
+	  IR.INTERLOCK_REQUEST_ID
+	, IR.HL4_ID
+	, IR.REQUESTED_RESOURCE
+	, IR.REQUESTED_BUDGET
+	, IR.INTERLOCK_STATUS_ID
+	, IR.ORGANIZATION_TYPE_ID
+	, IR.ENTITY_ID
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_INTERLOCK_REQUEST&quot; IR
+	WHERE IR.ENABLED = 1 AND IR.DELETED = 0;
+	
+	--ORGANIZATION TYPE
+	va_interlockOrganizationType =
+	SELECT 
+	  OT.ORGANIZATION_TYPE_ID AS ORGANIZATION_TYPE_ID
+	, OT.NAME AS ORGANIZATION_TYPE_NAME
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ORGANIZATION_TYPE&quot; OT;
+	
+	--INTERLOCK ENTITY
+	va_interlockEntity =
+	SELECT 
+	  IE.INTERLOCK_ENTITY_ID
+	, IE.NAME AS INTERLOCK_ENTITY_NAME
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_INTERLOCK_ENTITY&quot; IE;
+
+	--INTERLOCK STATUS
+	va_interlockStatus =
+	SELECT 
+	  ILS.INTERLOCK_STATUS_ID AS INTERLOCK_STATUS_ID
+	 ,ILS.DISPLAY_NAME AS STATUS_DETAIL
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_INTERLOCK_STATUS&quot; ILS;
+	
+	--INTERLOCK CONTACT DATA
+	va_interlockContactData =
+	SELECT 
+	ILCD.INTERLOCK_REQUEST_ID AS INTERLOCK_REQUEST_ID
+	,STRING_AGG(ILCD.EMAIL, ';') AS CONTACT_DATA
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_INTERLOCK_CONTACT_DATA&quot; ILCD
+	WHERE ILCD.ENABLED = 1 AND ILCD.DELETED = 0
+	GROUP BY ILCD.INTERLOCK_REQUEST_ID;
+	
+	--INTERLOCK REGION
+	va_interlockRegion =
+	SELECT 
+	   ILR.INTERLOCK_REQUEST_ID
+	 , ILR.REGION_ID AS REGION_ID
+	 , R.REGION_NAME AS REGION_NAME
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_INTERLOCK_REQUEST_REGION&quot; ILR
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON R.REGION_ID = ILR.REGION_ID;
+	
+	--INTERLOCK ROUTE
+	va_interlockRoute =
+	SELECT 
+	  ILRR.INTERLOCK_REQUEST_ID
+	, ILRR.ROUTE_ID AS ROUTE_ID
+	, HL2.ORGANIZATION_ACRONYM
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_INTERLOCK_REQUEST_ROUTE&quot; ILRR
+	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 on ILRR.ROUTE_ID = HL2.HL2_ID;
+	
+	
+	--
+	var_out = 
+	
+	SELECT 
+	  OT.ORGANIZATION_TYPE_NAME
+	, IE.INTERLOCK_ENTITY_NAME
+	, COALESCE(ILR.REGION_NAME, ILRR.ORGANIZATION_ACRONYM) AS ORGANIZATION_ACRONYM
+	, ILCD.CONTACT_DATA
+	, IR.REQUESTED_RESOURCE
+	, IR.REQUESTED_BUDGET
+	, ILS.STATUS_DETAIL
+	
+	FROM :va_interlockRequest IR
+	LEFT JOIN :va_interlockOrganizationType OT ON OT.ORGANIZATION_TYPE_ID = IR.ORGANIZATION_TYPE_ID
+	LEFT JOIN :va_interlockEntity IE ON IE.INTERLOCK_ENTITY_ID = IR.ENTITY_ID
+	LEFT JOIN :va_interlockStatus ILS ON ILS.INTERLOCK_STATUS_ID = IR.INTERLOCK_STATUS_ID
+	LEFT JOIN :va_interlockContactData ILCD ON ILCD.INTERLOCK_REQUEST_ID = IR.INTERLOCK_REQUEST_ID
+	LEFT JOIN :va_interlockRegion ILR ON ILR.INTERLOCK_REQUEST_ID = IR.INTERLOCK_REQUEST_ID
+	LEFT JOIN :va_interlockRoute ILRR ON ILRR.INTERLOCK_REQUEST_ID = IR.INTERLOCK_REQUEST_ID;
+	
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="ORGANIZATION_TYPE_NAME" order="1">
+        <descriptions defaultDescription="ORGANIZATION_TYPE_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_TYPE_NAME"/>
+      </attribute>
+      <attribute id="INTERLOCK_ENTITY_NAME" order="2">
+        <descriptions defaultDescription="INTERLOCK_ENTITY_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="INTERLOCK_ENTITY_NAME"/>
+      </attribute>
+      <attribute id="ORGANIZATION_ACRONYM" order="3">
+        <descriptions defaultDescription="ORGANIZATION_ACRONYM"/>
+        <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_ACRONYM"/>
+      </attribute>
+      <attribute id="CONTACT_DATA" order="4">
+        <descriptions defaultDescription="CONTACT_DATA"/>
+        <keyMapping columnObjectName="Script_View" columnName="CONTACT_DATA"/>
+      </attribute>
+      <attribute id="REQUESTED_RESOURCE" order="5">
+        <descriptions defaultDescription="REQUESTED_RESOURCE"/>
+        <keyMapping columnObjectName="Script_View" columnName="REQUESTED_RESOURCE"/>
+      </attribute>
+      <attribute id="STATUS_DETAIL" order="7">
+        <descriptions defaultDescription="STATUS_DETAIL"/>
+        <keyMapping columnObjectName="Script_View" columnName="STATUS_DETAIL"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="REQUESTED_BUDGET" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="REQUESTED_BUDGET"/>
+        <measureMapping columnObjectName="Script_View" columnName="REQUESTED_BUDGET"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -8,7 +8,8 @@ var budgetYear = mapper.getBudgetYear();
 /******************************************/
 
 function processRequest(){
-	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,config.getResourceIdByName(config.settings()));
+	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,true,"",true);
+	//return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,config.getResourceIdByName(config.settings()));
 }
 
 function handleGet() {

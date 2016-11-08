@@ -82,6 +82,7 @@ function getLevel3ById(objHl3, userId) {
 function getLevel3ByAcronym(objHl3, userId) {
 	var parameters = {};
 	parameters.in_acronym = objHl3.IN_ACRONYM.toUpperCase();
+	parameters.in_hl2_id = objHl3.IN_HL2_ID
 	var result = db.executeProcedure(GET_HL3_BY_ACRONYM, parameters);
 	var list = db.extractArray(result.out_result);
 	if(list.length)
@@ -131,7 +132,7 @@ function deleteLevel3Fnc(objHl3, userId) {
 
 
 function updateHl3BudgetStatus(hl3_id, userId, nextStatus){
-	var parameters = {"in_hl3_id": hl3_id, "in_in_budget": nextStatus, "in_user_id": userId};
+	var parameters = {"in_hl3_id": hl3_id, "in_status_budget": nextStatus, "in_user_id": userId};
 	var rdo = db.executeScalarManual(spUpdateHl3BudgetStatus, parameters, 'out_result');
 	return rdo;
 }

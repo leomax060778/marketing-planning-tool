@@ -1,0 +1,9 @@
+service  {
+	"xsplanningtool.db.data.views::AT_REGION"
+	as "Region"
+	keys ("REGION_ID")
+	parameters via entity
+	create forbidden
+	update forbidden
+	delete forbidden;  
+} 

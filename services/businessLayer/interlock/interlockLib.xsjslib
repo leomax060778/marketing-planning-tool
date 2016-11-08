@@ -27,6 +27,11 @@ var CONTACT_TYPE = {
 };
 /*************************************************/
 
+function getInterlockReport(){
+	var interlockReport = dataInterlock.getInterlockReport();
+	return interlockReport;	
+}
+
 function getInterlockByHash(hash,userId){
 	if(!hash) 
 		throw ErrorLib.getErrors().BadRequest("The hash is not found","interlockServices/handleGet/getInterlockByHash", "The hash is not found");
@@ -142,7 +147,7 @@ function notifyInterlockEmail(TO,token){
 	 var appUrl = config.getAppUrl();
 	 var body = '<p> Dear Colleague </p>';
 	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/interlock/' + token + '</p>';
+	 body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p> <p> Thank you </p>';
 	 var mailObject = mail.getJson([ {
 	  "address" : TO
 	 } ], "Marketing Planning Tool - Interlock Process", body);

@@ -21,9 +21,9 @@ function processRequest(Notvalidate){
 		if (!reqBody || validateInput(reqBody)){
 		    switch ($.request.method ) {
 		        case $.net.http.GET:
-		        	permissions.isAuthorized(userSessionID,
-		        			config.getPermissionIdByName(config.ReadPermission()),
-		        			config.getResourceIdByName(config.settings()));
+//		        	permissions.isAuthorized(userSessionID,
+//		        			config.getPermissionIdByName(config.ReadPermission()),
+//		        			config.getResourceIdByName(config.settings()));
 		        	handleGet();
 		            break;
 		        

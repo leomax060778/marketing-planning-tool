@@ -10,14 +10,15 @@ var config = mapper.getDataConfig();
 var METHOD = "GET_GLOBALS_TEAM";
 
 function processRequest(){
-	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.level3()));
+	//return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,true, config.getResourceIdByName(config.level3()));
+	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,true,"",true);
 }
 
 function handleGet(parameters, userId){
 	var rdo = {};
 	
 	//rdo.organizationType = interlockLib.getAllOrganizationType();
-	
+	var method = httpUtil.getUrlParameters().get("METHOD");
 	if(parameters.length > 0){
 		if (parameters[0].name == METHOD){
 			if(parameters[0].value){

@@ -222,6 +222,17 @@ function insertHl4(data, userId){
 			data.hl4.in_is_send_mail = 0;
 			data.hl4.in_read_only = 0;
 			
+			/*************************************************/
+			data.hl4.in_EURO_CONVERSION_ID = 0;
+			data.hl4.in_IN_BUDGET = 0;
+			data.hl4.in_SPEND_CATEGORY_ID = 0;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q1 = 0;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q2 = 0;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q3 = 0;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q4 = 0;
+			data.hl4.in_HL4_FNC_BUDGET_TOTAL_MKT = 0;
+			/*************************************************/
+			
 			data.hl4.in_user_id_send_mail = 1;
 			hl4_id = dataHl4.insertHl4(data.hl4);
 			
@@ -865,7 +876,7 @@ function validateHl4(data){
 	if(!data.hl4_fnc)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_DATA);
 	
-	if(!data.hl4_fnc.in_hl4_fnc_budget_total_mkt)
+	if(data.hl4_fnc.in_hl4_fnc_budget_total_mkt < 0)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_VALUE);
 	
 	if(!data.hl4_fnc.in_euro_conversion_id)
@@ -1529,7 +1540,7 @@ function notifyInterlockEmail(TO,token){
 	 var appUrl = config.getAppUrl();
 	 var body = '<p> Dear Colleague </p>';
 	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/InterlockManagement/' + token + '</p>';
+	 body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p> <p> Thank you </p>';
 	 var mailObject = mail.getJson([ {
 	  "address" : TO
 	 } ], "Marketing Planning Tool - Interlock Process", body);

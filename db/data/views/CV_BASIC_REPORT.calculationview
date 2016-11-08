@@ -58,20 +58,18 @@ FROM
 	, HL2.ACRONYM AS PLAN
 	, BUY.BUDGET_YEAR_ID
 	, BUY.BUDGET_YEAR
-	, HL3_FNC.HL3_FNC_BUDGET_TOTAL AS BUDGET_TOTAL
-	, HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
+	, HL3.HL3_FNC_BUDGET_TOTAL AS BUDGET_TOTAL
+	, HL4.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
 	, R.REGION_NAME AS BG_REGION_NAME
 	, HL4_BR.REGION_ID AS BR_REGION_ID
 	, HL4_BR.percentage AS PERCENTAGE
-	, (HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100 AS valor
+	, (HL4.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100 AS valor
 	, REG.REGION_ID
 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 
     LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; REG ON REG.REGION_ID = HL2.REGION_ID 
 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BUY ON BUY.BUDGET_YEAR_ID = HL2.BUDGET_YEAR_ID
 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL2_ID = HL2.HL2_ID 
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3_FNC&quot; HL3_FNC ON HL3_FNC.HL3_ID = HL3.HL3_ID
 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4 ON HL4.HL3_ID = HL3.HL3_ID
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; HL4_FNC ON HL4.HL4_ID = HL4_FNC.HL4_ID
 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4_BR ON HL4_BR.HL4_ID = HL4.HL4_ID
 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON R.REGION_ID = HL4_BR.REGION_ID
 	WHERE 

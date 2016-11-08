@@ -67,6 +67,38 @@
       <descriptions defaultDescription="ENABLED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="ENABLED"/>
     </attribute>
+    <attribute id="EURO_CONVERSION_ID" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EURO_CONVERSION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="EURO_CONVERSION_ID"/>
+    </attribute>
+    <attribute id="IN_BUDGET" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IN_BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="IN_BUDGET"/>
+    </attribute>
+    <attribute id="SPEND_CATEGORY_ID" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SPEND_CATEGORY_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="SPEND_CATEGORY_ID"/>
+    </attribute>
+    <attribute id="HL4_FNC_BUDGET_SPEND_Q1" order="20" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_FNC_BUDGET_SPEND_Q1"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_FNC_BUDGET_SPEND_Q1"/>
+    </attribute>
+    <attribute id="HL4_FNC_BUDGET_SPEND_Q2" order="21" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_FNC_BUDGET_SPEND_Q2"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_FNC_BUDGET_SPEND_Q2"/>
+    </attribute>
+    <attribute id="HL4_FNC_BUDGET_SPEND_Q3" order="22" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_FNC_BUDGET_SPEND_Q3"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_FNC_BUDGET_SPEND_Q3"/>
+    </attribute>
+    <attribute id="HL4_FNC_BUDGET_SPEND_Q4" order="23" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_FNC_BUDGET_SPEND_Q4"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_FNC_BUDGET_SPEND_Q4"/>
+    </attribute>
+    <attribute id="HL4_FNC_BUDGET_TOTAL_MKT" order="24" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_FNC_BUDGET_TOTAL_MKT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4" columnName="HL4_FNC_BUDGET_TOTAL_MKT"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

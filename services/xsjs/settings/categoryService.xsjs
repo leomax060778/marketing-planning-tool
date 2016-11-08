@@ -23,27 +23,27 @@ function processRequest(Notvalidate){
 		if (!reqBody || validateInput(reqBody,$.request.method)){
 		    switch ($.request.method) {
 		        case $.net.http.GET:
-		        	permissions.isAuthorized(userSessionID,
-		        			config.getPermissionIdByName(config.ReadPermission()),
-		        			config.getResourceIdByName(config.settings()));
+//		        	permissions.isAuthorized(userSessionID,
+//		        			config.getPermissionIdByName(config.ReadPermission()),
+//		        			config.getResourceIdByName(config.level3()));
 		        	handleGet(reqBody);
 		            break;
 		        case $.net.http.POST:
-		        	permissions.isAuthorized(userSessionID,
-		        			config.getPermissionIdByName(config.CreatePermission()),
-		        			config.getResourceIdByName(config.settings()));
+//		        	permissions.isAuthorized(userSessionID,
+//		        			config.getPermissionIdByName(config.CreatePermission()),
+//		        			config.getResourceIdByName(config.settings()));
 		        	handlePost(reqBody);
 		            break;
 		        case $.net.http.PUT:
-		        	permissions.isAuthorized(userSessionID,
-		        			config.getPermissionIdByName(config.EditPermission()),
-		        			config.getResourceIdByName(config.settings()));
+//		        	permissions.isAuthorized(userSessionID,
+//		        			config.getPermissionIdByName(config.EditPermission()),
+//		        			config.getResourceIdByName(config.settings()));
 		        	handlePut(reqBody);
 		            break;
 		        case $.net.http.DEL:
-		        	permissions.isAuthorized(userSessionID,
-		        			config.getPermissionIdByName(config.DeletePermission()),
-		        			config.getResourceIdByName(config.settings()));
+//		        	permissions.isAuthorized(userSessionID,
+//		        			config.getPermissionIdByName(config.DeletePermission()),
+//		        			config.getResourceIdByName(config.settings()));
 		        	handleDelete(reqBody);
 		            break;
 		        default:

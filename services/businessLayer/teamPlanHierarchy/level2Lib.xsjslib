@@ -12,6 +12,7 @@ var userbl = mapper.getUser();
 var userRoleLib = mapper.getUserRole();
 var config = mapper.getDataConfig();
 var contactDataLib = mapper.getContactData();
+var businessError = mapper.getLogError();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 var LEVEL3 = 3;
@@ -121,6 +122,7 @@ function updateHl2(objLevel2, userId){
 			var objHl2 = {};
 			objHl2.IN_HL2_ID = objLevel2.IN_HL2_ID;
 			var budgetChanged = dataHl2.getLevel2ById(objHl2).HL2_BUDGET_TOTAL != objLevel2.IN_HL2_BUDGET_TOTAL;
+			
 			if(canUpdate(objLevel2)){
 				if(canUpdateOrganization(objLevel2)){
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
@@ -140,11 +142,12 @@ function updateHl2(objLevel2, userId){
 			if(updated > 0){
 				if(budgetChanged){
 					var resBudgetStatus = hl3.checkBudgetStatus(objLevel2.IN_HL2_ID,userId);
+					//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","paka 1");
 					if(resBudgetStatus.hasChanged){
 						//send all emails
 						try 
 						{
-							sendEmail(resBudgetStatus, userId);
+							//sendEmail(resBudgetStatus, userId);
 						}
 						catch(e){
 							//when error email exist, log error
@@ -449,7 +452,7 @@ function validateType(key, value) {
 		valid = !isNaN(value) && value > 0;
 		break;
 	case 'IN_HL2_BUDGET_TOTAL':
-		valid = regex.test(value) && value > 0;
+		valid = regex.test(value) && value >= 0;
 		break;
 	case 'IN_ORGANIZATION_ACRONYM':
 		valid = value.replace(/\s/g, "").length == 3;

@@ -12,6 +12,7 @@ var spGetInterlockOrganizationTypeById = "GET_ORGANIZATION_TYPE_BY_ID";
 var spGetInterlockStatus = "GET_INTERLOCK_STATUS";
 var spGetInterlockOrganizationByIlId = "GET_INTERLOCK_ORGANIZATION_BY_IL_ID";
 var spGetInerlockContactDataByInterlockId = "GET_INTERLOCK_CONTACT_DATA_BY_INTERLOCK_ID";
+var spGetInterlockReport = "GET_INTERLOCK_REPORT";
 
 var spInsertInterlock = "INS_INTERLOCK";
 var spInsertInterlockLogStatus = "INS_INTERLOCK_LOG_STATUS";
@@ -45,6 +46,11 @@ var spDeleteInterlockRequestMessageById = "DEL_INTERLOCK_REQUEST_MESSAGE_BY_ID";
 /******************************************************/
 
 /********** GET **********/
+function getInterlockReport() {
+	var result = db.extractArray(db.executeProcedure(spGetInterlockReport, {}).out_result);
+	return result;
+}
+
 function getInterlockByHl4Id(id){	
 	if(id){
 		var rdo = db.executeProcedureManual(spGetInterlockByHl4Id, {'in_hl4_id':id});

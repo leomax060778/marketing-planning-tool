@@ -24,42 +24,48 @@ function getAllL4DEReport(userId) {
 
 function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
 	try {
-		var data = [];
+		var data = {"hl4": [], "category": []};
 		var changedFields = dataL4DER.getL4ChangedFieldsByHl4Id(hl4Id);
 		var hl4 = dataHl4.getHl4ById(hl4Id);
+		//new refactor 04112016
 		var hl4Fnc = dataHl4.getHl4FncByHl4Id(hl4Id);
+		
 		var hl4Categories = dataHl4.getHl4Category(hl4Id);
 		Object.keys(l4ReportFields).forEach(function(field){
-			var object = {};
+			
 			if(field == "CATEGORY"){
 				var changedFieldsByHl4Id = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4Id, field);
 				
 				hl4Categories.forEach(function(hl4Category){
 					if(hl4Category.IN_PROCESSING_REPORT){
-						object.value = [];
+						var object = {};
+						object.option = [];
 						object.display_name = hl4Category.CATEGORY_NAME;
 						var hl4CategoryOptions = dataHl4.getHl4CategoryOption(hl4Category.HL4_CATEGORY_ID);
 						hl4CategoryOptions.forEach(function(hl4CategoryOption){
-							if(hl4Category.AMOUNT > 0){
-								object.value.push({"OPTION_NAME": hl4CategoryOption.OPTION_NAME, "AMOUNT": hl4CategoryOption.AMOUNT});
+							if(hl4CategoryOption.AMOUNT != 0){
+								object.option.push({"option_name": hl4CategoryOption.OPTION_NAME, "value": hl4CategoryOption.AMOUNT});
 							}
 						});
+						//throw ErrorLib.getErrors().CustomError("","level4ReportServices/handleGet/getL4ChangedFieldsByHl4Id", JSON.stringify(object));
 						object.changed = checkChangedField(changedFieldsByHl4Id, field, hl4Category.HL4_CATEGORY_ID);
-						data.push(object);
+						data.category.push(object);
 					}
 				});
 				
 			} else {
+				var object = {};
 				object.display_name = l4ReportFields[field];
 				object.value = hl4[field] || hl4Fnc[field];
+				//new refactor 04112016
+				object.value = hl4[field];
 				object.changed = checkChangedField(changedFields, field);
-				data.push(object);
+				data.hl4.push(object);
 			};
 		});
 		return data;
 	} catch (e) {
-		throw ErrorLib.getErrors().CustomError("",
-				"level4ReportServices/handleGet/getL4ChangedFieldsByHl4Id", e.toString());
+		throw e;
 	}
 }
 

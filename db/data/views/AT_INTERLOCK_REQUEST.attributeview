@@ -11,13 +11,13 @@
       <descriptions defaultDescription="ENTITY_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="ENTITY_ID"/>
     </attribute>
-    <attribute id="ORGANIZATION_TYPE_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="ORGANIZATION_TYPE_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="ORGANIZATION_TYPE_ID"/>
-    </attribute>
-    <attribute id="HL4_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="HL4_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="HL4_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="ORGANIZATION_TYPE_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_TYPE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="ORGANIZATION_TYPE_ID"/>
     </attribute>
     <attribute id="REQUESTED_RESOURCE" order="5" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="REQUESTED_RESOURCE"/>
@@ -31,17 +31,17 @@
       <descriptions defaultDescription="INTERLOCK_STATUS_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="INTERLOCK_STATUS_ID"/>
     </attribute>
-    <attribute id="REQUESTED_USER_ID" order="8" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="REQUESTED_USER_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="REQUESTED_USER_ID"/>
+    <attribute id="REQUESTER_EMAIL" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REQUESTER_EMAIL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="REQUESTER_EMAIL"/>
     </attribute>
-    <attribute id="HASH" order="9" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HASH"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="HASH"/>
+    <attribute id="ENABLED" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="ENABLED"/>
     </attribute>
-    <attribute id="SALT" order="10" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="SALT"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="SALT"/>
+    <attribute id="DELETED" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="DELETED"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>

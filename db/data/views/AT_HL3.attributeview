@@ -47,6 +47,14 @@
       <descriptions defaultDescription="HL3_HIERARCHY_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3" columnName="HL3_HIERARCHY_ID"/>
     </attribute>
+    <attribute id="HL3_FNC_BUDGET_TOTAL" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_TOTAL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3" columnName="HL3_FNC_BUDGET_TOTAL"/>
+    </attribute>
+    <attribute id="IN_BUDGET" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IN_BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3" columnName="IN_BUDGET"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

@@ -66,22 +66,23 @@
 			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; subregion ON subregion.REGION_ID = hl2.SUBREGION_ID
 			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0;
 			 	
- 	va_hl3 = SELECT hl3.HL3_ID, hl3.HL2_ID, hl3Fnc.HL3_FNC_BUDGET_TOTAL AS HL3_BUDGET, 
+ 	va_hl3 = SELECT hl3.HL3_ID, hl3.HL2_ID, hl3.HL3_FNC_BUDGET_TOTAL AS HL3_BUDGET, 
  				hl3.ACRONYM AS HL3_ACRONYM, hl3.HL3_DESCRIPTION AS HL3_DESCRIPTION
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3
-			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3_FNC&quot; hl3Fnc ON hl3Fnc.HL3_ID = hl3.HL3_ID
 			 	WHERE hl3.ENABLED = 1 AND hl3.DELETED = 0;
 			 	
 	va_hl4 = SELECT hl4.HL4_ID, hl4.HL3_ID,	hl4.ACRONYM AS HL4_ACRONYM, hl4.HL4_CRM_DESCRIPTION, 
-				hl4Status.DETAIL AS HL4_STATUS_DETAIL
+				hl4Status.DETAIL AS HL4_STATUS_DETAIL,
+				hl4.HL4_FNC_BUDGET_SPEND_Q1 AS BUDGET_Q1, hl4.HL4_FNC_BUDGET_SPEND_Q2 AS BUDGET_Q2, hl4.SPEND_CATEGORY_ID,
+				hl4.HL4_FNC_BUDGET_SPEND_Q3 AS BUDGET_Q3, hl4.HL4_FNC_BUDGET_SPEND_Q4 AS BUDGET_Q4, hl4.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
 				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; hl4
 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_STATUS_DETAIL&quot; hl4Status ON hl4.HL4_STATUS_DETAIL_ID = hl4Status.HL4_STATUS_DETAIL_ID
 			 	WHERE hl4.ENABLED = 1 AND hl4.DELETED = 0;
 			 	
- 	va_hl4Fnc = SELECT hl4Fnc.HL4_ID, hl4Fnc.HL4_FNC_BUDGET_SPEND_Q1 AS BUDGET_Q1, hl4Fnc.HL4_FNC_BUDGET_SPEND_Q2 AS BUDGET_Q2, hl4Fnc.SPEND_CATEGORY_ID,
- 					hl4Fnc.HL4_FNC_BUDGET_SPEND_Q3 AS BUDGET_Q3, hl4Fnc.HL4_FNC_BUDGET_SPEND_Q4 AS BUDGET_Q4, hl4Fnc.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
-				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; hl4Fnc
-			 	WHERE hl4Fnc.ENABLED = 1 AND hl4Fnc.DELETED = 0;
+ 	--va_hl4Fnc = SELECT hl4Fnc.HL4_ID, hl4Fnc.HL4_FNC_BUDGET_SPEND_Q1 AS BUDGET_Q1, hl4Fnc.HL4_FNC_BUDGET_SPEND_Q2 AS BUDGET_Q2, hl4Fnc.SPEND_CATEGORY_ID,
+ 		--			hl4Fnc.HL4_FNC_BUDGET_SPEND_Q3 AS BUDGET_Q3, hl4Fnc.HL4_FNC_BUDGET_SPEND_Q4 AS BUDGET_Q4, hl4Fnc.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
+			--	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; hl4Fnc
+			 --	WHERE hl4Fnc.ENABLED = 1 AND hl4Fnc.DELETED = 0;
 			 	
 	va_spendCategory = SELECT spendCategory.SPEND_CATEGORY_ID, spendCategory.NAME AS SPEND_CATEGORY
 				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SPEND_CATEGORY&quot; spendCategory
@@ -176,11 +177,11 @@
 		hl4.HL4_ACRONYM,
 		hl4.HL4_CRM_DESCRIPTION,
 		hl4.HL4_STATUS_DETAIL,
-		hl4Fnc.BUDGET_Q1,
-		hl4Fnc.BUDGET_Q2,
-		hl4Fnc.BUDGET_Q3,
-		hl4Fnc.BUDGET_Q4,
-		hl4Fnc.HL4_BUDGET,
+		hl4.BUDGET_Q1,
+		hl4.BUDGET_Q2,
+		hl4.BUDGET_Q3,
+		hl4.BUDGET_Q4,
+		hl4.HL4_BUDGET,
 		spendCategory.SPEND_CATEGORY,
 		hl4Category.CATEGORY_NAME,
 		hl4CategoryOption.OPTION_NAME,
@@ -207,9 +208,9 @@
 		:va_hl2 hl2
 		LEFT JOIN :va_hl3 hl3 ON hl3.HL2_ID = hl2.HL2_ID
 		LEFT JOIN :va_hl4 hl4 ON hl4.HL3_ID = hl3.HL3_ID
-		LEFT JOIN :va_hl4Fnc hl4Fnc ON hl4.HL4_ID = hl4Fnc.HL4_ID
+		--LEFT JOIN :va_hl4Fnc hl4Fnc ON hl4.HL4_ID = hl4Fnc.HL4_ID
 		LEFT JOIN :va_hl4Category hl4Category ON hl4.HL4_ID = hl4Category.HL4_ID
-		LEFT JOIN :va_spendCategory spendCategory ON spendCategory.SPEND_CATEGORY_ID = hl4Fnc.SPEND_CATEGORY_ID
+		LEFT JOIN :va_spendCategory spendCategory ON spendCategory.SPEND_CATEGORY_ID = hl4.SPEND_CATEGORY_ID
 		LEFT JOIN :va_hl4CategoryOption hl4CategoryOption ON hl4CategoryOption.HL4_CATEGORY_ID = hl4Category.HL4_CATEGORY_ID
 		LEFT JOIN :va_hl4BudgetRegion hl4BudgetRegion ON hl4.HL4_ID = hl4BudgetRegion.HL4_ID
 		LEFT JOIN :va_hl4BudgetRoute hl4BudgetRoute ON hl4.HL4_ID = hl4BudgetRoute.HL4_ID
@@ -236,11 +237,11 @@
 		hl4.HL4_ACRONYM,
 		hl4.HL4_CRM_DESCRIPTION,
 		hl4.HL4_STATUS_DETAIL,
-		hl4Fnc.BUDGET_Q1,
-		hl4Fnc.BUDGET_Q2,
-		hl4Fnc.BUDGET_Q3,
-		hl4Fnc.BUDGET_Q4,
-		hl4Fnc.HL4_BUDGET,
+		hl4.BUDGET_Q1,
+		hl4.BUDGET_Q2,
+		hl4.BUDGET_Q3,
+		hl4.BUDGET_Q4,
+		hl4.HL4_BUDGET,
 		spendCategory.SPEND_CATEGORY,
 		hl4Category.CATEGORY_NAME,
 		hl4CategoryOption.OPTION_NAME,
@@ -280,10 +281,6 @@ END /********* End Procedure Script ************/</definition>
         <descriptions defaultDescription="HL2_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="HL2_DESCRIPTION"/>
       </attribute>
-      <attribute id="BUDGET_YEAR" order="4">
-        <descriptions defaultDescription="BUDGET_YEAR_ID"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR"/>
-      </attribute>
       <attribute id="REGION_NAME" order="5">
         <descriptions defaultDescription="REGION_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="REGION_NAME"/>
@@ -300,10 +297,6 @@ END /********* End Procedure Script ************/</definition>
         <descriptions defaultDescription="ORGANIZATION_NAME"/>
         <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_NAME"/>
       </attribute>
-      <attribute id="HL2_BUDGET" order="9">
-        <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
-        <keyMapping columnObjectName="Script_View" columnName="HL2_BUDGET"/>
-      </attribute>
       <attribute id="HL3_ACRONYM" order="10">
         <descriptions defaultDescription="HL3_ACRONYM"/>
         <keyMapping columnObjectName="Script_View" columnName="HL3_ACRONYM"/>
@@ -311,14 +304,6 @@ END /********* End Procedure Script ************/</definition>
       <attribute id="HL3_DESCRIPTION" order="11">
         <descriptions defaultDescription="HL3_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="HL3_DESCRIPTION"/>
-      </attribute>
-      <attribute id="HL3_BUDGET" order="12">
-        <descriptions defaultDescription="HL3_BUDGET_TOTAL"/>
-        <keyMapping columnObjectName="Script_View" columnName="HL3_BUDGET"/>
-      </attribute>
-      <attribute id="HL4_ID" order="13">
-        <descriptions defaultDescription="HL4_ID"/>
-        <keyMapping columnObjectName="Script_View" columnName="HL4_ID"/>
       </attribute>
       <attribute id="HL4_ACRONYM" order="14">
         <descriptions defaultDescription="HL4_ACRONYM"/>
@@ -332,26 +317,6 @@ END /********* End Procedure Script ************/</definition>
         <descriptions defaultDescription="HL4_STATUS_DETAIL"/>
         <keyMapping columnObjectName="Script_View" columnName="HL4_STATUS_DETAIL"/>
       </attribute>
-      <attribute id="BUDGET_Q1" order="17">
-        <descriptions defaultDescription="BUDGET_Q1"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_Q1"/>
-      </attribute>
-      <attribute id="BUDGET_Q2" order="18">
-        <descriptions defaultDescription="BUDGET_Q2"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_Q2"/>
-      </attribute>
-      <attribute id="BUDGET_Q3" order="19">
-        <descriptions defaultDescription="BUDGET_Q3"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_Q3"/>
-      </attribute>
-      <attribute id="BUDGET_Q4" order="20">
-        <descriptions defaultDescription="BUDGET_Q4"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_Q4"/>
-      </attribute>
-      <attribute id="HL4_BUDGET" order="21">
-        <descriptions defaultDescription="HL4_BUDGET"/>
-        <keyMapping columnObjectName="Script_View" columnName="HL4_BUDGET"/>
-      </attribute>
       <attribute id="SPEND_CATEGORY" order="22">
         <descriptions defaultDescription="NAME"/>
         <keyMapping columnObjectName="Script_View" columnName="SPEND_CATEGORY"/>
@@ -364,49 +329,25 @@ END /********* End Procedure Script ************/</definition>
         <descriptions defaultDescription="NAME"/>
         <keyMapping columnObjectName="Script_View" columnName="OPTION_NAME"/>
       </attribute>
-      <attribute id="OPTION_AMOUNT" order="25">
-        <descriptions defaultDescription="OPTION_AMOUNT"/>
-        <keyMapping columnObjectName="Script_View" columnName="OPTION_AMOUNT"/>
-      </attribute>
       <attribute id="BUDGET_REGION_NAME" order="26">
         <descriptions defaultDescription="BUDGET_REGION_NAME"/>
         <keyMapping columnObjectName="Script_View" columnName="BUDGET_REGION_NAME"/>
-      </attribute>
-      <attribute id="BUDGET_REGION_PERCENTAGE" order="27">
-        <descriptions defaultDescription="PERCENTAGE"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_REGION_PERCENTAGE"/>
       </attribute>
       <attribute id="BUDGET_ROUTE_ACRONYM" order="28">
         <descriptions defaultDescription="BUDGET_ROUTE_ACRONYM"/>
         <keyMapping columnObjectName="Script_View" columnName="BUDGET_ROUTE_ACRONYM"/>
       </attribute>
-      <attribute id="BUDGET_ROUTE_PERCENTAGE" order="29">
-        <descriptions defaultDescription="PERCENTAGE"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_ROUTE_PERCENTAGE"/>
-      </attribute>
       <attribute id="SALE_REGION_NAME" order="30">
         <descriptions defaultDescription="SALE_REGION_NAME"/>
         <keyMapping columnObjectName="Script_View" columnName="SALE_REGION_NAME"/>
-      </attribute>
-      <attribute id="SALE_REGION_AMOUNT" order="31">
-        <descriptions defaultDescription="AMOUNT"/>
-        <keyMapping columnObjectName="Script_View" columnName="SALE_REGION_AMOUNT"/>
       </attribute>
       <attribute id="SALE_ROUTE_ACRONYM" order="32">
         <descriptions defaultDescription="ACRONYM"/>
         <keyMapping columnObjectName="Script_View" columnName="SALE_ROUTE_ACRONYM"/>
       </attribute>
-      <attribute id="SALE_ROUTE_AMOUNT" order="33">
-        <descriptions defaultDescription="AMOUNT"/>
-        <keyMapping columnObjectName="Script_View" columnName="SALE_ROUTE_AMOUNT"/>
-      </attribute>
       <attribute id="SALE_OTHER_DESCRIPTION" order="34">
         <descriptions defaultDescription="SALE_OTHER_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="SALE_OTHER_DESCRIPTION"/>
-      </attribute>
-      <attribute id="SALE_OTHER_AMOUNT" order="35">
-        <descriptions defaultDescription="SALE_OTHER_AMOUNT"/>
-        <keyMapping columnObjectName="Script_View" columnName="SALE_OTHER_AMOUNT"/>
       </attribute>
       <attribute id="OUTCOMES_TYPE_NAME" order="36">
         <descriptions defaultDescription="OUTCOMES_TYPE_NAME"/>
@@ -415,26 +356,6 @@ END /********* End Procedure Script ************/</definition>
       <attribute id="OUTCOMES_NAME" order="37">
         <descriptions defaultDescription="OUTCOMES_NAME"/>
         <keyMapping columnObjectName="Script_View" columnName="OUTCOMES_NAME"/>
-      </attribute>
-      <attribute id="HL4_EXPECTED_OUTCOMES_EURO_VALUE" order="38">
-        <descriptions defaultDescription="HL4_EXPECTED_OUTCOMES_EURO_VALUE"/>
-        <keyMapping columnObjectName="Script_View" columnName="HL4_EXPECTED_OUTCOMES_EURO_VALUE"/>
-      </attribute>
-      <attribute id="HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE" order="39">
-        <descriptions defaultDescription="HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE"/>
-        <keyMapping columnObjectName="Script_View" columnName="HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE"/>
-      </attribute>
-      <attribute id="TOTAL_MY_BUDGET" order="40">
-        <descriptions defaultDescription="TOTAL_MY_BUDGET"/>
-        <keyMapping columnObjectName="Script_View" columnName="TOTAL_MY_BUDGET"/>
-      </attribute>
-      <attribute id="TOTAL_SALE" order="41">
-        <descriptions defaultDescription="TOTAL_SALE"/>
-        <keyMapping columnObjectName="Script_View" columnName="TOTAL_SALE"/>
-      </attribute>
-      <attribute id="TOTAL_PARTNER" order="42">
-        <descriptions defaultDescription="TOTAL_PARTNER"/>
-        <keyMapping columnObjectName="Script_View" columnName="TOTAL_PARTNER"/>
       </attribute>
     </attributes>
     <calculatedAttributes/>
@@ -446,6 +367,86 @@ END /********* End Procedure Script ************/</definition>
       </layout>
     </privateDataFoundation>
     <baseMeasures>
+      <measure id="BUDGET_YEAR" order="4" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BUDGET_YEAR_ID"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_YEAR"/>
+      </measure>
+      <measure id="HL2_BUDGET" order="9" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL2_BUDGET"/>
+      </measure>
+      <measure id="HL3_BUDGET" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL3_BUDGET_TOTAL"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL3_BUDGET"/>
+      </measure>
+      <measure id="HL4_ID" order="13" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL4_ID"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL4_ID"/>
+      </measure>
+      <measure id="BUDGET_Q1" order="17" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BUDGET_Q1"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_Q1"/>
+      </measure>
+      <measure id="BUDGET_Q2" order="18" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BUDGET_Q2"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_Q2"/>
+      </measure>
+      <measure id="BUDGET_Q3" order="19" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BUDGET_Q3"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_Q3"/>
+      </measure>
+      <measure id="BUDGET_Q4" order="20" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BUDGET_Q4"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_Q4"/>
+      </measure>
+      <measure id="HL4_BUDGET" order="21" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL4_BUDGET"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL4_BUDGET"/>
+      </measure>
+      <measure id="OPTION_AMOUNT" order="25" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="OPTION_AMOUNT"/>
+        <measureMapping columnObjectName="Script_View" columnName="OPTION_AMOUNT"/>
+      </measure>
+      <measure id="BUDGET_REGION_PERCENTAGE" order="27" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PERCENTAGE"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_REGION_PERCENTAGE"/>
+      </measure>
+      <measure id="BUDGET_ROUTE_PERCENTAGE" order="29" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PERCENTAGE"/>
+        <measureMapping columnObjectName="Script_View" columnName="BUDGET_ROUTE_PERCENTAGE"/>
+      </measure>
+      <measure id="SALE_REGION_AMOUNT" order="31" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="AMOUNT"/>
+        <measureMapping columnObjectName="Script_View" columnName="SALE_REGION_AMOUNT"/>
+      </measure>
+      <measure id="SALE_ROUTE_AMOUNT" order="33" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="AMOUNT"/>
+        <measureMapping columnObjectName="Script_View" columnName="SALE_ROUTE_AMOUNT"/>
+      </measure>
+      <measure id="SALE_OTHER_AMOUNT" order="35" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="SALE_OTHER_AMOUNT"/>
+        <measureMapping columnObjectName="Script_View" columnName="SALE_OTHER_AMOUNT"/>
+      </measure>
+      <measure id="HL4_EXPECTED_OUTCOMES_EURO_VALUE" order="38" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL4_EXPECTED_OUTCOMES_EURO_VALUE"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL4_EXPECTED_OUTCOMES_EURO_VALUE"/>
+      </measure>
+      <measure id="HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE" order="39" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL4_EXPECTED_OUTCOMES_AMOUNT_VALUE"/>
+      </measure>
+      <measure id="TOTAL_MY_BUDGET" order="40" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TOTAL_MY_BUDGET"/>
+        <measureMapping columnObjectName="Script_View" columnName="TOTAL_MY_BUDGET"/>
+      </measure>
+      <measure id="TOTAL_SALE" order="41" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TOTAL_SALE"/>
+        <measureMapping columnObjectName="Script_View" columnName="TOTAL_SALE"/>
+      </measure>
+      <measure id="TOTAL_PARTNER" order="42" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TOTAL_PARTNER"/>
+        <measureMapping columnObjectName="Script_View" columnName="TOTAL_PARTNER"/>
+      </measure>
       <measure id="TOTAL_BUDGET" order="43" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
         <measureMapping columnObjectName="Script_View" columnName="TOTAL_BUDGET"/>
