@@ -131,7 +131,7 @@ function updateHl2(objLevel2, userId){
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
 				
 					if(isCentralTeam(objLevel2) &&  objLevel2.contactData && objLevel2.contactData.length) {
-						contactDataLib.deleteContactDataByContactTypeId("hard", "CENTRAL", objLevel2.IN_HL2_ID);
+						contactDataLib.deleteContactDataByContactTypeId("hard", "CENTRAL", objLevel2.IN_HL2_ID, userId);
 						contactDataLib.insertContactData(objLevel2.contactData,userId);
 					}
 					
@@ -200,7 +200,7 @@ function deleteHl2(objLevel2, userId){
 	if(hasChild(objLevel2))
 		throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/deleteHl2", L1_MSG_PLAN_CANT_DELETE);
 
-	contactDataLib.deleteContactDataByContactTypeId("CENTRAL", objLevel2.IN_HL2_ID);
+	contactDataLib.deleteContactDataByContactTypeId("soft", "CENTRAL", objLevel2.IN_HL2_ID, userId);
 	
 	return dataHl2.deleteHl2(objLevel2,userId);
 }

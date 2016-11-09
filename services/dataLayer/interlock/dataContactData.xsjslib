@@ -38,9 +38,9 @@ function deleteContactData(id, userId){
     return rdo;
 }
 
-function deleteContactDataByContactTypeId(type, contactType, contactTypeId){
+function deleteContactDataByContactTypeId(type, contactType, contactTypeId, userId){
 	var sp = type == 'hard' ? spHardDeleteContactData : spDeleteContactDataByContactTypeId;
-	var rdo = db.executeScalar(sp, {'in_contact_type': contactType, 'in_contact_type_id': contactTypeId}, 'out_result');
+	var rdo = db.executeScalar(sp, {'in_contact_type': contactType, 'in_contact_type_id': contactTypeId, 'in_user_id': userId}, 'out_result');
     return rdo;
 }
 

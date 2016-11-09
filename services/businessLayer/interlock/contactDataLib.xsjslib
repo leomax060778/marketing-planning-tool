@@ -72,9 +72,9 @@ function updateContactData(data,userId){
 	}
 }
 
-function deleteContactDataByContactTypeId(type, contactType, contactTypeId) {
+function deleteContactDataByContactTypeId(type, contactType, contactTypeId, userId) {
 	try{
-		return dataContactData.deleteContactDataByContactTypeId(type, CONTACT_TYPE[contactType], contactTypeId);
+		return dataContactData.deleteContactDataByContactTypeId(type, CONTACT_TYPE[contactType], contactTypeId, userId);
 	} catch(e) {
 		throw e;
 	}
