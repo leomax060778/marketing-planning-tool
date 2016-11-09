@@ -6,6 +6,16 @@ var ErrorLib = mapper.getErrors();
 /*************************************************/
 
 var INSERT = "INS_LOG_ERROR";
+/*
+ * IN in_name_error nvarchar(255),
+	IN in_message nvarchar(1000),
+	IN in_stack nvarchar(5000),
+	IN in_details nvarchar(5000),
+	IN in_user_id bigint,	
+	IN in_modified_user_id bigint,
+	OUT out_error_id bigint
+ * */
+
 
 function log(error, user, modUser){		
 		var parameters = {};

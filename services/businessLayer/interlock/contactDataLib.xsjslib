@@ -27,23 +27,24 @@ function getContactData(contactTypeId, contactType){
 	}
 };
 
-function insertContactData(data,userId,contactTypeId){
-	try{
-		var saveData = true;
-		if(validate(data)){
-			
-			data.forEach(function(contactData){
-				saveData = saveData && !!dataContactData.insertContactData(contactData.BMOLEADS,contactData.EMPLOYEENUMBER,contactData.EMAIL,CONTACT_TYPE[contactData.CONTACTTYPE],contactData.CONTACTTYPEID || contactTypeId,userId);
-			});
+function insertContactData(data,userId, contactTypeId){
+	var saveData = false;
+	if(validate(data)){
+		try{
+		data.forEach(function(contactData){
+			dataContactData.insertContactData(contactData.BMOLEADS || "",contactData.EMPLOYEENUMBER || "",contactData.EMAIL,CONTACT_TYPE[contactData.CONTACTTYPE],contactData.CONTACTTYPEID || contactTypeId,userId);
+		});
+		db.commit();
+		saveData = true;
+		}catch(e) {
+			db.rollback();
+			throw e;
+		} finally {
+			db.closeConnection();
 		}
-		if(saveData){db.commit();} else {db.rollback();};
-		return saveData;
-	} catch(e) {
-		db.rollback();
-		throw e;
-	} finally {
-		db.closeConnection();
 	}
+ 
+	return saveData;
 };
 
 function deleteContactData(id, userId){

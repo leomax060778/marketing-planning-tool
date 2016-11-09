@@ -37,7 +37,6 @@ function getRegionById(regionId){
 /*EXECUTE QUERY TO INSERT NEW REGION*/
 function insertRegion(objRegion, userId){
 	var spResult = [];
-	
 	var parameters = {};
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;
 	parameters.IN_REGION_ISO = objRegion.IN_REGION_ISO;

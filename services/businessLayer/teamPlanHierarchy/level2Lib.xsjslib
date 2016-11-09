@@ -131,7 +131,7 @@ function updateHl2(objLevel2, userId){
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
 				
 					if(isCentralTeam(objLevel2) &&  objLevel2.contactData && objLevel2.contactData.length) {
-						contactDataLib.deleteContactDataByContactTypeId("hard", "CENTRAL", objLevel2.IN_HL2_ID, userId);
+						contactDataLib.deleteContactDataByContactTypeId("hard", "CENTRAL", objLevel2.IN_HL2_ID);
 						contactDataLib.insertContactData(objLevel2.contactData,userId);
 					}
 					

@@ -21,6 +21,7 @@ function getContactData(contactTypeId, contactType){
 }
 
 function insertContactData(bmoLeads,employeeNumber,email,contactType,contactTypeId,userId){
+	
 	var parameters = {
 				'in_bmo_leads': bmoLeads,
 				'in_employee_number': employeeNumber,
@@ -40,7 +41,11 @@ function deleteContactData(id, userId){
 
 function deleteContactDataByContactTypeId(type, contactType, contactTypeId, userId){
 	var sp = type == 'hard' ? spHardDeleteContactData : spDeleteContactDataByContactTypeId;
-	var rdo = db.executeScalar(sp, {'in_contact_type': contactType, 'in_contact_type_id': contactTypeId, 'in_user_id': userId}, 'out_result');
+	var payload ={'in_contact_type': contactType, 'in_contact_type_id': contactTypeId};
+	if (type === 'soft'){
+		payload.in_user_id = userId;
+	}
+	var rdo = db.executeScalar(sp, payload, 'out_result');
     return rdo;
 }
 
