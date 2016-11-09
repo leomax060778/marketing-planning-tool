@@ -1,5 +1,5 @@
 service  { 
-   "xsplanningtool.db.data.views::AT_BUDGET_YEAR"  
+   "sap-planning-tool.db.data.views::AT_BUDGET_YEAR"  
    as "BudgetYear"     
    key  ("BUDGET_YEAR_ID")
    create forbidden

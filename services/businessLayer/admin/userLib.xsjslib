@@ -49,6 +49,7 @@ function getUserByHl3Id(hl3Id) {
 }
 
 function insertUser(user, createUser) {
+	
 	if (!user.PASSWORD && !user.USE_DEFAULT_PASSWORD)
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser",
@@ -71,6 +72,10 @@ function insertUser(user, createUser) {
 
 		// validate user
 		if (validateUser(user)) {
+			if(getUserByUserName(user.USER_NAME)){
+				throw ErrorLib.getErrors().CustomError("",
+						"userServices/handlePost/insertUser", "The User Name already exists"); 
+			}
 			// Hash password
 			userPassword = !user.USE_DEFAULT_PASSWORD
 					&& validatePassword(user.PASSWORD) ? user.PASSWORD
@@ -97,7 +102,12 @@ function insertUser(user, createUser) {
 
 				if (transactionDone) {
 					db.commit();
-					notifyInsertByEmail(user.EMAIL,user.USER_NAME,userPassword);
+					try{
+						notifyInsertByEmail(user.EMAIL,user.USER_NAME,userPassword);
+					}catch(e){
+						throw ErrorLib.getErrors().MailError("",e,"The user was created, but the notification email failed to be sent.");
+					}
+					
 				} else {
 					db.rollback();
 				}

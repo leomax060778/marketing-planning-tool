@@ -13,6 +13,6 @@ BEGIN
  *****************************/
   out_result = SELECT USER_ID, PASSWORD, USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE
  		FROM "USER" 
- 		WHERE USER_NAME = in_user_name AND
+ 		WHERE upper(USER_NAME) = upper(in_user_name) AND
  		ENABLED = 1 AND DELETED = 0;
 END;

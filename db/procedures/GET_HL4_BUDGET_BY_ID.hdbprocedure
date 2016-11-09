@@ -33,9 +33,9 @@ BEGIN
 					ON HL4_BUDGET_SUBREGION.subregion_id = subregion.subregion_id
 					where HL4_BUDGET_SUBREGION.deleted = 0 and HL4_BUDGET_SUBREGION.enabled = 1 and HL4_BUDGET_SUBREGION.hl4_id = in_hl4_id;
 
-	out_budget_global_team = SELECT hl3.hl3_id as id,
-					hl3.acronym as global_team_name, HL4_BUDGET_ROUTE.percentage
-					from HL4_BUDGET_ROUTE INNER JOIN HL3 hl3
-					ON HL4_BUDGET_ROUTE.route_id = hl3.hl3_id
+	out_budget_global_team = SELECT hl2.hl2_id as id,
+					hl2.organization_acronym as global_team_name, HL4_BUDGET_ROUTE.percentage
+					from HL4_BUDGET_ROUTE INNER JOIN HL2 hl2
+					ON HL4_BUDGET_ROUTE.route_id = hl2.hl2_id
 					where HL4_BUDGET_ROUTE.deleted = 0 and HL4_BUDGET_ROUTE.enabled = 1 and HL4_BUDGET_ROUTE.hl4_id = in_hl4_id;
 END;

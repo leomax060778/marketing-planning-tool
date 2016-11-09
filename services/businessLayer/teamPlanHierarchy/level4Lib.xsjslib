@@ -222,17 +222,6 @@ function insertHl4(data, userId){
 			data.hl4.in_is_send_mail = 0;
 			data.hl4.in_read_only = 0;
 			
-			/*************************************************/
-			data.hl4.in_EURO_CONVERSION_ID = 0;
-			data.hl4.in_IN_BUDGET = 0;
-			data.hl4.in_SPEND_CATEGORY_ID = 0;
-			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q1 = 0;
-			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q2 = 0;
-			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q3 = 0;
-			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q4 = 0;
-			data.hl4.in_HL4_FNC_BUDGET_TOTAL_MKT = 0;
-			/*************************************************/
-			
 			data.hl4.in_user_id_send_mail = 1;
 			hl4_id = dataHl4.insertHl4(data.hl4);
 			
@@ -1406,13 +1395,16 @@ function insertHl4CRMBinding(hl4, action) {
 										"in_user_id": hl4.hl4.in_user_id,
 										"in_display_name": hl4CategoryOption.HL4_CATEGORY_ID
 									};
-									var in_hl4_crm_binding_id = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, object)[0] ? dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, object)[0].ID : null;
-									if(in_hl4_crm_binding_id){
-										parameters.in_hl4_crm_binding_id = in_hl4_crm_binding_id;
-										dataHl4.updateHl4CRMBinding(parameters);
-									} else {
-										dataHl4.insertHl4CRMBinding(parameters);
-									}				
+									var hl4CrmBinding = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, object);//[0] ? dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4.hl4.in_hl4_id, object)[0].ID : null;
+									hl4CrmBinding.forEach(function(obj){
+										
+										if(hl4CategoryOption.HL4_CATEGORY_ID == obj.DISPLAY_NAME){
+											parameters.in_hl4_crm_binding_id = in_hl4_crm_binding_id;
+											dataHl4.updateHl4CRMBinding(parameters);
+										} else {
+											dataHl4.insertHl4CRMBinding(parameters);
+										}
+									});			
 								break;
 							}
 						};				

@@ -1,4 +1,4 @@
-CREATE PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_PLAN" ( 
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_PLAN" ( 
 	OUT out_result TABLE (
 		  PLAN_ID BIGINT
 		, PLAN_NAME NVARCHAR(255)

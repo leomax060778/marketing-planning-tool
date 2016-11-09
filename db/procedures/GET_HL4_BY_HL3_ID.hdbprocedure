@@ -98,7 +98,7 @@ out_result = SELECT
 
 	out_total_budget := va_total_budget;
 	
-	SELECT (hl3_fnc_budget_total - out_total_budget)
+	SELECT (hl3_fnc.hl3_fnc_budget_total - out_total_budget)
 	into va_remaining_budget FROM hl3_fnc
 	inner join hl3 on hl3.hl3_id = hl3_fnc.hl3_id
 	where hl3.hl3_id = in_hl3_id;

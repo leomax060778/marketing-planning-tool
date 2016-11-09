@@ -20,6 +20,7 @@ var TEAM_TYPE_CENTRAL = "2";
 
 var L1_MSG_CENTRAL_TEAM_EXISTS = "Another Central Team with the same acronym already exists.";  
 var L1_MSG_PLAN_EXISTS = "Another Plan with the same acronym already exists";
+var L1_MSG_LEVEL_1_EXISTS ="Another Level1 with the same acronym, budget year and organization acronym already exists";
 var L1_MSG_PLAN_NO_CREATED = "The Plan could not be created."; 
 var L1_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";
 var L1_MSG_PLAN_NOT_FOUND = "The Plan can not be found."; 
@@ -29,10 +30,13 @@ var L1_MSG_USER_NOT_FOUND = "The User can not be found."
 /*INSERT A NEW HL2 WITH CREO O MORE USERS ASICIATIONS*/
 function insertHl2(objLevel2, userId){
 	if(validateInsertHl2(objLevel2)){
-		if(isCentralTeam(objLevel2) || !existHl2ByAcronym(objLevel2.IN_ACRONYM)){		
-			if(objLevel2.IN_ORGANIZATION_ACRONYM && existOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM))
-				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_CENTRAL_TEAM_EXISTS);	
-			
+//		if(isCentralTeam(objLevel2) || !dataHl2.getLevelByAcronymAndOrganizationAcronym(objLevel2.IN_ACRONYM,objLevel2.IN_ORGANIZATION_ACRONYM) /*existHl2ByAcronym(objLevel2.IN_ACRONYM)*/){		
+//			if(objLevel2.IN_ORGANIZATION_ACRONYM && existOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM))
+//				throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_CENTRAL_TEAM_EXISTS);	
+		if(dataHl2.getLevelByAcronymAndOrganizationAcronym(objLevel2.IN_ACRONYM,objLevel2.IN_BUDGET_YEAR_ID, objLevel2.IN_ORGANIZATION_ACRONYM)){
+			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_LEVEL_1_EXISTS); 
+		}
+		
 			try{
 				
 				var objhl2 = dataHl2.insertLevel2(objLevel2, userId);
@@ -81,9 +85,9 @@ function insertHl2(objLevel2, userId){
 				db.rollback();
 				throw e;
 			}
-		}
-		else
-			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_PLAN_EXISTS);	
+//		}
+//		else
+//			throw ErrorLib.getErrors().CustomError("","hl2Services/handlePost/insertHl2", L1_MSG_PLAN_EXISTS);	
 	}	
 }
 
@@ -122,7 +126,6 @@ function updateHl2(objLevel2, userId){
 			var objHl2 = {};
 			objHl2.IN_HL2_ID = objLevel2.IN_HL2_ID;
 			var budgetChanged = dataHl2.getLevel2ById(objHl2).HL2_BUDGET_TOTAL != objLevel2.IN_HL2_BUDGET_TOTAL;
-			
 			if(canUpdate(objLevel2)){
 				if(canUpdateOrganization(objLevel2)){
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
@@ -142,16 +145,15 @@ function updateHl2(objLevel2, userId){
 			if(updated > 0){
 				if(budgetChanged){
 					var resBudgetStatus = hl3.checkBudgetStatus(objLevel2.IN_HL2_ID,userId);
-					//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","paka 1");
 					if(resBudgetStatus.hasChanged){
 						//send all emails
 						try 
 						{
-							//sendEmail(resBudgetStatus, userId);
+							sendEmail(resBudgetStatus, userId);
 						}
 						catch(e){
 							//when error email exist, log error
-							businessError.log(ErrorLib.getErrors().CustomError("","level2Lib/sendEmail",e),userId);
+							businessError.log(ErrorLib.getErrors().CustomError("","level2Lib/sendEmail", JSON.stringify(e)), userId, userId);
 						}
 					}
 				}
@@ -280,11 +282,11 @@ function getAllCentralTeam(centralTeamId){
 /*check if can update object because is not same another in db*/
 function canUpdate(objLevel2){
 	var currentL2 = getLevel2ById(objLevel2);
-	var objHl2Other = getLevel2ByAcronym(objLevel2.IN_ACRONYM);
-	if(isCentralTeam(objLevel2) || !objHl2Other) return true;
+	var objHl2Other = dataHl2.getLevelByAcronymAndOrganizationAcronym(objLevel2.IN_ACRONYM,objLevel2.IN_BUDGET_YEAR_ID, objLevel2.IN_ORGANIZATION_ACRONYM);//getLevel2ByAcronym(objLevel2.IN_ACRONYM);
+	if(/*isCentralTeam(objLevel2) ||*/ !objHl2Other) return true;
 	//check the same object
 	if(currentL2.HL2_ID!==objHl2Other.HL2_ID 
-			&& objLevel2.IN_ACRONYM.toUpperCase()===objHl2Other.ACRONYM.toUpperCase())
+			/*&& objLevel2.IN_ACRONYM.toUpperCase()===objHl2Other.ACRONYM.toUpperCase()*/)
 		return false;
 	else
 		return true;
@@ -292,10 +294,12 @@ function canUpdate(objLevel2){
 
 /*check if can update object because is not same another in db*/
 function canUpdateOrganization(objLevel2){
+	return canUpdate(objLevel2);
+	/*
 	//candidate to update
 	var currentL2 = getLevel2ById(objLevel2);
 	//other in database
-	var objHl2Other = isCentralTeam(objLevel2) && getLevelByOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM);
+	var objHl2Other = isCentralTeam(objLevel2) && dataHl2.getLevelByAcronymAndOrganizationAcronym(objLevel2.IN_ACRONYM,objLevel2.IN_BUDGET_YEAR_ID, objLevel2.IN_ORGANIZATION_ACRONYM);//getLevelByOrganizationAcronym(objLevel2.IN_ORGANIZATION_ACRONYM);
 	if(!objHl2Other) return true;
 	//check the same object
 	if(currentL2.HL2_ID !== objHl2Other.HL2_ID
@@ -305,6 +309,7 @@ function canUpdateOrganization(objLevel2){
 		return false;
 	else
 		return true;
+	*/
 }
 
 function hasChild(objLevel2){

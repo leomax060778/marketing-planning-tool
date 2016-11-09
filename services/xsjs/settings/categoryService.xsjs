@@ -197,7 +197,7 @@ function handlePost(reqBody) {
 			});
 			connHdb.close();
 			
-			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY"(?,?,?,?)';
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY"(?,?,?,?,?)';
 			result.forEach(function(hl4){
 				cst = conn.prepareCall(query);
 				cst.setBigInt(1, hl4.HL4_ID);

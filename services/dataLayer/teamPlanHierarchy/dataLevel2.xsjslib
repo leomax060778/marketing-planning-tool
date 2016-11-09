@@ -14,6 +14,7 @@ var UPD_HL2 = "UPD_HL2";
 var COUNT_HL3_BY_HL2_ID = "COUNT_HL3_BY_HL2_ID";
 var DEL_HL2 = "DEL_HL2";
 var GET_HL2_BY_ORGANIZATION_ACRONYM = "GET_HL2_BY_ORGANIZATION_ACRONYM";
+var GET_HL2_BY_ACRONYM_AND_ORGANIZATION_ACRONYM = "GET_HL2_BY_ACRONYM_AND_ORGANIZATION_ACRONYM";
 var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
 var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM";
 var spGetHl2AllocatedBudget = "GET_HL2_ALLOCATED_BUDGET";
@@ -62,6 +63,16 @@ function getAllCentralTeam(centralTeamId){
 	var result = db.executeProcedureManual(GET_ALL_CENTRAL_TEAM,parameters);
 	return db.extractArray(result.out_result);
 
+}
+
+function getLevelByAcronymAndOrganizationAcronym(acronym, budgeth_year_id, org_acronym){
+	var parameters = {'in_acronym': acronym, 'IN_BUDGET_YEAR_ID':budgeth_year_id , 'in_org_acronym' : org_acronym};	
+	var result = db.executeProcedureManual(GET_HL2_BY_ACRONYM_AND_ORGANIZATION_ACRONYM, parameters);	
+	var list = db.extractArray(result.out_result);
+	if(list.length)
+		return list[0];
+	else
+		return null;
 }
 
 function getLevelByOrganizationAcronym(acronym){

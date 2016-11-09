@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_OPTION_BY_CATEGORY_ID" (
 	IN in_hl4_category_id bigint,
-	OUT out_hl4_category_option TABLE (option_id BIGINT, option_name nvarchar(255), category_id integer, amount decimal(19,2), category_name NVARCHAR(60))
+	OUT out_hl4_category_option TABLE (option_id BIGINT, option_name nvarchar(255), category_id INTEGER, amount decimal(19,2), category_name NVARCHAR(60))
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 

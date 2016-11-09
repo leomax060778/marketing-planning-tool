@@ -11,7 +11,7 @@ function getPathByLevelParent(levelId, parentId) {
 	var result = {};
 	var levelPath = "Plan Level 1";
 	var path = dataPath.getPathByLevelParent(levelId, parentId);
-	
+	//throw JSON.stringify(path);
 	/*
 	 * Determine current plan level correspondence between Parameter Level 2 =
 	 * means Level 1 in SAP Parameter Level 3 = means Level 2 Parameter Level 4 =
@@ -42,10 +42,10 @@ function getPathByLevelParent(levelId, parentId) {
 	if (path.length > 0) {
 		result.PATH_TPH = levelPath + " for " + CRM_ACRONYM + "-"
 				+ path[0].PATH_TPH;
-
 		// Special case for Central Team
-		if (parseInt(levelId) == 3) {
+		if (parseInt(levelId) >= 3) {
 			var pathOrgAcronym = dataPath.getPathOrganizationAcronym(levelId, parentId);
+			
 			var isCentralTeam = !pathOrgAcronym[0] ? false : true;
 			if (isCentralTeam) {
 				result.PATH_TPH = levelPath + " for " + CRM_ACRONYM + "-"
@@ -61,12 +61,29 @@ function getPathByLevelParent(levelId, parentId) {
 
 // Get complete path of specific level and parent id of HL to CRM
 function getPathByLevelParentToCRM(levelId, parentId) {
+	//with out path refactor
 	var result = {};
 	var path = dataPath.getPathByLevelParent(levelId, parentId);
-	result.PATH_TPH = CRM_ACRONYM + path[0].PATH_TPH;
+	
+	
+	
+	var pathOrgAcronym = dataPath.getPathOrganizationAcronym(levelId, parentId);
+	var isOrgAcronym = !pathOrgAcronym[0] ? false : true;
+	//throw  path[0].PATH_TPH ;
+	if (isOrgAcronym) {
+		result.PATH_TPH = CRM_ACRONYM + "-"
+				+ path[0].PATH_TPH + "-"
+				+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
+	}
+	
+	
+	
+	
+	/*result.PATH_TPH = CRM_ACRONYM + path[0].PATH_TPH;
 	if (path.length > 0)
-		result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;
-	else
+		result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;*/
+	else {
 		result.PATH_TPH = CRM_ACRONYM;
+	}
 	return result;
 }
