@@ -47,16 +47,19 @@ function validateIsDecimal(value){
 	return isNumeric(value);
 }
 
-function validateLength(value, max, min){
+function validateLength(value, max, min, field){
+	if(!field){
+		field = "";
+	}
 	if(max)
 		if(value.length > max) throw ErrorLib.getErrors()
 		.CustomError("", "util/validateLength",
-		"The PASSWORD should have between "+min+" and "+max+" characters");
+		"The "+field+" value should have between "+min+" and "+max+" characters");
 
 	if(min)
 		if(value.length < min) throw ErrorLib.getErrors()
 		.CustomError("", "util/validateLength",
-				"The PASSWORD should have between "+min+" and "+max+" characters");
+				"The "+field+" value should have between "+min+" and "+max+" characters");
 		
 		
 	return true;

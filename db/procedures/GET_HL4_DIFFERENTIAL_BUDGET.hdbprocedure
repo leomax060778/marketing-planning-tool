@@ -29,34 +29,34 @@ BEGIN
 	--Check if HL4 marketing budget has been already assigned
 	SELECT COUNT(hl4_fnc_budget_total_mkt) 
 	INTO va_hl4_budget_assigned
-	FROM HL4_FNC
+	FROM HL4
 	WHERE hl4_id = in_hl4_id;
 
 	IF va_hl4_budget_assigned <> 0
 	THEN
 		-- Grab the market budget of the HL4
-		SELECT (HL4_FNC.hl4_fnc_budget_total_mkt * EC.currency_value) 
+		SELECT (HL4.hl4_fnc_budget_total_mkt * EC.currency_value) 
 		INTO va_hl4_fnc_budget_total_mkt 
-		FROM HL4_FNC
-		INNER JOIN EURO_CONVERSIONS EC ON HL4_FNC.euro_conversion_id = EC.euro_conversion_id
-		WHERE HL4_FNC.hl4_id = in_hl4_id
-	      AND HL4_FNC.deleted = 0
-	   	  AND HL4_FNC.enabled = 1;
+		FROM HL4
+		INNER JOIN EURO_CONVERSIONS EC ON HL4.euro_conversion_id = EC.euro_conversion_id
+		WHERE HL4.hl4_id = in_hl4_id
+	      AND HL4.deleted = 0
+	   	  AND HL4.enabled = 1;
 	END IF;
 
 	-- Grab the sum of market budgets from all the HL4s related to the HL3
 	-- exceptuating the HL4 given as input parameter and the HL4 that are
 	-- currently out of budget
-	SELECT SUM(HL4_FNC.hl4_fnc_budget_total_mkt * EC.currency_value)
+	SELECT SUM(HL4.hl4_fnc_budget_total_mkt * EC.currency_value)
 	INTO va_hl4_others_sum_budget
-	FROM HL4_FNC
-	INNER JOIN HL4 ON HL4_FNC.hl4_id = HL4.hl4_id
+	FROM HL4
+	--INNER JOIN HL4 ON HL4_FNC.hl4_id = HL4.hl4_id
 	INNER JOIN HL3 ON HL3.hl3_id = HL4.hl3_id
-	INNER JOIN EURO_CONVERSIONS EC ON EC.euro_conversion_id = HL4_FNC.euro_conversion_id
+	INNER JOIN EURO_CONVERSIONS EC ON EC.euro_conversion_id = HL4.euro_conversion_id
 	WHERE HL3.hl3_id = va_hl3_id
 	  AND HL4.deleted = 0
 	  AND HL4.enabled = 1
-	  AND HL4_FNC.in_budget = 1
+	  AND HL4.in_budget = 1
 	  AND HL4.hl4_id <> in_hl4_id;
 
 	out_hl4_budget_total_mkt := IFNULL(va_hl4_fnc_budget_total_mkt, 0);

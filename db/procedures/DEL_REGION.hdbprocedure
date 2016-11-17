@@ -7,13 +7,13 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_REGION" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-/***************************** 
-	Write your procedure logic 
- *****************************/
-
-		DELETE FROM "PLANNING_TOOL"."REGION" region
+		UPDATE region
+		SET 
+		region.deleted = 1,
+		region.modified_user_id = in_modified_user_id,
+		region.modified_date_tz = CURRENT_TIMESTAMP
+		FROM "PLANNING_TOOL"."REGION" region
 		WHERE region.region_id = in_region_id;
-		
 		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 
 END;

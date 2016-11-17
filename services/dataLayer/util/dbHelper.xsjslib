@@ -39,7 +39,7 @@ function executeProcedure(spName, parameters){
 	}
 	catch(e){
 		HDB_CONNECTION.rollback();		
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName +" "+ e.toString(),"dbHelper.executeProcedure");
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedure");
 	}
 	finally{
 		if (!HDB_CONNECTION.isClosed())
@@ -58,7 +58,7 @@ function executeProcedureManual(spName, parameters){
 		result = fn(parameters);
 	}
 	catch(e){	
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName +" "+e.toString(),"dbHelper.executeProcedureManual");
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedureManual");
 	}
 	return result;
 }
@@ -82,7 +82,7 @@ function executeScalar(spName, parameters, out_result){
 	}
 	catch(e){
 		HDB_CONNECTION.rollback();		
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName +" "+e.toString(),"dbHelper.executeScalar");	
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalar");	
 }
 	finally{
 		
@@ -105,7 +105,7 @@ function executeDecimalManual(spName, parameters, out_result){
 		 value = Number(result[out_result]);		
 	}
 	catch(e){		
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName +" "+e.toString(),"dbHelper.executeScalarManual");	
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");	
     }
 		
 	return value;
@@ -123,7 +123,7 @@ function executeScalarManual(spName, parameters, out_result){
 		 value = Number(ctypes.Int64(result[out_result]));		
 	}
 	catch(e){		
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName +" "+e.toString(),"dbHelper.executeScalarManual");	
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");	
     }
 		
 	return value;

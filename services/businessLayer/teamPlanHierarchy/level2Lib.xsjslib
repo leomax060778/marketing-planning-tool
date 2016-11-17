@@ -126,11 +126,12 @@ function updateHl2(objLevel2, userId){
 			var objHl2 = {};
 			objHl2.IN_HL2_ID = objLevel2.IN_HL2_ID;
 			var budgetChanged = dataHl2.getLevel2ById(objHl2).HL2_BUDGET_TOTAL != objLevel2.IN_HL2_BUDGET_TOTAL;
+			
 			if(canUpdate(objLevel2)){
 				if(canUpdateOrganization(objLevel2)){
 					var updated = dataHl2.updateLevel2(objLevel2, userId);
 				
-					if(isCentralTeam(objLevel2) &&  objLevel2.contactData && objLevel2.contactData.length) {
+					if(isCentralTeam(objLevel2) &&  objLevel2.contactData) {
 						contactDataLib.deleteContactDataByContactTypeId("hard", "CENTRAL", objLevel2.IN_HL2_ID);
 						contactDataLib.insertContactData(objLevel2.contactData,userId);
 					}
@@ -145,11 +146,12 @@ function updateHl2(objLevel2, userId){
 			if(updated > 0){
 				if(budgetChanged){
 					var resBudgetStatus = hl3.checkBudgetStatus(objLevel2.IN_HL2_ID,userId);
+					//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","paka 1");
 					if(resBudgetStatus.hasChanged){
 						//send all emails
 						try 
 						{
-							sendEmail(resBudgetStatus, userId);
+							//sendEmail(resBudgetStatus, userId);
 						}
 						catch(e){
 							//when error email exist, log error

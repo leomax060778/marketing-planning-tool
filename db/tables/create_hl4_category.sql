@@ -9,6 +9,7 @@ create column table "PLANNING_TOOL"."HL4_CATEGORY" (
     "MODIFIED_USER_ID" bigint,
     "ENABLED" tinyint default 1,
     "DELETED" tinyint default 0,
+    "IN_PROCESSING_REPORT" tinyint not null,
     FOREIGN KEY ("hl4_id") REFERENCES "PLANNING_TOOL"."HL4"("hl4_id"),
     FOREIGN KEY ("category_id") REFERENCES "PLANNING_TOOL"."CATEGORY"("category_id"),
     FOREIGN KEY ("created_user_id") REFERENCES "PLANNING_TOOL"."USER"("user_id")

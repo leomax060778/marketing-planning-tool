@@ -11,7 +11,7 @@ BEGIN
 	-- Updates the HL4 FNC given as input parameter
 	-- setting its in_budget value to 0 if its budget is
 	-- greater than 0
-	UPDATE HL4_FNC
+	UPDATE HL4
 	SET in_budget = 0
 	WHERE hl4_fnc_budget_total_mkt <> 0
 	  AND in_budget = 1

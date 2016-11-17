@@ -8,7 +8,6 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL3" (
 	IN in_user_id BIGINT,
 	
 	OUT out_result_hl3 BIGINT,
-	OUT out_result_hl3_fnc BIGINT,
 	OUT out_crm_id NVARCHAR(255),
 	OUT out_budget_flag TINYINT	
 )
@@ -41,7 +40,7 @@ BEGIN
 	-- than the current one, the 'va_budget_changed' flag is updated to 1.
 	SELECT hl3_fnc_budget_total
 	INTO va_hl3_fnc_budget_total
-	FROM HL3_FNC
+	FROM HL3
 	WHERE hl3_id = in_hl3_id
 	  AND deleted = 0
 	  AND enabled = 1;
@@ -51,34 +50,19 @@ BEGIN
 		out_budget_flag := 1;
 	END IF;
 	 
-	BEGIN AUTONOMOUS TRANSACTION
 		 
 	--HL3 table update
-		UPDATE HL3
-		SET hl3_description = IFNULL(in_hl3_description, hl3_description),
-			acronym = IFNULL(in_acronym, acronym),
-			business_owner_id = IFNULL(in_business_owner_id, business_owner_id), 
-			modified_user_id = in_user_id,
-			modified_date_tz = CURRENT_TIMESTAMP
-			WHERE hl3_id = in_hl3_id
-				AND deleted = 0
-				AND enabled = 1;
-			
-			SELECT ::ROWCOUNT into out_result_hl3 FROM DUMMY;
-			
-			IF out_budget_flag = 1 AND out_result_hl3 > 0
-			THEN 
-				--HL3 FNC budget update
-				UPDATE HL3_FNC
-				SET hl3_fnc_budget_total = IFNULL(in_hl3_fnc_budget_total, hl3_fnc_budget_total),
-					in_budget = in_in_budget,
-				 	modified_user_id = in_user_id,
-				 	modified_date_tz = CURRENT_TIMESTAMP
-				WHERE hl3_id = in_hl3_id
-					AND deleted = 0
-				   	AND enabled = 1;
-				   	
-				SELECT ::ROWCOUNT into out_result_hl3_fnc FROM DUMMY;
-			END IF;				
-	END;
+	UPDATE HL3
+	SET hl3_description = IFNULL(in_hl3_description, hl3_description),
+		acronym = IFNULL(in_acronym, acronym),
+		business_owner_id = IFNULL(in_business_owner_id, business_owner_id), 
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP,
+		hl3_fnc_budget_total = IFNULL(in_hl3_fnc_budget_total, hl3_fnc_budget_total), --new 03-11-2016
+		in_budget = in_in_budget --new 03-11-2016
+		WHERE hl3_id = in_hl3_id
+			AND deleted = 0
+			AND enabled = 1;
+		
+		SELECT ::ROWCOUNT into out_result_hl3 FROM DUMMY;					
 END;

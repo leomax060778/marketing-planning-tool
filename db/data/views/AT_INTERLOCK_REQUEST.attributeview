@@ -43,6 +43,18 @@
       <descriptions defaultDescription="DELETED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="DELETED"/>
     </attribute>
+    <attribute id="CREATED_USER_ID" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CREATED_USER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="CREATED_USER_ID"/>
+    </attribute>
+    <attribute id="CREATED_DATE_TZ" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CREATED_DATE_TZ"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="CREATED_DATE_TZ"/>
+    </attribute>
+    <attribute id="MODIFIED_DATE_TZ" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MODIFIED_DATE_TZ"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="INTERLOCK_REQUEST" columnName="MODIFIED_DATE_TZ"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

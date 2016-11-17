@@ -56,9 +56,9 @@ function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
 			} else {
 				var object = {};
 				object.display_name = l4ReportFields[field];
-				object.value = hl4Fnc[field] || hl4[field];
+				object.value = hl4[field] || hl4Fnc[field];
 				//new refactor 04112016
-				//object.value = hl4[field];
+				object.value = hl4[field];
 				object.changed = checkChangedField(changedFields, field);
 				data.hl4.push(object);
 			};

@@ -35,22 +35,21 @@ va_intermidate = SELECT
 			,hl4.acronym)
 		AS CRM_ID 
         
-        ,hl4_fnc.IN_BUDGET as IN_BUDGET
+        ,hl4.IN_BUDGET as IN_BUDGET
         ,hl4.READ_ONLY AS READ_ONLY
         ,hl4.hl4_status_detail_id AS STATUS_ID
         ,hl4_status_detail.detail  AS STATUS_DETAIL
         ,CONCAT(CONCAT(userTable.FIRST_NAME, ' '),userTable.LAST_NAME) AS CREATED_BY
         ,userTable.EMAIL AS OWNER_EMAIL
         ,hl4.IS_SEND_MAIL AS IS_SEND_MAIL
-        ,hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
+        ,hl4.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
         ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
         
         FROM HL4 hl4
-    INNER JOIN HL4_FNC hl4_fnc ON hl4_fnc.hl4_id=hl4.hl4_id AND hl4_fnc.enabled=1 AND hl4_fnc.deleted=0
     INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
     INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
     INNER JOIN BUDGET_YEAR BGY ON hl2.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
-    INNER JOIN EURO_CONVERSIONS euro_conversions ON hl4_fnc.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
+    INNER JOIN EURO_CONVERSIONS euro_conversions ON hl4.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
     INNER JOIN hl4_status_detail hl4_status_detail ON hl4_status_detail.hl4_status_detail_id = hl4.hl4_status_detail_id
     INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl4.created_user_id
     WHERE hl4.enabled=1 AND hl4.deleted=0
@@ -85,11 +84,10 @@ out_result = SELECT
 		
 		
 	SELECT 
-	COALESCE(SUM(HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT),0) 
+	COALESCE(SUM(HL4.HL4_FNC_BUDGET_TOTAL_MKT),0) 
 	INTO va_total_budget
 	FROM HL3 
-	LEFT JOIN HL4 ON HL4.HL3_ID = HL3.hl3_id 
-	LEFT JOIN HL4_FNC ON HL4_FNC.hl4_id=HL4.hl4_id 
+	LEFT JOIN HL4 ON HL4.HL3_ID = HL3.hl3_id  AND HL4.deleted = 0 AND HL4.enabled = 1
 	WHERE 
 	HL3.enabled=1 
 	AND HL3.deleted=0
@@ -98,9 +96,8 @@ out_result = SELECT
 
 	out_total_budget := va_total_budget;
 	
-	SELECT (hl3_fnc.hl3_fnc_budget_total - out_total_budget)
-	into va_remaining_budget FROM hl3_fnc
-	inner join hl3 on hl3.hl3_id = hl3_fnc.hl3_id
+	SELECT (hl3_fnc_budget_total - out_total_budget)
+	into va_remaining_budget FROM hl3
 	where hl3.hl3_id = in_hl3_id;
 	
 	out_remaining_budget := va_remaining_budget;

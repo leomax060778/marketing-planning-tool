@@ -1,6 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_FILTER" ( 
 	 IN in_budget_year_id BIGINT
-	,IN in_plan_id BIGINT -- now is hl2 id
+	--,IN in_plan_id BIGINT -- now is hl2 id
+	,IN in_plan_id NVARCHAR(25) -- now here bringing up the acronym
 	,IN in_region_id BIGINT 
 	,IN in_subregion_id BIGINT
 	,IN in_user_id BIGINT
@@ -55,7 +56,8 @@ BEGIN
 		AND HL2.deleted = 0 
 		AND HL2.enabled = 1
 		AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
-        AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
+      --  AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
+      AND (HL2.acronym = in_plan_id OR upper(in_plan_id) = 'ALL' )
 	    AND (R.REGION_ID = in_region_id OR in_region_id = 0) 
 	    AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
 	GROUP BY GROUPING SETS ((HL2.hl2_id, HL2.acronym, HL2.description, HL2.budget_year_id
@@ -76,7 +78,8 @@ BEGIN
 	AND HL2.deleted = 0
 	AND HL2.enabled = 1
 	AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
-    AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
+   --  AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
+      AND (HL2.acronym = in_plan_id OR upper(in_plan_id) = 'ALL' )
 	AND (R.REGION_ID = in_region_id OR in_region_id = 0) 
 	AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0);
 	

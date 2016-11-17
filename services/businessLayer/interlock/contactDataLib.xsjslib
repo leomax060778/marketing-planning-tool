@@ -34,7 +34,9 @@ function insertContactData(data,userId, contactTypeId){
 		data.forEach(function(contactData){
 			dataContactData.insertContactData(contactData.BMOLEADS || "",contactData.EMPLOYEENUMBER || "",contactData.EMAIL,CONTACT_TYPE[contactData.CONTACTTYPE],contactData.CONTACTTYPEID || contactTypeId,userId);
 		});
-		db.commit();
+		if(data.length){
+			db.commit();
+		}
 		saveData = true;
 		}catch(e) {
 			db.rollback();

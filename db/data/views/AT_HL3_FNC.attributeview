@@ -3,25 +3,117 @@
   <descriptions defaultDescription="AT_HL3_FNC"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
-    <attribute id="HL3_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL3_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_ID"/>
+    <attribute id="IN_BUDGET" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IN_BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="IN_BUDGET"/>
     </attribute>
-    <attribute id="HL3_FNC_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL3_FNC_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_ID"/>
+    <attribute id="HL3_FNC_VAL_SSSA" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_SSSA"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_SSSA"/>
     </attribute>
-    <attribute id="HL3_FNC_BUDGET_TOTAL" order="3" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL3_FNC_BUDGET_TOTAL"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_TOTAL"/>
+    <attribute id="HL3_FNC_VAL_MEX" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_MEX"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_MEX"/>
     </attribute>
-    <attribute id="DELETED" order="4" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="HL3_FNC_VAL_BRA" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_BRA"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_BRA"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_LA" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_LA"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_LA"/>
+    </attribute>
+    <attribute id="DELETED" order="6" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="DELETED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="DELETED"/>
     </attribute>
-    <attribute id="ENABLED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="ENABLED" order="7" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="ENABLED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="HL3_FNC_BUDGET_SPEND_Q4" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_SPEND_Q4"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_SPEND_Q4"/>
+    </attribute>
+    <attribute id="HL3_FNC_BUDGET_SPEND_Q3" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_SPEND_Q3"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_SPEND_Q3"/>
+    </attribute>
+    <attribute id="HL3_FNC_BUDGET_SPEND_Q1" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_SPEND_Q1"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_SPEND_Q1"/>
+    </attribute>
+    <attribute id="OWNER_USER_ID" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="OWNER_USER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="OWNER_USER_ID"/>
+    </attribute>
+    <attribute id="HL3_FNC_BUDGET_SPEND_Q2" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_SPEND_Q2"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_SPEND_Q2"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_MPP" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_MPP"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_MPP"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_MIP" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_MIP"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_MIP"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_MGO" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_MGO"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_MGO"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_L3_HL5" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_L3_HL5"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_L3_HL5"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_L1" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_L1"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_L1"/>
+    </attribute>
+    <attribute id="HL3_FNC_VOL_MPP" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VOL_MPP"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VOL_MPP"/>
+    </attribute>
+    <attribute id="HL3_FNC_VAL_WB" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VAL_WB"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VAL_WB"/>
+    </attribute>
+    <attribute id="HL3_FNC_VOL_MIP" order="20" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VOL_MIP"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VOL_MIP"/>
+    </attribute>
+    <attribute id="HL3_FNC_VOL_WB" order="21" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VOL_WB"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VOL_WB"/>
+    </attribute>
+    <attribute id="HL3_FNC_VOL_MGO" order="22" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VOL_MGO"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VOL_MGO"/>
+    </attribute>
+    <attribute id="HL3_FNC_VOL_L3_HL5" order="23" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VOL_L3_HL5"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VOL_L3_HL5"/>
+    </attribute>
+    <attribute id="HL3_FNC_VOL_L1" order="24" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_VOL_L1"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_VOL_L1"/>
+    </attribute>
+    <attribute id="HL3_FNC_BUDGET_TOTAL" order="25" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_TOTAL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_TOTAL"/>
+    </attribute>
+    <attribute id="HL3_FNC_BUDGET_REV" order="26" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_BUDGET_REV"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_BUDGET_REV"/>
+    </attribute>
+    <attribute id="HL3_ID" order="27" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_ID"/>
+    </attribute>
+    <attribute id="HL3_FNC_ID" order="28" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL3_FNC_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL3_FNC" columnName="HL3_FNC_ID"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>

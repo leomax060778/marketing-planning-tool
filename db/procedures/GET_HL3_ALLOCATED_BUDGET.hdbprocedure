@@ -12,16 +12,16 @@ BEGIN
 	
 	va_hl3_allocated_budget := 0;
 	
-	SELECT SUM(HL4_FNC.hl4_fnc_budget_total_mkt)
+	SELECT SUM(HL4.hl4_fnc_budget_total_mkt)
 	INTO va_hl3_allocated_budget
-	FROM HL4_FNC
-	INNER JOIN HL4 ON HL4_FNC.hl4_id = HL4.hl4_id
+	FROM HL4
+	--INNER JOIN HL4 ON HL4_FNC.hl4_id = HL4.hl4_id
 	INNER JOIN HL3 ON HL3.hl3_id = HL4.hl3_id
 	WHERE HL3.hl3_id = in_hl3_id
 	  AND HL4.hl4_id != in_hl4_id
 	  AND HL4.deleted = 0
 	  AND HL4.enabled = 1
-	  AND HL4_FNC.in_budget = 1;
+	  AND HL4.in_budget = 1;
 
 	out_hl3_allocated_budget := IFNULL(va_hl3_allocated_budget, 0);
 

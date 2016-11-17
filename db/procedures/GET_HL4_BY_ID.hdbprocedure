@@ -10,6 +10,13 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ID" (
 	hl4_status_detail_id bigint,
 	acronym NVARCHAR(25),
 	is_annual_plan TINYINT
+	,euro_conversion_id integer
+	,in_budget TINYINT
+	,hl4_fnc_budget_spend_q1 DECIMAL(19,2)
+	,hl4_fnc_budget_spend_q2 DECIMAL(19,2)
+	,hl4_fnc_budget_spend_q3 DECIMAL(19,2)
+	,hl4_fnc_budget_spend_q4 DECIMAL(19,2)
+	,hl4_fnc_budget_total_mkt DECIMAL(19,2)
 	) 
 ) 
 	LANGUAGE SQLSCRIPT
@@ -27,6 +34,15 @@ out_hl4 =
 		   HL4.hl4_status_detail_id,
 		   HL4.acronym,
 		   HL4.is_annual_plan
+		 --new refactor 04112016
+		,HL4.euro_conversion_id
+		,HL4.in_budget
+		,HL4.hl4_fnc_budget_spend_q1
+		,HL4.hl4_fnc_budget_spend_q2
+		,HL4.hl4_fnc_budget_spend_q3
+		,HL4.hl4_fnc_budget_spend_q4
+		,HL4.hl4_fnc_budget_total_mkt
+   		      		      		      		      		      		      		      		   
 	FROM HL4
 	WHERE HL4.hl4_id = in_hl4_id
 	  AND HL4.deleted = 0

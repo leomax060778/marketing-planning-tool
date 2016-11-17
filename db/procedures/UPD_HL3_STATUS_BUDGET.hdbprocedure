@@ -10,7 +10,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL3_STATUS_BUDGET" 
 	AS
 BEGIN
  
-	UPDATE HL3_FNC
+	UPDATE HL3
 	SET in_budget = in_status_budget,
 	modified_date_tz = CURRENT_TIMESTAMP,
     modified_user_id = in_user_id

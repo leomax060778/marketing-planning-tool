@@ -15,7 +15,7 @@ function getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userId) {
 	var parameters = {};
 	var strPlans = "";
 	if (arrPlan.length > 0)
-		strPlans = arrPlan.join(",");	
+		strPlans = arrPlan.join("','");	
 
 	var strRegion = "";
 	if (arrRegion.length > 0)
@@ -27,8 +27,9 @@ function getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userId) {
 	
 	var filter = " 1 = 1 ";
 
+
 	if (strPlans !== "") {
-		filter = filter + " AND PLAN_ID in (" + strPlans + ") ";
+		filter = filter + " AND PLAN in ('" + strPlans + "') ";
 	}
 
 	if (strRegion !== "") {

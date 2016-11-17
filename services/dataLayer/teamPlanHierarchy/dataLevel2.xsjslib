@@ -59,6 +59,7 @@ function getLevel2ByAcronym(acronym){
 }
 
 function getAllCentralTeam(centralTeamId){
+	
 	var parameters = {'in_hl2_id': centralTeamId};
 	var result = db.executeProcedureManual(GET_ALL_CENTRAL_TEAM,parameters);
 	return db.extractArray(result.out_result);

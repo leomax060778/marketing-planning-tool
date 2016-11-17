@@ -112,6 +112,7 @@ function deleteHl3(objHl3, userId){
 			//delete in HL3_STATUS_HISTORY	
 			//delete on HL3_FNC
 			//delete on HL3
+			//todo: delete reference to data.deleteLevel3Fnc(objHl3, userId);
 			result = result + data.deleteLevel3Fnc(objHl3, userId);
 			result = result + data.deleteLevel3(objHl3, userId);
 			db.commit();
@@ -193,6 +194,8 @@ function updateHl3(objHl3, userId) {
 		try {
 			//if(canUpdateL3(objHl3))
 				// update HL3 -> result = { 'out_result_hl3': X, 'out_result_hl3_fnc': Y, 'out_crm_id': W, 'out_budget_flag': Z}
+			
+			
 				objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, objHl3.IN_HL3_ID, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
 				result = data.updateLevel3(objHl3, userId);
 			//else
@@ -231,7 +234,7 @@ function updateHl3(objHl3, userId) {
 					//send all emails
 					try 
 					{
-						sendEmail(resBudgetStatus, userId);
+						//sendEmail(resBudgetStatus, userId);
 					}
 					catch(e){
 						//when error email exist, log error
@@ -477,7 +480,6 @@ function canUpdateL3(objLevel3){
 }
 
 function checkBudgetStatus(hl2Id, userId, hl3Id, newHl3Budget) {
-	//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4",hl2Id + " --- " + newHl3Budget);
 	if(hl2Id && newHl3Budget){
 		var objHl = {};
 		objHl.IN_HL2_ID = hl2Id;
@@ -485,13 +487,12 @@ function checkBudgetStatus(hl2Id, userId, hl3Id, newHl3Budget) {
 		var hl2AllocatedBudget = dataHl2.getHl2AllocatedBudget(hl2Id, hl3Id);
 		return (Number(hl2.HL2_BUDGET_TOTAL) - Number(hl2AllocatedBudget) - Number(newHl3Budget)) >= 0 ? 1 : 0;
 	} else {
+		
 		var result = {};
 		result.hasChanged = 0;
 		result.emailListInBudget = [];
 		result.emailListOutBudget = [];
-		//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4","else cahnge status budget");
 		var resultHl3 = data.getAllLevel3(hl2Id,userId);
-
 		if (resultHl3.out_result.length) {
 			var objHl = {};
 			objHl.IN_HL2_ID = hl2Id;
@@ -502,6 +503,7 @@ function checkBudgetStatus(hl2Id, userId, hl3Id, newHl3Budget) {
 			for (var i = 0; i < resultHl3.out_result.length; i++) {
 				if (hl2Budget < total	+ parseFloat(resultHl3.out_result[i].HL3_BUDGET_TOTAL)) {
 					data.updateHl3BudgetStatus(resultHl3.out_result[i].HL3_ID, userId, 0);
+					//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","paka 66");
 					result.emailListOutBudget.push(resultHl3.out_result[i]);
 				} else {
 					data.updateHl3BudgetStatus(resultHl3.out_result[i].HL3_ID, userId, 1);

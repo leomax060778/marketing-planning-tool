@@ -1,6 +1,7 @@
 $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataRegion = mapper.getDataRegion();
+var dataSubRegion = mapper.getDataSubRegion();
 var ErrorLib = mapper.getErrors();
 /** ***********END INCLUDE LIBRARIES*************** */
 
@@ -29,8 +30,10 @@ function updateRegion(objRegion, userId) {
 }
 
 function deleteRegion(objRegion, userId) {
-	if (validateDeleteRegion(objRegion))
-		return dataRegion.delRegion(objRegion, userId);
+    if (validateDeleteRegion(objRegion)) {
+        dataSubRegion.delSubregionsByRegion(objRegion, userId);
+        return dataRegion.delRegion(objRegion, userId);
+    }
 	else
 		throw ErrorLib.getErrors().CustomError("Region can not be delete",
 				"regionLib/handlePost/deleteRegion", objRegion);

@@ -93,12 +93,13 @@ function getHl4ById(id){
 	return null;
 }
 
+/*************refactor************/
 function getHl4FncByHl4Id(id){
-	if(id){
-		var rdo = db.executeProcedure(spGetHl4FncByHl4Id,{'in_hl4_id':id});
-		return db.extractArray(rdo.out_result)[0];
-	}	
-	return null;
+//	if(id){
+//		var rdo = db.executeProcedure(spGetHl4FncByHl4Id,{'in_hl4_id':id});
+//		return db.extractArray(rdo.out_result)[0];
+//	}	
+//	return null;
 }
 
 function getHl4MyBudgetByHl4Id(id){
@@ -135,12 +136,23 @@ function getHl4SalesByHl4Id(id){
 	return null;
 }
 
-function getHl4ByAcronym(acronym){
+function getHl4ByAcronym(acronym, hl3_id){
+	/*
 	if(acronym != ""){
 		var rdo = db.executeProcedureManual(spGetHl4ByAcronym,{'in_acronym':acronym});
 		return db.extractArray(rdo.out_hl4);
 	}	
 	return null;
+	*/
+	var parameters = {};
+	parameters.in_acronym = acronym.toUpperCase();
+	parameters.in_hl3_id = hl3_id
+	var result = db.executeProcedure(spGetHl4ByAcronym, parameters);
+	var list = db.extractArray(result.out_result);
+	if(list.length)
+		return list[0];
+	else
+		return {};
 }
 
 function getHl4Category(hl4_id,category_id,hl4CategoryId){

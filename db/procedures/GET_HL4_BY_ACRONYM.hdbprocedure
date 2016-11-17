@@ -1,6 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ACRONYM" (
 	IN in_acronym nvarchar(10),
-	OUT out_hl4 TABLE(
+	IN in_hl3_id bigint,
+	OUT out_result TABLE(
 	hl4_id BIGINT,
 	hl4_crm_description NVARCHAR(100),
 	hl4_details NVARCHAR(3000),
@@ -14,14 +15,16 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ACRONYM" (
 	READS SQL DATA AS
 BEGIN
 
-out_hl4 = 
+out_result = 
 	SELECT HL4.hl4_id,
 		   HL4.hl4_crm_description,
 		   HL4.hl4_details,
 		   HL4.hl4_business_details,
 		   HL4.acronym
 	FROM HL4
-	WHERE HL4.acronym = in_acronym
+	WHERE 
+	  UPPER(HL4.acronym) = UPPER(in_acronym)
+	  AND HL4.hl3_id = in_hl3_id
 	  AND HL4.deleted = 0
 	  AND HL4.enabled = 1;
 

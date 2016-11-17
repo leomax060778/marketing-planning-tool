@@ -8,6 +8,7 @@ var spGetSubregionByRegionId = "GET_SUBREGION_BY_REGION_ID";
 var spInsertSubregion = "INS_SUBREGION";
 var spUpdateSubregion = "UPD_SUBREGION";
 var spDeleteSubregion = "DEL_SUBREGION";
+var spDeleteSubregionsByRegion = "DEL_SUBREGIONS_BY_REGION_ID";
 var spGetAllSubRegion = "GET_ALL_SUBREGION";
 
 /*****************END STORED PROCEDURES*******************/
@@ -59,4 +60,11 @@ function deleteSubregion(subregion, modUser) {
 	param.in_modified_user_id = modUser; // User that deletes
 
 	return db.executeScalar(spDeleteSubregion, param, "out_result");
+}
+function delSubregionsByRegion(region, modUser) {
+	var param = {};
+	param.in_region_id = region.IN_REGION_ID;
+	param.in_modified_user_id = modUser; // User that deletes
+
+	return db.executeScalarManual(spDeleteSubregionsByRegion, param, "out_result");
 }

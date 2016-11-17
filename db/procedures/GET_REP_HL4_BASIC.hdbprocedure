@@ -14,7 +14,7 @@ IN in_filter VARCHAR(5000)
 	, PERCENTAGE decimal(19,2)
 	, REGION_ID BIGINT
 	)
-	, OUT out_result_rg_name TABLE (REGION_NAME nvarchar(255))
+	 ,OUT out_result_rg_name TABLE (REGION_NAME nvarchar(255))
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -24,5 +24,5 @@ BEGIN
 	out_result = 
 	APPLY_FILTER("_SYS_BIC"."xsplanningtool.db.data.views/CV_BASIC_REPORT", :in_filter);
     
-    out_result_rg_name = select REGION_NAME from "PLANNING_TOOL"."REGION";
+   out_result_rg_name = select REGION_NAME from "PLANNING_TOOL"."REGION";
 END;

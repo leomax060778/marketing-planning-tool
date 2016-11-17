@@ -210,8 +210,19 @@ function updateUserPasswordHashed(value, modUser) {
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser",
 				"The PASSWORD is not found");		
-		return dbUser.updatePass(value.USER_ID, value.PASSWORD,
+		var resultUpdPass = dbUser.updatePass(value.USER_ID, value.PASSWORD,
 				value.PASSWORD_SALT, modUser);
+		
+		// check if transaction was completed
+		if (!!resultUpdPass) {
+			db.commit();
+
+			// TODO: notify user via email with a link to set the password
+			// again
+		} else {
+			db.rollback();
+		}
+		return resultUpdPass;
 	
 }
 
@@ -304,19 +315,19 @@ function validateUser(user) {
 				"userServices/handlePost/insertUser", "The PHONE is not found");
 	
 
-	if (!util.validateLength(user.USER_NAME, 255, 1)
+	if (!util.validateLength(user.USER_NAME, 255, 1, "User Name")
 			|| !util.validateIsString(user.USER_NAME))
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser",
 				"The USER_NAME is invalid");
 
-	if (!util.validateLength(user.FIRST_NAME, 255, 1)
+	if (!util.validateLength(user.FIRST_NAME, 255, 1, "First Name")
 			|| !util.validateIsString(user.FIRST_NAME))
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser",
 				"The FIRST_NAME is invalid");
 
-	if (!util.validateLength(user.LAST_NAME, 255, 1)
+	if (!util.validateLength(user.LAST_NAME, 255, 1, "Last Name")
 			|| !util.validateIsString(user.LAST_NAME))
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser",
@@ -326,7 +337,7 @@ function validateUser(user) {
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser", "The EMAIL is invalid");
 
-	if (!util.validateLength(user.PHONE, 255, 1))
+	if (!util.validateLength(user.PHONE, 255, 1, "Phone"))
 		throw ErrorLib.getErrors().CustomError("",
 				"userServices/handlePost/insertUser", "The PHONE is invalid");
 

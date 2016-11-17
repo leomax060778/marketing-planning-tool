@@ -202,8 +202,8 @@ function handlePost(reqBody) {
 				cst = conn.prepareCall(query);
 				cst.setBigInt(1, hl4.HL4_ID);
 				cst.setBigInt(2,categoryId);
-				cst.setInteger(3,inProcessingReport);
-				cst.setBigInt(4,created_user_id);
+				cst.setBigInt(3,created_user_id);
+				cst.setInteger(4,inProcessingReport);
 				cst.execute();
 			});
 			//l4Lib.insertHl4Category(spResult,created_user_id);

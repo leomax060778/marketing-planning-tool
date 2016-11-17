@@ -89,7 +89,7 @@ var INTERLOCK_STATUS = {
 /** ****************END CONSTANTS***************** */
 
 function getHl4(id){
-	try{
+	
 	var spResult = dataHl4.getHl4(id);
 	var result = [];
 	var hl4Total = 0;
@@ -128,39 +128,46 @@ function getHl4(id){
 	var responseObj = {"results": result, "total_budget": spResult.out_total_budget, "remaining_budget": spResult.out_remaining_budget};
 	
 	return responseObj;
-	} catch(e) {
-		throw e;
-	}
+	
 }
 
 function getHl4ById(id){
 	if(!id) 
 		throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","hl4Services/handleGet/getHl4ById", L3_MSG_INITIATIVE_NOT_FOUND);
 	try{
-		var hl4_fnc = util.extractObject(dataHl4.getHl4FncByHl4Id(id));
+		//new refactor 04112016
+		//var hl4_fnc = util.extractObject(dataHl4.getHl4FncByHl4Id(id));
+		var objHl4 = parseObject(dataHl4.getHl4ById(id));
 		var partner = partnerLib.getPartnerByHl4Id(id);
 		partner.partners = parseObject(partner.partners);
 		var myBudget = getHl4MyBudgetByHl4Id(id);//dataHl4.getHl4MyBudgetByHl4Id(id);
 		var sale = getHl4SalesByHl4Id(id);//dataHl4.getHl4SalesByHl4Id(id);
 		
-		var currencyValue = dataEuroConversion.getEuroConversionValueById(hl4_fnc.EURO_CONVERSION_ID);
-		hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT = (Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) * Number(currencyValue)).toFixed(2);		
-		hl4_fnc.totalBudget = Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) + Number(partner.total) + Number(sale.total);
+		//new refactor 04112016
+		//var currencyValue = dataEuroConversion.getEuroConversionValueById(hl4_fnc.EURO_CONVERSION_ID);
+		var currencyValueAux = dataEuroConversion.getEuroConversionValueById(objHl4.EURO_CONVERSION_ID);
+		//new refactor 04112016
+		//hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT = (Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) * Number(currencyValue)).toFixed(2);		
+		objHl4.HL4_FNC_BUDGET_TOTAL_MKT = (Number(objHl4.HL4_FNC_BUDGET_TOTAL_MKT) * Number(currencyValueAux)).toFixed(2);
+		//new refactor 04112016
+		//hl4_fnc.totalBudget = Number(hl4_fnc.HL4_FNC_BUDGET_TOTAL_MKT) + Number(partner.total) + Number(sale.total);
+		objHl4.totalBudget = Number(objHl4.HL4_FNC_BUDGET_TOTAL_MKT) + Number(partner.total) + Number(sale.total);
+		
 		var hl4 = {
-			"hl4": parseObject(dataHl4.getHl4ById(id)),
+			//"hl4": parseObject(dataHl4.getHl4ById(id)),
+			"hl4": objHl4,
 			"interlock": interlockLib.getInterlockByHl4Id(id),
 			"expectedOutcomes": expectedOutcomesLib.getExpectedOutcomesByHl4Id(id),
 			"partner": partner,
-			"hl4_fnc": parseObject(hl4_fnc),
+			//"hl4_fnc": parseObject(hl4_fnc),
+			"hl4_fnc": objHl4,
 			"myBudget": myBudget,
 			"sale": sale,
 			"hl4_category": getHl4CategoryOption(id)
 		}
 		
 		return hl4;//dataHl4.getHl4ById(id);
-	} catch(e) {
-		throw e;
-	} finally {
+	}  finally {
 		db.closeConnection();
 	}
 }
@@ -222,8 +229,39 @@ function insertHl4(data, userId){
 			data.hl4.in_is_send_mail = 0;
 			data.hl4.in_read_only = 0;
 			
+			/********************refactor 03/11/2016*****************************/
+			
+			var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
+			
+			data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
+			data.hl4_fnc.in_hl4_id = hl4_id;
+			data.hl4_fnc.in_created_user_id = userId;
+			
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) : 25;
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) : 25;
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) : 25;
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) : 25;
+			
+			data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
+			data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
+			data.hl4_fnc.in_hl4_fnc_result_q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
+			data.hl4_fnc.in_hl4_fnc_result_q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
+			
+			data.hl4_fnc.in_hl4_fnc_budget_total_mkt =  Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue;
+			
+			data.hl4.in_EURO_CONVERSION_ID = data.hl4_fnc.in_euro_conversion_id;
+			data.hl4.in_IN_BUDGET = data.hl4_fnc.in_in_budget;
+			data.hl4.in_SPEND_CATEGORY_ID = data.hl4_fnc.in_spend_category_id;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
+			data.hl4.in_HL4_FNC_BUDGET_SPEND_Q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
+			data.hl4.in_HL4_FNC_BUDGET_TOTAL_MKT = data.hl4_fnc.in_hl4_fnc_budget_total_mkt;
+			/*************************************************/
+			
 			data.hl4.in_user_id_send_mail = 1;
 			hl4_id = dataHl4.insertHl4(data.hl4);
+			
 			
 			if(hl4_id > 0){
 				data.hl4.in_hl4_id = hl4_id;
@@ -231,23 +269,25 @@ function insertHl4(data, userId){
 		        	insertHl4CRMBinding(data, 'insert');
 		        }; 
 				setHl4Status(hl4_id, data.hl4.in_hl4_status_detail_id, userId);
-				var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
-				data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
-				data.hl4_fnc.in_hl4_id = hl4_id;
-				data.hl4_fnc.in_created_user_id = userId;
 				
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) : 25;
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) : 25;
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) : 25;
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) : 25;
-				
-				data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
-				data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
-				data.hl4_fnc.in_hl4_fnc_result_q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
-				data.hl4_fnc.in_hl4_fnc_result_q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
-				
-				data.hl4_fnc.in_hl4_fnc_budget_total_mkt =  Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue;
-				var hl4_fnc_id = dataHl4.insertHl4_fnc(data.hl4_fnc);
+				//this code has been refactor---
+//				var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
+//				data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
+//				data.hl4_fnc.in_hl4_id = hl4_id;
+//				data.hl4_fnc.in_created_user_id = userId;
+//				
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) : 25;
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) : 25;
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) : 25;
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) : 25;
+//				
+//				data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
+//				data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
+//				data.hl4_fnc.in_hl4_fnc_result_q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
+//				data.hl4_fnc.in_hl4_fnc_result_q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
+//				
+//				data.hl4_fnc.in_hl4_fnc_budget_total_mkt =  Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue;
+				var hl4_fnc_id = true;//dataHl4.insertHl4_fnc(data.hl4_fnc);
 				
 				if(data.hl4_expected_outcomes.hl4_expected_outcomes_detail.length){
 					var outcome = {};
@@ -498,6 +538,40 @@ function updateHl4(data, userId){
 	        hl4.in_read_only = data.hl4.in_read_only;
 	        hl4.in_is_annual_plan = data.hl4.in_is_annual_plan;
 	        hl4.in_user_id = userId;
+	        
+	        
+	        /********************REFACTOR*************************/
+	        var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
+            data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, data.hl4.in_hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
+            data.hl4_fnc.in_hl4_id = data.hl4.in_hl4_id;
+            data.hl4_fnc.in_user_id = userId;
+            
+            data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) : 25;
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) : 25;
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) : 25;
+			data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) : 25;
+
+            data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
+            data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
+            data.hl4_fnc.in_hl4_fnc_result_q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
+            data.hl4_fnc.in_hl4_fnc_result_q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
+
+            data.hl4_fnc.in_hl4_fnc_budget_total_mkt =  Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue;
+	        
+	        
+	        
+	        
+	        hl4.in_EURO_CONVERSION_ID = data.hl4_fnc.in_euro_conversion_id;
+			hl4.in_IN_BUDGET = data.hl4_fnc.in_in_budget;
+			hl4.in_SPEND_CATEGORY_ID = data.hl4_fnc.in_spend_category_id;
+			hl4.in_HL4_FNC_BUDGET_SPEND_Q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
+			hl4.in_HL4_FNC_BUDGET_SPEND_Q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
+			hl4.in_HL4_FNC_BUDGET_SPEND_Q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
+			hl4.in_HL4_FNC_BUDGET_SPEND_Q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
+			hl4.in_HL4_FNC_BUDGET_TOTAL_MKT = data.hl4_fnc.in_hl4_fnc_budget_total_mkt;
+	        
+	        /**********************************************************/
+	        
 	        hl4_id = data.hl4.in_hl4_id;
 	        if(data.hl4.in_hl4_status_detail_id == HL4_STATUS.LOAD_DATA_ENTRY || data.hl4.in_hl4_status_detail_id == HL4_STATUS.UPDATE_IN_CRM){
 	        	insertHl4CRMBinding(data, 'update');
@@ -505,24 +579,24 @@ function updateHl4(data, userId){
 	        var deleteParameters = {"in_hl4_id": hl4_id, "in_user_id": userId}; 
 	        var hl4RowsUpdated = dataHl4.updateHl4(hl4);
 	        if(hl4RowsUpdated > 0){
-	            var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
-	            data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
-	            data.hl4_fnc.in_hl4_id = hl4_id;
-	            data.hl4_fnc.in_user_id = userId;
-	            
-	            data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) : 25;
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) : 25;
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) : 25;
-				data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) : 25;
-
-	            data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
-	            data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
-	            data.hl4_fnc.in_hl4_fnc_result_q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
-	            data.hl4_fnc.in_hl4_fnc_result_q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
-
-	            data.hl4_fnc.in_hl4_fnc_budget_total_mkt =  Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue;
-	            
-	            var hl4FncRowsUpdated = dataHl4.updateHl4Fnc(data.hl4_fnc);
+//	            var conversionValue = dataEuroConversion.getEuroConversionValueById(data.hl4_fnc.in_euro_conversion_id);
+//	            data.hl4_fnc.in_in_budget = checkBudgetStatus(data.hl4.in_hl3_id, hl4_id, Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue);
+//	            data.hl4_fnc.in_hl4_id = hl4_id;
+//	            data.hl4_fnc.in_user_id = userId;
+//	            
+//	            data.hl4_fnc.in_hl4_fnc_budget_spend_q1 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) : 25;
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q2 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) : 25;
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q3 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) : 25;
+//				data.hl4_fnc.in_hl4_fnc_budget_spend_q4 = data.hl4.in_is_annual_plan == 0 ? Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) : 25;
+//
+//	            data.hl4_fnc.in_hl4_fnc_result_q1 = data.hl4_fnc.in_hl4_fnc_budget_spend_q1;
+//	            data.hl4_fnc.in_hl4_fnc_result_q2 = data.hl4_fnc.in_hl4_fnc_budget_spend_q2;
+//	            data.hl4_fnc.in_hl4_fnc_result_q3 = data.hl4_fnc.in_hl4_fnc_budget_spend_q3;
+//	            data.hl4_fnc.in_hl4_fnc_result_q4 = data.hl4_fnc.in_hl4_fnc_budget_spend_q4;
+//
+//	            data.hl4_fnc.in_hl4_fnc_budget_total_mkt =  Number(data.hl4_fnc.in_hl4_fnc_budget_total_mkt) / conversionValue;
+//	            
+	            var hl4FncRowsUpdated = true;//dataHl4.updateHl4Fnc(data.hl4_fnc);
 	            
 	            dataExOut.deleteHl4ExpectedOutcomesDetail(deleteParameters);
 	            dataExOut.deleteHl4ExpectedOutcomes(deleteParameters);
@@ -779,7 +853,7 @@ function deleteHl4(hl4, userId, rollBack){
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4", L3_MSG_NO_PRIVILEGE);
 	
 	var hl4StatusId = !rollBack ? Number(dataHl4.getHl4StatusByHl4Id(hl4.in_hl4_id).HL4_STATUS_DETAIL_ID) : 0;
-	if(!rollBack && hl4StatusId !== HL4_STATUS.IN_CRM && hl4StatusId !== HL4_STATUS.UPDATE_IN_CRM)
+	if(!rollBack && userRoleId !== 1 && (hl4StatusId !== HL4_STATUS.IN_CRM && hl4StatusId !== HL4_STATUS.UPDATE_IN_CRM))
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/deleteHl4",L3_MSG_CANNOT_DEL_STATUS);
 	
 	if(!rollBack && dataHl4.getCountHl4Childrens(hl4.in_hl4_id) > 0)
@@ -800,8 +874,8 @@ function deleteHl4(hl4, userId, rollBack){
 		dataInterlock.deleteInterlockContacDataByHl4Id(hl4);
 		dataInterlock.deleteInterlockRequestMessageByHl4Id(hl4);
 		dataInterlock.deleteInterlock(hl4);
-		
-		dataHl4.deleteHl4Fnc(hl4);
+		//new refactor 04112016
+		//dataHl4.deleteHl4Fnc(hl4);
 		level4DER.deleteL4ChangedFieldsByHl4Id(hl4_id);
 		dataHl4.deleteHl4CategoryOption(hl4);
 		dataHl4.deleteHl4Category(hl4);
@@ -842,19 +916,12 @@ function validateHl4(data){
 	if(!data.hl4.in_acronym)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_ACRONYM);
 	
-	var hl4 = dataHl4.getHl4ByAcronym(data.hl4.in_acronym)[0];var existInCrm = 0;
+	// Validate whether Acronym already exists or not
 	
-	if(data.hl4.in_hl4_id){
-		existInCrm = dataHl4.existsInCrm(data.hl4.in_hl4_id);
-		if(existInCrm && data.hl4.in_acronym != hl4.ACRONYM)
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_IN_CRM);
-	}
-	
-	if(data.hl4.in_hl4_id && hl4 && hl4.HL4_ID != data.hl4.in_hl4_id)
+	if(existsHl4(data.hl4))
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_EXISTS);
-	
-	if(!data.hl4.in_hl4_id && hl4)
-		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_EXISTS);
+
+	// end validate Acronym
 	
 	if(data.hl4.in_acronym.length !== 3)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_ACRONYM_LENGTH);
@@ -862,17 +929,49 @@ function validateHl4(data){
 	if(!data.hl4.in_hl4_crm_description)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CRM_DESCRIPTION);
 	
+	/***************refactor 04112016***********************/
+//	if(!data.hl4_fnc)
+//		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_DATA);
+//	
+//	if(data.hl4.in_hl4_fnc_budget_total_mkt < 0)
+//		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_VALUE);
+//	
+//	if(!data.hl4.in_euro_conversion_id)
+//		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
+//	
+//	if(!Number(data.hl4.in_euro_conversion_id))
+//		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
+//	
+//	if(!data.hl4.in_hl4_fnc_budget_spend_q1 && !data.hl4.in_hl4_fnc_budget_spend_q2 && !data.hl4.in_hl4_fnc_budget_spend_q3 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q4)
+//		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND);
+//	
+//	var q1 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q1) || 0;
+//	var q2 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q2) || 0;
+//	var q3 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q3) || 0;
+//	var q4 = Number(data.hl4_fnc.in_hl4_fnc_budget_spend_q4) || 0;
+//	
+//	var budgetSpend = q1 + q2 + q3 +q4;
+//	
+//	if(budgetSpend < 100)
+//		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND_PERCENT);
+
+	/*TODO: do this to hl4**************/
+
 	if(!data.hl4_fnc)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_DATA);
+
 	
 	if(data.hl4_fnc.in_hl4_fnc_budget_total_mkt < 0)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_VALUE);
+		//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", data);
 	
-	if(!data.hl4_fnc.in_euro_conversion_id)
+	if(data.hl4_fnc.in_euro_conversion_id < 0)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
+		//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", data);
 	
 	if(!Number(data.hl4_fnc.in_euro_conversion_id))
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
+		//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", data);
 	
 	if(!data.hl4_fnc.in_hl4_fnc_budget_spend_q1 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q2 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q3 && !data.hl4_fnc.in_hl4_fnc_budget_spend_q4)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND);
@@ -887,6 +986,36 @@ function validateHl4(data){
 	if(budgetSpend < 100)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND_PERCENT);
 
+	
+
+
+	/*TODO: do this to hl4**************/
+	/*
+	if(data.hl4.in_hl4_fnc_budget_total_mkt < 0)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_VALUE);
+	
+	if(!data.hl4.in_euro_conversion_id)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
+	
+	if(!Number(data.hl4.in_euro_conversion_id))
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_CURRENCY);
+	
+	if(!data.hl4.in_hl4_fnc_budget_spend_q1 && !data.hl4.in_hl4_fnc_budget_spend_q2 && !data.hl4.in_hl4_fnc_budget_spend_q3 && !data.hl4.in_hl4_fnc_budget_spend_q4)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND);
+	
+	var q1 = Number(data.hl4.in_hl4_fnc_budget_spend_q1) || 0;
+	var q2 = Number(data.hl4.in_hl4_fnc_budget_spend_q2) || 0;
+	var q3 = Number(data.hl4.in_hl4_fnc_budget_spend_q3) || 0;
+	var q4 = Number(data.hl4.in_hl4_fnc_budget_spend_q4) || 0;
+	
+	var budgetSpend = q1 + q2 + q3 +q4;
+	
+	if(budgetSpend < 100)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_BUDGET_SPEND_PERCENT);
+	*/
+
+	/**************/
+	
 	if(!data.hl4_budget)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_MY_BUDGET);
 	var hl4MyBudgetKeys = Object.keys(data.hl4_budget);
@@ -982,7 +1111,7 @@ function validateHl4(data){
 	if(!data.hl4_category)
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4",L3_CATEGORY_NOT_EMPTY);
 	
-	if(data.hl4_category.length !== dataCategory.getCountByHlId("hl4"))
+	if(!data.hl4.in_hl4_id && data.hl4_category.length !== dataCategory.getCountByHlId("hl4"))
 		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_INCORRECT_NUMBER);
 	
 	var totalPercentage = 0;
@@ -993,8 +1122,12 @@ function validateHl4(data){
 		var percentagePerOption = 0;
 		if(!hl4Category.in_category_id || !Number(hl4Category.in_category_id))
 			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_NOT_VALID);
+		
 		if(!hl4Category.hl4_category_option.length)
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_OPTIONS_NOT_EMPTY);
+			percentagePerOption = 100;
+		  //TODO review. Workaround for empty categories on edit
+			//throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_OPTIONS_NOT_EMPTY);
+		
 		if(hl4Category.hl4_category_option.length !== dataOption.getOptionCountByCategoryId(hl4Category.in_category_id))
 			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_CATEGORY_OPTIONS_INCORRECT_NUMBER);
 		hl4Category.hl4_category_option.forEach(function(option){
@@ -1018,6 +1151,14 @@ function validateHl4(data){
 
 	var status = null;
 	if(data.hl4.in_hl4_id){
+		
+		existInCrm = dataHl4.existsInCrm(data.hl4.in_hl4_id);
+		
+		var objHL4 = dataHl4.getHl4ById(data.hl4.in_hl4_id);
+		
+		if(existInCrm && data.hl4.in_acronym.toUpperCase() != objHL4.ACRONYM.toUpperCase())
+			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_IN_CRM);
+		
 		status = !categoryOptionComplete || !myBudgetComplete ? HL4_STATUS.IN_PROGRESS : 
 			!existInCrm ? HL4_STATUS.LOAD_DATA_ENTRY : 
 				crmFieldsHaveChanged(data) ? HL4_STATUS.UPDATE_IN_CRM : HL4_STATUS.IN_CRM;
@@ -1055,8 +1196,33 @@ function validateSaleOthers(others){
 	return valid;
 }
 
+
+function getLevel4ByAcronym(acronym , hl3_id) {
+	return dataHl4.getHl4ByAcronym(acronym, hl3_id);
+}
+
+function existsHl4(objHL4){
+	var hl4 = getLevel4ByAcronym(objHL4.in_acronym, objHL4.in_hl3_id);
+	if (hl4.HL4_ID && Number(hl4.HL4_ID) !== Number(objHL4.in_hl4_id)) 
+		return true;
+	else 
+		return false;
+}
+
+function existsInCrm(objHL4, data){
+	var existInCrm = dataHl4.existsInCrm(objHL4.in_hl4_id);
+	// TODO: data.hl4.in_acronym != hl4.ACRONYM
+	if(existInCrm && data.hl4.in_acronym != objHL4.ACRONYM)
+		throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/insertHl4", L3_MSG_INITIATIVE_IN_CRM);
+	
+}
+
 function checkBudgetStatus(objHl3, hl4_id, new_hl4_budget) {
-	if(hl4_id && new_hl4_budget){
+	//throw ErrorLib.getErrors().CustomError("","","testing" + objHl3);
+    /************REFACTOR******************/
+	if(!hl4_id) hl4_id = 0;
+	/************************************/
+	if(Number(objHl3) && new_hl4_budget){
 		var objHl = {};
 		objHl.IN_HL3_ID = Number(objHl3) ? objHl3 : objHl3.IN_HL3_ID;
 		objHl.IN_HL4_ID = hl4_id;
@@ -1071,6 +1237,8 @@ function checkBudgetStatus(objHl3, hl4_id, new_hl4_budget) {
 		result.emailListOutBudget = [];
 		//var parameters = {};
 		//parameters.in_hl3_id = objHl3.IN_HL3_ID;
+		
+		//throw ("objHl3.IN_HL3_ID" + objHl3.IN_HL3_ID);
 		var resultHl4 = dataHl4.getHl4(objHl3.IN_HL3_ID);// GET_HL4_BY_HL3_ID
 
 		if (resultHl4) {
@@ -1330,7 +1498,10 @@ function getHl4SalesByHl4Id(id){
 function insertHl4CRMBinding(hl4, action) {
 	if(hl4.hl4.in_hl4_status_detail_id == HL4_STATUS.IN_PROGRESS)
 		return 0;
-		
+	
+	/************refactor 04112016***********/
+	/*TODO: review next code ******/
+	
 	var crmBindingFields = {"hl4": ["ACRONYM",
 	                                "HL4_CRM_DESCRIPTION",
 	                                "HL4_DETAILS",
@@ -1446,6 +1617,10 @@ function insertHl4CRMBinding(hl4, action) {
 
 function crmFieldsHaveChanged(hl4) {
 	crmFieldsHaveChanged = false;
+	
+	/************refactor 04112016***********/
+	/*TODO: review next code ******/
+	
 	var crmBindingFields = {"hl4": ["ACRONYM",
 	                                "HL4_CRM_DESCRIPTION",
 	                                "HL4_DETAILS",
@@ -1462,6 +1637,7 @@ function crmFieldsHaveChanged(hl4) {
 	});
 	return crmFieldsHaveChanged;
 }
+
 function parseObject(data) {
 	if(Array.isArray(data)){
 		var collection = [];
@@ -1532,7 +1708,7 @@ function notifyInterlockEmail(TO,token){
 	 var appUrl = config.getAppUrl();
 	 var body = '<p> Dear Colleague </p>';
 	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p> <p> Thank you </p>';
+	 body += '<p>' + appUrl + '/InterlockManagement/' + token + '</p>';
 	 var mailObject = mail.getJson([ {
 	  "address" : TO
 	 } ], "Marketing Planning Tool - Interlock Process", body);

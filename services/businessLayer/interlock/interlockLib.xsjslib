@@ -44,7 +44,7 @@ function setInterlockStatus(interlockData){
 	var result = 0;
 	try{
 		var interlock = getInterlockByHash(interlockData.hash);
-		if(interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED || interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED)
+		if(interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED || interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.REJECTED)
 			throw ErrorLib.getErrors().CustomError("","interlockServices/handlePut/setInterlockStatus", "This Interlock is already " + interlock.STATUS + ".");
 		
 		if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO && !interlockData.message)
