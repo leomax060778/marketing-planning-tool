@@ -62,7 +62,7 @@ var UrlLogin = "http://rtm-bmo.bue.sap.corp:1081/mpt-testing/webapp/index.html";
 /**********************************/
 
 /**************Email Accounts**********************/
-var SMTPAccount = "info_planningtool@sap.com";//  //addresses configured  - SMTP server
+var SMTPAccount = "info_planningtool@sap.com";//  //SMTP server configuration
 var SupportAccount = "support_planningtool@sap.com";
 var SiteAdministrator = "support_planningtool@sap.com";
 /*****************************************/

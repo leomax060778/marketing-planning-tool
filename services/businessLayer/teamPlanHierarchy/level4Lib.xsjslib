@@ -1708,7 +1708,7 @@ function notifyInterlockEmail(TO,token){
 	 var appUrl = config.getAppUrl();
 	 var body = '<p> Dear Colleague </p>';
 	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/InterlockManagement/' + token + '</p>';
+	 body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p>';
 	 var mailObject = mail.getJson([ {
 	  "address" : TO
 	 } ], "Marketing Planning Tool - Interlock Process", body);
