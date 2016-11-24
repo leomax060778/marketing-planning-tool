@@ -50,10 +50,10 @@ BEGIN
 			where HL4_sale_SUBREGION.deleted = 0 and HL4_sale_SUBREGION.enabled = 1 
 			and HL4_sale_SUBREGION.hl4_id = in_hl4_id;
 	
-	out_sale_global_team = SELECT hl3.hl3_id as id,
-	        hl3.acronym as global_team_name, HL4_sale_ROUTE.amount
-			from HL4_sale_ROUTE INNER JOIN HL3 hl3
-			ON HL4_SALE_ROUTE.route_id = hl3.hl3_id
+	out_sale_global_team = SELECT hl2.hl2_id as id,
+	        hl2.acronym as global_team_name, HL4_sale_ROUTE.amount
+			from HL4_sale_ROUTE INNER JOIN HL2 hl2
+			ON HL4_SALE_ROUTE.route_id = hl2.hl2_id
 			where HL4_sale_ROUTE.deleted = 0 and HL4_sale_ROUTE.enabled = 1
 			and HL4_sale_ROUTE.hl4_id = in_hl4_id;
 	
