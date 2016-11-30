@@ -7,17 +7,13 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_INTERLOCK_REQUEST_M
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
+
 		UPDATE INTERLOCK_REQUEST_MESSAGE
 		SET deleted = 1,
 		enabled = 0,
 		modified_user_id = in_user_id,
 		modified_date_tz = CURRENT_TIMESTAMP
-		WHERE INTERLOCK_CONTACT_DATA_ID IN (
-			SELECT DISTINCT ILCD.INTERLOCK_CONTACT_DATA_ID
-			FROM INTERLOCK_CONTACT_DATA ILCD 
-			WHERE ILCD.INTERLOCK_REQUEST_ID = in_interlock_request_id 
-			and ILCD.enabled = 1 and ILCD.deleted = 0
-		);
+		WHERE INTERLOCK_REQUEST_ID = in_interlock_request_id ;		
 			
 		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

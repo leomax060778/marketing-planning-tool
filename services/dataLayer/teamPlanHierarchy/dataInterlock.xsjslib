@@ -11,8 +11,9 @@ var spGetInterlockOrganizationType = "GET_ALL_INTERLOCK_ORGANIZATION_TYPE";
 var spGetInterlockOrganizationTypeById = "GET_ORGANIZATION_TYPE_BY_ID";
 var spGetInterlockStatus = "GET_INTERLOCK_STATUS";
 var spGetInterlockOrganizationByIlId = "GET_INTERLOCK_ORGANIZATION_BY_IL_ID";
-var spGetInerlockContactDataByInterlockId = "GET_INTERLOCK_CONTACT_DATA_BY_INTERLOCK_ID";
+var spGetInterlockContactDataByInterlockId = "GET_INTERLOCK_CONTACT_DATA_BY_INTERLOCK_ID";
 var spGetInterlockReport = "GET_INTERLOCK_REPORT";
+var spGetInterlockMessageByInterlockId = "GET_INTERLOCK_MESSAGE_BY_INTERLOCK_ID";
 
 var spInsertInterlock = "INS_INTERLOCK";
 var spInsertInterlockLogStatus = "INS_INTERLOCK_LOG_STATUS";
@@ -43,6 +44,8 @@ var spGetInterlockCentralRegionContactByEmail = "GET_INTERLOCK_CENTRAL_REGION_CO
 var spDeleteInterlockContactDataByHl4Id = "DEL_INTERLOCK_CONTACT_DATA_BY_HL4_ID";
 var spDelInterlockRequestMessageByHl4Id = "DEL_INTERLOCK_MESSAGE_BY_HL4_ID";
 var spDeleteInterlockRequestMessageById = "DEL_INTERLOCK_REQUEST_MESSAGE_BY_ID";
+
+var spUpdContactData = "UPD_HASH_CONTACT_DATA";
 /******************************************************/
 
 /********** GET **********/
@@ -61,8 +64,8 @@ function getInterlockByHl4Id(id){
 
 function getInterlockById(id){
 	if(id){
-		var rdo = db.executeProcedure(spGetInterlockById,{'in_interlock_id':id});
-		return db.extractArray(rdo.out_interlock);
+		var rdo = db.executeProcedure(spGetInterlockById,{'in_interlock_request_id':id});
+		return db.extractArray(rdo.out_result);
 	}	
 	return null;
 }
@@ -93,6 +96,7 @@ function getInterlockStatus(){
 /********** INSERT **********/
 
 function insertInterlock(parameters){
+
 		var rdo = db.executeScalarManual(spInsertInterlock, parameters, 'out_interlock_id');
 		return rdo;
 }
@@ -122,7 +126,7 @@ function insertInterlockLogStatus(interlock_id, status_id, created_user_id, requ
     return db.executeScalarManual(spInsertInterlockLogStatus, params, 'out_interlock_log_status_id');
 }
 
-/****************lucho**************************/
+
 function insertInterlockContactData(interlockId, listContactData, user_id){
 	try{
 		for(var i = 0; i < listContactData.length; i++){
@@ -138,16 +142,21 @@ function insertInterlockContactData(interlockId, listContactData, user_id){
 	}
 }
 
-function insertInterlockMessage(interlockId, message, userId){
+
+function insertInterlockMessage(interlockId, message, userId, origin){
+
+
 	return db.executeProcedureManual(spInsertInterlockRequestMessage,{
-		"IN_INTERLOCK_CONTACT_DATA_ID" : interlockId,
+		"IN_INTERLOCK_REQUEST_ID" : interlockId,
 		"IN_MESSAGE" : message,
-		"IN_CREATED_USER_ID": userId
+		"IN_CREATED_USER_ID": userId,
+		"IN_SENDER_ID" : userId,
+		"IN_INTERLOCK_REQUEST_ORIGIN_ID" : origin
 	});
 }
 
 function getContactDataByInterlockId(interlockId){
-var rdo = db.executeProcedure(spGetInerlockContactDataByInterlockId,
+var rdo = db.executeProcedure(spGetInterlockContactDataByInterlockId,
 		{
 	"in_interlock_id" : interlockId
 		})	;
@@ -234,14 +243,11 @@ function getInterlockByHash(hash){
 	var params = {};
     params.in_hash = hash;
 	var result = db.executeProcedure(spGetInterlockByHash, params);
-	var list = db.extractArray(result.out_result); 
-    if(list.length)
-		return list[0];
-	else
-		return null;
+	return db.extractArray(result.out_result)[0];
 }
 
 function setInterlockStatus(interlock_id, status_id, requesterEmail){
+
 	var rdo = !interlock_id && !status_id && !email ? null : db.executeScalarManual(spUpdInterlockStatus, {'in_interlock_id': interlock_id, 'in_status_id': status_id, 'in_email': requesterEmail}, 'out_result');
     return rdo;
 }
@@ -268,17 +274,20 @@ function getRequestedUser(email){
 		return {};
 }
 
-function desactivateInterlockHash(ilRequestId, userId){
+function deactivateInterlockHash(ilRequestId, userId){
    var rdo = !ilRequestId && !userId ? null : db.executeScalarManual(spDeleteInterlockContactDataById, {'in_interlock_request_id': ilRequestId, 'in_user_id': userId}, 'out_result');
    return rdo;
 }
 
 function deleteInterlockContactDataByIlId(ilRequestId, userId){
-	return desactivateInterlockHash(ilRequestId, userId);
+	return deactivateInterlockHash(ilRequestId, userId);
 }
 
 function deleteInterlockRequestMessageByIlId(ilRequestId, userId){
-	var rdo = !ilRequestId && !userId ? null : db.executeScalarManual(spDeleteInterlockRequestMessageById, {'in_interlock_request_id': ilRequestId, 'in_user_id': userId}, 'out_result');
+	var rdo = !ilRequestId && !userId ? null :
+		db.executeScalarManual(spDeleteInterlockRequestMessageById,
+			{'in_interlock_request_id': ilRequestId, 'in_user_id': userId},
+			'out_result');
 	return rdo;
 }
 
@@ -299,4 +308,37 @@ function deleteInterlockRequestMessageByHl4Id(hl4){
     params.in_user_id = hl4.in_user_id;
 	var rdo = !hl4 ? null : db.executeScalarManual(spDelInterlockRequestMessageByHl4Id, params, 'out_result');
     return rdo;
+}
+
+
+function getMessagesByInterlockRequest(interlockRequestId,autoCommit){
+
+	var params = {
+		'in_interlock_request_id' : interlockRequestId
+	};
+	var rdo;
+	if(autoCommit){
+		rdo = db.executeProcedure(spGetInterlockMessageByInterlockId,params);
+	}else{
+		rdo = db.executeProcedureManual(spGetInterlockMessageByInterlockId,params);
+	}
+
+	return db.extractArray(rdo.out_result);
+
+}
+
+function updateContactData(interlockContactDataId, hash, modifiedUserId,autoCommit){
+	var params = {
+		'in_interlock_contact_data_id' : interlockContactDataId,
+		'in_hash'  : hash,
+		'in_modified_user_id': modifiedUserId
+	};
+	var rdo;
+	if(autoCommit){
+		rdo = db.executeScalar(spUpdContactData,params,'out_result');
+	}else{
+		rdo = db.executeScalarManual(spUpdContactData,params,'out_result');
+	}
+	return rdo;
+
 }

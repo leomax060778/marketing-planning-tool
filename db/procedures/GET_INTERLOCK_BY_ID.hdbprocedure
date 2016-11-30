@@ -1,5 +1,5 @@
-PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_INTERLOCK_BY_HASH" ( 
-IN in_hash nvarchar(255)
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_INTERLOCK_BY_ID" (
+IN in_interlock_request_id bigint
 , OUT out_result TABLE(
 	interlock_request_id BIGINT
 	,interlock_entity_id BIGINT 
@@ -14,6 +14,7 @@ IN in_hash nvarchar(255)
 	,created_user_id BIGINT
 	,hl4_id bigint
 	,hl3_id bigint
+	,requester_email NVARCHAR(255)
     )
 ) 
 	LANGUAGE SQLSCRIPT
@@ -39,6 +40,8 @@ BEGIN
 	,IR.CREATED_USER_ID
 	,HL4.HL4_ID
 	,HL4.HL3_ID
+	,IR.REQUESTER_EMAIL
+
 	
 	FROM INTERLOCK_REQUEST IR 
 	INNER JOIN INTERLOCK_CONTACT_DATA ILCD ON ILCD.INTERLOCK_REQUEST_ID = IR.INTERLOCK_REQUEST_ID 
@@ -53,5 +56,5 @@ BEGIN
 	LEFT JOIN HL2 CT ON CT.HL2_ID = ILCT.ROUTE_ID AND CT.TEAM_TYPE_ID = 2
 	INNER JOIN HL4 ON HL4.HL4_ID = IR.HL4_ID
 	WHERE IR.DELETED = 0 and IR.ENABLED = 1
-	AND ILCD.HASH = in_hash;
+	AND IR.INTERLOCK_REQUEST_ID  = in_interlock_request_id;
 END;

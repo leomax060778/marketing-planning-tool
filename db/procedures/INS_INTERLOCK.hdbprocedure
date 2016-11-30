@@ -12,6 +12,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK" (
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
+    DECLARE ID_INTERLOCK_REQUEST BIGINT;
+    ID_INTERLOCK_REQUEST := 0;
 	INSERT INTO "PLANNING_TOOL"."INTERLOCK_REQUEST" (
 	entity_id,
 	hl4_id,
@@ -23,5 +25,22 @@ BEGIN
 	) 
 	VALUES (in_entity_id,in_hl4_id,in_organization_type_id,in_requested_resource,in_requested_budget,in_interlock_status_id,in_created_user_id);
 
-	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_interlock_id FROM "PLANNING_TOOL"."INTERLOCK_REQUEST";
+    SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO ID_INTERLOCK_REQUEST FROM "PLANNING_TOOL"."INTERLOCK_REQUEST";
+
+    INSERT INTO "PLANNING_TOOL"."INTERLOCK_REQUEST_MESSAGE" (
+       INTERLOCK_REQUEST_ID,
+       CREATED_USER_ID,
+       SENDER_ID,
+       INTERLOCK_REQUEST_ORIGIN_ID,
+       MESSAGE       )
+       VALUES(
+       ID_INTERLOCK_REQUEST,
+       in_created_user_id,
+       in_created_user_id,
+       1,
+       in_requested_resource
+       );
+
+    out_interlock_id:=ID_INTERLOCK_REQUEST;
+
 END;

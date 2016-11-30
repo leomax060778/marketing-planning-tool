@@ -279,7 +279,7 @@ function sendMail(reqBody, defaultBody, OptionalSender){
 			return "code: "+code + "result: " +rdo;
 		}		
 	}catch(e){
-		throw e;
+		ErrorLib.getErrors().MailError("",e.toString(),"");
 	}
 	
 }

@@ -424,14 +424,25 @@ function getHl4Childrens(hl4_id){
 	return totalHl5;
 }
 
-function insertInterlockDataContact(Interlock_id, email, user_id){
-	
+
+function insertInterlockDataContact(Interlock_id, email, user_id) {
+
 	var parameters = {
-			"IN_INTERLOCK_ENTITY_ID": Interlock_id,
-			"IN_FIRST_NAME" : "",
-			"IN_LAST_NAME" : "",
-			"IN_EMAIL" : email,
-			"IN_CREATED_USER_ID" : user_id
-			};
-	return db.executeProcedure(spInsInterlockDataContact, parameters);	
+		"IN_INTERLOCK_ENTITY_ID": Interlock_id,
+		"IN_FIRST_NAME": "",
+		"IN_LAST_NAME": "",
+		"IN_EMAIL": email,
+		"IN_CREATED_USER_ID": user_id
+	};
+	return db.executeProcedure(spInsInterlockDataContact, parameters);
+
+}
+function getHl4AllocatedBudget(hl4Id, hl5Id) {
+	if(hl4Id){
+		var rdo = db.executeDecimalManual(spGetHl4AllocatedBudget
+					, {'in_hl4_id': hl4Id, 'in_hl5_id': hl5Id}, 'out_hl4_allocated_budget');
+		return rdo;
+	}
+	return null;
+
 }

@@ -37,35 +37,76 @@ function getInterlockByHash(hash,userId){
 		throw ErrorLib.getErrors().BadRequest("The hash is not found","interlockServices/handleGet/getInterlockByHash", "The hash is not found");
 	
 	var rdo = dataInterlock.getInterlockByHash(hash);
+
+	if(rdo == null)
+		throw ErrorLib.getErrors().Forbidden();
 	return rdo;
 };
 
-function setInterlockStatus(interlockData){
+function setInterlockStatus(interlockData,userId){
 	var result = 0;
 	try{
-		var interlock = getInterlockByHash(interlockData.hash);
-		if(interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED || interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.REJECTED)
-			throw ErrorLib.getErrors().CustomError("","interlockServices/handlePut/setInterlockStatus", "This Interlock is already " + interlock.STATUS + ".");
-		
-		if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO && !interlockData.message)
-			throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4", "Message cannot be empty.");
-		
-		var requesterEmail = getRequestedUserEmail(interlockData.hash);
+		if(interlockData.status_id == INTERLOCK_STATUS.NO_RESPONSE) {
 
-		dataInterlock.setInterlockStatus(interlockData.interlock_id, interlockData.status_id, requesterEmail);
-		
-		var objIl = dataInterlock.getInterlockByHash(interlockData.hash);
-		if(!objIl)
-			throw ErrorLib.getErrors().CustomError("","interlockService/handlePut/setInterlockStatus", "Interlock Data cannot be null or empty.");
-		
-		//save requester email
-		dataInterlock.insertInterlockLogStatus(interlockData.interlock_id, interlockData.status_id, objIl.CREATED_USER_ID, requesterEmail);
-		
-		if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO) {
-			result = dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, objIl.CREATED_USER_ID);
-		} else {
-			result = dataInterlock.desactivateInterlockHash(interlockData.interlock_id, objIl.CREATED_USER_ID);
-		};
+			var interlockComplete = dataInterlock.getInterlockById(interlockData.interlock_id);
+
+
+			if(interlockComplete.length > 0){
+				var contactData = dataInterlock.getContactDataByInterlockId(interlockData.interlock_id);
+
+				contactData.forEach(function(contactData){
+					var hash= config.getHash();
+
+					var updNumber = dataInterlock.updateContactData(contactData.INTERLOCK_CONTACT_DATA_ID, hash, userId);
+
+					if(updNumber <= 0 )
+					throw ErrorLib.getErrors().CustomError("","","The Interlock Contact Data was not found");
+
+					dataInterlock.setInterlockStatus(interlockData.interlock_id, interlockData.status_id,interlockComplete[0].REQUESTER_EMAIL);
+					
+					notifyInterlockResponse(contactData.EMAIL,hash);
+				});
+				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId,config.getOriginMessageInterlock().requester);
+			}
+
+
+		}else{
+			var interlock = getInterlockByHash(interlockData.hash);
+			if(interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED || interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.REJECTED)
+				throw ErrorLib.getErrors().CustomError("","interlockServices/handlePut/setInterlockStatus", "This Interlock is already " + interlock.STATUS + ".");
+
+			if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO && !interlockData.message)
+				throw ErrorLib.getErrors().CustomError("","hl4Services/handlePost/updateHl4", "Message cannot be empty.");
+
+			var requesterEmail = getRequestedUserEmail(interlockData.hash);
+
+
+			dataInterlock.setInterlockStatus(interlockData.interlock_id, interlockData.status_id, requesterEmail);
+			if(interlockData.status_id == INTERLOCK_STATUS.REJECTED){
+				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId,config.getOriginMessageInterlock().moneyLender);
+			}
+
+			var objIl = dataInterlock.getInterlockByHash(interlockData.hash);
+			if(!objIl)
+				throw ErrorLib.getErrors().CustomError("","interlockService/handlePut/setInterlockStatus", "Interlock Data cannot be null or empty.");
+
+			//save requester email
+			dataInterlock.insertInterlockLogStatus(interlockData.interlock_id, interlockData.status_id, objIl.CREATED_USER_ID, requesterEmail);
+
+
+
+
+			if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO) {
+				var contactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
+				result = dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, contactData.INTERLOCK_CONTACT_DATA_ID, config.getOriginMessageInterlock().moneyLender);
+				//Send email to requester to notifiy about messages to review
+				notifyRequester(requesterEmail,interlockData.interlock_id, objIl.REQUESTED_RESOURCE, objIl.HL3_ID, objIl.HL4_ID );
+			} else {
+				result = dataInterlock.deactivateInterlockHash(interlockData.interlock_id, objIl.CREATED_USER_ID);
+			};
+		}
+
+
 		db.commit();
 		return result;
 	} catch(e) {
@@ -75,6 +116,7 @@ function setInterlockStatus(interlockData){
 		db.closeConnection();
 	}
 }
+
 
 function getRequestedUserEmail(hash){
 	var email = "";
@@ -125,8 +167,25 @@ function getGlobalTeam(hl3Id, userId){
 	return result;
 }
 
+
+function notifyRequester(requesterEmail,interlockId, description, idLevel3, idLevel4){
+	var appUrl = config.getAppUrl();
+	var text1 = '<p>A request for more information has been submitted to your interlock request. </p>';
+	var text2 = '<p>Please follow the link: ';
+	var linkToAppUrlL4 = appUrl + '/#TeamPlanHierarchy/Level3/edit/'+idLevel3+'/'+idLevel4;
+	var idInterlockDescription = interlockId +' - '+description;
+	var text3 = linkToAppUrlL4+' and review messages history for	Interlock Request '+idInterlockDescription+'</p>';
+	var body = text1 + text2 + text3;
+	var mailObject = mail.getJson([ {
+		"address" : requesterEmail
+	} ], "Marketing Planning Tool -  The Interlock Request has been responded", body);
+
+	var rdo = mail.sendEventMail(mailObject);
+
+}
+
 function resendRequestEmail(interlockId, userId) {
-	try{
+
 		var requestData = dataInterlock.getContactDataByInterlockId(interlockId);
 		var mailsSent = 0;
 		requestData.forEach(function(contactData){
@@ -135,15 +194,10 @@ function resendRequestEmail(interlockId, userId) {
 			mailsSent++;
 		});
 		return (requestData.length - mailsSent);
-	} catch(e) {
-		db.rollback();
-		throw e;
-	} finally {
-		db.closeConnection();
-	}
 }
 
 function notifyInterlockEmail(TO,token){
+
 	 var appUrl = config.getAppUrl();
 	 var body = '<p> Dear Colleague </p>';
 	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
@@ -151,8 +205,20 @@ function notifyInterlockEmail(TO,token){
 	 var mailObject = mail.getJson([ {
 	  "address" : TO
 	 } ], "Marketing Planning Tool - Interlock Process", body);
-	 
-	 mail.sendMail(mailObject,true);
+
+	 mail.sendEventMail(mailObject);
+}
+
+function notifyInterlockResponse(TO,token){
+	var appUrl = config.getAppUrl();
+	var body = '<p> Dear Colleague </p>';
+	body += '<p>An interlock request has been sent and needs your approval. Please follow the link: </p>';
+	body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p>';
+	var mailObject = mail.getJson([ {
+		"address" : TO
+	} ], "Marketing Planning Tool - Interlock Process", body);
+
+	mail.sendMail(mailObject,true);
 }
 
 function getContactData(data,contactType){
@@ -172,4 +238,12 @@ function getContactData(data,contactType){
 		result.push(resultObject);
 	});
 	return result;
+}
+
+function getMessagesByInterlockRequest(interlockRequestId){
+	return dataInterlock.getMessagesByInterlockRequest(interlockRequestId);
+}
+
+function saveInterlockRequestMessage(interlockId, message, userId){
+	return dataInterlock.insertInterlockMessage(interlockId, message, userId);
 }

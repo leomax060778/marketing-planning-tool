@@ -38,7 +38,8 @@ function executeProcedure(spName, parameters){
 		HDB_CONNECTION.commit();
 	}
 	catch(e){
-		HDB_CONNECTION.rollback();		
+		HDB_CONNECTION.rollback();
+		validateErrorCode(e, spName);
 		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedure");
 	}
 	finally{
@@ -58,6 +59,7 @@ function executeProcedureManual(spName, parameters){
 		result = fn(parameters);
 	}
 	catch(e){	
+		validateErrorCode(e, spName);
 		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedureManual");
 	}
 	return result;
@@ -81,7 +83,8 @@ function executeScalar(spName, parameters, out_result){
 		HDB_CONNECTION.commit();
 	}
 	catch(e){
-		HDB_CONNECTION.rollback();		
+		HDB_CONNECTION.rollback();
+		validateErrorCode(e, spName);
 		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalar");	
 }
 	finally{
@@ -104,7 +107,8 @@ function executeDecimalManual(spName, parameters, out_result){
 		result = fn(parameters);	
 		 value = Number(result[out_result]);		
 	}
-	catch(e){		
+	catch(e){
+		validateErrorCode(e, spName);
 		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");	
     }
 		
@@ -122,7 +126,8 @@ function executeScalarManual(spName, parameters, out_result){
 		result = fn(parameters);	
 		 value = Number(ctypes.Int64(result[out_result]));		
 	}
-	catch(e){		
+	catch(e){
+		validateErrorCode(e, spName);
 		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");	
     }
 		
@@ -138,11 +143,13 @@ function setConnection() {
 }
 
 function commit(){
-	HDB_CONNECTION.commit();
+	if (HDB_CONNECTION != null && !HDB_CONNECTION.isClosed())
+		HDB_CONNECTION.commit();
+
 }
 
 function rollback(){
-	if (HDB_CONNECTION == null && !HDB_CONNECTION.isClosed())
+	if (HDB_CONNECTION != null && !HDB_CONNECTION.isClosed())
 		HDB_CONNECTION.rollback();
 }
 
@@ -151,7 +158,20 @@ function closeConnection(){
 		HDB_CONNECTION.close();
 }
 
-
+function validateErrorCode(error, spName){
+	var str = error.toString();
+	var regexCode = /server error code: 274/;
+	var regexCol = /Failed in "([^"]*)/;
+	var column = str.match(regexCol);
+	if(column.length > 1){
+		column = column[1].replace("_"," ");
+	}
+	
+	if(regexCode.test(str)) /*server error code: 274. inserted value too large for column */
+		{		
+		throw errors.getErrors().CustomError("",spName +" "+error.toString(),"The "+column+" value is too long.");
+		}
+}
 
 
 /********************* whitout testing ***************************/

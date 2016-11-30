@@ -7,6 +7,7 @@ var ErrorLib = mapper.getErrors();
 
 /***********************PERMISSIONS AND RESOURCES***************************/
 var spGetResourceByName = "GET_RESOURCE_BY_NAME";
+var spGetNewToken = "GET_SYSUUID";
 
 function getResourceIdByName(name){
 	
@@ -23,6 +24,8 @@ function getResourceIdByName(name){
 function level1() { return "level1"}
 function level2() { return "level2"}
 function level3() { return "level3"}
+function level4() { return "level4"}
+function level5() { return "level5"}
 function settings() { return "settings"}
 function administration() { return "administration"}
 function dereport() { return "dereport"}
@@ -79,8 +82,13 @@ var RoleEnum = {
 		Admin : 2,
 		Data_Entry : 3,
 		Campaign_Manager : 4
-	}
+	};
 //*************************
+
+var OriginMessageInterlock = {
+	requester : 1,
+	moneyLender : 2
+};
 
 function getAppUrl(){
 	return AppUrl;
@@ -112,6 +120,17 @@ function getDefaultPassword(){
 
 function getRoleEnum(){
 	return RoleEnum;
+}
+
+function getOriginMessageInterlock(){
+	return OriginMessageInterlock;
+}
+
+function getHash() {
+	var rdo = db.executeProcedure(spGetNewToken, {});
+	if (rdo['OUT_RESULT']) {
+		return rdo['OUT_RESULT'][0]['SYS_UNIQUE_NUMBER'];
+	}
 }
 
 

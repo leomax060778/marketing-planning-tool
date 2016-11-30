@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HASH_CONTACT_DATA" (
+		IN in_interlock_contact_data_id BIGINT,
+		IN in_hash NVARCHAR(255),
+		IN in_modified_user_id BIGINT,
+		OUT out_result BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	UPDATE INTERLOCK_CONTACT_DATA SET
+		hash = in_hash,
+		modified_user_id = in_modified_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where interlock_contact_data_id = in_interlock_contact_data_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

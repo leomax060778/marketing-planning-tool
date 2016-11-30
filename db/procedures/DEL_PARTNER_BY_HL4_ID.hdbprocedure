@@ -7,7 +7,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_PARTNER_BY_HL4_ID" 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
---testing--
+
 		UPDATE HL4_PARTNER
 		SET deleted = 1,
 			modified_user_id = in_user_id,

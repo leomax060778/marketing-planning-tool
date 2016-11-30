@@ -63,7 +63,7 @@ BEGIN
 	GROUP BY GROUPING SETS ((HL2.hl2_id, HL2.acronym, HL2.description, HL2.budget_year_id
 	, HL2.region_id, HL2.subregion_id, SR.SUBREGION_NAME, HL2.organization_acronym
 	, BUY.BUDGET_YEAR, R.REGION_NAME, HL2.hl2_budget_total))
-	ORDER BY HL2.acronym ASC;
+	ORDER BY HL2.acronym ASC, HL2.organization_acronym ASC;
 	  
 	-- Calculate the total budget
 	SELECT COALESCE(SUM(HL2.hl2_budget_total),0) 

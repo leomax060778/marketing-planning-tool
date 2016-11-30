@@ -6,6 +6,8 @@ var ErrorLib = mapper.getErrors();
 var login = mapper.getLogin();
 var permissions = mapper.getPermission();
 var config = mapper.getDataConfig();
+var db = mapper.getdbHelper();
+var mail = mapper.getMail();
 /******************************************/
 
 //constants
@@ -83,7 +85,7 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 	        			config.getPermissionIdByName(config.ReadPermission()),
 	        			ResourceID);	
 		        	}
-		        	return getMethod(getUrlParameters(),userSessionID);
+		        	getMethod(getUrlParameters(),userSessionID);
 		            break;
 		        }		        	
 		        case $.net.http.PUT:{
@@ -92,7 +94,7 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
        		    	config.getPermissionIdByName(config.EditPermission()),
          			ResourceID);
 		        	}
-		        	return putMethod(reqBody,userSessionID);
+		        	putMethod(reqBody,userSessionID);
 		            break;
 		        }		        	
 	            case $.net.http.POST:{
@@ -101,7 +103,7 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
         			config.getPermissionIdByName(config.CreatePermission()),
         			ResourceID);
 	            	}
-	            	return postMethod(reqBody,userSessionID);
+	            	postMethod(reqBody,userSessionID);
 		            break;
 	            }	            	
 		        case $.net.http.DEL:{
@@ -110,16 +112,20 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
         			config.getPermissionIdByName(config.DeletePermission()),
         			ResourceID);
 		        	}
-		        	return deleteMethod(reqBody,userSessionID);
+		        	deleteMethod(reqBody,userSessionID);
 		            break;
 		        }		        	
 		        default:
-		        	return notImplementedMethod();
+		        	notImplementedMethod();
 			    	break;
 		    }	    
-		
+
+		db.commit(); // On this point the transaction finalized successfully.
 	} catch (e) {
+		db.rollback();//if exist an error, on this point the transaction should be rolled back.
 		handleErrorResponse(e);	
+	}finally {
+		db.closeConnection(); //In any case, the connection should be closed.
 	}
 }
 

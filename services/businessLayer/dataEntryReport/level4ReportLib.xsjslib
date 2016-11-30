@@ -2,10 +2,11 @@ $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataL4DER = mapper.getDataLevel4Report();
 var dataHl4 = mapper.getDataLevel4();
+var dataPath = mapper.getDataPath();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
 /** ***********END INCLUDE LIBRARIES*************** */
-var l4ReportFields = {"ACRONYM": "Acronym",
+var l4ReportFields = {"ACRONYM": "ID",
 		"HL4_CRM_DESCRIPTION": "CRM Description",
 		"HL4_DETAILS": "Initiative/Campaign Details",
 		"HL4_BUSINESS_DETAILS": "Business Value",
@@ -28,7 +29,7 @@ function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
 		var changedFields = dataL4DER.getL4ChangedFieldsByHl4Id(hl4Id);
 		var hl4 = dataHl4.getHl4ById(hl4Id);
 		//new refactor 04112016
-		var hl4Fnc = dataHl4.getHl4FncByHl4Id(hl4Id);
+		//var hl4Fnc = dataHl4.getHl4FncByHl4Id(hl4Id);
 		
 		var hl4Categories = dataHl4.getHl4Category(hl4Id);
 		Object.keys(l4ReportFields).forEach(function(field){
@@ -56,9 +57,20 @@ function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
 			} else {
 				var object = {};
 				object.display_name = l4ReportFields[field];
-				object.value = hl4[field] || hl4Fnc[field];
 				//new refactor 04112016
-				object.value = hl4[field];
+				//object.value = hl4[field] || hl4Fnc[field];
+				
+				// When Acronym/ID display the CRM path for L4 entry
+				if(l4ReportFields[field] == "ID"){
+					var CRM_ACRONYM = "CRM";
+					var path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+					if (path.length > 0) {
+						object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl4['ACRONYM'];
+					}
+				}else{
+					object.value = hl4[field];
+				}
+								
 				object.changed = checkChangedField(changedFields, field);
 				data.hl4.push(object);
 			};

@@ -8,10 +8,12 @@ var config = mapper.getDataConfig();
 /** *************************************** */
 
 var METHOD = "GET_GLOBALS_TEAM";
+var GET_MESSAGE = "GET_MESSAGE";
+var saveInterlockMessage = "ADDMESSAGE";
 
 function processRequest(){
 	//return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,true, config.getResourceIdByName(config.level3()));
-	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,true,"",true);
+	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,"",true);
 }
 
 function handleGet(parameters, userId){
@@ -21,7 +23,7 @@ function handleGet(parameters, userId){
 	var method = httpUtil.getUrlParameters().get("METHOD");
 	if(parameters.length > 0){
 		if (parameters[0].name == METHOD){
-			if(parameters[0].value){
+			 if(parameters[0].value){
 				rdo.entity = interlockLib.getAllEntity();
 				rdo.organizations = interlockLib.getGlobalTeam(parameters[0].value, userId);
 				httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
@@ -31,7 +33,11 @@ function handleGet(parameters, userId){
 		} else if (parameters[0].name == 'HASH') {
 			rdo = interlockLib.getInterlockByHash(parameters[0].value, userId);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
-		} else{
+		}else if(parameters[0].name === 'GET_MESSAGE'){
+			rdo.messages = interlockLib.getMessagesByInterlockRequest(parameters[0].value, userId);
+			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+		}
+		else{
 			throw ErrorLib.getErrors().BadRequest("","interLockService/handleGet","invalid parameter name (can be: GET_GLOBALS_TEAM)");
 		}
 	}
@@ -39,13 +45,27 @@ function handleGet(parameters, userId){
 };
 
 function handlePost(reqBody, userId){
-	var rdo = interlockLib.resendRequestEmail(reqBody.interlockId, userId);	
+	var parameters = httpUtil.getUrlParameters();
+	if(parameters.length > 0){
+		var aCmd = parameters.get('method');
+		switch (aCmd) {
+		    case saveInterlockMessage: //save interlock message
+		    	var rdo = interlockLib.saveInterlockRequestMessage(reqBody.interlockId, reqBody.message, userId);	
+		        break;
+		    default:
+		    	throw ErrorLib.getErrors().BadRequest("","interLockService/handlePost","insufficient parameters");
+		}	
+	}else{
+		var rdo = interlockLib.resendRequestEmail(reqBody.interlockId, userId);	
+	}
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };
+
 function handlePut(reqBody, userId){
-	var rdo = interlockLib.setInterlockStatus(reqBody, userId);	
+	var rdo = interlockLib.setInterlockStatus(reqBody, userId);
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };
+
 function handleDelete(reqBody, userSessionID){
 	httpUtil.notImplementedMethod()
 };
