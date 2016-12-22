@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_OBJECTIVE_CAMPAIGN_TYPE" (
+	IN in_objective_id bigint,
+	IN in_campaign_type_id bigint,
+	OUT out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+ 	DELETE FROM "PLANNING_TOOL"."OBJECTIVE_CAMPAIGN_TYPE_SUBTYPE"
+ 	WHERE objective_id = in_objective_id AND campaign_type_id = in_campaign_type_id;
+
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

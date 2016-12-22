@@ -14,6 +14,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_HL3_ID" (
             , IS_SEND_MAIL BIGINT
             , HL4_BUDGET DECIMAL
             , EURO_CONVERSION_ID BIGINT
+            , IMPLEMENT_EXECUTION_LEVEL TINYINT
             , TOTAL_HL5 INT
             , QUANTITY_HL5_OUT_BUDGET INT
             , ALLOCATED DECIMAL
@@ -56,6 +57,7 @@ va_intermidate = SELECT
         ,hl4.IS_SEND_MAIL AS IS_SEND_MAIL
         ,hl4.HL4_FNC_BUDGET_TOTAL_MKT AS HL4_BUDGET
         ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
+        ,HL2.IMPLEMENT_EXECUTION_LEVEL
         
         FROM HL4 hl4
     INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
@@ -81,6 +83,7 @@ out_result = SELECT
 		,va_hl4.IS_SEND_MAIL
 		,va_hl4.HL4_BUDGET
 		,va_hl4.EURO_CONVERSION_ID
+		,va_hl4.IMPLEMENT_EXECUTION_LEVEL
 		
 		, COUNT(DISTINCT HL5.HL5_ID) AS TOTAL_HL5
 		, SUM(CASE WHEN  HL5.IN_BUDGET IS NULL THEN 0 WHEN HL5.IN_BUDGET = 0 THEN 1 ELSE 0 END) QUANTITY_HL5_OUT_BUDGET --# of L5 out off budget
@@ -94,7 +97,7 @@ out_result = SELECT
 	GROUP BY 
 	va_hl4.HL4_ID,va_hl4.HL4_CRM_DESCRIPTION,va_hl4.HL4_ACRONYM,va_hl4.CRM_ID,va_hl4.IN_BUDGET,va_hl4.READ_ONLY,va_hl4.STATUS_ID,
 		va_hl4.STATUS_DETAIL,va_hl4.CREATED_BY,va_hl4.OWNER_EMAIL,va_hl4.IS_SEND_MAIL,va_hl4.HL4_BUDGET,
-		va_hl4.EURO_CONVERSION_ID;
+		va_hl4.EURO_CONVERSION_ID,va_hl4.IMPLEMENT_EXECUTION_LEVEL;
 		
 		
 	SELECT 

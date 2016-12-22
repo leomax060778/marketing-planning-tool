@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_COST_CENTER" (
+		IN in_name NVARCHAR(255),
+		IN in_description NVARCHAR(100),
+		IN in_user_id BIGINT,
+		IN in_code NVARCHAR(255),
+		IN in_employee_responsible_id BIGINT,
+  IN in_sales_organization_id BIGINT,
+
+		OUT out_cost_center_id BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+ INSERT INTO COST_CENTER (NAME, DESCRIPTION, COST_CENTER_CODE, EMPLOYEE_RESPONSIBLE_ID, SALE_ORGANIZATION_ID,created_user_id)
+ VALUES (in_name, in_description, in_code, in_employee_responsible_id, in_sales_organization_id, in_user_id);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_cost_center_id FROM "PLANNING_TOOL"."COST_CENTER";
+END;

@@ -6,6 +6,7 @@ var ErrorLib = mapper.getErrors();
 /*************************************************/
 var spGetAllBudgetYear = "GET_ALL_BUDGET_YEAR";
 var spUdpBudgetYear = "UPD_BUDGET_YEAR";
+var GET_BUDGET_YEAR = "GET_BUDGET_YEAR";
 /******************************************************/
 
 
@@ -25,4 +26,13 @@ function updateBudgetYear(budgetYear){
 	};
 	
 	return db.executeProcedure(spUdpBudgetYear,params);
+}
+
+
+function getBudgetYear(budgetYear){
+	var params = {
+			"in_budget_year" : budgetYear
+	};
+	var result = db.executeProcedureManual(GET_BUDGET_YEAR,params);
+	return db.extractArray(result['out_result'])[0];
 }

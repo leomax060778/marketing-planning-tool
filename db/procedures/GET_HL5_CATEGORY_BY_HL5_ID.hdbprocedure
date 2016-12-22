@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_CATEGORY_BY_HL5_ID" (
+	IN in_hl5_id BIGINT,
+	OUT out_hl5_category TABLE (hl5_category_id BIGINT, category_id BIGINT, hl5_id BIGINT, category_name nvarchar(60), in_processing_report TINYINT)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_hl5_category = SELECT hl5_category.hl5_category_id
+	, category.category_id
+	, hl5_category.hl5_id
+	,category.name as category_name
+	, hl5_category.in_processing_report
+	FROM hl5_category inner join category
+	on hl5_category.category_id = category.category_id
+	WHERE hl5_id = in_hl5_id
+	  AND hl5_category.enabled = 1
+	  AND hl5_category.deleted = 0;
+END;

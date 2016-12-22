@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OBJECTIVE_BY_ID"
+(
+        IN in_objective_id BIGINT,
+        OUT out_result TABLE(
+              OBJECTIVE_ID BIGINT
+            , NAME NVARCHAR(255)
+        )
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+	
+out_result =
+	select 
+	 OBJECTIVE_ID
+	,NAME
+	FROM OBJECTIVE 
+	WHERE 
+	OBJECTIVE_ID = in_objective_id;		
+END;

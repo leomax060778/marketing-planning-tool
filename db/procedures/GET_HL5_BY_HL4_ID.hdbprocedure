@@ -1,0 +1,90 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_HL4_ID" (  
+        IN in_hl4_id BIGINT,
+        OUT out_result TABLE(
+              HL5_ID BIGINT
+            , HL5_CRM_DESCRIPTION NVARCHAR(100)
+            , HL5_ACRONYM NVARCHAR(25)
+            , CRM_ID NVARCHAR(25)
+            , IN_BUDGET Tinyint
+            , STATUS_ID BIGINT
+            , STATUS_DETAIL NVARCHAR(255)
+            , CREATED_BY NVARCHAR(255)
+            , OWNER_EMAIL NVARCHAR(500)
+            , HL5_BUDGET DECIMAL
+            , EURO_CONVERSION_ID BIGINT
+            , TOTAL_HL6 INT
+            , QUANTITY_HL6_OUT_BUDGET INT
+            , ALLOCATED DECIMAL
+            , REMAINING DECIMAL
+        )
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+	
+va_intermidate = SELECT
+        hl5.hl5_ID AS HL5_ID
+        ,hl5.hl5_crm_description AS HL5_CRM_DESCRIPTION
+        ,hl5.acronym AS HL5_ACRONYM       
+	    ,    
+	     CONCAT(  
+	         CONCAT(
+	        	CONCAT(
+	        		CONCAT(
+	        			CONCAT(
+	        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
+	    					,'-')
+						, hl3.acronym)
+					,'-')
+				,hl4.acronym)
+             ,hl5.acronym)
+		AS CRM_ID 
+        
+        ,hl5.IN_BUDGET as IN_BUDGET
+        ,hl5.hl5_status_detail_id AS STATUS_ID
+        ,hl5_status_detail.detail AS STATUS_DETAIL
+        ,CONCAT(CONCAT(userTable.FIRST_NAME, ' '),userTable.LAST_NAME) AS CREATED_BY
+        ,userTable.EMAIL AS OWNER_EMAIL
+        ,hl5.BUDGET AS HL5_BUDGET
+        ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
+
+    FROM HL5 Hl5
+    INNER JOIN HL4 hl4 ON hl4.hl4_id=hl5.hl4_id AND hl4.enabled=1 AND hl4.deleted=0
+    INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
+    INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
+    INNER JOIN BUDGET_YEAR BGY ON hl2.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
+    INNER JOIN EURO_CONVERSIONS euro_conversions ON hl4.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
+    INNER JOIN hl5_status_detail hl5_status_detail ON hl5_status_detail.hl5_status_detail_id = hl5.hl5_status_detail_id
+    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl4.created_user_id
+    WHERE hl5.enabled=1 AND hl5.deleted=0
+	AND hl5.hl4_id = in_hl4_id;
+
+out_result = SELECT
+        va_hl5.HL5_ID
+		,va_hl5.HL5_CRM_DESCRIPTION
+		,va_hl5.HL5_ACRONYM
+		,va_hl5.CRM_ID
+		,va_hl5.IN_BUDGET
+		,va_hl5.STATUS_ID
+		,va_hl5.STATUS_DETAIL
+		,va_hl5.CREATED_BY
+		,va_hl5.OWNER_EMAIL
+		,va_hl5.HL5_BUDGET
+		,va_hl5.EURO_CONVERSION_ID
+
+		, COUNT(DISTINCT HL6.HL6_ID) AS TOTAL_HL6
+		, SUM(CASE WHEN  HL6.IN_BUDGET IS NULL THEN 0 WHEN HL6.IN_BUDGET = 0 THEN 1 ELSE 0 END) QUANTITY_HL6_OUT_BUDGET --# of L6 out off budget
+		, COALESCE(SUM(HL6.budget),0) AS ALLOCATED
+		, COALESCE((va_hl5.HL5_BUDGET - SUM(HL6.budget)), va_hl5.HL5_BUDGET) AS REMAINING
+		
+    FROM :va_intermidate va_hl5
+    LEFT JOIN HL6 hl6 ON hl6.HL5_ID = va_hl5.hl5_id AND hl6.enabled=1 AND hl6.deleted=0
+
+	GROUP BY 
+	va_hl5.HL5_ID,va_hl5.HL5_CRM_DESCRIPTION,va_hl5.HL5_ACRONYM,va_hl5.CRM_ID,va_hl5.IN_BUDGET,va_hl5.STATUS_ID,
+		va_hl5.STATUS_DETAIL,va_hl5.CREATED_BY,va_hl5.OWNER_EMAIL,va_hl5.HL5_BUDGET,
+		va_hl5.EURO_CONVERSION_ID;
+		
+END;

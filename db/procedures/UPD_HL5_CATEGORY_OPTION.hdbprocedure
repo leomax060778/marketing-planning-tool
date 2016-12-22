@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5_CATEGORY_OPTION" (
+    IN in_hl5_category_id bigint,
+    IN in_option_id bigint,
+    IN in_amount DECIMAL(19,2),
+    IN in_user_id bigint,
+	OUT out_result int
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+		UPDATE HL5_CATEGORY_OPTION SET
+		amount = in_amount,
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where hl5_category_id = in_hl5_category_id AND option_id = in_option_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

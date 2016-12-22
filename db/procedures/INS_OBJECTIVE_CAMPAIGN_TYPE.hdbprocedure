@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_OBJECTIVE_CAMPAIGN_TYPE" (
+	IN in_objective_id bigint,
+	IN in_campaign_sub_type_id bigint,
+	IN in_campaign_type_id bigint,
+	IN in_created_user_id bigint,
+	OUT out_objective_campaign_type_id bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+ 	INSERT INTO "PLANNING_TOOL"."OBJECTIVE_CAMPAIGN_TYPE_SUBTYPE"(objective_id, campaign_sub_type_id, campaign_type_id, created_user_id)
+ 	VALUES(in_objective_id, in_campaign_sub_type_id, in_campaign_type_id, in_created_user_id);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_objective_campaign_type_id FROM "PLANNING_TOOL"."OBJECTIVE_CAMPAIGN_TYPE_SUBTYPE";
+
+END;

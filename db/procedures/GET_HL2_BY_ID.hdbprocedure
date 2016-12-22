@@ -5,8 +5,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_ID" (
 		, acronym NVARCHAR(25)
 		, description NVARCHAR(255)
 		, budget_year_id BIGINT
-		, region_id BIGINT 
-		, subregion_id BIGINT 
+		, region_id INTEGER 
+		, subregion_id INTEGER 
 		, created_date_tz TIMESTAMP 
 		, modified_date_tz TIMESTAMP
 		, created_user_id BIGINT
@@ -15,11 +15,12 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_ID" (
 		, deleted TINYINT
 		, REGION_NAME NVARCHAR(255)
 		, SUBREGION_NAME NVARCHAR(255)
-		, BUDGET_YEAR BIGINT
+		, BUDGET_YEAR INTEGER
 		, hl2_budget_total DECIMAL(19,2)
 		, organization_acronym NVARCHAR(25)
 		, organization_name NVARCHAR(255)
         , team_type_id BIGINT
+        , implement_execution_level TINYINT
 		)
 ) 
 	LANGUAGE SQLSCRIPT
@@ -49,6 +50,7 @@ BEGIN
 		, HL2.ORGANIZATION_ACRONYM
 		, HL2.ORGANIZATION_NAME
         , HL2.TEAM_TYPE_ID
+        , HL2.IMPLEMENT_EXECUTION_LEVEL
 	FROM HL2
 	LEFT JOIN REGION R ON R.region_id = HL2.region_id
 	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id

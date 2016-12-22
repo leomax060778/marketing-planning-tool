@@ -11,34 +11,69 @@ BEGIN
 	
 	IF in_lh = 4 THEN
 		out_result = SELECT TOP 1
---		CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.ACRONYM), '-'), HL4.ACRONYM) AS path_tph 
-		CONCAT(	
-		CONCAT(
+	      CONCAT(
 			CONCAT(
 				CONCAT(
 					HL2.ACRONYM, 
 					SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)
 					),
-				'-'),
-				coalesce(CONCAT(HL2.ORGANIZATION_ACRONYM,'-'),'')
-			)		
-	, HL3.ACRONYM)
-		 AS path_tph 
-		--INTO out_result 
+				'-')	
+	        , HL3.ACRONYM)
+		 AS path_tph
 		FROM HL3 
 		INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
 		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
 		WHERE 
 		HL3.HL3_ID = in_parent_id;
-	ELSEIF in_lh = 3 THEN 
-		out_result = SELECT TOP 1
---		CONCAT(CONCAT(CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.ACRONYM) AS path_tph
-		CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)) AS path_tph
-		--INTO out_result 
-		FROM HL2
+	
+	ELSEIF in_lh = 5 THEN
+		out_result = SELECT
+        	         CONCAT(
+        	        	CONCAT(
+        	        		CONCAT(
+        	        			CONCAT(
+        	        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
+        	    					,'-')
+        						, hl3.acronym)
+        					,'-')
+        				,hl4.acronym)
+				 AS path_tph
+		FROM HL4
+		INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
+		INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
 		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
-    	WHERE 
-		HL2.HL2_ID = in_parent_id;
+    	WHERE HL4.HL4_ID= in_parent_id;
+
+	ELSEIF in_lh = 6 THEN
+	out_result = SELECT
+            	     CONCAT(
+            	         CONCAT(
+            	        	CONCAT(
+            	        		CONCAT(
+            	        			CONCAT(
+            	        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
+            	    					,'-')
+            						, hl3.acronym)
+            					,'-')
+            				,hl4.acronym)
+    				,hl5.acronym)
+    				 AS path_tph
+    		FROM HL5
+    		INNER JOIN HL4 ON HL5.HL4_ID = HL4.HL4_ID
+    		INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
+    		INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
+    		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+        	WHERE HL5.HL5_ID = in_parent_id;
+
+	ELSEIF in_lh = 3 THEN
+    	out_result = SELECT TOP 1
+        --		CONCAT(CONCAT(CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.ACRONYM) AS path_tph
+        		CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)) AS path_tph
+        		--INTO out_result
+        		FROM HL2
+        		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+            	WHERE
+        		HL2.HL2_ID = in_parent_id;
 		/*
 	ELSEIF in_lh = 2 THEN
 		out_result = SELECT TOP 1

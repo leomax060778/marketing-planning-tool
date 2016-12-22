@@ -1,0 +1,31 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_PARTNER_BY_HL5_ID" (
+	IN in_hl5_id BIGINT,
+	OUT out_hl5_partner TABLE (
+		partner_name nvarchar(512),
+		partner_id BIGINT,
+		partner_type_name nvarchar(100),
+		partner_type_id bigint,
+		region_name nvarchar(255),
+		region_id bigint,
+		value decimal(19,2)
+		)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_hl5_partner = SELECT hl5_partner.partner_name,
+							hl5_partner.partner_id,
+							partner_type.type_name as partner_type_name,
+							hl5_partner.partner_type_id,
+							region.region_name,
+							region.region_id, 
+							hl5_partner.value
+							FROM hl5_partner inner join partner_type
+							on hl5_partner.partner_type_id = partner_type.partner_type_id
+							inner join region on hl5_partner.region_id = region.region_id
+							WHERE hl5_partner.hl5_id = in_hl5_id
+							  AND hl5_partner.enabled = 1
+							  AND hl5_partner.deleted = 0;
+END;

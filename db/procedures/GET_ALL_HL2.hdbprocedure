@@ -54,6 +54,6 @@ BEGIN
 	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
 	WHERE HL2.deleted = 0 
 	AND HL2.enabled = 1
-	ORDER BY HL2.acronym ASC;
+	ORDER BY HL2.acronym ASC, HL2.ORGANIZATION_ACRONYM ASC;
 
 END;

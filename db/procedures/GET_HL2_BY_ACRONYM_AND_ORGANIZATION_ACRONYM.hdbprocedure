@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_ACRONYM_AND_
 	IN IN_BUDGET_YEAR_ID NVARCHAR(25),
 	IN in_org_acronym NVARCHAR(25)
 	,OUT out_result TABLE (
-		hl2_id BIGINT
+		hl2_id INTEGER
 		, acronym NVARCHAR(25)
 		, description NVARCHAR(255)
 		, budget_year_id BIGINT

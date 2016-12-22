@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_EXPECTED_OUTCOMES_DETAIL" ( 
+    IN in_hl6_expected_outcomes_id bigint,
+    IN in_outcomes_id bigint,
+    IN in_euro_value DECIMAL(19,2),
+    IN in_volume_value DECIMAL(19,2),
+    IN in_created_user_id bigint,
+    OUT out_hl6_expected_outcomes_details_id bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."HL6_EXPECTED_OUTCOMES_DETAIL" (hl6_expected_outcomes_id,outcomes_id,euro_value,volume_value,created_user_id)
+	VALUES (in_hl6_expected_outcomes_id,in_outcomes_id,in_euro_value,in_volume_value,in_created_user_id);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_expected_outcomes_details_id FROM "PLANNING_TOOL"."HL6_EXPECTED_OUTCOMES_DETAIL";
+END;

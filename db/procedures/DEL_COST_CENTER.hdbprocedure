@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_COST_CENTER" (
+		IN in_cost_center_id BIGINT,
+		IN in_user_id BIGINT,
+		OUT out_result BIGINT
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	UPDATE COST_CENTER SET
+		enabled = 0,
+		deleted = 1,
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where COST_CENTER_ID = in_cost_center_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

@@ -1,0 +1,30 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_SALES_BY_ID"
+(
+in in_hl5_id  bigint
+,OUT out_result TABLE (
+hl5_sales_id INTEGER,
+organization_id INTEGER,
+amount decimal(19,2),
+organization_type tinyint,
+description nvarchar(255),
+organization_name nvarchar(255)
+)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+out_result =
+	select
+		hl5_sales.hl5_sales_id,
+	    hl5_sales.organization_id,
+	    hl5_sales.amount,
+	    hl5_sales.organization_type,
+	    hl5_sales.description,
+	    IFNULL(region.region_name, hl2.organization_acronym) as organization_name
+	from hl5_sales
+	left join region on region.region_id = hl5_sales.organization_id
+    left join hl2 on hl2.hl2_id = hl5_sales.organization_id
+	where hl5_id = in_hl5_id
+	and hl5_sales.enabled = 1 and hl5_sales.deleted = 0;
+END;

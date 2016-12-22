@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CAMPAIGN_TYPE_BY_ID" (
+	IN in_campaign_type_id BIGINT,
+	OUT out_result TABLE (CAMPAIGN_TYPE_ID BIGINT, 
+						  NAME NVARCHAR(255)
+						)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+out_result = select 
+	CAMPAIGN_TYPE_ID,
+	NAME
+ from CAMPAIGN_TYPE
+ where 
+ CAMPAIGN_TYPE_ID = in_campaign_type_id and 
+ ENABLED = 1 and DELETED = 0;
+END;

@@ -1,0 +1,77 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_ID" ( 
+	in in_hl6_id BIGINT
+	,OUT out_result TABLE (
+		hl6_id bigint
+		,hl6_crm_description nvarchar(100)
+		,acronym nvarchar(25)
+		,budget decimal(19,2)
+		,hl5_id bigint
+		,route_to_market_id bigint
+		,campaign_objective_id bigint
+		,campaign_type_id bigint
+		,campaign_subtype_id bigint
+		,marketing_program_id bigint
+		,marketing_activity_id bigint
+		,actual_start_date timestamp
+		,actual_end_date timestamp
+		,show_on_dg_calendar tinyint
+		,business_owner_id bigint
+		,employee_responsible_id bigint
+		,cost_center_id bigint
+		,in_budget tinyint
+		,budget_spend_q1 decimal(19,2)
+		,budget_spend_q2 decimal(19,2)
+		,budget_spend_q3 decimal(19,2)
+		,budget_spend_q4 decimal(19,2)
+		,euro_conversion_id bigint
+		,hl6_status_detail_id bigint
+		,sales_organization_id bigint
+		,created_date_tz timestamp
+		,modified_date_tz timestamp
+		,created_user_id bigint
+		,modified_user_id bigint
+		,enabled tinyint
+		,deleted tinyint	
+		)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+out_result = select 
+HL6_ID,
+HL6_CRM_DESCRIPTION,
+ACRONYM,
+BUDGET,
+HL5_ID,
+ROUTE_TO_MARKET_ID,
+CAMPAIGN_OBJECTIVE_ID,
+CAMPAIGN_TYPE_ID,
+CAMPAIGN_SUBTYPE_ID,
+MARKETING_PROGRAM_ID,
+MARKETING_ACTIVITY_ID,
+ACTUAL_START_DATE,
+ACTUAL_END_DATE,
+SHOW_ON_DG_CALENDAR,
+BUSINESS_OWNER_ID,
+EMPLOYEE_RESPONSIBLE_ID,
+COST_CENTER_ID,
+IN_BUDGET,
+BUDGET_SPEND_Q1,
+BUDGET_SPEND_Q2,
+BUDGET_SPEND_Q3,
+BUDGET_SPEND_Q4,
+EURO_CONVERSION_ID,
+HL6_STATUS_DETAIL_ID,
+SALES_ORGANIZATION_ID,
+CREATED_DATE_TZ,
+MODIFIED_DATE_TZ,
+CREATED_USER_ID,
+MODIFIED_USER_ID,
+ENABLED,
+DELETED
+ FROM HL6
+ WHERE HL6_ID = in_hl6_id
+ AND ENABLED = 1 AND DELETED = 0;
+END;

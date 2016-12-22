@@ -1,5 +1,4 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_DETAILED_REPORT" (
-        --OUT out_result TINYINT
 		OUT out_result TABLE(
 						        ROW_INDEX INTEGER,
 								TEAM_TYPE_NAME NVARCHAR(255),
@@ -64,15 +63,13 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_DETAILED_REPORT" (
 								L4_BUDGET_REGION_OPTION_Q1 DECIMAL(19,2),
 								L4_BUDGET_REGION_OPTION_Q2 DECIMAL(19,2),
 								L4_BUDGET_REGION_OPTION_Q3 DECIMAL(19,2),
-								L4_BUDGET_REGION_OPTION_Q4 DECIMAL(19,2),
-								COUNT_L4_PROP DECIMAL(19,2)
+								L4_BUDGET_REGION_OPTION_Q4 DECIMAL(19,2)
 								)
-	)
+	) 
 	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER
+	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	out_result=select *	from "_SYS_BIC"."xsplanningtool.db.data.views/CV_DETAILED_REPORT";
-	--select 1 into out_result from DUMMY;
+	out_result=select *	from "_SYS_BIC"."xsplanningtool.db.data.views/CV_DETAILED_REPORT"; 
 END;

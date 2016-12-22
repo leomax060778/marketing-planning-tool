@@ -44,9 +44,10 @@ function insEmployeeResponsible( FULL_NAME,EMPLOYEE_NUMBER, userId,autoCommit){
 }
 
 function getEmployeeResponsibleByEmployeeNumber(employee_number){
-	return db.extractArray(db.executeProcedure(GET_EMPLOYEE_RESPONSIBLE_BY_EMPLOYEE_NUMER,{'in_employee_number':employee_number}))[0];
+	var rdo = db.executeProcedureManual(GET_EMPLOYEE_RESPONSIBLE_BY_EMPLOYEE_NUMER,{'in_employee_number':employee_number});
+	return db.extractArray(rdo.out_result)[0];
 }
 
 function getAllEmployeeResponsibles(){
-	return  db.extractArray(db.executeProcedure(GET_ALL_EMPLOYEE_RESPONSIBLE,{}).out_result);
+	return  db.extractArray(db.executeProcedureManual(GET_ALL_EMPLOYEE_RESPONSIBLE,{}).out_result);
 }

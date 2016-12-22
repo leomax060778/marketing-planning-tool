@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL5_EXISTS_IN_CRM" (
+	IN in_hl5_id BIGINT,
+	OUT out_result TINYINT) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+-- Check if the HL5 has been in the "In CRM" status
+	SELECT COUNT(*)
+	INTO out_result
+	FROM HL5_STATUS_HISTORY
+	WHERE hl5_status_detail_id = 3
+	  AND hl5_id = in_hl5_id;
+	  
+END;

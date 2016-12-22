@@ -1,0 +1,27 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL5" (
+	OUT out_hl5 TABLE(
+	
+	hl5_id BIGINT,
+	hl4_id BIGINT,
+	hl5_crm_description NVARCHAR(100),
+	hl5_status_detail_id bigint,
+	acronym NVARCHAR(25)
+	) 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+out_hl5 = 
+	SELECT HL5.hl5_id,
+		   HL5.hl4_id,
+		   HL5.hl5_crm_description,
+		   HL5.hl5_status_detail_id,
+		   HL5.acronym
+	FROM HL5
+	WHERE HL5.deleted = 0
+	  AND HL5.enabled = 1;
+
+END;

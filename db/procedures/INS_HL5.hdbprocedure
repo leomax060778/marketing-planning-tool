@@ -1,0 +1,98 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5" 
+(
+	in in_hl5_crm_description nvarchar(100)
+	,in in_acronym nvarchar(25)
+	,in in_distribution_channel_id bigint
+	,in in_budget decimal(19,2)
+	,in in_hl4_id bigint
+	
+	,in in_campaign_objective_id bigint
+	,in in_campaign_type_id bigint
+	,in in_campaign_subtype_id bigint
+	,in in_marketing_program_id bigint
+	,in in_marketing_activity_id bigint
+	
+	,in in_actual_start_date timestamp
+	,in in_actual_end_date timestamp
+	,in in_show_on_dg_calendar tinyint
+	,in in_business_owner_id bigint
+	,in in_employee_responsible_id bigint
+	,in in_cost_center_id bigint
+	
+	,in in_in_budget tinyint
+	,in in_budget_spend_q1 decimal(19,2)
+	,in in_budget_spend_q2 decimal(19,2)
+	,in in_budget_spend_q3 decimal(19,2)
+	,in in_budget_spend_q4 decimal(19,2)
+	,in in_euro_conversion_id bigint
+	,in in_hl5_status_detail_id bigint
+	,in in_created_user_id bigint
+	,OUT out_hl5_id bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+	INSERT INTO HL5
+	(
+      hl5_crm_description 
+	, acronym
+	, distribution_channel_id 
+	, budget 
+	, hl4_id 
+	
+	, campaign_objective_id 
+	, campaign_type_id 
+	, campaign_subtype_id 
+	, marketing_program_id 
+	, marketing_activity_id 
+	
+	, actual_start_date 
+	, actual_end_date 
+	, show_on_dg_calendar 
+	, business_owner_id 
+	, employee_responsible_id 
+	, cost_center_id 
+	
+	, in_budget 
+	, budget_spend_q1 
+	, budget_spend_q2 
+	, budget_spend_q3 
+	, budget_spend_q4 
+	, euro_conversion_id 
+	, hl5_status_detail_id 
+	, created_user_id 
+	)
+	VALUES (
+     in_hl5_crm_description
+	, in_acronym 
+	, in_distribution_channel_id
+	, in_budget 
+	, in_hl4_id 
+	
+	, in_campaign_objective_id 
+	, in_campaign_type_id 
+	, in_campaign_subtype_id 
+	, in_marketing_program_id 
+	, in_marketing_activity_id 
+	
+	, in_actual_start_date 
+	, in_actual_end_date 
+	, in_show_on_dg_calendar 
+	, in_business_owner_id 
+	, in_employee_responsible_id 
+	, in_cost_center_id 
+	
+	, in_in_budget 
+	, in_budget_spend_q1 
+	, in_budget_spend_q2 
+	, in_budget_spend_q3 
+	, in_budget_spend_q4 
+	, in_euro_conversion_id 
+	, in_hl5_status_detail_id 
+	, in_created_user_id 
+);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_id FROM "PLANNING_TOOL"."HL5";
+END;

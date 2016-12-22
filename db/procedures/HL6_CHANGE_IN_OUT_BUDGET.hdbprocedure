@@ -1,0 +1,27 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL6_CHANGE_IN_OUT_BUDGET" (
+	IN in_hl6_id BIGINT,
+	IN in_budget_status TINYINT,
+	OUT out_result BIGINT
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	
+	UPDATE HL6
+	SET in_budget = in_budget_status
+	WHERE hl6_id = in_hl6_id
+	  AND in_budget = 0
+	  AND deleted = 0
+	  AND enabled = 1; 
+	  
+	SELECT ::ROWCOUNT into out_result FROM DUMMY;  
+		
+	/* TODO: More logic needs to be provided in order to support
+			 updates to in_budget for the HL6 and HL6 childs
+			 in further coming releases. Also the SPs HL6_CHANGE_IN_BUDGET
+			 and HL6_CHANGE_IN_BUDGET must be created.
+	*/
+		
+END;

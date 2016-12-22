@@ -1,0 +1,23 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5_IPS"
+(
+	in in_hl5_ips_id bigint, 
+	in in_ips_id bigint,
+	in in_percentage decimal(19,2),
+	in in_modified_user_id bigint,
+	out out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	UPDATE HL5_IPS
+	SET
+	  ips_id = in_ips_id
+	, percentage = in_percentage
+	, modified_user_id = in_modified_user_id
+	, modified_date_tz = CURRENT_TIMESTAMP
+	WHERE hl5_ips_id = in_hl5_ips_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

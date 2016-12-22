@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_DISTRIBUTION_CHANNEL" ( 
+OUT out_result TABLE(DISTRIBUTION_CHANNEL_ID bigint, NAME nvarchar(25)))
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ out_result = SELECT DISTRIBUTION_CHANNEL_ID, NAME
+	FROM "DISTRIBUTION_CHANNEL"
+ 	WHERE ENABLED = 1 AND
+ 	DELETED = 0
+ 	ORDER BY NAME;
+END;

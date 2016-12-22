@@ -1,0 +1,27 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5_SALES"
+(
+	in in_hl5_sales_id bigint,
+	in in_organization_id bigint,
+	in in_amount decimal(19,2),
+	in in_organization_type tinyint,
+	in in_description nvarchar(255),
+	in in_modified_user_id bigint,
+	out out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+	UPDATE HL5_SALES
+	SET
+	organization_id = in_organization_id,
+	amount = in_amount,
+	organization_type = in_organization_type,
+	description = in_description,
+	modified_user_id = in_modified_user_id,
+	modified_date_tz = CURRENT_TIMESTAMP
+	where hl5_sales_id = in_hl5_sales_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

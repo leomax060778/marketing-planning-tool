@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_EXPECTED_OUTCOMES_DETAILS_EO_HL5_ID" (
+		IN in_hl5_expected_outcomes_id bigint,
+		OUT out_expected_outcomes_details TABLE(
+			euro_value DECIMAL(19,2),
+			volume_value DECIMAL(19,2),
+			outcomes_id BIGINT,
+			outcomes_name NVARCHAR(255),
+			outcomes_type_id BIGINT,
+			outcomes_type_name  NVARCHAR(255)
+		)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_expected_outcomes_details = SELECT heod.euro_value, heod.volume_value, outcomes.outcomes_id, 
+	outcomes.outcomes_name, outcomes_type.outcomes_type_id, outcomes_type.outcomes_type_name
+	 from HL5_EXPECTED_OUTCOMES_DETAIL heod 
+	 INNER JOIN OUTCOMES outcomes ON heod.outcomes_id = outcomes.outcomes_id
+	 inner join outcomes_type on outcomes_type.outcomes_type_id = outcomes.outcomes_type_id
+     where heod.deleted = 0 
+     and heod.enabled = 1 
+     and heod.hl5_expected_outcomes_id = in_hl5_expected_outcomes_id;
+END;

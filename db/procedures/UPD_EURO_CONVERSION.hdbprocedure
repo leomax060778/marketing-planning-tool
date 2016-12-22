@@ -2,28 +2,15 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_EURO_CONVERSION" (
 	IN in_country NVARCHAR(127),
 	IN in_currency_abbreviation NVARCHAR(3),
 	IN in_currency_name NVARCHAR(255),
-	IN in_currency_value_admin DECIMAL(19,2),
+	IN in_currency_value_admin DECIMAL(19,10),
 	IN in_user_id BIGINT,
 	OUT out_response_id BIGINT
  ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
-	--DEFAULT SCHEMA <default_schema_name>
 	AS
 BEGIN
 
-	DECLARE va_response BIGINT;
-	DECLARE va_message NVARCHAR(255);
-	DECLARE va_currency_value DECIMAL(19,2);
-	DECLARE va_euro_conversion_id BIGINT;
-	
-	va_response := 0;
-	va_message := 'Success OK';
-	
-	IF va_response = 0
-	THEN
-		va_currency_value := (1/in_currency_value_admin);
-		
 		UPDATE euro_conversions
 		SET euro_conversions.country = in_country, 
 			euro_conversions.currency_name = in_currency_name,
@@ -34,8 +21,6 @@ BEGIN
 		WHERE euro_conversions.currency_abbreviation = in_currency_abbreviation
 		AND euro_conversions.currency_value != in_currency_value_admin
 		AND euro_conversions.deleted = 0;
-		
-		out_response_id := va_response;
-	END IF;
-	
+
+		SELECT ::ROWCOUNT INTO out_response_id FROM DUMMY;
 END;

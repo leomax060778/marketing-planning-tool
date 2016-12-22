@@ -9,6 +9,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL2" (
 	IN in_organization_acronym nvarchar(25)
 	,IN in_organization_name nvarchar(255) 
 	,IN in_team_type_id bigint
+	,IN in_implement_execution_level tinyint
 	,OUT out_hl2_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -28,6 +29,7 @@ BEGIN
 	,organization_acronym
 	,organization_name
 	,team_type_id
+	,implement_execution_level
 	)
 	VALUES (
 	 in_acronym
@@ -41,6 +43,7 @@ BEGIN
 	,in_organization_acronym
 	,in_organization_name
 	,in_team_type_id
+	,in_implement_execution_level
 	);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl2_id FROM "PLANNING_TOOL"."HL2";

@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6_PARTNER"
+(
+	in in_hl6_partner_id bigint,
+	in in_partner_name nvarchar(512),
+	in in_partner_type_id bigint,
+	in in_hl6_id bigint,
+	in in_region_id bigint,
+	in in_value decimal(19,2),
+	in in_modified_user_id bigint,
+	out out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+	UPDATE HL6_PARTNER
+	SET
+	partner_name = 	in_partner_name,
+	partner_type_id = in_partner_type_id,
+	region_id = in_region_id,
+	value = in_value,
+	modified_user_id = in_modified_user_id,
+	modified_date_tz = CURRENT_TIMESTAMP
+	where hl6_partner_id = in_hl6_partner_id 
+	and enabled = 1 and deleted = 0;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

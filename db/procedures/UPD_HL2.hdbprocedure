@@ -9,6 +9,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL2" (
 	IN in_subregion_id bigint,
 	IN in_organization_name nvarchar(255) ,
 	IN in_team_type_id bigint,
+	IN in_implement_execution_level tinyint,
 	OUT out_result bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -26,6 +27,7 @@ BEGIN
 	,HL2.organization_acronym = in_organization_acronym
 	,HL2.organization_name = in_organization_name
 	,HL2.team_type_id = in_team_type_id
+	,HL2.implement_execution_level = in_implement_execution_level
 	WHERE HL2.hl2_id = in_hl2_id;
 
 	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;

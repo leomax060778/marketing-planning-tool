@@ -1,0 +1,23 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL6_CHANGE_STATUS" (
+	IN in_hl6_id BIGINT,
+	IN in_status_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result INTEGER
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	-- Update current status in HL6
+		UPDATE HL6
+		SET hl6_status_detail_id = in_status_id,
+			modified_user_id = in_user_id,
+			modified_date_tz = CURRENT_TIMESTAMP
+		WHERE hl6_id = in_hl6_id;
+			
+		--Number of affected rows
+		SELECT ::ROWCOUNT into out_result FROM DUMMY;	  
+
+END;

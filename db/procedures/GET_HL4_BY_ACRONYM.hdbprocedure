@@ -1,31 +1,33 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ACRONYM" (
-	IN in_acronym nvarchar(10),
-	IN in_hl3_id bigint,
-	OUT out_result TABLE(
-	hl4_id BIGINT,
-	hl4_crm_description NVARCHAR(100),
-	hl4_details NVARCHAR(3000),
-	hl4_business_details NVARCHAR(3000),
-	acronym NVARCHAR(25)
-	) 
+ IN in_acronym nvarchar(10),
+ IN in_hl2_id bigint,
+ OUT out_result TABLE(
+ HL4_ID BIGINT,
+ HL4_CRM_DESCRIPTION NVARCHAR(100),
+ HL4_DETAILS NVARCHAR(3000),
+ HL4_BUSINESS_DETAILS NVARCHAR(3000),
+ ACRONYM NVARCHAR(25)
+ ) 
 ) 
-	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER 
-	DEFAULT SCHEMA "PLANNING_TOOL"
-	READS SQL DATA AS
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER 
+ DEFAULT SCHEMA "PLANNING_TOOL"
+ READS SQL DATA AS
 BEGIN
 
 out_result = 
-	SELECT HL4.hl4_id,
-		   HL4.hl4_crm_description,
-		   HL4.hl4_details,
-		   HL4.hl4_business_details,
-		   HL4.acronym
-	FROM HL4
-	WHERE 
-	  UPPER(HL4.acronym) = UPPER(in_acronym)
-	  AND HL4.hl3_id = in_hl3_id
-	  AND HL4.deleted = 0
-	  AND HL4.enabled = 1;
+ SELECT HL4.HL4_ID,
+     HL4.HL4_CRM_DESCRIPTION,
+     HL4.HL4_DETAILS,
+     HL4.HL4_BUSINESS_DETAILS,
+     HL4.ACRONYM
+ FROM HL4
+ INNER JOIN Hl3 ON HL4.HL3_ID = HL3.HL3_ID
+ INNER JOIN Hl2 ON Hl3.HL2_ID = Hl2.HL2_ID
+ WHERE 
+   UPPER(HL4.ACRONYM) = UPPER(in_acronym)
+   AND HL2.HL2_ID = in_hl2_id
+   AND HL4.DELETED = 0
+   AND HL4.ENABLED = 1;
 
 END;

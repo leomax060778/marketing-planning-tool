@@ -10,6 +10,7 @@ var INS_SALE_ORGANIZATION = "INS_SALE_ORGANIZATION";
 var UPD_SALE_ORGANIZATION = "UPD_SALE_ORGANIZATION";
 var DEL_SALE_ORGANIZATION = "DEL_SALE_ORGANIZATION";
 var GET_SALES_ORGANIZATIONS_BY_ID = "GET_SALES_ORGANIZATIONS_BY_ID";
+var GET_SALES_ORGANIZATIONS_BY_NAME = "GET_SALES_ORGANIZATIONS_BY_NAME";
 /******************************************************/
 
 
@@ -66,4 +67,10 @@ function getMarketingOrganizationById(Id){
 	var parameters = {'in_id':Id};
 	var data = db.executeProcedureManual(GET_SALES_ORGANIZATIONS_BY_ID, parameters);
 	return db.extractArray(data.out_result);
+}
+
+function getMarketingOrganizationByName(name){
+	var parameters = {'in_name':name};
+	var data = db.executeProcedureManual(GET_SALES_ORGANIZATIONS_BY_NAME, parameters);
+	return db.extractArray(data.out_result)[0];
 }

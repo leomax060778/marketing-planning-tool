@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_STATUS_DETAIL" (
+	in in_detail nvarchar(255)
+	,in in_created_user_id bigint
+	,OUT out_hl6_status_detail_id bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+	INSERT INTO HL6_STATUS_DETAIL 
+	(
+	detail
+	,created_user_id
+	)
+	VALUES (
+	 in_detail
+	,in_created_user_id
+	);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_status_detail_id FROM "PLANNING_TOOL"."HL6_STATUS_DETAIL";
+END;

@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL5_IPS"
+(
+	in in_hl5_ips_id bigint, 
+	in in_modified_user_id bigint,
+	out out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	UPDATE HL5_IPS
+	SET
+	  deleted = 1
+	, enabled = 0
+	, modified_user_id = in_modified_user_id
+	, modified_date_tz = CURRENT_TIMESTAMP
+	WHERE hl5_ips_id = in_hl5_ips_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

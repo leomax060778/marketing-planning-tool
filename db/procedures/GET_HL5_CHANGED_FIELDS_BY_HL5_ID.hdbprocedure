@@ -1,0 +1,13 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_CHANGED_FIELDS_BY_HL5_ID" (
+		IN in_hl5_id bigint,
+		OUT out_hl5_changed_fields TABLE (column_name nvarchar(255), display_name nvarchar(255))
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_hl5_changed_fields = SELECT column_name, display_name from HL5_CRM_BINDING
+							WHERE hl5_id = in_hl5_id AND column_changed = 1
+							AND deleted = 0 and enabled = 1;
+END;

@@ -1,0 +1,80 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ACRONYM" ( 
+	in in_hl5_acronym nvarchar(25)
+	,in in_hl4_id bigint
+	,OUT out_result TABLE (
+		  hl5_id bigint
+		, hl5_crm_description nvarchar(100)
+		, acronym nvarchar(25)
+		, distribution_channel_id bigint
+		, budget decimal(19,2)
+		, hl4_id bigint
+		
+		, campaign_objective_id bigint
+		, campaign_type_id bigint
+		, campaign_subtype_id bigint
+		, marketing_program_id bigint
+		, marketing_activity_id bigint
+		
+		, actual_start_date timestamp
+		, actual_end_date timestamp
+		, show_on_dg_calendar tinyint
+		, business_owner_id bigint
+		, employee_responsible_id bigint
+		, cost_center_id bigint
+		
+		, in_budget tinyint
+		, budget_spend_q1 decimal(19,2)
+		, budget_spend_q2 decimal(19,2)
+		, budget_spend_q3 decimal(19,2)
+		, budget_spend_q4 decimal(19,2)
+		, euro_conversion_id bigint
+		, hl5_status_detail_id bigint
+		,created_date_tz timestamp
+		,modified_date_tz timestamp
+		,created_user_id bigint
+		,modified_user_id bigint
+		,enabled tinyint
+		,deleted tinyint	
+		)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+out_result = select 
+hl5_id
+,hl5_crm_description 
+, acronym
+, distribution_channel_id 
+, budget 
+, hl4_id 
+, campaign_objective_id 
+, campaign_type_id 
+, campaign_subtype_id 
+, marketing_program_id 
+, marketing_activity_id 
+, actual_start_date 
+, actual_end_date 
+, show_on_dg_calendar 
+, business_owner_id 
+, employee_responsible_id 
+, cost_center_id 
+, in_budget 
+, budget_spend_q1 
+, budget_spend_q2 
+, budget_spend_q3 
+, budget_spend_q4 
+, euro_conversion_id 
+, hl5_status_detail_id 
+, CREATED_DATE_TZ
+, MODIFIED_DATE_TZ
+, CREATED_USER_ID
+, MODIFIED_USER_ID
+, ENABLED
+, DELETED
+ FROM HL5
+ WHERE upper(acronym) = upper(in_hl5_acronym)
+ AND HL5.hl4_id = in_hl4_id
+ AND ENABLED = 1 AND DELETED = 0;
+END;

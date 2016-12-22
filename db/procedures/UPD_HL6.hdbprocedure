@@ -1,0 +1,64 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6" 
+(
+	in in_hl6_id bigint
+	,in in_hl6_crm_description nvarchar(100)
+	,in in_hl6_budget decimal(19,2)
+	,in in_route_to_market_id bigint
+	,in in_campaign_objective_id bigint
+	,in in_campaign_type_id bigint
+	,in in_campaign_subtype_id bigint
+	,in in_marketing_program_id bigint
+	,in in_marketing_activity_id bigint
+	,in in_actual_start_date timestamp
+	,in in_actual_end_date timestamp
+	,in in_show_on_dg_calendar tinyint
+	,in in_business_owner_id bigint
+	,in in_employee_responsible_id bigint
+	,in in_cost_center_id bigint	
+	,in in_in_budget tinyint
+	,in in_budget_spend_q1 decimal(19,2)
+	,in in_budget_spend_q2 decimal(19,2)
+	,in in_budget_spend_q3 decimal(19,2)
+	,in in_budget_spend_q4 decimal(19,2)
+	,in in_euro_conversion_id bigint
+	,in in_hl6_status_detail_id bigint
+	,in in_modified_user_id bigint
+	,in in_sales_organization_id bigint
+	,OUT out_result decimal(19,2)
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	UPDATE HL6
+	SET
+	 budget =  in_hl6_budget
+	  ,hl6_crm_description = in_hl6_crm_description
+
+	, route_to_market_id = in_route_to_market_id
+	, campaign_objective_id = in_campaign_objective_id
+	, campaign_type_id = in_campaign_type_id
+	, campaign_subtype_id = in_campaign_subtype_id
+	, marketing_program_id = in_marketing_program_id
+	, marketing_activity_id = in_marketing_activity_id
+	, actual_start_date = in_actual_start_date
+	, actual_end_date = in_actual_end_date
+	, show_on_dg_calendar = in_show_on_dg_calendar 
+	, business_owner_id = in_business_owner_id
+	, employee_responsible_id = in_employee_responsible_id
+	, cost_center_id = in_cost_center_id
+	, in_budget = in_in_budget
+	, budget_spend_q1 = in_budget_spend_q1
+	, budget_spend_q2 = in_budget_spend_q2
+	, budget_spend_q3 = in_budget_spend_q3
+	, budget_spend_q4 = in_budget_spend_q4
+	, euro_conversion_id = in_euro_conversion_id
+	, hl6_status_detail_id = in_hl6_status_detail_id
+	, modified_user_id = in_modified_user_id
+	, sales_organization_id = in_sales_organization_id
+	, modified_date_tz = CURRENT_TIMESTAMP
+	where hl6_id = in_hl6_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+	
+END;

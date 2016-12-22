@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL6_EXPECTED_OUTCOMES_BY_HL6_ID" ( 
+	IN in_hl6_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+		UPDATE HL6_EXPECTED_OUTCOMES
+		SET deleted = 1,
+		enabled = 0,
+			modified_user_id = in_user_id,
+			modified_date_tz = CURRENT_TIMESTAMP
+		WHERE hl6_id = in_hl6_id;
+		
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

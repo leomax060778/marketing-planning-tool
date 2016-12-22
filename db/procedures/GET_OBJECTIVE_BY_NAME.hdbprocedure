@@ -1,0 +1,23 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OBJECTIVE_BY_NAME"
+(
+        IN IN_NAME NVARCHAR(255),
+        OUT out_result TABLE(
+              OBJECTIVE_ID BIGINT
+            , NAME NVARCHAR(255)
+        )
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+	
+out_result =
+	select 
+	 OBJECTIVE_ID
+	,NAME
+	FROM OBJECTIVE 
+	WHERE 
+	upper(name) = upper(IN_NAME)
+	and deleted = 0 and enabled = 1;		
+END;

@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HARD_HL5_SALES"
+(
+	in in_hl5_id bigint,
+	out out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+	DELETE FROM HL5_SALES
+	where HL5_ID = in_hl5_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

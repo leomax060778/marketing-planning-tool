@@ -1,0 +1,11 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COUNT_HL6_BY_HL5_ID" (
+		IN in_hl5_id bigint,
+		OUT out_total_hl6 bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	SELECT COUNT(DISTINCT HL6.HL6_ID) INTO out_total_hl6 FROM HL6
+	WHERE HL6.HL5_ID = in_hl5_id AND hl6.enabled=1 AND hl6.deleted=0;
+END;

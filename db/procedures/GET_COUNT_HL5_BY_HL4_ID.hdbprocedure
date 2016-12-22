@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COUNT_HL5_BY_HL4_ID" (
 		IN in_hl4_id bigint,
-		OUT out_total_hl5 bigint
+		OUT out_total_hl5 int
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 

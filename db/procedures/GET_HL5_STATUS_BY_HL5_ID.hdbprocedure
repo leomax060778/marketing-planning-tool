@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_STATUS_BY_HL5_ID" (
+	IN in_hl5_id BIGINT,
+	OUT out_result TABLE(
+	hl5_id BIGINT,
+	hl5_status_detail_id BIGINT
+	) 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+out_result = 
+	SELECT HL5.hl5_id,
+		   HL5.hl5_status_detail_id AS hl5_status_detail_id
+	FROM HL5
+	WHERE HL5.hl5_id = in_hl5_id
+	  AND HL5.deleted = 0
+	  AND HL5.enabled = 1;
+
+END;

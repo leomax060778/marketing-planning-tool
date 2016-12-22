@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL6_CRM_BINDING" (
+	IN in_hl6_id bigint,
+	OUT out_result INTEGER
+)  
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+ 
+ 	DELETE FROM "PLANNING_TOOL"."HL6_CRM_BINDING" hcb
+	WHERE hcb.hl6_id = in_hl6_id;
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;
