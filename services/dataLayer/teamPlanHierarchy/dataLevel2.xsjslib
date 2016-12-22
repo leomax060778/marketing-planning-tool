@@ -126,6 +126,7 @@ function insertLevel2(objLevel2, userId){
 	parameters.in_organization_acronym = objLevel2.IN_ORGANIZATION_ACRONYM;
 	parameters.in_organization_name = objLevel2.IN_ORGANIZATION_NAME;
 	parameters.in_team_type_id = objLevel2.IN_TEAM_TYPE_ID;
+	parameters.in_implement_execution_level = objLevel2.IN_IMPLEMENT_EXECUTION_LEVEL;
 	return db.executeScalarManual(INS_HL2,parameters,"out_hl2_id");
 }
 
@@ -142,6 +143,7 @@ function updateLevel2(objLevel2, userId){
 	parameters.in_organization_acronym = objLevel2.IN_ORGANIZATION_ACRONYM;
 	parameters.in_organization_name = objLevel2.IN_ORGANIZATION_NAME;
 	parameters.in_team_type_id = objLevel2.IN_TEAM_TYPE_ID;
+	parameters.in_implement_execution_level = objLevel2.IN_IMPLEMENT_EXECUTION_LEVEL;
 	return db.executeScalarManual(UPD_HL2,parameters,"out_result");
 }
 

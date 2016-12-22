@@ -17,7 +17,7 @@ function processRequest(){
 }
 
 function handleGet(parameters, userId){
-	var rdo = {};
+	var rdo = {};l
 	
 	//rdo.organizationType = interlockLib.getAllOrganizationType();
 	var method = httpUtil.getUrlParameters().get("METHOD");

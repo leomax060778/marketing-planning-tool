@@ -34,6 +34,9 @@ function getPathByLevelParent(levelId, parentId) {
 	case 5:
 		levelPath = "Level 5";
 		break;
+	case 6:
+		levelPath = "Level 6";
+		break;
 	default:
 		levelPath = "";
 	}
@@ -46,12 +49,15 @@ function getPathByLevelParent(levelId, parentId) {
 		if (parseInt(levelId) >= 3) {
 			var pathOrgAcronym = dataPath.getPathOrganizationAcronym(levelId,
 					parentId);
+			
+			//throw path[0].PATH_TPH;
 
 			var isCentralTeam = !pathOrgAcronym[0] ? false : true;
 			if (isCentralTeam) {
 				result.PATH_TPH = levelPath + " for " + CRM_ACRONYM + "-"
-						+ path[0].PATH_TPH + "-"
-						+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
+						+ path[0].PATH_TPH;
+						//+ "-"
+						//+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
 			}
 		}
 	} else
@@ -70,14 +76,11 @@ function getPathByLevelParentToCRM(levelId, parentId) {
 	var isOrgAcronym = !pathOrgAcronym[0] ? false : true;
 	// throw path[0].PATH_TPH ;
 	if (isOrgAcronym) {
-		result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-"
-				+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
-	}
 
-	/*
-	 * result.PATH_TPH = CRM_ACRONYM + path[0].PATH_TPH; if (path.length > 0)
-	 * result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;
-	 */
+		result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+		//+ "-"
+		//		+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
+	}
 	else {
 		result.PATH_TPH = CRM_ACRONYM;
 	}

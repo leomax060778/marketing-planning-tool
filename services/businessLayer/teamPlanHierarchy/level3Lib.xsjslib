@@ -113,7 +113,7 @@ function deleteHl3(objHl3, userId){
 			//delete on HL3_FNC
 			//delete on HL3
 			//todo: delete reference to data.deleteLevel3Fnc(objHl3, userId);
-			result = result + data.deleteLevel3Fnc(objHl3, userId);
+			//result = result + data.deleteLevel3Fnc(objHl3, userId);
 			result = result + data.deleteLevel3(objHl3, userId);
 			db.commit();
 		} catch (e) {

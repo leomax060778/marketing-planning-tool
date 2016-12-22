@@ -8,6 +8,11 @@ var config = mapper.getDataConfig();
 var permissions = mapper.getPermission();
 /******************************************/
 
+var hierarchyLevel = {
+	1: 'HL4',
+	2: 'HL5'
+};
+
 function processRequest(Notvalidate){
 	try {
 		var userSessionID = null;		
@@ -140,6 +145,7 @@ function handlePost(reqBody) {
 		var category_id = reqBody.CATEGORY_ID;
 		var order_option = reqBody.ORDER_OPTION;
 		var created_user_id = reqBody.CREATED_USER_ID;
+		var hierarchy_level_id = reqBody.HIERARCHY_LEVEL_ID;
 		
 		var cst = conn.prepareCall(query);
 		cst.setBigInt(1,category_id);
@@ -152,39 +158,49 @@ function handlePost(reqBody) {
 		var spResult  = Number(ctypes.Int64(optionId));
 		
 		if(spResult){
+
 			var in_category_id = category_id;
 			var connHdb = $.hdb.getConnection();
-			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_HL4_CATEGORY_BY_CATEGORY_ID');
-		  	var result = fnSell(in_category_id);		  
-		  	var spResult = result['out_hl4_category'];		
+			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY_BY_CATEGORY_ID');
+			//var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_HL4_CATEGORY_BY_CATEGORY_ID');
+		  	var result = fnSell(in_category_id);
+		  	var spResult = result['out_' + hierarchyLevel[hierarchy_level_id].toLowerCase() + '_category'];
 			var result = [];
 			Object.keys(spResult).forEach(function(key) {
 				result.push(spResult[key]);
 			});
 			connHdb.close();
 			
-			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY_OPTION"(?,?,?,?,?)';
-			var changeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::HL4_CHANGE_STATUS"(?,?,?,?)';
-			var logChangeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_LOG_STATUS"(?,?,?,?)';
-			result.forEach(function(hl4Category){
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY_OPTION"(?,?,?,?,?)';
+			var changeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::' + hierarchyLevel[hierarchy_level_id] + '_CHANGE_STATUS"(?,?,?,?)';
+			var logChangeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_' + hierarchyLevel[hierarchy_level_id] + '_LOG_STATUS"(?,?,?,?)';
+			var countOptionByCategoryId = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_COUNT_BY_CATEGORY_ID"(?,?)';
+
+			cst = conn.prepareCall(countOptionByCategoryId);
+			cst.setBigInt(1, category_id);
+			cst.execute();
+			var countOption = cst.getInteger(2);
+
+			result.forEach(function(hlCategory){
 				cst = conn.prepareCall(query);
-				cst.setBigInt(1, hl4Category.HL4_CATEGORY_ID);
+				cst.setBigInt(1, hlCategory.HL4_CATEGORY_ID || hlCategory.HL5_CATEGORY_ID);
 				cst.setBigInt(2,optionId);
 				cst.setString(3,"0");
 				cst.setBigInt(4,created_user_id);
 				cst.execute();
-				
-				cst = conn.prepareCall(changeStatusQuery);
-				cst.setBigInt(1, hl4Category.HL4_ID);
-				cst.setBigInt(2, 1);
-				cst.setBigInt(3, created_user_id);
-				cst.execute();
-				
-				cst = conn.prepareCall(logChangeStatusQuery);
-				cst.setBigInt(1, hl4Category.HL4_ID);
-				cst.setBigInt(2, 1);
-				cst.setBigInt(3, created_user_id);
-				cst.execute();
+				if(!countOption) {
+					cst = conn.prepareCall(changeStatusQuery);
+					cst.setBigInt(1, hlCategory.HL4_ID || hlCategory.HL5_ID);
+					cst.setBigInt(2, 1);
+					cst.setBigInt(3, created_user_id);
+					cst.execute();
+
+					cst = conn.prepareCall(logChangeStatusQuery);
+					cst.setBigInt(1, hlCategory.HL4_ID || hlCategory.HL5_ID);
+					cst.setBigInt(2, 1);
+					cst.setBigInt(3, created_user_id);
+					cst.execute();
+				}
 			});
 		}
 		//l4Lib.insertHl4CategoryOption(spResult, created_user_id);

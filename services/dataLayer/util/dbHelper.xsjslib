@@ -163,14 +163,17 @@ function validateErrorCode(error, spName){
 	var regexCode = /server error code: 274/;
 	var regexCol = /Failed in "([^"]*)/;
 	var column = str.match(regexCol);
-	if(column.length > 1){
-		column = column[1].replace("_"," ");
-	}
-	
-	if(regexCode.test(str)) /*server error code: 274. inserted value too large for column */
-		{		
-		throw errors.getErrors().CustomError("",spName +" "+error.toString(),"The "+column+" value is too long.");
+	if(column){
+		if(column.length > 1){
+			column = column[1].replace("_"," ");
 		}
+
+		if(regexCode.test(str)) /*server error code: 274. inserted value too large for column */
+		{
+			throw errors.getErrors().CustomError("",spName +" "+error.toString(),"The "+column+" value is too long.");
+		}
+	}
+
 }
 
 

@@ -23,6 +23,7 @@ var spGetHl4CategoryByCategoryId = "GET_HL4_CATEGORY_BY_CATEGORY_ID";
 //var spGetAllHl4Category = "GET_ALL_HL4_CATEGORY";
 var spGetAllHl4 = "GET_ALL_HL4";
 var spGetHl4CategoryOptionByHl4IdOptionId = "GET_HL4_CATEGORY_OPTION_BY_HL4_ID_OPTION_ID";
+var spGET_COUNT_HL5_BY_HL4_ID = "GET_COUNT_HL5_BY_HL4_ID";
 
 var spInsertHl4 = "INS_HL4";
 var spInsertHl4_fnc = "INS_HL4_FNC";
@@ -69,6 +70,7 @@ var HL4_EXISTS_IN_CRM = "HL4_EXISTS_IN_CRM";
 var HL4_CHANGE_STATUS = "HL4_CHANGE_STATUS";
 
 var spInsInterlockDataContact = "INS_INTERLOCK_DATA_CONTACT";
+var spGetHl4AllocatedBudget = "GET_HL4_ALLOCATED_BUDGET";
 /******************************************************/
 
 function getAllHl4(){
@@ -136,7 +138,7 @@ function getHl4SalesByHl4Id(id){
 	return null;
 }
 
-function getHl4ByAcronym(acronym, hl3_id){
+function getHl4ByAcronym(acronym, hl2_id){
 	/*
 	if(acronym != ""){
 		var rdo = db.executeProcedureManual(spGetHl4ByAcronym,{'in_acronym':acronym});
@@ -146,7 +148,7 @@ function getHl4ByAcronym(acronym, hl3_id){
 	*/
 	var parameters = {};
 	parameters.in_acronym = acronym.toUpperCase();
-	parameters.in_hl3_id = hl3_id
+	parameters.in_hl2_id = hl2_id;
 	var result = db.executeProcedure(spGetHl4ByAcronym, parameters);
 	var list = db.extractArray(result.out_result);
 	if(list.length)
@@ -189,12 +191,7 @@ function getHl4StatusByHl4Id(hl4_id){
 }
 
 function getCountHl4Childrens(hl4_id){
-	/*if(id != ""){
-		var rdo = db.executeProcedureManual(spGetCountHl4Childrens,{'in_hl4_id':hl4_id);
-		return db.extractArray(rdo.out_count_hl5);
-	}	
-	return null;*/
-	return 0;
+		return db.executeScalarManual(spGET_COUNT_HL5_BY_HL4_ID,{'in_hl4_id':hl4_id},'out_total_hl5');
 }
 
 function getHl4CRMBinding(hl_id){
@@ -425,18 +422,6 @@ function getHl4Childrens(hl4_id){
 }
 
 
-function insertInterlockDataContact(Interlock_id, email, user_id) {
-
-	var parameters = {
-		"IN_INTERLOCK_ENTITY_ID": Interlock_id,
-		"IN_FIRST_NAME": "",
-		"IN_LAST_NAME": "",
-		"IN_EMAIL": email,
-		"IN_CREATED_USER_ID": user_id
-	};
-	return db.executeProcedure(spInsInterlockDataContact, parameters);
-
-}
 function getHl4AllocatedBudget(hl4Id, hl5Id) {
 	if(hl4Id){
 		var rdo = db.executeDecimalManual(spGetHl4AllocatedBudget
@@ -444,5 +429,4 @@ function getHl4AllocatedBudget(hl4Id, hl5Id) {
 		return rdo;
 	}
 	return null;
-
 }

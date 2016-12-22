@@ -14,13 +14,18 @@ var l4ReportFields = {"ACRONYM": "ID",
 		"CATEGORY": ""};
 
 function getAllL4DEReport(userId) {
-	try {
-		return dataL4DER.getAllLevel4Report(userId);
-	} catch (e) {
-		db.rollback();
-		throw ErrorLib.getErrors().CustomError("",
-				"level4ReportServices/handleGet/getAllL4DEReport", e.toString());
-	}
+	var hl4List = dataL4DER.getAllLevel4Report(userId);
+	var allHl4 = [];
+	hl4List.forEach(function(hl4){
+		var aux = {};
+		Object.keys(hl4).forEach(function(key){
+			aux[key] = key != 'HL4_PATH' ? hl4[key]
+				: 'CRM-' + hl4[key];
+		});
+		allHl4.push(aux);
+	});
+
+	return allHl4;
 }
 
 function getL4ChangedFieldsByHl4Id(hl4Id, userId) {

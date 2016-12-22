@@ -8,6 +8,11 @@ var config = mapper.getDataConfig();
 var permissions = mapper.getPermission();
 /******************************************/
 
+var hierarchyLevel = {
+	1: 'HL4',
+	2: 'HL5'
+};
+
 function processRequest(Notvalidate){
 	try {
 		
@@ -188,19 +193,19 @@ function handlePost(reqBody) {
 		
 		if(spResult){
 			var connHdb = $.hdb.getConnection();
-			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_ALL_HL4');
+			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_ALL_' + hierarchyLevel[hierarchy_level_id]);
 		  	var result = fnSell();		  
-		  	var spResult = result['out_hl4'];		
+		  	var spResult = result['out_' + hierarchyLevel[hierarchy_level_id].toLowerCase()];
 			var result = [];
 			Object.keys(spResult).forEach(function(key) {
 				result.push(spResult[key]);
 			});
 			connHdb.close();
 			
-			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CATEGORY"(?,?,?,?,?)';
-			result.forEach(function(hl4){
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY"(?,?,?,?,?)';
+			result.forEach(function(hl){
 				cst = conn.prepareCall(query);
-				cst.setBigInt(1, hl4.HL4_ID);
+				cst.setBigInt(1, hl[hierarchyLevel[hierarchy_level_id] + '_ID']);
 				cst.setBigInt(2,categoryId);
 				cst.setBigInt(3,created_user_id);
 				cst.setInteger(4,inProcessingReport);
@@ -272,7 +277,7 @@ function handlePut(reqBody) {
 		
 		var spResult  = Number(ctypes.Int64(cst.getBigInt(8)));
 		//if(spResult){			
-			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_CATEGORY"(?,?,?,?)';
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY"(?,?,?,?)';
 			cst = conn.prepareCall(query);
 			cst.setBigInt(1,category_id);
 			cst.setInteger(2,inProcessingReport);

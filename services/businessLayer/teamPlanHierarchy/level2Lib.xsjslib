@@ -38,7 +38,6 @@ function insertHl2(objLevel2, userId){
 		}
 		
 			try{
-				
 				var objhl2 = dataHl2.insertLevel2(objLevel2, userId);
 				
 					

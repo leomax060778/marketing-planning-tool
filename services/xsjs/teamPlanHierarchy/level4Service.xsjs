@@ -10,7 +10,8 @@ var section = "FOR_SEARCH";
 var method = "method";
 var id = "id";
 var setStatusInCRM = "SETINCRM";
-var sendInCrmNotificationMail = "SENDMAIL"
+var changeStatus = "CHANGESTATUS";
+var sendInCrmNotificationMail = "SENDMAIL";
 
 /******************************************/
 
@@ -60,9 +61,13 @@ function handlePut(reqBody, userId){
 					hl4.sendProcessingReportEmail(hl4Id, userId);
 					//fallthrough
 		    case setStatusInCRM: //set status In CRM
-		    	var rdo = hl4.setHl4StatusInCRM(hl4Id, userId);
+				var rdo = hl4.setHl4StatusInCRM(hl4Id, userId);
 				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 		        break;
+			case changeStatus:
+				var rdo = hl4.changeHl4StatusOnDemand(hl4Id, userId);
+				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
+				break;
 		    default:
 		    	throw ErrorLib.getErrors().BadRequest("","level4Services/handlePut","insufficient parameters");
 		}	
