@@ -6,11 +6,11 @@ var dataPath = mapper.getDataPath();
 var CRM_ACRONYM = "CRM";
 
 // Get complete path of specific level and parent id of HL
-function getPathByLevelParent(levelId, parentId) {
+function getPathByLevelParent(hierarchyLevel, parentId) {
 
 	var result = {};
 	var levelPath = "Plan Level 1";
-	var path = dataPath.getPathByLevelParent(levelId, parentId);
+	var path = dataPath.getPathByLevelParent(hierarchyLevel, parentId);
 	// throw JSON.stringify(path);
 	/*
 	 * Determine current plan level correspondence between Parameter Level 2 =
@@ -18,7 +18,7 @@ function getPathByLevelParent(levelId, parentId) {
 	 * means Level 3
 	 * 
 	 */
-	switch (parseInt(levelId)) {
+	switch (parseInt(hierarchyLevel)) {
 	case 1:
 		levelPath = "Level 1";
 		break;
@@ -46,18 +46,20 @@ function getPathByLevelParent(levelId, parentId) {
 		result.PATH_TPH = levelPath + " for " + CRM_ACRONYM + "-"
 				+ path[0].PATH_TPH;
 		// Special case for Central Team
-		if (parseInt(levelId) >= 3) {
-			var pathOrgAcronym = dataPath.getPathOrganizationAcronym(levelId,
+		if (parseInt(hierarchyLevel) >= 3) {
+			var pathOrgAcronym = dataPath.getPathOrganizationAcronym(hierarchyLevel,
 					parentId);
 			
 			//throw path[0].PATH_TPH;
-
 			var isCentralTeam = !pathOrgAcronym[0] ? false : true;
 			if (isCentralTeam) {
 				result.PATH_TPH = levelPath + " for " + CRM_ACRONYM + "-"
 						+ path[0].PATH_TPH;
-						//+ "-"
-						//+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
+			}
+			
+			// Only display Organization acronym in L3
+			if (parseInt(hierarchyLevel) == 3) {
+				result.PATH_TPH = result.PATH_TPH +  "-" + pathOrgAcronym[0].ORG_ACRONYM_PATH;
 			}
 		}
 	} else
@@ -78,8 +80,6 @@ function getPathByLevelParentToCRM(levelId, parentId) {
 	if (isOrgAcronym) {
 
 		result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;
-		//+ "-"
-		//		+ pathOrgAcronym[0].ORG_ACRONYM_PATH;
 	}
 	else {
 		result.PATH_TPH = CRM_ACRONYM;

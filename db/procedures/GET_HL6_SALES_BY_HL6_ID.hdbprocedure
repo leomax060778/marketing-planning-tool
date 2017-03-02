@@ -4,7 +4,7 @@ in in_hl6_id  bigint
 ,OUT out_result TABLE (
 hl6_sales_id INTEGER,
 organization_id INTEGER,
-amount decimal(19,2),
+amount decimal(19, 6),
 organization_type tinyint,
 description nvarchar(255),
 organization_name nvarchar(255)

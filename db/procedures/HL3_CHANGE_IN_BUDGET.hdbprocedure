@@ -10,7 +10,7 @@ BEGIN
 
 	-- Updates the HL3 FNC given as input parameter
 	-- setting its in_budget value to 1 if its budget is 
-	UPDATE HL3_FNC
+	UPDATE HL3
 	SET in_budget = 1
 	WHERE hl3_id = in_hl3_id
 	  AND in_budget = 0

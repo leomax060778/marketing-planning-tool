@@ -5,6 +5,10 @@ var db = mapper.getdbHelper();
 var ErrorLib = mapper.getErrors();
 /*************************************************/
 
+/***************SPs******************************/
+var spGET_CONFIGURATION_BY_NAME = "GET_CONFIGURATION_BY_NAME";
+/*************************************************/
+
 /***********************PERMISSIONS AND RESOURCES***************************/
 var spGetResourceByName = "GET_RESOURCE_BY_NAME";
 var spGetNewToken = "GET_SYSUUID";
@@ -14,7 +18,7 @@ function getResourceIdByName(name){
  var rdo =  db.executeProcedure(spGetResourceByName, {"IN_RESOURCE_NAME": name});
  var partialRdo = db.extractArray(rdo.OUT_RESULT);
  
- if(partialRdo){
+ if(partialRdo.length){
 	 return partialRdo[0].RESOURCE_ID;
  }
  return null;
@@ -31,6 +35,7 @@ function administration() { return "administration"}
 function dereport() { return "dereport"}
 function report() { return "report"}
 function search() { return "search"}
+function userAccess() { return "User access"}
 /**************************/
 
 var spGetPermissionByName = "GET_PERMISSION_BY_NAME";
@@ -47,34 +52,33 @@ function getPermissionIdByName(name){
 }
 
 /****Resources Names********/
-function ReadPermission(){ return "Read"}
-function WritePermission(){ return "Write"}
+function ReadPermission(){ return "View/Read"}
+function CreatePermission(){ return "Create/Edit"}
 function DeletePermission(){ return "Delete"}
-function CreatePermission(){ return "Create"}
-function EditPermission(){ return "Edit"}
-function ViewPermission(){ return "View"}
-function GrantPermission(){ return "Grant"}
-function ExecutePermission(){ return "Execute"}
+
 /**************************/
 
 /***************************************************************************/
 
-/**************URLs********************/
-var AppUrl = "http://rtm-bmo.bue.sap.corp:1081/mpt-testing/webapp";
-var UrlLogin = "http://rtm-bmo.bue.sap.corp:1081/mpt-testing/webapp/index.html";
-/**********************************/
+
+function getConfigurationByName(key){
+	var result = db.executeProcedure(spGET_CONFIGURATION_BY_NAME,{'IN_KEY' : key});
+	return db.extractArray(result.out_result);
+}
+
+/*************Super Admin**************/
+var ApplySuperAdminToAllInitiatives = true;
+function getApplySuperAdminToAllInitiatives(){
+	return getConfigurationByName("ApplySuperAdminToAllInitiatives");
+}
+/***************************************/
 
 /**************Email Accounts**********************/
-var SMTPAccount = "info_planningtool@sap.com";//  //SMTP server configuration
-var SupportAccount = "support_planningtool@sap.com";
-var SiteAdministrator = "support_planningtool@sap.com";
+//var SMTPAccount = "lpeccin@folderit.net";//"info_planningtool@sap.com";//  //adderes configured  - SMTP server
+//var SupportAccount ="lpeccin@folderit.net";// "support_planningtool@sap.com";
+//var SiteAdministrator = "lpeccin@folderit.net";// "support_planningtool@sap.com";
 /*****************************************/
 
-//TODO: move this to configuration
-var tokenLifeTimeSeconds = 43200;
-
-//TODO: move to configuration table
-var defaultPassword = "123456";
 
 //this Enum represent the "PLANNING_TOOL"."ROLE" table
 var RoleEnum = {
@@ -91,31 +95,31 @@ var OriginMessageInterlock = {
 };
 
 function getAppUrl(){
-	return AppUrl;
+	return getConfigurationByName("AppUrl")[0].CONF_VALUE;
 }
 
 function getLoginUrl(){
-	return UrlLogin;
+	return getConfigurationByName("UrlLogin")[0].CONF_VALUE;
 }
 
 function getSMTPAccount(){
-	return SMTPAccount;
+	return getConfigurationByName("SMTPAccount")[0].CONF_VALUE;
 }
 
 function getSupportAccount(){
-	return SupportAccount;
+	return getConfigurationByName("SupportAccount")[0].CONF_VALUE;
 }
 
 function getSiteAdminAccount(){
-	return SiteAdministrator;
+	return getConfigurationByName("SiteAdministrator")[0].CONF_VALUE;
 }
 
 function getTokenLifeTimeSeconds(){
-	return tokenLifeTimeSeconds;
+	return parseInt(getConfigurationByName("tokenLifeTimeSeconds")[0].CONF_VALUE);
 }
 
 function getDefaultPassword(){
-	return defaultPassword;
+	return getConfigurationByName("defaultPassword")[0].CONF_VALUE;
 }
 
 function getRoleEnum(){
@@ -124,6 +128,23 @@ function getRoleEnum(){
 
 function getOriginMessageInterlock(){
 	return OriginMessageInterlock;
+}
+
+function getActivateNotificationLevel2(){
+	return getConfigurationByName("notifyLevel2")[0].CONF_VALUE;
+}
+
+function getActivateNotificationLevel3(){
+	return getConfigurationByName("notifyLevel3")[0].CONF_VALUE;
+}
+
+
+function getNotifyLevel2Account(){
+	return getConfigurationByName("notifyLevel2Account")[0].CONF_VALUE;
+}
+
+function getNotifyLevel3Account(){
+	return getConfigurationByName("notifyLevel3Account")[0].CONF_VALUE;
 }
 
 function getHash() {

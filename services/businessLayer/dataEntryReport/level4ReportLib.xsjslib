@@ -2,6 +2,8 @@ $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataL4DER = mapper.getDataLevel4Report();
 var dataHl4 = mapper.getDataLevel4();
+var dataCategory = mapper.getDataCategory();
+var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
 var dataPath = mapper.getDataPath();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
@@ -33,38 +35,30 @@ function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
 		var data = {"hl4": [], "category": []};
 		var changedFields = dataL4DER.getL4ChangedFieldsByHl4Id(hl4Id);
 		var hl4 = dataHl4.getHl4ById(hl4Id);
-		//new refactor 04112016
-		//var hl4Fnc = dataHl4.getHl4FncByHl4Id(hl4Id);
-		
-		var hl4Categories = dataHl4.getHl4Category(hl4Id);
+
+		var hl4Categories = dataCategoryOptionLevel.getAllocationCategory(hl4Id, 'hl4');
+		//var hl4Categories = dataHl4.getHl4Category(hl4Id);
 		Object.keys(l4ReportFields).forEach(function(field){
-			
 			if(field == "CATEGORY"){
-				var changedFieldsByHl4Id = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4Id, field);
-				
 				hl4Categories.forEach(function(hl4Category){
-					if(hl4Category.IN_PROCESSING_REPORT){
+                    //var actualCategory = dataCategory.getCategoryById(hl4Category.CATEGORY_ID);
+                    if(hl4Category.IN_PROCESSING_REPORT){
 						var object = {};
 						object.option = [];
 						object.display_name = hl4Category.CATEGORY_NAME;
-						var hl4CategoryOptions = dataHl4.getHl4CategoryOption(hl4Category.HL4_CATEGORY_ID);
+						//var hl4CategoryOptions = dataHl4.getHl4CategoryOption(hl4Category.HL4_CATEGORY_ID);
+						var hl4CategoryOptions = dataCategoryOptionLevel.getAllocationOptionByCategoryAndLevelId(hl4Category.CATEGORY_ID, 'hl4', hl4Id);
 						hl4CategoryOptions.forEach(function(hl4CategoryOption){
-							if(hl4CategoryOption.AMOUNT != 0){
-								object.option.push({"option_name": hl4CategoryOption.OPTION_NAME, "value": hl4CategoryOption.AMOUNT});
+							if(hl4CategoryOption.AMOUNT != 0 || hl4CategoryOption.UPDATED){
+								object.option.push({"option_name": hl4CategoryOption.OPTION_NAME, "value": hl4CategoryOption.AMOUNT, "changed": hl4CategoryOption.UPDATED});
 							}
 						});
-						//throw ErrorLib.getErrors().CustomError("","level4ReportServices/handleGet/getL4ChangedFieldsByHl4Id", JSON.stringify(object));
-						object.changed = checkChangedField(changedFieldsByHl4Id, field, hl4Category.HL4_CATEGORY_ID);
 						data.category.push(object);
 					}
 				});
-				
 			} else {
 				var object = {};
 				object.display_name = l4ReportFields[field];
-				//new refactor 04112016
-				//object.value = hl4[field] || hl4Fnc[field];
-				
 				// When Acronym/ID display the CRM path for L4 entry
 				if(l4ReportFields[field] == "ID"){
 					var CRM_ACRONYM = "CRM";
@@ -98,11 +92,7 @@ function deleteL4ChangedFieldsByHl4Id(hl4Id){
 function checkChangedField(changedFields, field, value){
 	var hasChanged = false;
 	for(var i=0;i<changedFields.length;i++){
-		if(field == "CATEGORY"){
-			hasChanged = changedFields[i].DISPLAY_NAME == value;
-		} else {
-			hasChanged = changedFields[i].COLUMN_NAME == field;
-		}
+		hasChanged = changedFields[i].COLUMN_NAME == field;
 		if(hasChanged) break;
 	}
 	return hasChanged;

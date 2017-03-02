@@ -12,7 +12,6 @@ BEGIN
 	UPDATE HL6
 	SET in_budget = in_budget_status
 	WHERE hl6_id = in_hl6_id
-	  AND in_budget = 0
 	  AND deleted = 0
 	  AND enabled = 1; 
 	  

@@ -1,7 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_CATEGORY_OPTION_BY_HL5_ID_OPTION_ID" (
 	IN in_hl5_id bigint,
 	IN in_option_id bigint,
-	OUT out_hl5_category_option TABLE (option_id BIGINT, option_name nvarchar(255), category_id BIGINT, amount decimal(19,2), category_name NVARCHAR(60), hl5_category_id bigint)
+	OUT out_hl5_category_option TABLE (option_id BIGINT, option_name nvarchar(255), category_id BIGINT, amount decimal(19, 6), category_name NVARCHAR(60), hl5_category_id bigint)
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 

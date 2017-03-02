@@ -18,8 +18,7 @@ var sendInCrmNotificationMail = "SENDMAIL";
 function processRequest(){
 	
 		return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.level3()));
-		//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
-	
+
 };
 
 /**

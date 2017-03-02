@@ -143,14 +143,14 @@ function insertInterlockContactData(interlockId, listContactData, user_id){
 }
 
 
-function insertInterlockMessage(interlockId, message, userId, origin){
+function insertInterlockMessage(interlockId, message, userId, senderId, origin){
 
 
 	return db.executeProcedureManual(spInsertInterlockRequestMessage,{
 		"IN_INTERLOCK_REQUEST_ID" : interlockId,
 		"IN_MESSAGE" : message,
 		"IN_CREATED_USER_ID": userId,
-		"IN_SENDER_ID" : userId,
+		"IN_SENDER_ID" : senderId,
 		"IN_INTERLOCK_REQUEST_ORIGIN_ID" : origin
 	});
 }

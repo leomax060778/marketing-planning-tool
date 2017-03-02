@@ -3,7 +3,6 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var data = mapper.getDataLevel3();
 var ErrorLib = mapper.getErrors();
 var blLevel2 = mapper.getLevel2();
-var dlCrm = mapper.getDataCrm();
 var db = mapper.getdbHelper();
 var dataHl4 = mapper.getDataLevel4();
 var dataHl2 = mapper.getDataLevel2();
@@ -14,6 +13,8 @@ var dataHl3User = mapper.getDataLevel3User();
 var mail = mapper.getMail();
 var businessError = mapper.getLogError();
 var userRoleLib = mapper.getUserRole();
+var config = mapper.getDataConfig();
+var userbl = mapper.getUser();
 /** ***********END INCLUDE LIBRARIES*************** */
 var LEVEL3 = 3;
 var L2_MSG_TEAM_NOT_FOUND = "The Team/Priority can not be found.";
@@ -26,7 +27,13 @@ var L2_MSG_TEAM_EXISTS = "Another Team/Priority with the same acronym already ex
 function getAllLevel3(hl2Id, userId) {
 	var objHl2 = {};
 	objHl2.IN_HL2_ID = hl2Id;
-	return data.getAllLevel3(objHl2, userId);
+
+	var isSA = false;
+	if (config.getApplySuperAdminToAllInitiatives()) {
+		isSA = userbl.isSuperAdmin(userId);
+	}
+
+	return data.getAllLevel3(objHl2, userId, isSA);
 }
 
 // Get an Level 3 data by id
@@ -109,11 +116,6 @@ function deleteHl3(objHl3, userId){
 	var result = 0;
 	if(!hl3HasChilds(objHl3)){
 		try{
-			//delete in HL3_STATUS_HISTORY	
-			//delete on HL3_FNC
-			//delete on HL3
-			//todo: delete reference to data.deleteLevel3Fnc(objHl3, userId);
-			//result = result + data.deleteLevel3Fnc(objHl3, userId);
 			result = result + data.deleteLevel3(objHl3, userId);
 			db.commit();
 		} catch (e) {
@@ -149,18 +151,8 @@ function createHl3(objHl3, userId) {
 		// validate exist CRM
 		var objPath = blPath.getPathByLevelParentToCRM(LEVEL3, objHl3.IN_HL2_ID);
 		var path = objPath.PATH_TPH + "-" + objHl3.IN_ACRONYM;
-		var crmId = dlCrm.getCrm(path);
 		try {
-			if (crmId <= 0) {
-				var objCrm = {};
-				objCrm.IN_PATH = path;
-				objCrm.IN_DESCRIPTION = objHl3.IN_HL3_DESCRIPTION;
-				crmId = dlCrm.insertCrm(objCrm, userId);
-			}
-
 			// SET CRM ID
-			objHl3.IN_CRM_ID = crmId;
-			// hardcoded 0 is needed to pass HL3_ID that never exist to checkBudgetStatus function
 			objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, 0, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
 			// CREATE NEW HL3
 			result = data.insertHl3(objHl3, userId);
@@ -192,32 +184,10 @@ function updateHl3(objHl3, userId) {
 					L2_MSG_TEAM_EXISTS);
 		
 		try {
-			//if(canUpdateL3(objHl3))
-				// update HL3 -> result = { 'out_result_hl3': X, 'out_result_hl3_fnc': Y, 'out_crm_id': W, 'out_budget_flag': Z}
-			
-			
 				objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, objHl3.IN_HL3_ID, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
 				result = data.updateLevel3(objHl3, userId);
-			//else
-				//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","Already exists other object with the same ACRONYM");
-						
+
 			if (result) {
-				if (result.out_crm_id > 0) {
-					// update de CRM
-					//get l3 data from bd
-					var l3 = data.getLevel3ById(objHl3, userId);
-					//get the path and update to new in crm
-					var objPath = blPath.getPathByLevelParentToCRM(LEVEL3, l3.HL2_ID);
-					var path = objPath.PATH_TPH + "-" + objHl3.IN_ACRONYM;
-					
-					var objCrm = {};
-					objCrm.IN_CRM_ID = result.out_crm_id;
-					objCrm.IN_ACRONYM = path;
-					objCrm.IN_HL3_DESCRIPTION = objHl3.IN_HL3_DESCRIPTION;
-					//update data crm
-					var updCrmResult = dlCrm.updateCrm(objCrm, userId);
-				}
-				
 				//if budget change
 				if (result.out_budget_flag === 1) {
 					//update budget status in hl4
@@ -358,7 +328,7 @@ function validateType(key, value) {
 
 	switch (key) {
 	case 'IN_ACRONYM':
-		valid = value.replace(/\s/g, "").length > 0 && value.replace(/\s/g, "").length <= 3; //up to 3 characters
+        valid = value.replace(/\s/g, "").length === 3;
 		break;
 	case 'IN_HL2_ID':
 		valid = !isNaN(value) && value > 0;
@@ -384,44 +354,45 @@ function createEmail(){
 //TODO: send email to owner user of hl4id´s. That is HL4 created user
 //resBudgetStatus contains two list. The emailListInBudget with initiatives or campaign changed to in budget, and emailListOutBudget with initiatives or campaign changed to out budget
 function sendEmail(resBudgetStatus, userId){
-	var stringInHl4 = "List In Budget: ";
-	var stringOutHl4 = "List Out Budget: ";
-	
-	if(resBudgetStatus){
-		try{
-			if(resBudgetStatus.emailListInBudget.length > 0){
-				for (var i = 0; i < resBudgetStatus.emailListInBudget.length; i++) {
-					var objHl4 = resBudgetStatus.emailListInBudget[i];
-					if(objHl4)
-						stringInHl4 = stringInHl4 + "<p>" + i + " - " + "ACRONYM: " +  objHl4.HL4_ACRONYM + ", DESCRIPTION: " + objHl4.HL4_CRM_DESCRIPTION + "</p>";
+
+	if(config.getActivateNotificationLevel3()){
+		var stringInHl4 = "List In Budget: ";
+		var stringOutHl4 = "List Out Budget: ";
+
+		if(resBudgetStatus){
+			try{
+				if(resBudgetStatus.emailListInBudget.length > 0){
+					for (var i = 0; i < resBudgetStatus.emailListInBudget.length; i++) {
+						var objHl4 = resBudgetStatus.emailListInBudget[i];
+						if(objHl4)
+							stringInHl4 = stringInHl4 + "<p>" + i + " - " + "ACRONYM: " +  objHl4.HL4_ACRONYM + ", DESCRIPTION: " + objHl4.HL4_CRM_DESCRIPTION + "</p>";
+					}
 				}
-			}		
-			
-			if(resBudgetStatus.emailListOutBudget.length > 0){
-				for (var i = 0; i < resBudgetStatus.emailListOutBudget.length; i++) {
-					var objHl4 = resBudgetStatus.emailListOutBudget[i];
-					if(objHl4)
-						stringOutHl4 = stringOutHl4 + "<p>" + i + " - " + "ACRONYM: " +  objHl4.HL4_ACRONYM + ", DESCRIPTION: " + objHl4.HL4_CRM_DESCRIPTION + "</p>";
+
+				if(resBudgetStatus.emailListOutBudget.length > 0){
+					for (var i = 0; i < resBudgetStatus.emailListOutBudget.length; i++) {
+						var objHl4 = resBudgetStatus.emailListOutBudget[i];
+						if(objHl4)
+							stringOutHl4 = stringOutHl4 + "<p>" + i + " - " + "ACRONYM: " +  objHl4.HL4_ACRONYM + ", DESCRIPTION: " + objHl4.HL4_CRM_DESCRIPTION + "</p>";
+					}
 				}
-			}	
-			
-			//get owner email
-			//TODO: find owner created hl4
-			//var ownerTo = 
-			var to = 'framirez@folderit.net';
-			var body = '<p> Dear Colleague </p><p>We send the list of INITIATIVE/CAMPAIGN shipped in or out of budget</p>';
-			body = body + stringInHl4;
-			body = body + stringOutHl4;
-			var mailObject = mail.getJson([ {
-				"address" : to
-			} ], "Marketing Planning Tool - Lits of INITIATIVE/CAMPAIGN shipped in or out of budget", body);
-			
-			mail.sendMail(mailObject,true);
-		}
-		catch(e){
-			throw e;
+
+				var to = config.getNotifyLevel3Account();
+				var body = '<p> Dear Colleague </p><p>We send the list of INITIATIVE/CAMPAIGN shipped in or out of budget</p>';
+				body = body + stringInHl4;
+				body = body + stringOutHl4;
+				var mailObject = mail.getJson([ {
+					"address" : to
+				} ], "Marketing Planning Tool - Lits of INITIATIVE/CAMPAIGN shipped in or out of budget", body);
+
+				mail.sendMail(mailObject,true);
+			}
+			catch(e){
+				throw e;
+			}
 		}
 	}
+
 }
 
 /*VALIDATE IF EXITS DE PAIR HL3_USER IN DATABASE*/
@@ -503,14 +474,10 @@ function checkBudgetStatus(hl2Id, userId, hl3Id, newHl3Budget) {
 			for (var i = 0; i < resultHl3.out_result.length; i++) {
 				if (hl2Budget < total	+ parseFloat(resultHl3.out_result[i].HL3_BUDGET_TOTAL)) {
 					data.updateHl3BudgetStatus(resultHl3.out_result[i].HL3_ID, userId, 0);
-					//throw ErrorLib.getErrors().CustomError("","hl3Services/handlePost/updateHl3","paka 66");
 					result.emailListOutBudget.push(resultHl3.out_result[i]);
 				} else {
 					data.updateHl3BudgetStatus(resultHl3.out_result[i].HL3_ID, userId, 1);
 					total = total + parseFloat(resultHl3.out_result[i].HL3_BUDGET_TOTAL);
-					/*if(resultHl3.out_result[i].STATUS_ID === 3){
-						dataHl4.changeStatusHl4(resultHl4.out_result[i].HL4_ID, 4, userId);
-					}*/
 					result.emailListInBudget.push(resultHl3.out_result[i]);
 				}
 			}

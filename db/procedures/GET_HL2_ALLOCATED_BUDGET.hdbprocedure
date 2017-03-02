@@ -13,7 +13,7 @@ BEGIN
 	va_hl2_allocated_budget := 0;
 	
 	SELECT 
-	SUM(HL3.hl3_fnc_budget_total) --new 03-11-2016
+	SUM(HL3.hl3_fnc_budget_total)
 	INTO va_hl2_allocated_budget
 	FROM HL3 
 	INNER JOIN HL2 ON HL2.hl2_id = HL3.hl2_id
@@ -21,8 +21,7 @@ BEGIN
 	  AND HL3.hl3_id != in_hl3_id
 	  AND HL3.deleted = 0
 	  AND HL3.enabled = 1
-	  AND HL3.in_budget = 1 --new 03-11-2016
-	  ;
+	  AND HL3.in_budget = 1;
 
 	out_hl2_allocated_budget := IFNULL(va_hl2_allocated_budget, 0);
 

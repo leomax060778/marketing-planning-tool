@@ -38,7 +38,7 @@ function updateObjective(objectiveId, name, userId){
 function deleteObjective(objectiveId, userId){
 	var parameters = {};
 	parameters.IN_OBJECTIVE_ID = objectiveId;
-	parameters.IN_MODIFIED_USER_ID = userId
+	parameters.IN_MODIFIED_USER_ID = userId;
 	return db.executeScalarManual(DEL_OBJECTIVE, parameters, "out_result");
 }
 

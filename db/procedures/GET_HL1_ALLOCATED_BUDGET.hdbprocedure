@@ -1,0 +1,27 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_ALLOCATED_BUDGET" (
+	IN in_hl1_id BIGINT,
+	IN in_hl2_id BIGINT,
+	OUT out_hl1_allocated_budget DECIMAL(19,5)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	DECLARE va_hl1_allocated_budget DECIMAL(19,5);
+	va_hl1_allocated_budget := 0;
+
+	SELECT
+	SUM(HL2.hl2_budget_total)
+	INTO va_hl1_allocated_budget
+	FROM HL2
+	INNER JOIN HL1 ON HL1.hl1_id = HL2.hl1_id
+	WHERE HL1.hl1_id = in_hl1_id
+	  AND HL2.hl2_id != in_hl2_id
+	  AND HL2.deleted = 0
+	  AND HL2.enabled = 1;
+	  --AND HL2.in_budget = 1;
+
+	out_hl1_allocated_budget := IFNULL(va_hl1_allocated_budget, 0);
+
+END;

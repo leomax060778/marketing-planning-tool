@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_ALLOCATION_CATEGORY_OPTION" (
+    IN in_category_option_level_id bigint,
+    IN in_id bigint,
+    IN in_amount DECIMAL(19, 6),
+    IN in_created_user_id bigint,
+    IN in_updated TINYINT,
+
+    OUT out_result_id bigint
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."HL5_CATEGORY_OPTION" (allocation_category_option_level_id,hl5_id,amount,created_user_id,updated)
+	VALUES (in_category_option_level_id,in_id,in_amount,in_created_user_id, in_updated);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result_id FROM "PLANNING_TOOL"."HL5_CATEGORY_OPTION";
+END;

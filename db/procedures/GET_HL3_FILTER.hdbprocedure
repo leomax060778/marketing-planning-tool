@@ -1,0 +1,59 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FILTER" (
+	IN in_budget_year_id BIGINT,
+	IN in_plan_id BIGINT,
+	IN in_region_id BIGINT,
+	IN in_subregion_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result TABLE(hl3_id BIGINT, 
+							 acronym NVARCHAR(25), 
+							 crm_id BIGINT, 
+							 crm_long_hl3_id NVARCHAR(25), 
+							 business_owner_id BIGINT, 
+							 business_owner_description NVARCHAR(255),  
+							 hl3_hierarchy_id BIGINT,
+							 hl3_hierarchy_description_1 NVARCHAR(100),
+							 hl3_hierarchy_description_2 NVARCHAR(100),
+							 hl3_hierarchy_description_3 NVARCHAR(100),
+							 hl3_fnc_budget_total DECIMAL(19,2),
+							 hl2_id BIGINT)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	out_result =
+	SELECT HL3.hl3_id,
+		   HL3.acronym,
+		   CRM.crm_id,
+		   CRM.crm_long_hl3_id,
+		   HL3.business_owner_id,
+		   BO.description AS business_owner_description,
+		   HL3.hl3_hierarchy_id,
+		   HH.hl3_hierarchy_description_1,
+		   HH.hl3_hierarchy_description_2,
+		   HH.hl3_hierarchy_description_3,
+		   HL3_FNC.hl3_fnc_budget_total,
+		   HL2.hl2_id
+	FROM HL3
+	INNER JOIN HL3_FNC ON HL3.hl3_id = HL3_FNC.hl3_id
+	INNER JOIN CRM ON HL3.crm_id = CRM.crm_id
+	INNER JOIN BUSINESS_OWNER BO ON HL3.business_owner_id = BO.business_owner_id
+	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
+	INNER JOIN HL2_USER HL2U ON HL2U.HL2_ID = HL2.HL2_ID
+	LEFT JOIN BUDGET_YEAR BUY ON BUY.BUDGET_YEAR_ID = HL2.BUDGET_YEAR_ID
+	LEFT JOIN PLAN P ON P.PLAN_ID = HL2.PLAN_ID
+	LEFT JOIN REGION R ON R.REGION_ID = HL2.REGION_ID
+	LEFT JOIN SUBREGION SR ON SR.SUBREGION_ID = HL2.SUBREGION_ID
+	LEFT JOIN HL3_HIERARCHY HH ON HL3.hl3_hierarchy_id = HH.hl3_hierarchy_id
+	
+	WHERE 
+      HL2U.USER_ID = in_user_id
+	  AND HL3.deleted = 0
+	  AND HL3.enabled = 1
+	  AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id IS NULL) 
+      AND (P.PLAN_ID = in_plan_id OR in_plan_id  IS NULL) 
+	  AND (R.REGION_ID = in_region_id OR in_region_id IS NULL) 
+	  AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id IS NULL);
+END;

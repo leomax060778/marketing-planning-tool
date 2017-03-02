@@ -260,7 +260,6 @@ function sendMail(reqBody, defaultBody, OptionalSender){
 			    }
 			    
 			    if(defaultBody){
-			    	//mail.parts.push(getDefaultHeader(),getDefaultTemplate(body));
 			    	mail.parts.push(getDefaultTemplate(body));
 			    }else{
 			    	var newPart = new $net.Mail.Part();

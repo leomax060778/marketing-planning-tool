@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_CATEGORY_BY_CAT_ID_LEVEL_ID" (
+    IN in_allocation_category_id bigint,
+    IN in_hierarchy_level_id bigint,
+	OUT out_result TABLE (	
+	IN_PROCESSING_REPORT TINYINT
+	)
+ 	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result =
+		 SELECT ACOL.IN_PROCESSING_REPORT
+		 FROM ALLOCATION_CATEGORY_OPTION_LEVEL ACOL
+		 WHERE ACOL.allocation_category_id = in_allocation_category_id
+		 AND ACOL.hierarchy_level_id = in_hierarchy_level_id
+		 AND DELETED = 0 AND ENABLED = 1;
+
+END;

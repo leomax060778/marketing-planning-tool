@@ -23,7 +23,7 @@ function insertCampaignType(payload, userId) {
         throw ErrorLib.getErrors().BadRequest("", "campaignTypeService/handlePost/insertCampaignType", CAMPAIGN_TYPE_EXISTS);
     }
 
-    return dataCampaignType.insertCampaignType(payload.IN_NAME, userId);
+    return dataCampaignType.insertCampaignType(payload.IN_NAME, payload.IN_SHOW_ADDITIONAL_FIELDS, userId);
 }
 function existCampaignTypeByName(payload) {
     return !!dataCampaignType.getCampaignTypeByName(payload.IN_NAME);
@@ -31,7 +31,7 @@ function existCampaignTypeByName(payload) {
 }
 
 function updateCampaignType(campaignTypeData, userId){
-    return dataCampaignType.updateCampaignType(campaignTypeData.IN_CAMPAIGN_TYPE_ID, campaignTypeData.IN_NAME, userId);
+    return dataCampaignType.updateCampaignType(campaignTypeData.IN_CAMPAIGN_TYPE_ID, campaignTypeData.IN_NAME, campaignTypeData.IN_SHOW_ADDITIONAL_FIELDS, userId);
 }
 
 function deleteCampaignType(campaignTypeData, userId){

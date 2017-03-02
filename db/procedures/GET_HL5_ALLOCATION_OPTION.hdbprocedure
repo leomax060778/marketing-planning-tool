@@ -1,0 +1,32 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_ALLOCATION_OPTION" (
+	IN in_allocation_category_id bigint,
+	IN in_hl_id bigint,
+	OUT out_option TABLE (
+	    option_id BIGINT
+	    , option_name nvarchar(255)
+	    , category_option_level_id integer
+	    , amount decimal(19, 6)
+	    , category_name NVARCHAR(60)
+	    , updated TINYINT
+	    )
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	out_option =
+	SELECT option.allocation_option_id as option_id
+	, option.name as option_name
+	, ACOL.allocation_category_option_level_id as category_option_level_id
+	, hl5CO.amount
+	, category.name as category_name
+	, hl5CO.updated
+
+	FROM hl5_category_option hl5CO
+	inner join allocation_category_option_level ACOL ON ACOL.allocation_category_option_level_id = hl5CO.allocation_category_option_level_id
+	inner join allocation_option option on ACOL.allocation_option_id = option.allocation_option_id
+	inner join allocation_category category on category.allocation_category_id = ACOL.allocation_category_id
+	where  ACOL.allocation_category_id = in_allocation_category_id
+	and hl5_id = in_hl_id
+	AND hl5CO.deleted = 0 and hl5CO.enabled = 1;
+END;

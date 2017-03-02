@@ -154,7 +154,7 @@ function rollback(){
 }
 
 function closeConnection(){
-	if (!HDB_CONNECTION.isClosed())
+	if (HDB_CONNECTION != null && !HDB_CONNECTION.isClosed())
 		HDB_CONNECTION.close();
 }
 

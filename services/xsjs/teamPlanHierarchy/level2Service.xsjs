@@ -11,24 +11,22 @@ var config = mapper.getDataConfig();
 var method = "GET_ALL";
 var section = "FOR_SEARCH";
 var hl2Id = "HL2_ID";
-var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
+var HL1_ID = "HL1_ID";
 var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM";
 
 function processRequest(){
 	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false, config.getResourceIdByName(config.level1()));
-	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 //Implementation of GET call -- GET HL2
 function handleGet(parameters, userSessionID){
 	if(parameters.length > 0){
-		//throw ErrorLib.getErrors().BadRequest("","userServices/handleGet",JSON.stringify(parameters));
-		if(parameters[0].name == method){	
+		/*if(parameters[0].name == method){
 			
-			var rdo = blLevel2.getAllLevel2();
+			var rdo = blLevel2.getAllLevel2(userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);				
 		}
-		else if (parameters[0].name == hl2Id){
+		else*/ if (parameters[0].name == hl2Id){
 			var objLevel2 = {};
 			objLevel2.IN_HL2_ID = parameters[0].value;
 			
@@ -40,26 +38,8 @@ function handleGet(parameters, userSessionID){
 			var rdo = blLevel2.getAllCentralTeam(0);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
-		else if (parameters[0].name == GET_HL1_BY_FILTER){
-			var objFilter = {};
-			if(parameters[1].name == "BUDGET_YEAR_ID")
-				objFilter.IN_BUDGET_YEAR_ID = parameters[1].value;
-			if(parameters[2].name == "PLAN_ID")
-				objFilter.IN_PLAN_ID = parameters[2].value;
-			if(parameters[3].name == "REGION_ID"){
-				if(parameters[3].value)
-					objFilter.IN_REGION_ID = parameters[3].value;
-				else
-					objFilter.IN_REGION_ID = null;
-			}
-			if(parameters[4].name == "SUBREGION_ID"){
-				if(parameters[4].value)
-					objFilter.IN_SUBREGION_ID = parameters[4].value;
-				else
-					objFilter.IN_SUBREGION_ID = null;
-			}
-			
-			var rdo = blLevel2.getLevel2ByFilters(objFilter, userSessionID)
+		else if (parameters[0].name == HL1_ID){
+			var rdo = blLevel2.getHl2ByHl1Id(parameters[0].value, userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].value == section){

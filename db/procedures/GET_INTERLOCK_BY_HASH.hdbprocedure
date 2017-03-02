@@ -7,7 +7,7 @@ IN in_hash nvarchar(255)
 	,organization_type_id BIGINT
 	,organization_type_name NVARCHAR(255)
 	,requested_resource NVARCHAR(255)
-	,requested_budget DECIMAL(19,2)
+	,requested_budget DECIMAL(19, 6)
 	,interlock_status_id BIGINT
 	,status NVARCHAR(255)
 	,organization NVARCHAR(255)

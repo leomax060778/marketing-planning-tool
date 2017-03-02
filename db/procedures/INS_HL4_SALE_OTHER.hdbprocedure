@@ -1,7 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_OTHER" ( 
 	IN in_hl4_id bigint,
 	IN in_description nvarchar(30),
-	IN in_amount decimal(19,2),
+	IN in_amount decimal(19, 6),
 	IN in_created_user_id bigint,
 	OUT out_hl4_sale_other_id bigint
 	) 

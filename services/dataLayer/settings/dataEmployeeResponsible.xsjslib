@@ -8,7 +8,7 @@ var GET_ALL_EMPLOYEE_RESPONSIBLE = "GET_ALL_EMPLOYEE_RESPONSIBLE";
 var INS_EMPLOYEE_RESPONSIBLE = "INS_EMPLOYEE_RESPONSIBLE";
 var UPD_EMPLOYEE_RESPONSIBLE = "UPD_EMPLOYEE_RESPONSIBLE";
 var GET_EMPLOYEE_RESPONSIBLE_BY_EMPLOYEE_NUMER = "GET_EMPLOYEE_RESPONSIBLE_BY_EMPLOYEE_NUMER";
-
+var GET_EMPLOYEE_RESPONSIBLE_BY_ID = "GET_EMPLOYEE_RESPONSIBLE_BY_ID";
 /******************************************************/
 
 function updEmployeeResponsible(employeeResponsibleId, FULL_NAME,EMPLOYEE_NUMBER, userId,autoCommit){
@@ -50,4 +50,9 @@ function getEmployeeResponsibleByEmployeeNumber(employee_number){
 
 function getAllEmployeeResponsibles(){
 	return  db.extractArray(db.executeProcedureManual(GET_ALL_EMPLOYEE_RESPONSIBLE,{}).out_result);
+}
+
+function getEmployeeResponsibleById(employeeId){
+	var rdo = db.executeProcedureManual(GET_EMPLOYEE_RESPONSIBLE_BY_ID,{'in_employee_id':employeeId});
+	return db.extractArray(rdo.out_result)[0];
 }

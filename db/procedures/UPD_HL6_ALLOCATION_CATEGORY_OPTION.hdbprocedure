@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6_ALLOCATION_CATEGORY_OPTION" (
+    IN in_category_option_level_id bigint,
+    IN in_amount DECIMAL(19, 2),
+    IN in_user_id bigint,
+    IN in_updated TINYINT,
+	OUT out_result int
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+		UPDATE HL6_CATEGORY_OPTION SET
+		amount = in_amount,
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP,
+		updated = in_updated
+		where allocation_category_option_level_id = in_category_option_level_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

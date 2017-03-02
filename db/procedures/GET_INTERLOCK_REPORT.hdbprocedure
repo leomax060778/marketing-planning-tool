@@ -5,7 +5,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_INTERLOCK_REPORT" (
                 , ORGANIZATION_ACRONYM NVARCHAR(25)
                 , CONTACT_DATA NVARCHAR(1000)
                 , REQUESTED_RESOURCE NVARCHAR(140)
-                , REQUESTED_BUDGET DECIMAL(19,2)
+                , REQUESTED_BUDGET DECIMAL(19, 6)
                 , STATUS_DETAIL NVARCHAR(50)
                 , REQUESTER NVARCHAR(100)
                 , CREATED_DATE TIMESTAMP
@@ -18,17 +18,17 @@ SQL SECURITY INVOKER
 DEFAULT SCHEMA "PLANNING_TOOL"
 READS SQL DATA AS
 BEGIN
-    out_result=select ORGANIZATION_TYPE_NAME
-                , INTERLOCK_ENTITY_NAME
-                , ORGANIZATION_ACRONYM
-                , CONTACT_DATA
-                , REQUESTED_RESOURCE
-                , REQUESTED_BUDGET
-                , STATUS_DETAIL
-                , REQUESTER
-                , CREATED_DATE
-                , STATUS_CHAGE_DATE
-                , PATH
-    from "_SYS_BIC"."xsplanningtool.db.data.views/CV_INTERLOCK_PROCESS_REPORT"
-    where ORGANIZATION_ACRONYM <> '?';
+    out_result = select ORGANIZATION_TYPE_NAME
+                        , INTERLOCK_ENTITY_NAME
+                        , RECIEVER_ORGANIZATION as ORGANIZATION_ACRONYM
+                        , RECIEVER_CONTACT_DATA as CONTACT_DATA
+                        , REQUESTED_RESOURCE
+                        , REQUESTED_BUDGET
+                        , STATUS_DETAIL
+                        , REQUESTOR_USER as REQUESTER
+                        , CREATED_DATE
+                        , STATUS_CHAGE_DATE
+                        , REQUESTOR_L4 as PATH
+    from "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA"
+    where RECIEVER_ORGANIZATION <> '?';
 END;

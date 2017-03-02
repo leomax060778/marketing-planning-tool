@@ -20,9 +20,9 @@ function getAllOutcomes(parametrs, userId){
 		});
 	});
 	
-	return out_outcomes;//dataOutcomes.getAllOutcomes(parametrs);
+	return out_outcomes;
 }
 
 function getAllOutcomesType(parametrs, userId){
-	return dataOutcomes.getAllOutcomesType(parametrs);
+	return dataOutcomes.getAllOut
 }

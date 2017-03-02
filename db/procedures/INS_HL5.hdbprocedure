@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5"
 	in in_hl5_crm_description nvarchar(100)
 	,in in_acronym nvarchar(25)
 	,in in_distribution_channel_id bigint
-	,in in_budget decimal(19,2)
+	,in in_budget decimal(19, 2)
 	,in in_hl4_id bigint
 	
 	,in in_campaign_objective_id bigint
@@ -20,13 +20,25 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5"
 	,in in_cost_center_id bigint
 	
 	,in in_in_budget tinyint
-	,in in_budget_spend_q1 decimal(19,2)
-	,in in_budget_spend_q2 decimal(19,2)
-	,in in_budget_spend_q3 decimal(19,2)
-	,in in_budget_spend_q4 decimal(19,2)
+	,in in_budget_spend_q1 decimal(19, 2)
+	,in in_budget_spend_q2 decimal(19, 2)
+	,in in_budget_spend_q3 decimal(19, 2)
+	,in in_budget_spend_q4 decimal(19, 2)
 	,in in_euro_conversion_id bigint
 	,in in_hl5_status_detail_id bigint
 	,in in_created_user_id bigint
+
+	,in in_route_to_market bigint
+	,in in_venue nvarchar(255)
+	,in in_city nvarchar(255)
+	,in in_country nvarchar(255)
+	,in in_url nvarchar(255)
+	,in in_sales_organization bigint
+    ,in in_planned_start_date timestamp
+    ,in in_planned_end_date timestamp
+    ,in in_street nvarchar(255)
+    ,in in_postal_code nvarchar(20)
+
 	,OUT out_hl5_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -62,7 +74,17 @@ BEGIN
 	, budget_spend_q4 
 	, euro_conversion_id 
 	, hl5_status_detail_id 
-	, created_user_id 
+	, created_user_id
+	, route_to_market_id
+	, venue
+	, city
+	, country
+	, url
+	, sales_organization_id
+    , planned_start_date
+    , planned_end_date
+    , street
+    , postal_code
 	)
 	VALUES (
      in_hl5_crm_description
@@ -91,7 +113,20 @@ BEGIN
 	, in_budget_spend_q4 
 	, in_euro_conversion_id 
 	, in_hl5_status_detail_id 
-	, in_created_user_id 
+	, in_created_user_id
+
+	, in_route_to_market
+    , in_venue
+    , in_city
+    , in_country
+    , in_url
+    , in_sales_organization
+
+    , in_planned_start_date
+    , in_planned_end_date
+    , in_street
+    , in_postal_code
+    
 );
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_id FROM "PLANNING_TOOL"."HL5";

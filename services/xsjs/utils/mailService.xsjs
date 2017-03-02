@@ -26,8 +26,7 @@ function handleDelete(){
 
 //Implementation of POST call
 function handlePost(reqBody) {
-	//var rdo = "hola";	
-	rdo = businessMail.sendMail(reqBody,true);		
+	rdo = businessMail.sendMail(reqBody,true);
 	httpUtil.handleResponsePlain(rdo);	
 }
 

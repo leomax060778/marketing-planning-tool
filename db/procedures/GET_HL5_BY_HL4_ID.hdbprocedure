@@ -16,6 +16,17 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_HL4_ID" (
             , QUANTITY_HL6_OUT_BUDGET INT
             , ALLOCATED DECIMAL
             , REMAINING DECIMAL
+            , ROUTE_TO_MARKET_ID BIGINT
+            , ROUTE_TO_MARKET NVARCHAR(255)
+            , VENUE NVARCHAR(255)
+            , CITY NVARCHAR(255)
+            , COUNTRY NVARCHAR(255)
+            , URL NVARCHAR(255)
+            , SALES_ORGANIZATION_ID bigint
+            , PLANNED_START_DATE timestamp
+            , PLANNED_END_DATE timestamp
+            , STREET NVARCHAR(255)
+            , POSTAL_CODE NVARCHAR(20)
         )
 )
 LANGUAGE SQLSCRIPT
@@ -29,17 +40,19 @@ va_intermidate = SELECT
         ,hl5.hl5_crm_description AS HL5_CRM_DESCRIPTION
         ,hl5.acronym AS HL5_ACRONYM       
 	    ,    
-	     CONCAT(  
-	         CONCAT(
-	        	CONCAT(
-	        		CONCAT(
-	        			CONCAT(
-	        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
-	    					,'-')
-						, hl3.acronym)
-					,'-')
-				,hl4.acronym)
-             ,hl5.acronym)
+	     CONCAT(
+         			CONCAT(
+         	         CONCAT(
+         	        	CONCAT(
+         	        		CONCAT(
+         	        			CONCAT(
+         	        				CONCAT(HL1.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
+         	    					,'-')
+         						, hl3.acronym)
+         					,'-')
+         				,hl4.acronym)
+         			,'-')
+         		 ,hl5.acronym)
 		AS CRM_ID 
         
         ,hl5.IN_BUDGET as IN_BUDGET
@@ -49,15 +62,29 @@ va_intermidate = SELECT
         ,userTable.EMAIL AS OWNER_EMAIL
         ,hl5.BUDGET AS HL5_BUDGET
         ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
+        ,RTM.ROUTE_TO_MARKET_ID AS ROUTE_TO_MARKET_ID
+        ,RTM.NAME AS ROUTE_TO_MARKET
+        ,HL5.VENUE AS VENUE
+        ,HL5.CITY AS CITY
+        ,HL5.COUNTRY AS COUNTRY
+        ,HL5.URL AS URL
+        ,HL5.SALES_ORGANIZATION_ID AS SALES_ORGANIZATION_ID
+        ,HL5.PLANNED_START_DATE
+        ,HL5.PLANNED_END_DATE
+        ,HL5.STREET
+        ,HL5.POSTAL_CODE
+
 
     FROM HL5 Hl5
     INNER JOIN HL4 hl4 ON hl4.hl4_id=hl5.hl4_id AND hl4.enabled=1 AND hl4.deleted=0
     INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
     INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
-    INNER JOIN BUDGET_YEAR BGY ON hl2.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
-    INNER JOIN EURO_CONVERSIONS euro_conversions ON hl4.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
+    INNER JOIN HL1 hl1 ON hl1.hl1_id = hl2.hl1_id AND hl1.enabled=1 AND hl1.deleted=0
+    INNER JOIN BUDGET_YEAR BGY ON hl1.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
+    INNER JOIN CURRENCY euro_conversions ON hl4.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
     INNER JOIN hl5_status_detail hl5_status_detail ON hl5_status_detail.hl5_status_detail_id = hl5.hl5_status_detail_id
     INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl4.created_user_id
+    LEFT JOIN ROUTE_TO_MARKET RTM ON RTM.ROUTE_TO_MARKET_ID = HL5.ROUTE_TO_MARKET_ID
     WHERE hl5.enabled=1 AND hl5.deleted=0
 	AND hl5.hl4_id = in_hl4_id;
 
@@ -78,6 +105,17 @@ out_result = SELECT
 		, SUM(CASE WHEN  HL6.IN_BUDGET IS NULL THEN 0 WHEN HL6.IN_BUDGET = 0 THEN 1 ELSE 0 END) QUANTITY_HL6_OUT_BUDGET --# of L6 out off budget
 		, COALESCE(SUM(HL6.budget),0) AS ALLOCATED
 		, COALESCE((va_hl5.HL5_BUDGET - SUM(HL6.budget)), va_hl5.HL5_BUDGET) AS REMAINING
+		,va_hl5.ROUTE_TO_MARKET_ID
+		,va_hl5.ROUTE_TO_MARKET
+		,va_hl5.VENUE
+		,va_hl5.CITY
+		,va_hl5.COUNTRY
+		,va_hl5.URL
+		,va_hl5.SALES_ORGANIZATION_ID
+        ,va_hl5.PLANNED_START_DATE
+        ,va_hl5.PLANNED_END_DATE
+        ,va_hl5.STREET
+        ,va_hl5.POSTAL_CODE
 		
     FROM :va_intermidate va_hl5
     LEFT JOIN HL6 hl6 ON hl6.HL5_ID = va_hl5.hl5_id AND hl6.enabled=1 AND hl6.deleted=0
@@ -85,6 +123,8 @@ out_result = SELECT
 	GROUP BY 
 	va_hl5.HL5_ID,va_hl5.HL5_CRM_DESCRIPTION,va_hl5.HL5_ACRONYM,va_hl5.CRM_ID,va_hl5.IN_BUDGET,va_hl5.STATUS_ID,
 		va_hl5.STATUS_DETAIL,va_hl5.CREATED_BY,va_hl5.OWNER_EMAIL,va_hl5.HL5_BUDGET,
-		va_hl5.EURO_CONVERSION_ID;
+		va_hl5.EURO_CONVERSION_ID,va_hl5.ROUTE_TO_MARKET_ID,va_hl5.ROUTE_TO_MARKET,va_hl5.VENUE,va_hl5.CITY,va_hl5.COUNTRY
+		,va_hl5.URL,va_hl5.SALES_ORGANIZATION_ID,va_hl5.PLANNED_START_DATE,va_hl5.PLANNED_END_DATE,va_hl5.STREET,va_hl5.POSTAL_CODE
+		ORDER BY va_hl5.HL5_ACRONYM ASC;
 		
 END;

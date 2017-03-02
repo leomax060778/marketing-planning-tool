@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5" (
 	,in in_hl5_crm_description nvarchar(100)
 	,in in_acronym nvarchar(25)
 	,in in_distribution_channel_id bigint
-	,in in_hl5_budget decimal(19,2)
+	,in in_hl5_budget decimal(19, 2)
 	,in in_hl4_id bigint
 	
 	,in in_campaign_objective_id bigint
@@ -20,14 +20,23 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5" (
 	,in in_cost_center_id bigint
 	
 	,in in_in_budget tinyint
-	,in in_budget_spend_q1 decimal(19,2)
-	,in in_budget_spend_q2 decimal(19,2)
-	,in in_budget_spend_q3 decimal(19,2)
-	,in in_budget_spend_q4 decimal(19,2)
+	,in in_budget_spend_q1 decimal(19, 2)
+	,in in_budget_spend_q2 decimal(19, 2)
+	,in in_budget_spend_q3 decimal(19, 2)
+	,in in_budget_spend_q4 decimal(19, 2)
 	,in in_euro_conversion_id bigint
 	,in in_hl5_status_detail_id bigint
-	,in in_created_user_id bigint	
-	
+	,in in_created_user_id bigint
+	,in in_route_to_market bigint
+    ,in in_venue nvarchar(255)
+    ,in in_city nvarchar(255)
+    ,in in_country nvarchar(255)
+    ,in in_url nvarchar(255)
+    ,in in_sales_organization_id bigint
+    ,in in_planned_start_date timestamp
+    ,in in_planned_end_date timestamp
+    ,in in_street nvarchar(255)
+    ,in in_postal_code nvarchar(20)
 	,OUT out_result int
 )
    LANGUAGE SQLSCRIPT
@@ -41,7 +50,6 @@ BEGIN
 	distribution_channel_id = in_distribution_channel_id,
 	budget = in_hl5_budget,
 	hl4_id = in_hl4_id,
-
 	campaign_objective_id = in_campaign_objective_id,
 	campaign_type_id = in_campaign_type_id,
 	campaign_subtype_id = in_campaign_subtype_id,
@@ -54,7 +62,6 @@ BEGIN
 	business_owner_id = in_business_owner_id ,
 	employee_responsible_id = in_employee_responsible_id,
 	cost_center_id = in_cost_center_id,
-
 	in_budget = in_in_budget,
 	budget_spend_q1 = in_budget_spend_q1,
 	budget_spend_q2 = in_budget_spend_q2,
@@ -62,8 +69,19 @@ BEGIN
 	budget_spend_q4 = in_budget_spend_q4,
 	euro_conversion_id = in_euro_conversion_id,
 	hl5_status_detail_id = in_hl5_status_detail_id,
-	created_user_id = in_created_user_id
-		where hl5_id = in_hl5_id;
-        
-        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+	created_user_id = in_created_user_id,
+	route_to_market_id = in_route_to_market,
+    venue = in_venue,
+    city = in_city,
+    country = in_country,
+    url = in_url,
+    sales_organization_id = in_sales_organization_id,
+    planned_start_date = in_planned_start_date,
+    planned_end_date = in_planned_end_date,
+    street = in_street,
+    postal_code = in_postal_code
+
+    where hl5_id = in_hl5_id;
+
+    SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END

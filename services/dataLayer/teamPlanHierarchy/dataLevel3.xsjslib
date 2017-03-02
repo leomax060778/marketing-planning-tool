@@ -15,7 +15,6 @@ var GET_GLOBAL_TEAM = "GET_GLOBAL_TEAM";
 var GET_HL3_BY_ACRONYM = "GET_HL3_BY_ACRONYM";
 var DEL_HL3 = "DEL_HL3";
 var spUpdateHl3BudgetStatus = "UPD_HL3_STATUS_BUDGET";
-var DEL_HL3_FNC = "DEL_HL3_FNC";
 
 // Insert a new hl3
 function insertHl3(objHl3, userId) {
@@ -23,7 +22,7 @@ function insertHl3(objHl3, userId) {
 	parameters.in_acronym = objHl3.IN_ACRONYM;
 	parameters.in_hl2_id = objHl3.IN_HL2_ID;
 	parameters.in_hl3_description = objHl3.IN_HL3_DESCRIPTION;
-	parameters.in_crm_id = objHl3.IN_CRM_ID;
+	parameters.in_crm_id = null;
 	parameters.in_business_owner_id = objHl3.IN_BUSINESS_OWNER_ID;
 	parameters.in_hl3_fnc_budget_total = objHl3.IN_HL3_FNC_BUDGET_TOTAL;
 	parameters.in_in_budget = objHl3.IN_IN_BUDGET;
@@ -43,7 +42,6 @@ function updateLevel3(objHl3, userId) {
 	parameters.in_hl3_fnc_budget_total = objHl3.IN_HL3_FNC_BUDGET_TOTAL;
 	parameters.in_in_budget = objHl3.IN_IN_BUDGET;
 	parameters.in_user_id = userId;	
-	//throw ErrorLib.getErrors().BadRequest("","hl3Services/handlePut",objHl3.IN_HL3_ID);
 	var list = db.executeProcedureManual(UPD_HL3, parameters);
 	result.out_result_hl3 = list.out_result_hl3;
 	result.out_result_hl3_fnc = list.out_result_hl3_fnc;
@@ -53,11 +51,13 @@ function updateLevel3(objHl3, userId) {
 }
 
 //Execute an Sp to retrieve HL3 data from HL2
-function getAllLevel3(objHl2, userId) {
+function getAllLevel3(objHl2, userId, isSA) {
 	var parameters = {};
 	var result = {};
 	parameters.in_hl2_id = Number(objHl2) || objHl2.IN_HL2_ID;
 	parameters.in_user_id = userId;
+	parameters.in_is_super_Admin = isSA ? 1 : 0;
+
 	var list = db.executeProcedure(GET_ALL_HL3, parameters);
 	result.out_result = db.extractArray(list.out_result);
 	result.out_total_budget = list.out_total_budget;
@@ -69,7 +69,6 @@ function getAllLevel3(objHl2, userId) {
 function getLevel3ById(objHl3, userId) {
 	var parameters = {};
 	parameters.in_hl3_id = objHl3.IN_HL3_ID;
-	//parameters.in_user_id = userId;
 	var result = db.executeProcedure(GET_HL3, parameters);
 	var list = db.extractArray(result.out_result);
 	if(list.length)
@@ -83,7 +82,7 @@ function getLevel3ByAcronym(objHl3, userId) {
 	var parameters = {};
 	parameters.in_acronym = objHl3.IN_ACRONYM.toUpperCase();
 	parameters.in_hl2_id = objHl3.IN_HL2_ID
-	var result = db.executeProcedure(GET_HL3_BY_ACRONYM, parameters);
+	var result = db.executeProcedureManual(GET_HL3_BY_ACRONYM, parameters);
 	var list = db.extractArray(result.out_result);
 	if(list.length)
 		return list[0];
@@ -121,15 +120,6 @@ function deleteLevel3(objHl3, userId) {
 	parameters.in_user_id = userId;	
 	return db.executeScalarManual(DEL_HL3, parameters, 'out_result');
 }
-
-function deleteLevel3Fnc(objHl3, userId) {
-	var parameters = {};
-	var result = {};
-	parameters.in_hl3_id = objHl3.IN_HL3_ID;
-	parameters.in_user_id = userId;	
-	return db.executeScalarManual(DEL_HL3_FNC, parameters, 'out_result');
-}
-
 
 function updateHl3BudgetStatus(hl3_id, userId, nextStatus){
 	var parameters = {"in_hl3_id": hl3_id, "in_status_budget": nextStatus, "in_user_id": userId};

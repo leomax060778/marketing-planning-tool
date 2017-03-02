@@ -6,6 +6,7 @@ DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OBJECTIVE_CAMP
 DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ORIGIN_PARENT";
 DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_PLAN_BY_BUDGET_YEAR_ID";
 DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_OBJECTIVE_CAMPAIGN_TYPE";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ROUTE_BY_HL3_ID";
 
 -- *************************************************************************************
 -- Update schema version

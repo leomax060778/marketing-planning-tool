@@ -2,7 +2,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_BUDGET"
 (
 	in in_hl5_id bigint,
 	in in_organization_id bigint,
-	in in_percentage decimal(19,2),
+	in in_percentage decimal(19, 6),
 	in in_organization_type tinyint,
 	in in_created_user_id bigint,
 	out out_hl5_budget_id bigint

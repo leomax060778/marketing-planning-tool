@@ -1,0 +1,38 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTIONS_BY_EXPECTED_OUTCOME_LEVEL" (
+      IN in_expected_outcome_id bigint
+    , IN in_hierarchy_level_id bigint
+	, OUT out_result TABLE
+	(expected_outcome_option_id bigint
+	, option_name nvarchar(255)
+	, expected_outcome_id bigint
+	, expected_outcome_name nvarchar(255)
+	, expected_outcome_level_id bigint
+	, hierarchy_level_id bigint
+	, levelDescription nvarchar(255))
+ 	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result =
+        select
+         eoo.expected_outcome_option_id
+        ,eoo.name as option_name
+        ,eo.expected_outcome_id
+        ,eo.name as expected_outcome_name
+        ,eol.expected_outcome_level_id
+        ,eol.hierarchy_level_id
+        ,hl.description as levelDescription
+        from expected_outcome_level eol
+        inner join expected_outcome eo on eol.expected_outcome_id = eo.expected_outcome_id
+        inner join expected_outcome_option eoo on eoo.expected_outcome_option_id = eol.expected_outcome_option_id
+        inner join hierarchy_level hl on hl.hierarchy_level_id = eol.hierarchy_level_id
+        where
+        eo.expected_outcome_id = in_expected_outcome_id
+        and eol.hierarchy_level_id = in_hierarchy_level_id
+        and eoo.enabled = 1 and eoo.deleted = 0
+        and eo.enabled = 1 and eo.deleted = 0
+        order by hl.description asc, eo.name asc, eoo.name asc;
+END;

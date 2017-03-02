@@ -13,7 +13,7 @@ function getAllOutcomes(hl){
         var outcomesType = dataOutcomeType.getOutcomesTypeByHlId(hl);
         var result = {};
         outcomesType.forEach(function(outcome){     	
-        	result[outcome.OUTCOMES_TYPE_NAME] = getOutcomesByOtId(outcome.OUTCOMES_TYPE_ID);
+        	result[outcome.OUTCOMES_TYPE_NAME] = getOutcomesByOtId(outcome.OUTCOMES_TYPE_ID, outcome.HIERARCHY_LEVEL_ID);
         });
         return result;
 	} catch(e) {
@@ -21,11 +21,11 @@ function getAllOutcomes(hl){
 	}
 };
 
-function getOutcomesByOtId(outcomeTypeId){
+function getOutcomesByOtId(outcomeTypeId, hlId){
         if(!outcomeTypeId)
-                throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","outcomesServices/handleGet/getByHlId",outcomesId);
+                throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","outcomesServices/handleGet/getByHlId",outcomeTypeId);
         try{
-                return dataOutcome.getOutcomesByOtId(outcomeTypeId);
+                return dataOutcome.getOutcomesByOtId(outcomeTypeId, hlId);
         } catch(e) {
                 throw e;
         }

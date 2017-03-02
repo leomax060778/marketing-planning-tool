@@ -1,15 +1,12 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL2" (
-	IN in_acronym nvarchar(25),
-	IN in_description nvarchar(255),
-	IN in_budget_year_id bigint,
-	IN in_region_id bigint,
-	IN in_subregion_id bigint,
-	IN in_user_id bigint,
-	IN in_hl2_budget_total DECIMAL(19,2),
-	IN in_organization_acronym nvarchar(25)
+	IN in_user_id bigint
+	,IN in_hl2_budget_total DECIMAL(19, 2)
+	,IN in_organization_acronym nvarchar(25)
 	,IN in_organization_name nvarchar(255) 
-	,IN in_team_type_id bigint
 	,IN in_implement_execution_level tinyint
+	,IN in_crt_related tinyint
+	,IN in_hl1_id bigint
+	,IN in_in_budget tinyint
 	,OUT out_hl2_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -18,31 +15,23 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL2" (
 BEGIN
 
 	INSERT INTO HL2 (
-	 acronym
-	,description
-	,budget_year_id
-	,region_id
-	,subregion_id
-	,created_date_tz
-	,created_user_id
+	 created_user_id
 	,hl2_budget_total
 	,organization_acronym
 	,organization_name
-	,team_type_id
+	,hl1_id
+	,in_budget
+	,crt_related
 	,implement_execution_level
 	)
 	VALUES (
-	 in_acronym
-	,in_description
-	,in_budget_year_id
-	,in_region_id
-	,in_subregion_id
-	,CURRENT_TIMESTAMP
-	,in_user_id
+	in_user_id
 	,in_hl2_budget_total
 	,in_organization_acronym
 	,in_organization_name
-	,in_team_type_id
+	,in_hl1_id
+	,in_in_budget
+	,in_crt_related
 	,in_implement_execution_level
 	);
 	

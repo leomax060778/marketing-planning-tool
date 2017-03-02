@@ -45,6 +45,7 @@ function handleErrorResponse(value){
 		var error = ErrorLib.getErrors().getError(value.code);
 		error.stack =value.stack;
 		error.details = value.details;
+		error.data = value.data;
 		$.response.contentType = "application/json";
 		$.response.status = error.code;
 		$.response.setBody(JSON.stringify(error));
@@ -91,7 +92,7 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 		        case $.net.http.PUT:{
 		        	if(!WithOutPermission){
 		        	permissions.isAuthorized(userSessionID,
-       		    	config.getPermissionIdByName(config.EditPermission()),
+       		    	config.getPermissionIdByName(config.CreatePermission()),
          			ResourceID);
 		        	}
 		        	putMethod(reqBody,userSessionID);

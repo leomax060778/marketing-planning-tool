@@ -1,0 +1,26 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_SALES_BY_ID" 
+( 
+in in_hl6_id  bigint
+,OUT out_result TABLE (
+hl6_sales_id bigint,
+organization_id bigint,
+amount decimal(19, 6),
+organization_type tinyint,
+description nvarchar(255)
+)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+out_result =
+	select
+		hl6_sales_id,
+	    organization_id,
+	    amount,
+	    organization_type,
+	    description
+	from hl6_sales
+	where hl6_sales_id = in_hl6_id
+	and enabled = 1 and deleted = 0;
+END;

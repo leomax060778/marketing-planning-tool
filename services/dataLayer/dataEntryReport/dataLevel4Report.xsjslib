@@ -8,7 +8,6 @@ var ErrorLib = mapper.getErrors();
 var GET_ALL_HL4_DE_REPORT = "GET_HL4_DE_REPORT";
 var spGetL4ChangedFieldsByHl4Id = "GET_HL4_CHANGED_FIELDS_BY_HL4_ID";
 var spGetL4ChangedFieldsByHl4IdByField = "GET_HL4_CHANGED_FIELDS_BY_HL4_ID_BY_FIELD";
-//var spUpdateHl4CRMBinding = "UPD_HL4_CHANGED_FIELDS";
 var spDelL4ChangedFieldsByHl4Id = "DEL_HL4_CRM_BINDING";
 
 /*********** END LIST OF PROCEDURES ***************/
@@ -39,11 +38,6 @@ function getL4ChangedFieldsByHl4IdByField(id, fieldName){
 	}	
 	return null;
 }
-
-//function updateHl4CRMBinding(parameters){
-	//var rdo = db.executeScalarManual(spUpdateHl4CRMBinding, parameters, 'out_result');
-	//return rdo;
-//}
 
 function deleteL4ChangedFieldsByHl4Id(id){
 	if(id){

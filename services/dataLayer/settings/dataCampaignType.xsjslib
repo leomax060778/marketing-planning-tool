@@ -38,10 +38,11 @@ function getCampaignTypeByObjectiveId(objectiveId) {
         return null;
 }
 
-function insertCampaignType(name, userId) {
+function insertCampaignType(name, additionalFields, userId) {
     var parameters = {};
     parameters.IN_NAME = name;
     parameters.IN_CREATED_USER_ID = userId;
+    parameters.IN_SHOW_ADDITIONAL_FIELDS = additionalFields;
     return db.executeScalarManual(INS_CAMPAIGN_TYPE, parameters, "out_result");
 }
 
@@ -53,11 +54,12 @@ function getCampaignTypeByName(name) {
         return result[0];
     return null;
 }
-function updateCampaignType(campaignTypeId, name, userId) {
+function updateCampaignType(campaignTypeId, name, additionalFields, userId) {
     var parameters = {};
     parameters.IN_CAMPAIGN_TYPE_ID = campaignTypeId;
     parameters.IN_NAME = name;
     parameters.IN_MODIFIED_USER_ID = userId;
+    parameters.IN_SHOW_ADDITIONAL_FIELDS = additionalFields;
     return db.executeScalarManual(UPD_CAMPAIGN_TYPE, parameters, "out_result");
 }
 

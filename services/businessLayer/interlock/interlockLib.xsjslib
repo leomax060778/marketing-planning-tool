@@ -46,15 +46,17 @@ function getInterlockByHash(hash,userId){
 function setInterlockStatus(interlockData,userId){
 	var result = 0;
 	try{
+
 		if(interlockData.status_id == INTERLOCK_STATUS.NO_RESPONSE) {
 
 			var interlockComplete = dataInterlock.getInterlockById(interlockData.interlock_id);
 
 
-			if(interlockComplete.length > 0){
+			if (interlockComplete.length > 0) {
 				var contactData = dataInterlock.getContactDataByInterlockId(interlockData.interlock_id);
 
-				contactData.forEach(function(contactData){
+
+				contactData.forEach(function (contactData) {
 					var hash= config.getHash();
 
 					var updNumber = dataInterlock.updateContactData(contactData.INTERLOCK_CONTACT_DATA_ID, hash, userId);
@@ -66,12 +68,14 @@ function setInterlockStatus(interlockData,userId){
 					
 					notifyInterlockResponse(contactData.EMAIL,hash);
 				});
-				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId,config.getOriginMessageInterlock().requester);
+				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId, userId,config.getOriginMessageInterlock().requester);
 			}
 
 
 		}else{
 			var interlock = getInterlockByHash(interlockData.hash);
+
+			var objContactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
 			if(interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED || interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.REJECTED)
 				throw ErrorLib.getErrors().CustomError("","interlockServices/handlePut/setInterlockStatus", "This Interlock is already " + interlock.STATUS + ".");
 
@@ -83,7 +87,7 @@ function setInterlockStatus(interlockData,userId){
 
 			dataInterlock.setInterlockStatus(interlockData.interlock_id, interlockData.status_id, requesterEmail);
 			if(interlockData.status_id == INTERLOCK_STATUS.REJECTED){
-				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId,config.getOriginMessageInterlock().moneyLender);
+				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, interlock.CREATED_USER_ID, objContactData.INTERLOCK_CONTACT_DATA_ID,config.getOriginMessageInterlock().moneyLender);
 			}
 
 			var objIl = dataInterlock.getInterlockByHash(interlockData.hash);
@@ -97,8 +101,10 @@ function setInterlockStatus(interlockData,userId){
 
 
 			if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO) {
-				var contactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
-				result = dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, contactData.INTERLOCK_CONTACT_DATA_ID, config.getOriginMessageInterlock().moneyLender);
+				//var contactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
+				var objContactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
+
+				result = dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, objIl.CREATED_USER_ID,objContactData.INTERLOCK_CONTACT_DATA_ID, config.getOriginMessageInterlock().moneyLender);
 				//Send email to requester to notifiy about messages to review
 				notifyRequester(requesterEmail,interlockData.interlock_id, objIl.REQUESTED_RESOURCE, objIl.HL3_ID, objIl.HL4_ID );
 			} else {
@@ -129,11 +135,9 @@ function getRequestedUserEmail(hash){
 
 function getInterlockByHl4Id(hl4_id){
 	var interlock = dataInterlock.getInterlockByHl4Id(hl4_id);
-	//throw ErrorLib.getErrors().CustomError("getHl4ById","Get Hl4 By Id",interlock);
 	var result = [];
 	interlock.forEach(function(il){
 		var aux = util.extractObject(il);
-		//throw ErrorLib.getErrors().CustomError("getHl4ById","Get Hl4 By Id",JSON.stringify(aux));
 		aux["organization"] = dataInterlock.getInterlockOrganizationByIlId(il.INTERLOCK_REQUEST_ID);
 		result.push(aux);
 	});
@@ -149,7 +153,6 @@ function getAllOrganizationType(){
 }
 
 function getGlobalTeam(hl3Id, userId){
-	//return dataInterlock.getGlobalTeam(hl3Id, userId);
 	var result = {};
 	var hl3 = businessLavel3.getLevel3ById(hl3Id, userId);
 	

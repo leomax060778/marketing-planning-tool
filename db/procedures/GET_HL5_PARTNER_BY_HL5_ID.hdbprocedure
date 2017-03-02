@@ -7,7 +7,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_PARTNER_BY_HL5_
 		partner_type_id bigint,
 		region_name nvarchar(255),
 		region_id bigint,
-		value decimal(19,2)
+		value decimal(19, 6)
 		)
 ) 
 	LANGUAGE SQLSCRIPT

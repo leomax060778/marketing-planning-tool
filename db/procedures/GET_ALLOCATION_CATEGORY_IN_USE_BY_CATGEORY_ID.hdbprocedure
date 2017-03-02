@@ -1,0 +1,55 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_CATEGORY_IN_USE_BY_CATGEORY_ID" (
+	IN in_category_id bigint,
+	OUT out_result TABLE (
+    	category_id BIGINT
+    	, measure_id BIGINT
+    	, name NVARCHAR(60)
+    	, description NVARCHAR(255)
+    	)
+     	)
+
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+    out_result = (SELECT AC.allocation_category_id as category_id,
+                                   AC.measure_id,
+                                   AC.name,
+                                   AC.description
+                        FROM ALLOCATION_CATEGORY AC
+                        INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL on AC.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
+                        INNER JOIN HL4_CATEGORY_OPTION HL4CO on ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = HL4CO.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+                        WHERE HL4CO.enabled = 1 AND HL4CO.deleted = 0
+                        AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                        AND AC.ALLOCATION_CATEGORY_ID = in_category_id
+                        ORDER BY name)
+
+            UNION
+
+            (SELECT AC.allocation_category_id as category_id,
+                			   AC.measure_id,
+                			   AC.name,
+                			   AC.description
+                		FROM ALLOCATION_CATEGORY AC
+                		INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL on AC.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
+                		INNER JOIN HL5_CATEGORY_OPTION HL5CO on ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = HL5CO.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+                		WHERE HL5CO.enabled = 1 AND HL5CO.deleted = 0
+                		AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                		AND AC.ALLOCATION_CATEGORY_ID = in_category_id
+                		ORDER BY name)
+
+            UNION
+
+            (SELECT AC.allocation_category_id as category_id,
+                			   AC.measure_id,
+                			   AC.name,
+                			   AC.description
+                		FROM ALLOCATION_CATEGORY AC
+                		INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL on AC.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
+                		INNER JOIN HL6_CATEGORY_OPTION HL6CO on ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = HL6CO.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+                		WHERE HL6CO.enabled = 1 AND HL6CO.deleted = 0
+                		AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                		AND AC.ALLOCATION_CATEGORY_ID = in_category_id
+                		ORDER BY name);
+END;

@@ -41,9 +41,7 @@ function getAllPermissionByRole() {
 								roles[i].ROLE_ID, sysResources[r].RESOURCE_ID,
 								sysPermissions[p].PERMISSION_ID);
 
-				var permissionEnabled = typeof (currentPermission) != 'undefined'
-						&& currentPermission[0].ENABLED
-						&& currentPermission[0].ENABLED == 1 ? true : false;
+				var permissionEnabled = !!(currentPermission.length > 0	&& currentPermission[0].ENABLED == 1);
 
 				var permissionSetting = {};
 				permissionSetting["PERMISSION"] = sysPermissions[p].NAME;
@@ -107,8 +105,7 @@ function getPermissionByRole(roleId) {
 								roles[i].ROLE_ID, sysResources[r].RESOURCE_ID,
 								sysPermissions[p].PERMISSION_ID);
 
-				var permissionEnabled = typeof (currentPermission) != 'undefined'
-						&& currentPermission[0].ENABLED == 1 ? true : false;
+				var permissionEnabled = !!(currentPermission.length > 0	&& currentPermission[0].ENABLED == 1);
 
 				var permissionSetting = {};
 				permissionSetting["PERMISSION"] = sysPermissions[p].NAME;

@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL3" (
 	IN in_acronym NVARCHAR(25),
 	IN in_hl3_description NVARCHAR(100),
 	IN in_business_owner_id BIGINT,
-	IN in_hl3_fnc_budget_total DECIMAL(19,2),
+	IN in_hl3_fnc_budget_total DECIMAL(19, 2),
 	IN in_in_budget TINYINT,
 	IN in_user_id BIGINT,
 	
@@ -19,7 +19,7 @@ BEGIN
 	
 	DECLARE va_current_acronym NVARCHAR(25);
 	DECLARE va_crm_id BIGINT;
-	DECLARE va_hl3_fnc_budget_total DECIMAL (19,2);
+	DECLARE va_hl3_fnc_budget_total DECIMAL (19, 2);
 	
 	out_crm_id := 0;
 	out_budget_flag := 0;

@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_INTERLOCK" (
 	IN in_hl4_id bigint,
 	IN in_organization_type_id bigint,
 	IN in_requested_resource nvarchar(300),
-	IN in_requested_budget decimal(19,2),
+	IN in_requested_budget decimal(19, 6),
 	IN in_interlock_status_id bigint,
 	IN in_created_user_id bigint,
 	OUT out_interlock_id BIGINT

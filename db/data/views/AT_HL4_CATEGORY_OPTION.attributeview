@@ -3,29 +3,33 @@
   <descriptions defaultDescription="AT_HL4_CATEGORY_OPTION"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
-    <attribute id="HL4_CATEGORY_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL4_CATEGORY_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="HL4_CATEGORY_ID"/>
-    </attribute>
-    <attribute id="OPTION_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="OPTION_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="OPTION_ID"/>
-    </attribute>
-    <attribute id="AMOUNT" order="3" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="AMOUNT" order="1" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="AMOUNT"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="AMOUNT"/>
     </attribute>
-    <attribute id="ENABLED" order="4" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="ENABLED" order="2" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="ENABLED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="ENABLED"/>
     </attribute>
-    <attribute id="DELETED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="DELETED" order="3" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="DELETED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="DELETED"/>
     </attribute>
-    <attribute id="HL4_CATEGORY_OPTION_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="HL4_CATEGORY_OPTION_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="HL4_CATEGORY_OPTION_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="HL4_CATEGORY_OPTION_ID"/>
+    </attribute>
+    <attribute id="UPDATED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UPDATED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="UPDATED"/>
+    </attribute>
+    <attribute id="HL4_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="ALLOCATION_CATEGORY_OPTION_LEVEL_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ALLOCATION_CATEGORY_OPTION_LEVEL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL4_CATEGORY_OPTION" columnName="ALLOCATION_CATEGORY_OPTION_LEVEL_ID"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>

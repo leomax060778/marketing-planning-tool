@@ -1,5 +1,5 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_MEASURE" (
-	OUT out_result TABLE(measure_id BIGINT, measure_name NVARCHAR (255))
+	OUT out_result TABLE(measure_id BIGINT, measure_name NVARCHAR (255), symbol NVARCHAR (255))
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -16,7 +16,7 @@ BEGIN
 	IF response = 0
 	THEN
 		out_result = SELECT measure_id,
-			   measure_name
+			   measure_name, symbol
 		FROM measure
 		WHERE deleted = 0
 		  AND enabled = 1;

@@ -6,7 +6,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ACRONYM" (
 		, hl5_crm_description nvarchar(100)
 		, acronym nvarchar(25)
 		, distribution_channel_id bigint
-		, budget decimal(19,2)
+		, budget decimal(19, 6)
 		, hl4_id bigint
 		
 		, campaign_objective_id bigint
@@ -23,10 +23,10 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ACRONYM" (
 		, cost_center_id bigint
 		
 		, in_budget tinyint
-		, budget_spend_q1 decimal(19,2)
-		, budget_spend_q2 decimal(19,2)
-		, budget_spend_q3 decimal(19,2)
-		, budget_spend_q4 decimal(19,2)
+		, budget_spend_q1 decimal(19, 2)
+		, budget_spend_q2 decimal(19, 2)
+		, budget_spend_q3 decimal(19, 2)
+		, budget_spend_q4 decimal(19, 2)
 		, euro_conversion_id bigint
 		, hl5_status_detail_id bigint
 		,created_date_tz timestamp
@@ -34,7 +34,17 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ACRONYM" (
 		,created_user_id bigint
 		,modified_user_id bigint
 		,enabled tinyint
-		,deleted tinyint	
+		,deleted tinyint
+
+		, ROUTE_TO_MARKET_ID BIGINT
+        , VENUE NVARCHAR(255)
+        , CITY NVARCHAR(255)
+        , COUNTRY NVARCHAR(255)
+        , URL NVARCHAR(255)
+        , PLANNED_START_DATE timestamp
+        , PLANNED_END_DATE timestamp
+        , STREET NVARCHAR(255)
+        , POSTAL_CODE NVARCHAR(20)
 		)
 ) 
 	LANGUAGE SQLSCRIPT
@@ -73,6 +83,16 @@ hl5_id
 , MODIFIED_USER_ID
 , ENABLED
 , DELETED
+
+, ROUTE_TO_MARKET_ID
+, VENUE
+, CITY
+, COUNTRY
+, URL
+, PLANNED_START_DATE
+, PLANNED_END_DATE
+, STREET
+, POSTAL_CODE
  FROM HL5
  WHERE upper(acronym) = upper(in_hl5_acronym)
  AND HL5.hl4_id = in_hl4_id

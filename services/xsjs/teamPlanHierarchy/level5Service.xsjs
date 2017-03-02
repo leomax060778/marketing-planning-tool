@@ -10,6 +10,7 @@ var section = "FOR_SEARCH";
 var method = "method";
 var id = "id";
 var setStatusInCRM = "SETINCRM";
+var changeStatus = "CHANGESTATUS";
 var sendInCrmNotificationMail = "SENDMAIL";
 
 /******************************************/
@@ -23,8 +24,11 @@ function handleGet(params, userId) {
 	var in_hl5_id = httpUtil.getUrlParameters().get("HL5_ID");
 	var param_section = httpUtil.getUrlParameters().get("section");
 	var dataType = httpUtil.getUrlParameters().get("DATA");
+	var in_sale_organization = httpUtil.getUrlParameters().get("SALE_ORGANIZATION_ID");
+	var budgetYearId = httpUtil.getUrlParameters().get("BUDGET_YEAR");
+	var currentHl5Id = httpUtil.getUrlParameters().get("CURRENT_HL5");
 	var result = {};
-	if(in_hl4_id){
+	if(in_hl4_id && !dataType){
 		result = hl5.getHl5ByHl4Id(in_hl4_id);
 	} else if (in_hl5_id) {
 		result = hl5.getHl5ById(in_hl5_id);
@@ -32,10 +36,17 @@ function handleGet(params, userId) {
 		result = hl5.getLevel5ForSearch();
 	} else if (dataType && dataType == "DISTRIBUTION_CHANNEL"){
 		result = hl5.getAllDistributionChannel();
-	} else{
+	} else if (dataType && dataType == "MARKETING_PROGRAM"){
+		result = hl5.getAllMarketingProgram();
+	} else if (dataType && dataType == "MARKETING_ACTIVITY"){
+		result = hl5.getMarketingActivityHl5(in_hl4_id,currentHl5Id);
+	} else if (dataType && dataType == "BUSINESS_OWNER"){
+		result = hl5.getAllBusinessOwner();
+	} else if (dataType && dataType == "COST_CENTER"){
+		result = hl5.getCostCenterByHl4IdMarketingOrganizationId(in_hl4_id,in_sale_organization);
+	}else{
 		throw ErrorLib.getErrors().BadRequest("","level5Service/handleGet","invalid parameter name (can be: HL4_ID, HL5_ID or section)");
 	}
-	
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 }
 
@@ -53,6 +64,10 @@ function handlePut(reqBody, userId){
 		    	var rdo = hl5.setHl5StatusInCRM(hl5Id, userId);
 				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 		        break;
+			case changeStatus:
+				var rdo = hl5.changeHl5StatusOnDemand(hl5Id, userId);
+				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
+				break;
 		    default:
 		    	throw ErrorLib.getErrors().BadRequest("","level5Services/handlePut","insufficient parameters");
 		}	

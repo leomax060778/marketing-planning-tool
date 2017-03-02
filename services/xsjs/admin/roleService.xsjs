@@ -20,34 +20,6 @@ function processRequest() {
 function handleGet(param) {
 	var rdo = businessRole.getAllRole();
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
-	/*
-	if (param.length > 0) {
-		if (param[0].name == method) {
-			if (param[0].value == "ALL") { // get all roles
-				var rdo = businessRole.getAllRole();
-				httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
-			}
-
-			if (param.length > 1) {
-				if (param[0].value == getRoleById) {
-					if (param[1].name == id) {// get role by id
-
-						var rdo = role.getUserById(param[1].value);
-						return httpUtil.handleResponse(rdo, httpUtil.OK,
-								httpUtil.AppJson);
-					}
-				}
-			} else {
-				throw ErrorLib.getErrors().BadRequest("",
-						"roleServices/handleGet", "insufficient parameters");
-			}
-		}
-	}
-
-	// if not match with any business call, then return a bad request error
-	throw ErrorLib.getErrors().BadRequest("", "roleServices/handleGet",
-			parameters);
-			*/
 };
 
 // Implementation of PUT call -- Update Role

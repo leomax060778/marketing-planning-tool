@@ -17,8 +17,7 @@ function getUserRoleByUserId(userId) {
 
 function insertUserRole(userRole, createUserRole) {
 	if (validateUserRole(userRole)) {
-		return dbUserRole.insertUserRo
-		le(userRole, createUserRole);
+		return dbUserRole.insertUserRole(userRole, createUserRole);
 	}
 }
 

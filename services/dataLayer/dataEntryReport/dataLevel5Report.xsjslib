@@ -8,7 +8,6 @@ var ErrorLib = mapper.getErrors();
 var GET_ALL_HL5_DE_REPORT = "GET_HL5_DE_REPORT";
 var spGetL5ChangedFieldsByHl5Id = "GET_HL5_CHANGED_FIELDS_BY_HL5_ID";
 var spGetL5ChangedFieldsByHl5IdByField = "GET_HL5_CHANGED_FIELDS_BY_HL5_ID_BY_FIELD";
-//var spUpdateHl5CRMBinding = "UPD_HL5_CHANGED_FIELDS";
 var spDelL5ChangedFieldsByHl5Id = "DEL_HL5_CRM_BINDING";
 
 /*********** END LIST OF PROCEDURES ***************/
@@ -39,11 +38,6 @@ function getL5ChangedFieldsByHl5IdByField(id, fieldName){
 	}	
 	return null;
 }
-
-//function updateHl5CRMBinding(parameters){
-	//var rdo = db.executeScalarManual(spUpdateHl5CRMBinding, parameters, 'out_result');
-	//return rdo;
-//}
 
 function deleteL5ChangedFieldsByHl5Id(id){
 	if(id){

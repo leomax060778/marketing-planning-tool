@@ -1,0 +1,45 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL1" (
+	IN in_acronym nvarchar(25)
+	,IN in_description nvarchar(255)
+	,IN in_budget_year_id bigint
+	,IN in_region_id bigint
+	,IN in_subregion_id bigint
+	,IN in_user_id bigint
+	,IN in_budget DECIMAL(19, 2)
+    ,IN in_team_type_id bigint
+	,IN in_implement_execution_level tinyint
+	,IN in_crt_related tinyint
+	,OUT out_hl1_id bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+	INSERT INTO HL1 (
+	 acronym
+	,description
+	,budget_year_id
+	,region_id
+	,subregion_id
+	,created_user_id
+	,budget
+	,team_type_id
+	,implement_execution_level
+	,crt_related
+	)
+	VALUES (
+	 in_acronym
+	,in_description
+	,in_budget_year_id
+	,in_region_id
+	,in_subregion_id
+	,in_user_id
+	,in_budget
+	,in_team_type_id
+	,in_implement_execution_level
+	,in_crt_related
+	);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl1_id FROM "PLANNING_TOOL"."HL1";
+END;

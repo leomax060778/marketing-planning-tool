@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Dimension:dimension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL2" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL2" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
   <descriptions defaultDescription="AT_HL2"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
@@ -7,53 +7,41 @@
       <descriptions defaultDescription="HL2_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="HL2_ID"/>
     </attribute>
-    <attribute id="DESCRIPTION" order="2" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="DESCRIPTION"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="DESCRIPTION"/>
-    </attribute>
-    <attribute id="ACRONYM" order="3" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="ACRONYM"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ACRONYM"/>
-    </attribute>
-    <attribute id="BUDGET_YEAR_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="BUDGET_YEAR_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="BUDGET_YEAR_ID"/>
-    </attribute>
-    <attribute id="REGION_ID" order="5" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="REGION_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="REGION_ID"/>
-    </attribute>
-    <attribute id="SUBREGION_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="SUBREGION_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="SUBREGION_ID"/>
-    </attribute>
-    <attribute id="ORGANIZATION_ACRONYM" order="7" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="ORGANIZATION_ACRONYM"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ORGANIZATION_ACRONYM"/>
-    </attribute>
-    <attribute id="ORGANIZATION_NAME" order="8" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="ORGANIZATION_NAME"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ORGANIZATION_NAME"/>
-    </attribute>
-    <attribute id="TEAM_TYPE_ID" order="9" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="TEAM_TYPE_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="TEAM_TYPE_ID"/>
-    </attribute>
-    <attribute id="HL2_BUDGET_TOTAL" order="10" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="HL2_BUDGET_TOTAL"/>
-    </attribute>
-    <attribute id="ENABLED" order="11" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="ENABLED" order="2" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="ENABLED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ENABLED"/>
     </attribute>
-    <attribute id="DELETED" order="12" attributeHierarchyActive="false" displayAttribute="false">
+    <attribute id="DELETED" order="3" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="DELETED"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="DELETED"/>
     </attribute>
-    <attribute id="CREATED_USER_ID" order="13" attributeHierarchyActive="false" displayAttribute="false">
-      <descriptions defaultDescription="CREATED_USER_ID"/>
-      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="CREATED_USER_ID"/>
+    <attribute id="HL2_BUDGET_TOTAL" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="HL2_BUDGET_TOTAL"/>
+    </attribute>
+    <attribute id="ORGANIZATION_ACRONYM" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_ACRONYM"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ORGANIZATION_ACRONYM"/>
+    </attribute>
+    <attribute id="ORGANIZATION_NAME" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_NAME"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="ORGANIZATION_NAME"/>
+    </attribute>
+    <attribute id="HL1_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL1_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="HL1_ID"/>
+    </attribute>
+    <attribute id="IN_BUDGET" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IN_BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="IN_BUDGET"/>
+    </attribute>
+    <attribute id="CRT_RELATED" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRT_RELATED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="CRT_RELATED"/>
+    </attribute>
+    <attribute id="IMPLEMENT_EXECUTION_LEVEL" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IMPLEMENT_EXECUTION_LEVEL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="IMPLEMENT_EXECUTION_LEVEL"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
@@ -61,9 +49,6 @@
     <tableProxies>
       <tableProxy>
         <table schemaName="PLANNING_TOOL" columnObjectName="HL2"/>
-        <columnFilter columnName="ENABLED">
-          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="1"/>
-        </columnFilter>
       </tableProxy>
     </tableProxies>
     <joins/>

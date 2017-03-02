@@ -1,7 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_BUDGET_ROUTE" ( 
 	IN in_hl4_id bigint,
 	IN in_route_id bigint,
-	IN in_percentage decimal(19,2),
+	IN in_percentage decimal(19, 6),
 	IN in_created_user_id bigint,
 	OUT out_hl4_budget_route_id bigint
 	) 

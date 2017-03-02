@@ -9,16 +9,27 @@ var GET_COST_CENTER_BY_ID = "GET_COST_CENTER_BY_ID";
 var GET_COST_CENTER_BY_CODE = "GET_COST_CENTER_BY_CODE";
 var GET_COST_CENTER_BY_HL6_ID = "GET_COST_CENTER_BY_HL6_ID";
 var GET_COST_CENTER_TEAMS_BY_CENTER_ID = "GET_COST_CENTER_TEAMS_BY_CENTER_ID";
+var GET_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_CENTER_ID = "GET_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_CENTER_ID";
+var GET_COST_CENTER_EMPLOYEE = "GET_COST_CENTER_EMPLOYEE";
 var GET_COST_CENTER_COUNT_BY_CODE = "GET_COST_CENTER_COUNT_BY_CODE";
 var GET_COST_CENTER_COUNT_BY_NAME = "GET_COST_CENTER_COUNT_BY_NAME";
 var GET_COST_CENTER_AVAILABLE_TEAMS = "GET_COST_CENTER_AVAILABLE_TEAMS";
+var GET_COST_CENTER_AVAILABLE_EMPLOYEES_RESPONSIBLE = "GET_COST_CENTER_AVAILABLE_EMPLOYEES_RESPONSIBLE";
 var GET_COST_CENTER_BY_HL5_ID_SALE_ORGANIZATION_ID = "GET_COST_CENTER_BY_HL5_ID_SALE_ORGANIZATION_ID";
+var GET_COST_CENTER_TEAMS_BY_MARKETING_ORGANIZATION_ID_TEAM_ID = "GET_COST_CENTER_TEAMS_BY_MARKETING_ORGANIZATION_ID_TEAM_ID";
+var GET_COST_CENTER_TEAM_BY_COST_CENTER_ID_TEAM_ID = "GET_COST_CENTER_TEAM_BY_COST_CENTER_ID_TEAM_ID";
+var GET_COST_CENTER_BY_TEAM_ID = "GET_COST_CENTER_BY_TEAM_ID";
+var GET_COST_CENTER_IN_USE = "GET_COST_CENTER_IN_USE";
 var INS_COST_CENTER = "INS_COST_CENTER";
 var INS_COST_CENTER_TEAMS = "INS_COST_CENTER_TEAMS";
+var INS_COST_CENTER_EMPLOYEES_RESPONSIBLE = "INS_COST_CENTER_EMPLOYEES_RESPONSIBLE";
 var UPD_COST_CENTER = "UPD_COST_CENTER";
 var DEL_COST_CENTER_BY_ID = "DEL_COST_CENTER_BY_ID";
 var DEL_COST_CENTER_TEAMS_BY_COST_CENTER_ID = "DEL_COST_CENTER_TEAMS_BY_COST_CENTER_ID";
+var DEL_COST_CENTER_TEAMS_BY_COST_CENTER_ID_TEAM_ID = "DEL_COST_CENTER_TEAMS_BY_COST_CENTER_ID_TEAM_ID";
+var DEL_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID = "DEL_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID";
 var DEL_HARD_COST_CENTER_TEAMS_BY_COST_CENTER_ID = "DEL_HARD_COST_CENTER_TEAMS_BY_COST_CENTER_ID";
+var DEL_HARD_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID = "DEL_HARD_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID";
 var DEL_COST_CENTER_TEAMS_BY_TEAM_ID = "DEL_COST_CENTER_TEAMS_BY_TEAM_ID";
 /******************************************************/
 
@@ -68,12 +79,27 @@ function getCostCenterTeamsByCostCenterId(id){
 	return db.extractArray(list.out_result);
 }
 
+function getCostCenterEmployeeResponsibleByCostCenterId(id){
+	var parameters = {in_cost_center_id: id};
+	var list = db.executeProcedureManual(GET_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_CENTER_ID, parameters);
+	return db.extractArray(list.out_result);
+}
+
 function getCostCenterAvailableTeams(editMode, costCenterId){
 	var parameters = {
 			in_edit_mode: editMode,
 			in_cost_center_id: costCenterId
 			};
 	var list = db.executeProcedureManual(GET_COST_CENTER_AVAILABLE_TEAMS, parameters);
+	return db.extractArray(list.out_result);
+}
+
+function getCostCenterAvailableEmployeeResponsible(editMode, costCenterId){
+	var parameters = {
+		in_edit_mode: editMode,
+		in_cost_center_id: costCenterId
+	};
+	var list = db.executeProcedureManual(GET_COST_CENTER_AVAILABLE_EMPLOYEES_RESPONSIBLE, parameters);
 	return db.extractArray(list.out_result);
 }
 
@@ -86,13 +112,62 @@ function getCostCenterByL5IdSaleOrganizationId(hl5Id, saleOrganizationId){
 	return db.extractArray(list.out_result)[0] || null;
 }
 
-function insCostCenter(name, description, userId, code, employeeResponsibleId, salesOrganizationId){
+function getCostCenterEmployee(employeeResponsibleId, costCenterId){
+	var parameters = {
+		in_employee_responsible_id: employeeResponsibleId,
+		in_cost_center_id: costCenterId
+	};
+	var list = db.executeProcedureManual(GET_COST_CENTER_EMPLOYEE, parameters);
+
+	return db.extractArray(list.out_result)[0] || null;
+}
+
+function getCostCenterTeamByMarketingOrganizationIdTeamId(marketingOrganizationId, teamId){
+	var parameters = {
+		in_marketing_organization_id: marketingOrganizationId,
+		in_team_id: teamId
+	};
+	var list = db.executeProcedureManual(GET_COST_CENTER_TEAMS_BY_MARKETING_ORGANIZATION_ID_TEAM_ID, parameters);
+
+	return db.extractArray(list.out_result)[0] || null;
+}
+
+function getCostCenterTeamByCostCenterIdTeamId(costCenterId, teamId){
+	var parameters = {
+		in_cost_center_id: costCenterId,
+		in_team_id: teamId
+	};
+	var list = db.executeProcedureManual(GET_COST_CENTER_TEAM_BY_COST_CENTER_ID_TEAM_ID, parameters);
+
+	return db.extractArray(list.out_result)[0] || null;
+}
+
+function costCenterInUseByTeamSaleOrganization(costCenterId, teamId, saleOrganizationId) {
+	var parameters = {
+		in_cost_center_id: costCenterId,
+		in_team_id: teamId,
+		in_sale_organization_id: saleOrganizationId
+	};
+	var list = db.executeProcedureManual(GET_COST_CENTER_BY_TEAM_ID, parameters);
+
+	return db.extractArray(list.out_result);
+}
+
+function costCenterInUse(costCenterId) {
+	var parameters = {
+		in_cost_center_id: costCenterId
+	};
+	var list = db.executeProcedureManual(GET_COST_CENTER_IN_USE, parameters);
+
+	return db.extractArray(list.out_result);
+}
+
+function insCostCenter(name, description, userId, code, salesOrganizationId){
 	var parameters = {
 		in_name: name,
 		in_user_id: userId,
 		in_code: code,
 		in_description: description,
-		in_employee_responsible_id: employeeResponsibleId,
 		in_sales_organization_id: salesOrganizationId
 	};
 	return db.executeScalarManual(INS_COST_CENTER, parameters, 'out_cost_center_id');
@@ -107,14 +182,22 @@ function insCostCenterTeams(costCenterId, userId, hl3Id){
 	return db.executeScalarManual(INS_COST_CENTER_TEAMS, parameters, 'out_cost_center_teams_id');
 }
 
-function updCostCenter(costCenterId, name, description, userId, code, employeeResponsibleId, salesOrganizationId){
+function insCostCenterEmployeeResponsible(costCenterId, employeeResponsibleId, userId){
+	var parameters = {
+		in_user_id: userId,
+		in_employee_responsible_id: employeeResponsibleId,
+		in_cost_center_id: costCenterId
+	};
+	return db.executeScalarManual(INS_COST_CENTER_EMPLOYEES_RESPONSIBLE, parameters, 'out_result');
+}
+
+function updCostCenter(costCenterId, name, description, userId, code, salesOrganizationId){
 	var parameters = {
 		in_cost_center_id: costCenterId,
 		in_name: name,
 		in_description: description,
 		in_user_id: userId,
 		in_code: code,
-		in_employee_responsible_id: employeeResponsibleId,
         in_sales_organization_id: salesOrganizationId
 	};
 	return db.executeScalarManual(UPD_COST_CENTER, parameters, 'out_result');
@@ -136,9 +219,31 @@ function delCostCenterTeamsByCostCenterId(id, userId){
 	return db.executeScalarManual(DEL_COST_CENTER_TEAMS_BY_COST_CENTER_ID, parameters, 'out_result');
 }
 
-function delHardCostCenterTeamsByCostCenterId(id){
-	var parameters = {in_cost_center_id: id};
+function delCostCenterTeamsByCostCenterIdTeamId(costCenterId, teamId, userId){
+	var parameters = {
+		in_cost_center_id: costCenterId,
+		in_team_id: teamId,
+		in_user_id: userId
+	};
+	return db.executeScalarManual(DEL_COST_CENTER_TEAMS_BY_COST_CENTER_ID_TEAM_ID, parameters, 'out_result');
+}
+
+function delHardCostCenterTeamsByCostCenterId(){
+	var parameters = {};
 	return db.executeScalarManual(DEL_HARD_COST_CENTER_TEAMS_BY_COST_CENTER_ID, parameters, 'out_result');
+}
+
+function delCostCenterEmployeeResponsibleByCostCenterId(id, userId){
+	var parameters = {
+		in_cost_center_id: id,
+		in_user_id: userId
+	};
+	return db.executeScalarManual(DEL_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID, parameters, 'out_result');
+}
+
+function delHardCostCenterEmployeeResponsibleByCostCenterId(id){
+	var parameters = {in_cost_center_id: id};
+	return db.executeScalarManual(DEL_HARD_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID, parameters, 'out_result');
 }
 
 function delCostCenterTeamsByTeamId(id, userId){

@@ -36,7 +36,6 @@ function getRegionById(regionId){
 
 /*EXECUTE QUERY TO INSERT NEW REGION*/
 function insertRegion(objRegion, userId){
-	var spResult = [];
 	var parameters = {};
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;
 	parameters.IN_REGION_ISO = objRegion.IN_REGION_ISO;
@@ -48,8 +47,7 @@ function insertRegion(objRegion, userId){
 
 /*EXECUTE QUERY TO UPDATE REGION*/
 function updateRegion(objRegion, userId){
-	var spResult = [];
-	
+
 	var parameters = {};
 	parameters.IN_REGION_ID = objRegion.IN_REGION_ID;
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;
@@ -62,7 +60,6 @@ function updateRegion(objRegion, userId){
 
 /*EXECUTE QUERY TO UPDATE REGION*/
 function getRegionByName(objRegion){
-	var spResult = [];
 	var parameters = {};
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;	
 	var result = db.executeProcedureManual(GET_REGION_BY_NAME,parameters,"out_result");
@@ -72,8 +69,8 @@ function getRegionByName(objRegion){
 /*EXECUTE QUERY TO DELETE REGION*/
 function delRegion(objRegion, userId){
 	var parameters = {};
-	parameters.in_region_id = objRegion.IN_REGION_ID,
-	parameters.in_modified_user_id = userId
+	parameters.in_region_id = objRegion.IN_REGION_ID;
+	parameters.in_modified_user_id = userId;
 	return db.executeScalar(DEL_REGION, parameters,"out_result");
 }
 

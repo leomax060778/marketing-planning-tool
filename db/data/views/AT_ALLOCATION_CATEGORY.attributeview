@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_ALLOCATION_CATEGORY" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_ALLOCATION_CATEGORY"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="DELETED" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY" columnName="DELETED"/>
+    </attribute>
+    <attribute id="ENABLED" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="ALLOCATION_CATEGORY_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ALLOCATION_CATEGORY_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY" columnName="ALLOCATION_CATEGORY_ID"/>
+    </attribute>
+    <attribute id="MEASURE_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MEASURE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY" columnName="MEASURE_ID"/>
+    </attribute>
+    <attribute id="NAME" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY" columnName="NAME"/>
+    </attribute>
+    <attribute id="DESCRIPTION" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DESCRIPTION"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY" columnName="DESCRIPTION"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="ALLOCATION_CATEGORY" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

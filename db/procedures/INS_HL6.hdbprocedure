@@ -1,7 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6" 
 (
 	 in in_hl6_crm_description nvarchar(100)
-	,in in_budget decimal(19,2)
+	,in in_acronym nvarchar(25)
+	,in in_budget decimal(19, 2)
 	,in in_hl5_id bigint
 	,in in_route_to_market_id bigint
 	,in in_campaign_objective_id bigint
@@ -16,37 +17,34 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6"
 	,in in_employee_responsible_id bigint
 	,in in_cost_center_id bigint
 	,in in_in_budget tinyint
-	,in in_budget_spend_q1 decimal(19,2)
-	,in in_budget_spend_q2 decimal(19,2)
-	,in in_budget_spend_q3 decimal(19,2)
-	,in in_budget_spend_q4 decimal(19,2)
+	,in in_budget_spend_q1 decimal(19, 2)
+	,in in_budget_spend_q2 decimal(19, 2)
+	,in in_budget_spend_q3 decimal(19, 2)
+	,in in_budget_spend_q4 decimal(19, 2)
 	,in in_euro_conversion_id bigint
 	,in in_hl6_status_detail_id bigint
 	,in in_sales_organization_id bigint
 	,in in_created_user_id bigint
-	,OUT out_hl6_id bigint
+	,in in_distribution_channel_id bigint
+	,in in_venue NVARCHAR(255)
+    ,in in_city NVARCHAR(255)
+    ,in in_country NVARCHAR(255)
+    ,in in_url NVARCHAR(255)
+    ,in in_results_campaign_q1 decimal(19, 2)
+    ,in in_results_campaign_q2 decimal(19, 2)
+    ,in in_results_campaign_q3 decimal(19, 2)
+    ,in in_results_campaign_q4 decimal(19, 2)
+    ,in in_planned_start_date timestamp
+    ,in in_planned_end_date timestamp
+    ,in in_street nvarchar(255)
+    ,in in_postal_code nvarchar(20)
+	,OUT out_hl6_id bigint 
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-	DECLARE va_acronym INT;
-	DECLARE va_acronym_string NVARCHAR(25);
-	va_acronym := 0;
-	va_acronym_string:='';
-		
-	select case when L6COUNT = 0 then 1 else L6COUNT end into va_acronym
-	from (
-		select count(*) AS l6Count FROM HL6 where HL5_ID = in_hl5_id
-	);
-	
-	if va_acronym != 1
-	then
-		select CAST(HL6.acronym AS INT) + 1 into va_acronym from HL6 where HL6.HL6_ID = (SELECT max(HL6_ID) FROM HL6 where HL5_ID = in_hl5_id);
-	END IF;
-
-	va_acronym_string:= CONCAT(SUBSTRING('000', 1, 3 - LENGTH(TO_NVARCHAR(va_acronym))), TO_NVARCHAR(va_acronym));
-	INSERT INTO HL6 
+	INSERT INTO HL6
 	(
  hl6_crm_description
 ,acronym
@@ -73,10 +71,23 @@ BEGIN
 ,hl6_status_detail_id
 ,sales_organization_id
 ,created_user_id
+,distribution_channel_id
+,venue 
+,city 
+,country 
+,url
+,results_campaign_q1
+,results_campaign_q2
+,results_campaign_q3
+,results_campaign_q4
+,planned_start_date
+,planned_end_date
+,street
+,postal_code
 	)
 	VALUES (
  in_hl6_crm_description
-,va_acronym_string
+,in_acronym
 ,in_budget
 ,in_hl5_id
 ,in_route_to_market_id
@@ -100,6 +111,19 @@ BEGIN
 ,in_hl6_status_detail_id
 ,in_sales_organization_id
 ,in_created_user_id
+,in_distribution_channel_id
+,in_venue
+,in_city
+,in_country
+,in_url
+,in_results_campaign_q1
+,in_results_campaign_q2
+,in_results_campaign_q3
+,in_results_campaign_q4
+,in_planned_start_date
+,in_planned_end_date
+,in_street
+,in_postal_code
 );
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_id FROM "PLANNING_TOOL"."HL6";

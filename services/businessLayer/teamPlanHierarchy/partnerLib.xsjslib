@@ -11,29 +11,28 @@ function getAllPartnerType(){
 	return dataPartner.getAllPartnerType();
 }
 
-function getPartnerByHl4Id(hl4Id){
-	var partners = dataPartner.getPartnerByHl4Id(hl4Id);
-	var total = 0;
-	partners.forEach(function(partner){
-		total = total + Number(partner.VALUE);
-	});
-	return {"partners": partners, "total": total};
+function getPartnerByHl4Id(hl4Id, currencyValueAux){
+	return parser(dataPartner.getPartnerByHl4Id(hl4Id), currencyValueAux);
 }
 
-function getPartnerByHl5Id(hl5Id){
-	var partners = dataPartner.getPartnerByHl5Id(hl5Id);
-	var total = 0;
-	partners.forEach(function(partner){
-		total = total + Number(partner.VALUE);
-	});
-	return {"partners": partners, "total": total};
+function getPartnerByHl5Id(hl5Id, currencyValueAux){
+	return parser(dataPartner.getPartnerByHl5Id(hl5Id), currencyValueAux);
 }
 
-function getPartnerByHl6Id(hl6Id){
-	var partners = dataPartner.getPartnerByHl6Id(hl6Id);
+function getPartnerByHl6Id(hl6Id, currencyValueAux) {
+	return parser(dataPartner.getPartnerByHl6Id(hl6Id), currencyValueAux);
+}
+
+function parser(partners, currencyValueAux){
 	var total = 0;
+	var rdo = [];
 	partners.forEach(function(partner){
-		total = total + Number(partner.VALUE);
+		var obj = {};
+		Object.keys(partner).forEach(function(key){
+			obj[key] = key == "VALUE" ? (Number(partner.VALUE) * currencyValueAux ).toFixed(2): partner[key];
+		});
+		rdo.push(obj);
+		total = total + parseFloat(obj.VALUE);
 	});
-	return {"partners": partners, "total": total};
+	return {"partners": rdo, "total": total};
 }

@@ -11,8 +11,6 @@ var regionId = "REGION_ID";
 
 function processRequest() {
 	return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,"",true);
-	//return httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete,false, config.getResourceIdByName(config.settings()));
-	//return	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete, false,"",true);
 }
 
 function handleGet(parameters) {

@@ -1,13 +1,13 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL5_TOTAL_BUDGET" (
         IN in_hl4_id BIGINT,
-        OUT out_result DECIMAL(19,2)
+        OUT out_result DECIMAL(19, 6)
 )
 LANGUAGE SQLSCRIPT
 SQL SECURITY INVOKER
 DEFAULT SCHEMA "PLANNING_TOOL"
 AS
 BEGIN
-	DECLARE va_total_budget DECIMAL(19,2);
+	DECLARE va_total_budget DECIMAL(19, 6);
 	va_total_budget := 0;
 
     SELECT 

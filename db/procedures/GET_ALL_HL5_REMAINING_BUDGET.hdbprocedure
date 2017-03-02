@@ -1,14 +1,14 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL5_REMAINING_BUDGET" (
         IN in_hl4_id BIGINT,
-        IN in_total_budget DECIMAL(19,2),
-        OUT out_result DECIMAL(19,2)
+        IN in_total_budget DECIMAL(19, 6),
+        OUT out_result DECIMAL(19, 6)
 )
 LANGUAGE SQLSCRIPT
 SQL SECURITY INVOKER
 DEFAULT SCHEMA "PLANNING_TOOL"
 AS
 BEGIN
-	DECLARE va_remaining_budget DECIMAL(19,2);
+	DECLARE va_remaining_budget DECIMAL(19, 6);
 	va_remaining_budget := 0;
 
 	SELECT (hl4.HL4_FNC_BUDGET_TOTAL_MKT - in_total_budget)

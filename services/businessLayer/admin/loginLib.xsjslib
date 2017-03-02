@@ -67,6 +67,7 @@ function recoveryPassword(username,password, userId){
 	if(userLib.validatePassword(password)){//if password is valid, insert the new password with the token asociated
 		
 		var currentUser = userLib.getUserByUserName(username);
+
 		var email = currentUser['EMAIL'];
 		var user = currentUser['USER_ID'];
 		

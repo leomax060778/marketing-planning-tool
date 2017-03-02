@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_EXPECTED_OUTCOME_LEVEL" (
+		IN in_expected_outcome_id bigint,
+		IN in_expected_outcome_option_id bigint,
+		IN in_hierarchy_level_id bigint,
+		IN in_user_id bigint,
+		OUT out_expected_outcome_level_id bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		INSERT INTO "PLANNING_TOOL"."EXPECTED_OUTCOME_LEVEL" (expected_outcome_id, expected_outcome_option_id, hierarchy_level_id, created_user_id)
+		VALUES (in_expected_outcome_id, in_expected_outcome_option_id, in_hierarchy_level_id, in_user_id);
+
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_expected_outcome_level_id FROM "PLANNING_TOOL"."EXPECTED_OUTCOME_LEVEL";
+END;

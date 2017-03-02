@@ -5,7 +5,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6_PARTNER"
 	in in_partner_type_id bigint,
 	in in_hl6_id bigint,
 	in in_region_id bigint,
-	in in_value decimal(19,2),
+	in in_value decimal(19, 6),
 	in in_modified_user_id bigint,
 	out out_result bigint
 ) 

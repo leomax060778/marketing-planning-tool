@@ -17,9 +17,9 @@ function getOptionCountByCategoryId(categoryId){
 }
 
 function getOptionByCategoryId(category_id){
-	params = {"in_category_id":category_id};
+	var params = {"in_category_id":category_id};
 	var rdo = db.executeProcedure(spGetOptionByCategoryId,params);
-	return db.extractArray(rdo);
+	return db.extractArray(rdo.out_result);
 }
 
 function insertOption(option,userId){

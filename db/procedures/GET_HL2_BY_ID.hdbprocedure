@@ -2,25 +2,18 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_ID" (
 	IN in_hl2_id BIGINT
 	,OUT out_result TABLE (
 		hl2_id BIGINT
-		, acronym NVARCHAR(25)
-		, description NVARCHAR(255)
-		, budget_year_id BIGINT
-		, region_id INTEGER 
-		, subregion_id INTEGER 
-		, created_date_tz TIMESTAMP 
+		, created_date_tz TIMESTAMP
 		, modified_date_tz TIMESTAMP
 		, created_user_id BIGINT
 		, modified_user_id BIGINT
 		, enabled TINYINT
 		, deleted TINYINT
-		, REGION_NAME NVARCHAR(255)
-		, SUBREGION_NAME NVARCHAR(255)
-		, BUDGET_YEAR INTEGER
-		, hl2_budget_total DECIMAL(19,2)
+		, hl2_budget_total DECIMAL(19, 6)
 		, organization_acronym NVARCHAR(25)
 		, organization_name NVARCHAR(255)
-        , team_type_id BIGINT
-        , implement_execution_level TINYINT
+		, CRT_RELATED TINYINT
+		, IMPLEMENT_EXECUTION_LEVEL TINYINT
+		, hl1_id BIGINT
 		)
 ) 
 	LANGUAGE SQLSCRIPT
@@ -32,30 +25,20 @@ BEGIN
 	out_result =	
 	SELECT 
 		HL2.hl2_id 
-		, HL2.acronym
-		, HL2.description 
-		, HL2.budget_year_id
-		, HL2.region_id
-		, HL2.subregion_id
 		, HL2.created_date_tz
 		, HL2.modified_date_tz
 		, HL2.created_user_id
 		, HL2.modified_user_id
 		, HL2.enabled
 		, HL2.deleted
-		, R.REGION_NAME
-		, SR.SUBREGION_NAME
-		, BUY.BUDGET_YEAR
 		, HL2.hl2_budget_total
 		, HL2.ORGANIZATION_ACRONYM
 		, HL2.ORGANIZATION_NAME
-        , HL2.TEAM_TYPE_ID
-        , HL2.IMPLEMENT_EXECUTION_LEVEL
+		, HL2.CRT_RELATED
+		, HL2.IMPLEMENT_EXECUTION_LEVEL
+		, HL2.HL1_ID
 	FROM HL2
-	LEFT JOIN REGION R ON R.region_id = HL2.region_id
-	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id
-	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
-	WHERE 
+	WHERE
 		HL2.hl2_id = in_hl2_id 
 		AND HL2.deleted = 0 
 		AND HL2.enabled = 1;

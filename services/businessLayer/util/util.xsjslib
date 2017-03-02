@@ -30,9 +30,6 @@ function validateIsSapEmail(value){
 //	"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,10}"
 /**************************************************************************/
 function validateIsPassword(value){
-//	var re = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-//	return re.test(value);
-
 //Minimum 6 characters at least 1 Alphabet and 1 Number:
 	var re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 	if(! re.test(value)){
@@ -81,12 +78,6 @@ function extractObject(object) {
 
 function validateDateEndMayorStart(dateStart,dateEnd)
 {
-	/*
-	valuesStart=startDate.split("/");
-	valuesEnd=endDate.split("/");
-
-	var dateStart=new Date(valuesStart[2],(valuesStart[1]-1),valuesStart[0]);
-	var dateEnd=new Date(valuesEnd[2],(valuesEnd[1]-1),valuesEnd[0]);*/
 	if(dateStart>=dateEnd)
 	{
 		return true;

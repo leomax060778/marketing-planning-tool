@@ -7,7 +7,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3" (
     hl2_id BIGINT,
 	crm_id BIGINT, 	
 	acronym NVARCHAR(25), 
-	hl3_fnc_budget_total DECIMAL(19,2),
+	hl3_fnc_budget_total DECIMAL(19, 6),
 	created_user_id BIGINT)
 ) 
 	LANGUAGE SQLSCRIPT
@@ -25,10 +25,8 @@ BEGIN
 	CRM_ID,
 	ACRONYM,
 	"HL3".HL3_FNC_BUDGET_TOTAL,
-	--HL3_FNC.HL3_FNC_BUDGET_TOTAL,
 	"HL3".CREATED_USER_ID
 	FROM HL3
-	--INNER JOIN HL3_FNC ON HL3.hl3_id = HL3_FNC.hl3_id
 	WHERE HL3.hl3_id = in_hl3_id
 	  AND HL3.deleted = 0
 	  AND HL3.enabled = 1;

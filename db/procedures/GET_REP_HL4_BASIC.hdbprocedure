@@ -3,15 +3,17 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_REP_HL4_BASIC" (
 IN in_filter VARCHAR(5000)
 , OUT out_result TABLE(
 	  BUDGET_YEAR_ID bigint
+	, ORGANIZATION_ACRONYM NVARCHAR(255)
 	, BUDGET_YEAR nvarchar(255)
 	, PLAN_ID bigint
 	, PLAN nvarchar(255)
-	, BUDGET_TOTAL decimal(19,2)
-	, REMAINING decimal(19,2)
-	, ALLOCATED decimal(19,2)
-	, BG_REGION_NAME nvarchar(255)
-	, VALUE decimal(19,2)
-	, PERCENTAGE decimal(19,2)
+	, HL2_BUDGET_TOTAL decimal(19, 6)
+	, REMAINING decimal(19, 6)
+	, ALLOCATED decimal(19, 6)
+	--, VALUE decimal(19, 6)
+	, PERCENTAGE decimal(19, 6)
+	, BUDGET_REGION_NAME NVARCHAR(55)
+	--, PERCENTAGE decimal(19, 6)
 	, REGION_ID BIGINT
 	)
 	 ,OUT out_result_rg_name TABLE (REGION_NAME nvarchar(255))

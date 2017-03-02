@@ -176,9 +176,9 @@ function insertHl6ExpectedOutcomes(in_hl6_id, in_comments, in_created_user_id){
 	return rdo;
 }
 
-function insertHl6ExpectedOutcomesDetail(in_hl6_id, in_outcomes_id, in_euro_value, in_volume_value, in_created_user_id){
+function insertHl6ExpectedOutcomesDetail(in_hl6_expected_outcomes_id, in_outcomes_id, in_euro_value, in_volume_value, in_created_user_id){
 	var parameters = {};
-	parameters.in_hl6_id = in_hl6_id;
+	parameters.in_hl6_expected_outcomes_id = in_hl6_expected_outcomes_id;
 	parameters.in_outcomes_id = in_outcomes_id;
 	parameters.in_euro_value = in_euro_value;
 	parameters.in_volume_value = in_volume_value;

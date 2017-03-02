@@ -1,23 +1,28 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_HIERARCHY_LEVEL_ID" ( 
 	IN in_hierarchy_level_id BIGINT,
-	OUT out_result TABLE (category_id BIGINT, hierarchy_level_id BIGINT, 
-							measure_id BIGINT, name NVARCHAR(60), 
-							description NVARCHAR(255), in_processing_report TINYINT)
+	OUT out_result TABLE (category_id integer, hierarchy_level_id integer,
+							measure_id integer, name nvarchar(60),
+							description nvarchar(255), in_processing_report tinyint)
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	out_result = SELECT distinct(category.category_id) as category_id,
-			   hierarchy_level_id,
-			   measure_id,
-			   name,
-			   description,
-				IN_PROCESSING_REPORT
-		FROM "PLANNING_TOOL".category category
-		WHERE hierarchy_level_id = in_hierarchy_level_id
-		  AND category.enabled = 1
-		  AND category.deleted = 0;
+	out_result =
+    select distinct(ac.allocation_category_id) as category_id
+    ,acol.hierarchy_level_id
+    ,ac.measure_id
+    ,ac.name
+    ,ac.description
+    ,acol.in_processing_report
+    from allocation_category ac
+    inner join allocation_category_option_level acol on acol.allocation_category_id = ac.allocation_category_id
+    inner join hierarchy_level hl on hl.hierarchy_level_id = acol.hierarchy_level_id
+    where acol.hierarchy_level_id = in_hierarchy_level_id
+    and ac.enabled = 1
+    and ac.deleted = 0
+    and acol.enabled = 1
+    and acol.deleted = 0;
 
 END;

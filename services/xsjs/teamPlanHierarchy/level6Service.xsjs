@@ -10,8 +10,10 @@ var section = "FOR_SEARCH";
 var method = "method";
 var id = "id";
 var setStatusInCRM = "SETINCRM";
+var changeStatus = "CHANGESTATUS";
 var sendInCrmNotificationMail = "SENDMAIL";
-
+var categories = "HL5_CATEGORIES";
+var expectedOutcomes = "HL5_EXPECTED_OUTCOMES";
 /******************************************/
 
 function processRequest(){	
@@ -22,19 +24,36 @@ function handleGet(params, userId) {
 	var in_hl5_id = httpUtil.getUrlParameters().get("HL5_ID");
 	var in_hl6_id = httpUtil.getUrlParameters().get("HL6_ID");
 	var param_section = httpUtil.getUrlParameters().get("section");
+	var hl5_categories = httpUtil.getUrlParameters().get("HL5_CATEGORIES");
+	var hl5_expectedOutcomes = httpUtil.getUrlParameters().get("HL5_EXPECTED_OUTCOMES");
 	var result = {};
-	if(in_hl5_id){
+
+	if(in_hl5_id && in_hl6_id === "0" ){
+
+		var acronym = hl6.getNewHl6Id(in_hl5_id);
+
+		result = acronym ? acronym : 0;
+
+	}else
+	if(in_hl5_id && !hl5_categories && !hl5_expectedOutcomes){
+
 		result = hl6.getHl6ByHl5Id(in_hl5_id);
-	} else if (in_hl6_id) {
+	}else
+	if(in_hl6_id){
+
 		result = hl6.getHl6ById(in_hl6_id);
-	} else if (param_section && param_section == section){
+	}else
+	if (param_section && param_section == section){
 		result = hl6.getLevel6ForSearch();
-	} else{
+	}else if(hl5_categories && in_hl5_id && hl5_categories == categories){
+		result = hl6.getHl6Categories(in_hl5_id);
+	}else if(hl5_expectedOutcomes && in_hl5_id && hl5_expectedOutcomes == expectedOutcomes) {
+		result = hl6.getHl6ExpectedOutcomesOptions(in_hl5_id);
+	}else{
 		throw ErrorLib.getErrors().BadRequest("","level6Services/handleGet","invalid parameter name (can be: HL5_ID, HL6_ID or section)");
 	}
-	
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
-}
+	}
 
 //Implementation of PUT call -- Update HL6
 function handlePut(reqBody, userId){
@@ -50,6 +69,10 @@ function handlePut(reqBody, userId){
 		    	var rdo = hl6.setHl6StatusInCRM(hl6Id, userId);
 				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 		        break;
+			case changeStatus:
+				var rdo = hl6.changeHl6StatusOnDemand(hl6Id, userId);
+				return	httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
+				break;
 		    default:
 		    	throw ErrorLib.getErrors().BadRequest("","level6Services/handlePut","insufficient parameters");
 		}	

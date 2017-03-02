@@ -12,9 +12,13 @@ function getEmployeeResponsibleByEmployeeNumber(data, userId){
 }
 
 function insEmployeeResponsible( data, userId){
-	return insEmployeeResponsible( data.FULL_NAME,data.EMPLOYEE_NUMBER, userId,true);
+	return dbER.insEmployeeResponsible( data.FULL_NAME,data.EMPLOYEE_NUMBER, userId,true);
 }
 
 function updEmployeeResponsible(data, userId,autoCommit){
-	return updEmployeeResponsible(data.employeeResponsibleId,data.FULL_NAME, data.EMPLOYEE_NUMBER, userId,true);
+	return dbER.updEmployeeResponsible(data.employeeResponsibleId,data.FULL_NAME, data.EMPLOYEE_NUMBER, userId,true);
+}
+
+function getEmployeeResponsibleById(data, userId){
+	return dbER.getEmployeeResponsibleById(data.employeeResponsibleId);
 }

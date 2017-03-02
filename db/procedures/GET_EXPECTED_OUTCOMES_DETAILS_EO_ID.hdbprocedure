@@ -1,8 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_EXPECTED_OUTCOMES_DETAILS_EO_ID" ( 
 		IN in_hl4_expected_outcomes_id bigint,
 		OUT out_expected_outcomes_details TABLE(
-			euro_value DECIMAL(19,2),
-			amount_value DECIMAL(19,2),
+			euro_value DECIMAL(19, 6),
+			amount_value DECIMAL(19, 6),
 			outcomes_id BIGINT,
 			outcomes_name NVARCHAR(255),
 			outcomes_type_id BIGINT,
@@ -14,11 +14,19 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_EXPECTED_OUTCOMES_D
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	out_expected_outcomes_details = SELECT heod.euro_value, heod.amount_value, outcomes.outcomes_id, 
-	outcomes.outcomes_name, outcomes_type.outcomes_type_id, outcomes_type.outcomes_type_name
-	 from HL4_EXPECTED_OUTCOMES_DETAIL heod INNER JOIN OUTCOMES outcomes
-	 ON heod.outcomes_id = outcomes.outcomes_id
-	 inner join outcomes_type
-	 on outcomes_type.outcomes_type_id = outcomes.outcomes_type_id
-		where heod.deleted = 0 and heod.enabled = 1 and heod.hl4_expected_outcomes_id = in_hl4_expected_outcomes_id;
+	out_expected_outcomes_details =
+	SELECT
+	  heod.euro_value
+	, heod.amount_value
+	, outcomes.expected_outcome_option_id   AS outcomes_id
+	, outcomes.name                         AS outcomes_name
+	, outcomes_type.expected_outcome_id     AS outcomes_type_id
+	, outcomes_type.name                    AS outcomes_type_name
+	 from hl4_expected_outcomes_detail heod
+	 --inner join outcomes outcomes on heod.outcomes_id = outcomes.outcomes_id
+	 --inner join outcomes_type on outcomes_type.outcomes_type_id = outcomes.outcomes_type_id
+	 inner join expected_outcome_level eol on heod.outcomes_id = eol.expected_outcome_level_id
+	 inner join expected_outcome_option outcomes on outcomes.expected_outcome_option_id = eol.expected_outcome_option_id
+	 inner join expected_outcome outcomes_type on outcomes_type.expected_outcome_id = eol.expected_outcome_id
+	where heod.deleted = 0 and heod.enabled = 1 and heod.hl4_expected_outcomes_id = in_hl4_expected_outcomes_id;
 END;

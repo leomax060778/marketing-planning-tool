@@ -18,10 +18,11 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_ACRONYM_AND_
 		, REGION_NAME NVARCHAR(255)
 		, SUBREGION_NAME NVARCHAR(255)
 		, BUDGET_YEAR BIGINT
-		, hl2_budget_total DECIMAL(19,2)
+		, hl2_budget_total DECIMAL(19, 6)
 		, organization_acronym NVARCHAR(25)
 		, organization_name NVARCHAR(255)
-        , team_type_id BIGINT		
+        , team_type_id BIGINT
+        , crt_related TINYINT
 		)
 ) 
 	LANGUAGE SQLSCRIPT
@@ -32,12 +33,12 @@ BEGIN
 
 	out_result =	
 	SELECT 
-		HL2.hl2_id 
-		, HL2.acronym
-		, HL2.description 
-		, HL2.budget_year_id
-		, HL2.region_id
-		, HL2.subregion_id
+		  HL2.hl2_id
+		, HL1.acronym
+		, HL1.description
+		, HL1.budget_year_id
+		, HL1.region_id
+		, HL1.subregion_id
 		, HL2.created_date_tz
 		, HL2.modified_date_tz
 		, HL2.created_user_id
@@ -50,16 +51,20 @@ BEGIN
 		, HL2.hl2_budget_total
 		, HL2.ORGANIZATION_ACRONYM
 		, HL2.ORGANIZATION_NAME
-        , HL2.TEAM_TYPE_ID		
-	FROM HL2
-	LEFT JOIN REGION R ON R.region_id = HL2.region_id
-	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id
-	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
+        , HL1.TEAM_TYPE_ID
+        , HL2.CRT_RELATED
+	FROM HL1
+	LEFT JOIN HL2 ON HL2.HL1_ID = HL1.HL1_ID
+	LEFT JOIN REGION R ON R.region_id = HL1.region_id
+	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL1.subregion_id
+	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL1.budget_year_id
 	WHERE 
-		UPPER(HL2.acronym)= UPPER(in_acronym) 
+		UPPER(HL1.acronym)= UPPER(in_acronym)
 		AND UPPER(HL2.ORGANIZATION_ACRONYM) = UPPER(in_org_acronym)
-		AND HL2.budget_year_id = IN_BUDGET_YEAR_ID
-		AND HL2.deleted = 0 
-		AND HL2.enabled = 1;
+		AND HL1.budget_year_id = IN_BUDGET_YEAR_ID
+		AND HL1.deleted = 0
+		AND HL1.enabled = 1
+		AND HL2.deleted = 0
+        AND HL2.enabled = 1;
 
 END;

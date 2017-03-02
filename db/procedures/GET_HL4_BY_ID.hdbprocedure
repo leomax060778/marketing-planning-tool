@@ -12,11 +12,11 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ID" (
 	is_annual_plan TINYINT
 	,euro_conversion_id integer
 	,in_budget TINYINT
-	,hl4_fnc_budget_spend_q1 DECIMAL(19,2)
-	,hl4_fnc_budget_spend_q2 DECIMAL(19,2)
-	,hl4_fnc_budget_spend_q3 DECIMAL(19,2)
-	,hl4_fnc_budget_spend_q4 DECIMAL(19,2)
-	,hl4_fnc_budget_total_mkt DECIMAL(19,2)
+	,hl4_fnc_budget_spend_q1 DECIMAL(19, 2)
+	,hl4_fnc_budget_spend_q2 DECIMAL(19, 2)
+	,hl4_fnc_budget_spend_q3 DECIMAL(19, 2)
+	,hl4_fnc_budget_spend_q4 DECIMAL(19, 2)
+	,hl4_fnc_budget_total_mkt DECIMAL(19, 2)
 	) 
 ) 
 	LANGUAGE SQLSCRIPT

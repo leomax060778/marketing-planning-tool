@@ -117,6 +117,44 @@ function getErrors(){
         return e;
     }
 
+    Errors.Hl6AcronymError  = function(message,stack, details){
+        var e={};
+        e.name = "Hl6 Acronym error";
+        e.message = message || "Hl6 Acronym error";
+        e.code = 453;
+        e.stack = stack || "";
+        e.details = details || "without details";
+        e.data = "";
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
+
+    Errors.OutOfRange  = function(message,stack, details){
+        var e={};
+        e.name = "Out of Range";
+        e.message = message || "Out of Range";
+        e.code = 454;
+        e.stack = stack || "";
+        e.details = details || "without details";
+        e.data = "";
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
+
+    Errors.NoCurrencyForBudgetYear  = function(message,stack, details){
+        var e={};
+        e.name = "No Currency for Budget Year";
+        e.message = message || "No Currency for Budget Year";
+        e.code = 455;
+        e.stack = stack || "";
+        e.details = details || "without details";
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
+
     /******************* 500 **********************************************/
     Errors.InternalServerError  = function(message,stack, details){
     	var e={};
@@ -181,6 +219,9 @@ function getErrors(){
         '450':  Errors.CustomError(),
         '451':  Errors.LoginError(),
         '452':  Errors.MailError(),
+        '453':  Errors.Hl6AcronymError(),
+        '454':  Errors.OutOfRange(),
+        '455':  Errors.NoCurrencyForBudgetYear(),
         '500':  Errors.InternalServerError(),
         '501':  Errors.NotImplemented(),
         '503':  Errors.ServiceUnavailable(),
