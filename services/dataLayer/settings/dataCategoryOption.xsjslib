@@ -18,6 +18,7 @@ var UPD_ALLOCATION_OPTION = "UPD_ALLOCATION_OPTION";
 var DEL_ALLOCATION_OPTION = "DEL_ALLOCATION_OPTION";
 var GET_AVAILABLE_OPTION_BY_CATEGORY_ID_BY_LEVEL_ID = "GET_AVAILABLE_OPTION_BY_CATEGORY_ID_BY_LEVEL_ID";
 var GET_ASSIGNED_OPTION_BY_CATEGORY_ID_BY_LEVEL_ID = "GET_ASSIGNED_OPTION_BY_CATEGORY_ID_BY_LEVEL_ID";
+var GET_ALLOCATION_OPTION_BY_LEVEL_BY_CATEGORY = "GET_ALLOCATION_OPTION_BY_LEVEL_BY_CATEGORY";
 /******************************************************/
 
 var hierarchyLevel = {
@@ -27,6 +28,13 @@ var hierarchyLevel = {
 	"hl6": 3
 };
 
+function getOptionByLevelByCategory(level, categoryId){
+	var rdo = db.executeProcedure(GET_ALLOCATION_OPTION_BY_LEVEL_BY_CATEGORY,
+		{'in_allocation_category_id':categoryId, 'in_hierarchy_level_id':level});
+
+	return db.extractArray(rdo.out_result);
+
+}
 
 function getOptionCountByCategoryId(categoryId){	
 	if(categoryId){

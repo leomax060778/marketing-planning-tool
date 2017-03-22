@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_IMPORT_L5_L6" (
+	in in_import_id bigint,
+	in in_user_id bigint,
+	out out_result integer
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    update import_l5_l6
+    set deleted = 1
+    , enabled = 0
+    , modified_user_id = in_user_id
+    , modified_date_tz = current_timestamp
+    where import_l5_l6_id = in_import_id;
+	select ::rowcount into out_result from dummy;
+END;

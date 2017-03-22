@@ -1,5 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_FOR_SEARCH" (
-		OUT out_result TABLE (
+		IN in_user_id bigint
+		, IN in_isSA tinyint
+		, OUT out_result TABLE (
 			id bigint,
 			parent_id bigint,
 			BUDGET_YEAR BIGINT,
@@ -15,7 +17,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_FOR_SEARCH" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-	out_result = SELECT HL5.hl5_id as id
+	out_result = SELECT DISTINCT HL5.hl5_id as id
 		, HL5.hl4_id as parent_id
 		, BGY.BUDGET_YEAR
 		, HL1.acronym
@@ -38,6 +40,7 @@ BEGIN
 	FROM HL5 hl5
 	INNER JOIN HL4 hl4 ON hl4.hl4_id=hl5.hl4_id AND hl4.enabled=1 AND hl4.deleted=0
 	INNER JOIN HL3 ON HL4.hl3_id = HL3.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
+	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID
     INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
     INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id AND hl1.enabled=1 AND hl1.deleted=0
 	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
@@ -45,5 +48,6 @@ BEGIN
 	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
 	WHERE hl5.deleted = 0
 	  AND hl5.enabled = 1
+	  AND (in_isSA = 1 OR HL3_USER.USER_ID = in_user_id)
 	  ORDER BY path, organization_acronym;
 END;

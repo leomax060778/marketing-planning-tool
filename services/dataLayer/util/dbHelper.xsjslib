@@ -134,6 +134,32 @@ function executeScalarManual(spName, parameters, out_result){
 	return value;
 }
 
+function executeQuery(query){
+	setConnection();
+	var value = undefined;
+
+	try{
+
+		var rs = HDB_CONNECTION.executeQuery(query);
+
+		if(rs.length > 0){
+
+			return rs;
+
+		}
+	}
+	catch(e){
+		//validateErrorCode(e, spName);
+		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",query +"++++"+ e.toString(),"dbHelper.executeQuery");
+	}
+
+	return value;
+}
+
+function getDBName(){
+	return DB_NAME;
+}
+
 function setConnection() {
 	if (HDB_CONNECTION == null || HDB_CONNECTION.isClosed()) {
 		HDB_CONNECTION = $.hdb.getConnection();
@@ -175,6 +201,8 @@ function validateErrorCode(error, spName){
 	}
 
 }
+
+
 
 
 /********************* whitout testing ***************************/

@@ -1,0 +1,31 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::CV_COMPARATIVE_L4_L5_REPORT_DATA" ( )
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    	DROP TABLE "PLANNING_TOOL"."CV_COMPARATIVE_L4_L5_REPORT_DATA"  ;
+
+         CREATE COLUMN TABLE "PLANNING_TOOL"."CV_COMPARATIVE_L4_L5_REPORT_DATA" AS
+         (
+         	SELECT
+                cv_view.HL4_ID
+                , cv_view.HL3_ID
+                , cv_view.L4_ACRONYM
+                , cv_view.L4_BUDGET
+                , cv_view.L4_STATUS_DETAIL
+                , cv_view.CATEGORY_NAME
+                , cv_view.OPTION_NAME
+                , cv_view.L4_BUDGET_DISTRIBUTION
+                , cv_view.L5_BUDGET_DISTRIBUTION
+                , cv_view.DIFFERENCE
+                , cv_view.PATH
+                , cv_view.ROW_COUNTER
+                , cv_view.L4_BUDGET / cv_view.ROW_COUNTER AS L4_BUDGET_PROP
+                , cv_view.L4_BUDGET_DISTRIBUTION / cv_view.ROW_COUNTER AS L4_BUDGET_DISTRIBUTION_PROP
+                , cv_view.L5_BUDGET_DISTRIBUTION / cv_view.ROW_COUNTER AS L5_BUDGET_DISTRIBUTION_PROP
+                , cv_view.DIFFERENCE / cv_view.ROW_COUNTER AS DIFFERENCE_PROP
+    		FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_COMPARATIVE_L4_L5_REPORT" cv_view
+    	) ;
+END;

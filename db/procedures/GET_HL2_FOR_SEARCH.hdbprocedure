@@ -1,5 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_FOR_SEARCH" (
-		OUT out_result TABLE (
+		IN in_user_id bigint
+		, IN in_isSA tinyint
+		, OUT out_result TABLE (
 			id bigint,
 			parent_id bigint,
 			organization_acronym NVARCHAR(25),
@@ -11,14 +13,16 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_FOR_SEARCH" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-	out_result = SELECT HL2.hl2_id as id
+	out_result = SELECT DISTINCT HL2.hl2_id as id
 	, hl1.hl1_id as parent_id
 		, REPLACE(HL2.organization_acronym, 'N/A', '') AS organization_acronym
 		, CONCAT(HL1.acronym, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)) AS path
 	FROM HL2
+	INNER JOIN HL2_USER ON HL2.HL2_ID = HL2_USER.HL2_ID
 	inner join hl1 on hl1.hl1_id = hl2.hl1_id
 	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
 	WHERE HL2.deleted = 0
 	  AND HL2.enabled = 1
+	  AND (in_isSA = 1 OR HL2_USER.USER_ID = in_user_id)
 	  ORDER BY path, hl2.organization_acronym;
 END;

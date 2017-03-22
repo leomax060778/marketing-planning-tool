@@ -1,0 +1,13 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_PATH_FROM_DICTIONARY_L5_L6" (
+        IN IN_USER_ID BIGINT
+		,OUT out_result TABLE (path nvarchar(255), hierarchy_level_id int)
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	out_result = select distinct path, hierarchy_level_id from dictionary_l5_l6
+					   where enabled = 1 and deleted = 0 and created_user_id = IN_USER_ID
+					   AND hierarchy_level_id = 3
+					   order by hierarchy_level_id;
+END;

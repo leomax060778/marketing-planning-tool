@@ -4,7 +4,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_HL1_ID" (
 	,IN in_is_super_Admin Tinyint
 	,OUT out_result TABLE (
 		hl2_id BIGINT
-		, hl1_id bigint
+		, hl1_id integer
 		, organization_acronym NVARCHAR(25)
 		, hl2_budget_total DECIMAL(19, 6)
         , hl3_total_count INTEGER

@@ -14,20 +14,20 @@ function processRequest(){
 function handleGet(parameters, userSessionID){
 	var type = httpUtil.getUrlParameters().get("TYPE");
 	var rdo;
-	if(!type){
-		rdo = blDetailedReport.getDetailedReport();
-	} else {
+	/*if(!type){
+		rdo = blDetailedReport.getL4DetailedReport();
+	} else {*/
 		switch(type) {
-			case 'WITH_DETAILS':
-				rdo = blDetailedReport.getDetailedReportWithDetails();
+			case 'L4':
+				rdo = blDetailedReport.getL4DetailedReport();
 				break;
-			case 'WITH_COMMENTS':
-				rdo = blDetailedReport.getDetailedReportWithCommentCampaignForecastingKpis();
+			case 'L5':
+				rdo = blDetailedReport.getL5DetailedReport();
 				break;
 			default:
-				throw ErrorLib.getErrors().BadRequest("","reportServices/handleGet","invalid parameter value (should be either WITH_DETAILS or WITH_COMMENTS)");
+				throw ErrorLib.getErrors().BadRequest("","reportServices/handleGet","invalid parameter value (should be either L4 or L5)");
 		}
-	}
+	//}
 	
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };

@@ -14,6 +14,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_HL5_ID" (
             , EURO_CONVERSION_ID BIGINT
             , CRT_RELATED TINYINT
             , SALE_ORGANIZATION NVARCHAR(255)
+            , IMPORTED tinyint
+            , IMPORT_ID INTEGER
         )
 )
 LANGUAGE SQLSCRIPT
@@ -51,6 +53,8 @@ va_intermidate = SELECT
         ,euro_conversions.euro_conversion_id AS EURO_CONVERSION_ID
         ,HL2.CRT_RELATED
         ,saleOrganization.NAME as SALE_ORGANIZATION
+        ,hl6.IMPORTED as IMPORTED
+        ,hl6.IMPORT_ID as IMPORT_ID
 
     FROM HL6 Hl6
     INNER JOIN HL5 hl5 ON hl5.hl5_id=hl6.hl5_id AND hl5.enabled=1 AND hl5.deleted=0
@@ -80,6 +84,8 @@ out_result = SELECT
 		,va_hl6.EURO_CONVERSION_ID
 		,va_hl6.CRT_RELATED
 		,va_hl6.SALE_ORGANIZATION
+		,va_hl6.IMPORTED
+        ,va_hl6.IMPORT_ID
 
     FROM :va_intermidate va_hl6
     ORDER BY va_hl6.HL6_ACRONYM ASC;

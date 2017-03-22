@@ -11,7 +11,7 @@ var GET_HL4_BUDGET_SUBREGION = "GET_HL4_BUDGET_SUBREGION";
 var GET_HL4_BUDGET_GLOBAL = "GET_HL4_BUDGET_GLOBAL";
 var GET_PLAN_BY_USER = "GET_PLAN_BY_USER";
 
-function getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userId) {	
+function getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, isSA, userId) {	
 	var parameters = {};
 	var strPlans = "";
 	if (arrPlan.length > 0)
@@ -41,6 +41,8 @@ function getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userId) {
 	}
 	
 	parameters.in_filter = filter;
+	parameters.in_isSA = isSA;
+	parameters.in_user_id = userId;
 	return db.executeProcedure(GET_REP_HL4_BASIC, parameters);
 }
 

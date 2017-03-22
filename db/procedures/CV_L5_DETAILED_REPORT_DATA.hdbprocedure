@@ -1,0 +1,389 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::CV_L5_DETAILED_REPORT_DATA" ( ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	DECLARE myrowid INTEGER;
+	myrowid := 0;
+	 CREATE COLUMN TABLE "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA_TEMP" AS 
+	 (
+	  
+		SELECT
+				BASE."TEAM_TYPE_NAME",
+				BASE."L1_ACRONYM",
+				BASE."L1_DESCRIPTION",
+				BASE."REGION_NAME",
+				BASE."SUBREGION_NAME",
+				BASE."L2_ACRONYM",
+				BASE."L2_NAME",
+				BASE."L3_ACRONYM",
+				BASE."L3_DESCRIPTION",
+				BASE."L4_ACRONYM",
+				BASE."L4_DESCRIPTION",
+				BASE."L5_ACRONYM",
+				BASE."L5_CRM_DESCRIPTION",
+				COALESCE(BASE."L5_STATUS_DETAIL", 'Not Applicable') AS L5_STATUS_DETAIL,
+				BASE."CATEGORY_NAME",
+				BASE."OPTION_NAME",
+				BASE."BUDGET_TYPE",
+				BASE."CAMPAIGN_TYPE" AS KPI_TYPE,
+				BASE."CAMPAIGN_NAME" AS KPI_DESC,
+				BASE."ROW_INDEX",
+				BASE."BUDGET_YEAR",
+				BASE."L1_BUDGET",
+				BASE."COUNT_L1",
+				BASE."L2_BUDGET",
+				BASE."L3_BUDGET",
+				BASE."L5_ID",
+				BASE."COUNT_L5",
+				BASE."BUDGET_Q1",
+				BASE."BUDGET_Q2",
+				BASE."BUDGET_Q3",
+				BASE."BUDGET_Q4",
+				BASE."ACTUAL_START_DATE",
+                BASE."ACTUAL_END_DATE",
+                BASE."PLANNED_START_DATE",
+                BASE."PLANNED_END_DATE",
+                BASE."MODIFIED_DATE",
+                BASE."DISTRIBUTION_CHANNEL",
+                BASE."CAMPAIGN_OBJECTIVE",
+                BASE."L5_CAMPAIGN_TYPE",
+                BASE."CAMPAIGN_SUBTYPE",
+                BASE."MARKETING_PROGRAM",
+                BASE."BUSINESS_OWNER",
+                BASE."EMPLOYEE_RESPONSIBLE",
+                BASE."COST_CENTER",
+                BASE."SALE_ORGANIZATION",
+                BASE."ROUTE_TO_MARKET",
+                BASE."L5_PRIORITY",
+				IFNULL(BASE."L4_BUDGET",0) AS "L4_BUDGET",
+				IFNULL(BASE."L5_BUDGET",0) AS "L5_BUDGET",
+				BASE."OPTION_AMOUNT",
+				BASE."BUDGET_PERCENTAGE",
+				BASE."KPI_EURO_VALUE",
+				BASE."KPI_AMOUNT_VOLUME",
+				BASE."COUNT_KPI_BY_L5",
+				BASE."TOTAL_MY_BUDGET",
+				BASE."TOTAL_SALE",
+				BASE."TOTAL_PARTNER",
+				BASE."TOTAL_BUDGET",
+				BASE."ROW_COUNTER",
+				IFNULL(HL_ALL_1.HL1_BUD_PROP,0) AS HL1_BUD_PROP,
+			    IFNULL(HL_ALL_1.HL2_BUD_PROP,0) AS HL2_BUD_PROP,
+			    IFNULL(HL_ALL_1.HL3_BUD_PROP,0) AS HL3_BUD_PROP,
+			    IFNULL(HL_ALL_1.HL4_BUD_PROP,0) AS HL4_BUD_PROP,
+			    IFNULL(HL_ALL_1.HL5_BUD_PROP,0) AS HL5_BUD_PROP,
+				(CASE WHEN BASE.L5_BUDGET IS NULL THEN 0 ELSE BASE.L5_BUDGET END) * (CASE WHEN BASE.OPTION_AMOUNT IS NULL THEN 100 ELSE BASE.OPTION_AMOUNT END) * (CASE WHEN BASE.BUDGET_PERCENTAGE IS NULL THEN 100 ELSE BASE.BUDGET_PERCENTAGE END)/((CASE WHEN BASE.COUNT_KPI_BY_L5=0 THEN 1 WHEN BASE.COUNT_KPI_BY_L5 IS NULL THEN 1 ELSE BASE.COUNT_KPI_BY_L5 END) *10000) AS HL5_BUD_PROP_2,
+			    (CASE WHEN BASE.KPI_EURO_VALUE IS NULL THEN 0 ELSE BASE.KPI_EURO_VALUE END) * (CASE WHEN BASE.OPTION_AMOUNT = NULL THEN 100 ELSE BASE.OPTION_AMOUNT END) * (CASE WHEN BASE.BUDGET_PERCENTAGE = NULL THEN 100 ELSE BASE.BUDGET_PERCENTAGE END)/10000 AS HL5_KPI_PROP_EUR,
+			    (CASE WHEN BASE.KPI_AMOUNT_VOLUME = NULL THEN 0 ELSE BASE.KPI_AMOUNT_VOLUME END) * (CASE WHEN BASE.OPTION_AMOUNT = NULL THEN 100 ELSE BASE.OPTION_AMOUNT END) * (CASE WHEN BASE.BUDGET_PERCENTAGE = NULL THEN 100 ELSE BASE.BUDGET_PERCENTAGE END)/10000 AS HL5_KPI_PROP_VOL,
+			    (CASE WHEN HL_ALL_1.HL1_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL1_BUD_PROP END) - (CASE WHEN HL_ALL_1.HL2_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL2_BUD_PROP END) AS HL1_NOT_ASSIGNED,
+				(CASE WHEN HL_ALL_1.HL2_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL2_BUD_PROP END) - (CASE WHEN HL_ALL_1.HL3_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL3_BUD_PROP END) AS HL2_NOT_ASSIGNED,
+			    (CASE WHEN HL_ALL_1.HL3_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL3_BUD_PROP END) - (CASE WHEN HL_ALL_1.HL4_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL4_BUD_PROP END) AS HL3_NOT_ASSIGNED,
+			    (CASE WHEN HL_ALL_1.HL4_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL4_BUD_PROP END) - (CASE WHEN HL_ALL_1.HL5_BUD_PROP = NULL THEN 0 ELSE HL_ALL_1.HL5_BUD_PROP END) AS HL4_NOT_ASSIGNED,
+			    BASE.COUNT_L5_PROP
+
+			    , case when BASE."TEAM_TYPE_NAME" = 'Central' and BASE."BUDGET_TYPE" is null
+			    			then 'Not Region Assigned'
+			    		when BASE."TEAM_TYPE_NAME" = 'Central' and BASE."BUDGET_TYPE" is not null
+			    			then BASE."BUDGET_TYPE"
+			    		ELSE
+			    			BASE."REGION_NAME"
+			    END	REGION
+
+			    FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"  BASE
+
+				LEFT JOIN
+				(
+					SELECT
+
+						BASE."ROW_INDEX"
+						,BASE.HL_5
+						,HL_ALL."BUDGET_YEAR"
+						,HL_ALL.L1_ACRONYM
+						,HL_ALL.L2_ACRONYM
+						,HL_ALL.L3_ACRONYM
+						,HL_ALL.L4_ACRONYM
+						,HL_ALL.L5_ACRONYM
+						,HL_ALL.HL_1
+						,HL_ALL.HL_2
+						,HL_ALL.HL_3
+						,HL_ALL.HL_4
+						,HL_ALL.HL_5
+						,HL_ALL.ROW_COUNTER
+						,HL_ALL.HL1_BUD_PROP
+						,HL_ALL.HL2_BUD_PROP
+						,HL_ALL.HL3_BUD_PROP
+						,HL_ALL.HL4_BUD_PROP
+						,HL_ALL.HL5_BUD_PROP
+
+						FROM
+						(
+							SELECT
+
+								"ROW_INDEX"
+								,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',CONCAT(IFNULL("L3_ACRONYM",'BLANK'),CONCAT('-',CONCAT(IFNULL("L4_ACRONYM",'BLANK'), IFNULL("L5_ACRONYM",'BLANK'))))))))))AS HL_5
+
+								FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"
+						) BASE
+
+						LEFT JOIN
+						(
+								SELECT
+
+									L5."BUDGET_YEAR"
+									,L5.L1_ACRONYM
+									,L5.L2_ACRONYM
+									,L5.L3_ACRONYM
+									,L5.L4_ACRONYM
+									,L5.L5_ACRONYM
+									,L5.HL_1
+									,L5.HL_2
+									,L5.HL_3
+									,L5.HL_4
+									,L5.HL_5
+									,L5.ROW_COUNTER
+									,L1.HL1_BUD_PROP
+									,L2.HL2_BUD_PROP
+									,L3.HL3_BUD_PROP
+									,L4.HL4_BUD_PROP
+									,L5.HL5_BUD_PROP
+
+									FROM
+									(
+                                        SELECT
+                                            "BUDGET_YEAR"
+                                            ,"L1_ACRONYM" AS L1_ACRONYM
+                                            ,"L2_ACRONYM" AS L2_ACRONYM
+                                            ,"L3_ACRONYM" AS L3_ACRONYM
+                                            ,"L4_ACRONYM" AS L4_ACRONYM
+                                            ,"L5_ACRONYM" AS L5_ACRONYM
+                                            ,CONCAT("BUDGET_YEAR","L1_ACRONYM") AS HL_1
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',"L2_ACRONYM")))) AS HL_2
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',IFNULL("L3_ACRONYM",'BLANK'))))))) AS HL_3
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',CONCAT(IFNULL("L3_ACRONYM",'BLANK'),CONCAT('-',IFNULL("L4_ACRONYM",'BLANK'))))))))) AS HL_4
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',CONCAT(IFNULL("L3_ACRONYM",'BLANK'),CONCAT('-',CONCAT(IFNULL("L4_ACRONYM",'BLANK'), IFNULL("L5_ACRONYM",'BLANK'))))))))))AS HL_5
+                                            ,SUM(ROW_COUNTER) as ROW_COUNTER
+                                            ,IFNULL(MAX("L5_BUDGET"),0)/SUM(ROW_COUNTER) AS HL5_BUD_PROP
+                                            FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"
+                                            GROUP BY
+                                            "BUDGET_YEAR"
+                                            ,"L1_ACRONYM"
+                                            ,"L2_ACRONYM"
+                                            ,"L3_ACRONYM"
+                                            ,"L4_ACRONYM"
+                                            ,"L5_ACRONYM"
+                                            ,ROW_COUNTER
+
+                                            ORDER BY
+                                            HL_5 DESC
+
+                                    ) L5
+
+								-- JOIN CON HL1
+
+									LEFT JOIN
+									(
+										SELECT
+											CONCAT("BUDGET_YEAR","L1_ACRONYM") AS HL_1
+											,SUM(ROW_COUNTER) as ROW_COUNTER
+											,IFNULL(MAX("L1_BUDGET"),0)/SUM(ROW_COUNTER) AS HL1_BUD_PROP
+
+											FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"
+										GROUP BY
+										"BUDGET_YEAR"
+										,"L1_ACRONYM"
+
+									) L1 ON L5.HL_1=L1.HL_1
+
+								-- JOIN CON HL2
+
+									LEFT JOIN
+									(
+										SELECT
+											"BUDGET_YEAR"
+											,"L1_ACRONYM" AS L1_ACRONYM
+											,"L2_ACRONYM" AS L2_ACRONYM
+											,CONCAT("BUDGET_YEAR","L1_ACRONYM") AS HL_1
+											,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',"L2_ACRONYM")))) AS HL_2
+											,SUM(ROW_COUNTER) as ROW_COUNTER
+											,IFNULL(MAX("L2_BUDGET"),0)/SUM(ROW_COUNTER) AS HL2_BUD_PROP
+											FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"
+											GROUP BY
+											"BUDGET_YEAR"
+											,"L1_ACRONYM"
+											,"L2_ACRONYM"
+											,ROW_COUNTER
+									) L2 ON L5.HL_2=L2.HL_2
+
+									-- JOIN CON HL3
+
+									LEFT JOIN
+									(
+										SELECT
+											"BUDGET_YEAR"
+											,"L1_ACRONYM" AS L1_ACRONYM
+											,"L2_ACRONYM" AS L2_ACRONYM
+											,"L3_ACRONYM" AS L3_ACRONYM
+											,CONCAT("BUDGET_YEAR","L1_ACRONYM") AS HL_1
+											,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',"L2_ACRONYM")))) AS HL_2
+											,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',IFNULL("L3_ACRONYM",'BLANK'))))))) AS HL_3
+											,SUM(ROW_COUNTER) as ROW_COUNTER
+											,IFNULL(MAX("L3_BUDGET"),0)/SUM(ROW_COUNTER) AS HL3_BUD_PROP
+
+											FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"
+											GROUP BY
+											"BUDGET_YEAR"
+											,"L1_ACRONYM"
+											,"L2_ACRONYM"
+											,"L3_ACRONYM"
+											,ROW_COUNTER
+
+									) L3 ON L5.HL_3=L3.HL_3
+
+									-- JOIN CON HL4
+
+									LEFT JOIN
+									(
+                                        SELECT
+                                            "BUDGET_YEAR"
+                                            ,"L1_ACRONYM" AS L1_ACRONYM
+                                            ,"L2_ACRONYM" AS L2_ACRONYM
+                                            ,"L3_ACRONYM" AS L3_ACRONYM
+                                            ,"L4_ACRONYM" AS L4_ACRONYM
+                                            ,CONCAT("BUDGET_YEAR","L1_ACRONYM") AS HL_1
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',"L2_ACRONYM")))) AS HL_2
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',IFNULL("L3_ACRONYM",'BLANK'))))))) AS HL_3
+                                            ,CONCAT("BUDGET_YEAR",CONCAT('-',CONCAT("L1_ACRONYM", CONCAT('-',CONCAT("L2_ACRONYM",CONCAT('-',CONCAT(IFNULL("L3_ACRONYM",'BLANK'),CONCAT('-',IFNULL("L4_ACRONYM",'BLANK'))))))))) AS HL_4
+                                            ,SUM(ROW_COUNTER) as ROW_COUNTER
+                                            ,IFNULL(MAX("L4_BUDGET"),0)/SUM(ROW_COUNTER) AS HL4_BUD_PROP
+                                            FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_L5_DETAILED_REPORT"
+                                            GROUP BY
+                                            "BUDGET_YEAR"
+                                            ,"L1_ACRONYM"
+                                            ,"L2_ACRONYM"
+                                            ,"L3_ACRONYM"
+                                            ,"L4_ACRONYM"
+                                            ,ROW_COUNTER
+
+                                            ORDER BY
+                                            HL_4 DESC
+
+                                    ) L4 ON L5.HL_4=L4.HL_4
+
+                        ) HL_ALL ON	BASE.HL_5=HL_ALL.HL_5
+
+				) HL_ALL_1 ON BASE.ROW_INDEX=HL_ALL_1.ROW_INDEX
+	);
+
+	select count(*) into myrowid from "PUBLIC"."M_TABLES" where schema_name = 'PLANNING_TOOL' and table_name='CV_L5_DETAILED_REPORT_DATA';
+
+	IF (:myrowid > 0 ) then
+		DROP TABLE "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA";
+	END IF;
+
+	--DROP TABLE "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA";
+
+	CREATE COLUMN TABLE "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA" AS
+	(
+
+			SELECT
+				BASE."TEAM_TYPE_NAME",
+				BASE."L1_ACRONYM",
+				BASE."L1_DESCRIPTION",
+				BASE."REGION_NAME",
+				BASE."SUBREGION_NAME",
+				BASE."L2_ACRONYM",
+				BASE."L2_NAME",
+				BASE."L3_ACRONYM",
+				BASE."L3_DESCRIPTION",
+				BASE."L4_ACRONYM",
+				BASE."L4_DESCRIPTION",
+				BASE."L5_ACRONYM",
+				BASE."L5_CRM_DESCRIPTION",
+				BASE."L5_STATUS_DETAIL",
+				BASE."CATEGORY_NAME",
+				BASE."OPTION_NAME",
+				BASE."BUDGET_TYPE",
+				BASE.KPI_TYPE,
+				BASE.KPI_DESC,
+				BASE."ROW_INDEX",
+				BASE."BUDGET_YEAR",
+				BASE."L1_BUDGET",
+				BASE."COUNT_L1",
+				BASE."L2_BUDGET",
+				BASE."L3_BUDGET",
+				BASE."L5_ID",
+				BASE."COUNT_L5",
+				BASE."BUDGET_Q1",
+				BASE."BUDGET_Q2",
+				BASE."BUDGET_Q3",
+				BASE."BUDGET_Q4",
+				BASE."ACTUAL_START_DATE",
+                BASE."ACTUAL_END_DATE",
+                BASE."PLANNED_START_DATE",
+                BASE."PLANNED_END_DATE",
+                BASE."MODIFIED_DATE",
+                BASE."DISTRIBUTION_CHANNEL",
+                BASE."CAMPAIGN_OBJECTIVE",
+                BASE."L5_CAMPAIGN_TYPE",
+                BASE."CAMPAIGN_SUBTYPE",
+                BASE."MARKETING_PROGRAM",
+                BASE."BUSINESS_OWNER",
+                BASE."EMPLOYEE_RESPONSIBLE",
+                BASE."COST_CENTER",
+                BASE."SALE_ORGANIZATION",
+                BASE."ROUTE_TO_MARKET",
+                BASE."L5_PRIORITY",
+				BASE."L4_BUDGET",
+				BASE."L5_BUDGET",
+				BASE."OPTION_AMOUNT",
+				BASE."BUDGET_PERCENTAGE",
+				BASE."KPI_EURO_VALUE",
+				BASE."KPI_AMOUNT_VOLUME",
+				BASE."COUNT_KPI_BY_L5",
+				BASE."TOTAL_MY_BUDGET",
+				BASE."TOTAL_SALE",
+				BASE."TOTAL_PARTNER",
+				BASE."TOTAL_BUDGET",
+				BASE."ROW_COUNTER",
+				HL1_BUD_PROP,
+				HL2_BUD_PROP,
+				HL3_BUD_PROP,
+				HL4_BUD_PROP,
+				HL5_BUD_PROP,
+				HL1_BUD_PROP_MAX,
+			
+				HL5_BUD_PROP_2,
+			    HL5_KPI_PROP_EUR,
+			    HL5_KPI_PROP_VOL,
+			    
+				HL1_NOT_ASSIGNED,
+				HL2_NOT_ASSIGNED,
+			    HL3_NOT_ASSIGNED,
+			    HL4_NOT_ASSIGNED,
+
+			    BASE.COUNT_L5_PROP
+ 
+			    , REGION
+			    
+				, case when OPTION_AMOUNT = 100 then 'Direct' else 'Allocated' end investment_type
+	
+			    			    
+			FROM "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA_TEMP" BASE
+			    
+			LEFT JOIN
+			(
+				SELECT
+					L1_ACRONYM
+					, SUM(HL1_BUD_PROP) AS HL1_BUD_PROP_MAX
+				FROM "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA_TEMP"
+				GROUP BY L1_ACRONYM
+				ORDER BY L1_ACRONYM
+			) L1_MAX
+				ON L1_MAX.L1_ACRONYM = BASE.L1_ACRONYM 
+	);
+	
+	DROP TABLE "PLANNING_TOOL"."CV_L5_DETAILED_REPORT_DATA_TEMP";			
+	
+END;

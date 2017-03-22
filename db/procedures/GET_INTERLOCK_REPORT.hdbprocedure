@@ -1,5 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_INTERLOCK_REPORT" (
-        OUT out_result TABLE (
+		IN in_user_id BIGINT
+		, IN in_isSA TINYINT
+        , OUT out_result TABLE (
                 ORGANIZATION_TYPE_NAME NVARCHAR(255)
                 , INTERLOCK_ENTITY_NAME NVARCHAR(100)
                 , ORGANIZATION_ACRONYM NVARCHAR(25)
@@ -17,18 +19,68 @@ LANGUAGE SQLSCRIPT
 SQL SECURITY INVOKER
 DEFAULT SCHEMA "PLANNING_TOOL"
 READS SQL DATA AS
-BEGIN
+BEGIN   
     out_result = select ORGANIZATION_TYPE_NAME
                         , INTERLOCK_ENTITY_NAME
-                        , RECIEVER_ORGANIZATION as ORGANIZATION_ACRONYM
-                        , RECIEVER_CONTACT_DATA as CONTACT_DATA
+                        ,  ORGANIZATION_ACRONYM
+                        , CONTACT_DATA
                         , REQUESTED_RESOURCE
                         , REQUESTED_BUDGET
                         , STATUS_DETAIL
-                        , REQUESTOR_USER as REQUESTER
+                        , REQUESTER
                         , CREATED_DATE
                         , STATUS_CHAGE_DATE
-                        , REQUESTOR_L4 as PATH
-    from "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA"
-    where RECIEVER_ORGANIZATION <> '?';
+                        , PATH
+                        from (
+                        	(select ORGANIZATION_TYPE_NAME
+					                        , INTERLOCK_ENTITY_NAME
+					                        , RECIEVER_ORGANIZATION as ORGANIZATION_ACRONYM
+					                        , RECIEVER_CONTACT_DATA as CONTACT_DATA
+					                        , REQUESTED_RESOURCE
+					                        , REQUESTED_BUDGET
+					                        , STATUS_DETAIL
+					                        , REQUESTOR_USER as REQUESTER
+					                        , CREATED_DATE
+					                        , STATUS_CHAGE_DATE
+					                        , REQUESTOR_L4 as PATH
+					    from "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA" report
+					    WHERE report.HL1_ID IN 
+					    (SELECT hl1User.HL1_ID FROM "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL1_USER" hl1User
+					    WHERE (in_isSA = 1 OR hl1User.USER_ID = in_user_id)) 
+					    AND RECIEVER_ORGANIZATION <> '?')
+					    UNION
+					    (select ORGANIZATION_TYPE_NAME
+					                        , INTERLOCK_ENTITY_NAME
+					                        , RECIEVER_ORGANIZATION as ORGANIZATION_ACRONYM
+					                        , RECIEVER_CONTACT_DATA as CONTACT_DATA
+					                        , REQUESTED_RESOURCE
+					                        , REQUESTED_BUDGET
+					                        , STATUS_DETAIL
+					                        , REQUESTOR_USER as REQUESTER
+					                        , CREATED_DATE
+					                        , STATUS_CHAGE_DATE
+					                        , REQUESTOR_L4 as PATH
+					    from "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA" report
+					    WHERE report.HL2_ID IN 
+					    (SELECT hl2User.HL2_ID FROM "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL2_USER" hl2User
+					    WHERE (in_isSA = 1 OR hl2User.USER_ID = in_user_id)) 
+					    AND RECIEVER_ORGANIZATION <> '?')
+					    UNION
+					    (select ORGANIZATION_TYPE_NAME
+					                        , INTERLOCK_ENTITY_NAME
+					                        , RECIEVER_ORGANIZATION as ORGANIZATION_ACRONYM
+					                        , RECIEVER_CONTACT_DATA as CONTACT_DATA
+					                        , REQUESTED_RESOURCE
+					                        , REQUESTED_BUDGET
+					                        , STATUS_DETAIL
+					                        , REQUESTOR_USER as REQUESTER
+					                        , CREATED_DATE
+					                        , STATUS_CHAGE_DATE
+					                        , REQUESTOR_L4 as PATH
+					    from "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA" report
+					    WHERE report.HL3_ID IN 
+					    (SELECT hl3User.HL3_ID FROM "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL3_USER" hl3User
+					    WHERE (in_isSA = 1 OR hl3User.USER_ID = in_user_id)) 
+					    AND RECIEVER_ORGANIZATION <> '?')
+                        	);
 END;

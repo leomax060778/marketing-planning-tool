@@ -8,6 +8,7 @@ var UPD_EXPECTED_OUTCOME_LEVEL = "UPD_EXPECTED_OUTCOME_LEVEL";
 var DEL_EXPECTED_OUTCOME_LEVEL = "DEL_EXPECTED_OUTCOME_LEVEL";
 var GET_EXPECTED_OUTCOME_LEVEL_COUNT_BY_OUTCOME_ID_LEVEL_AND_OPTION = "GET_EXPECTED_OUTCOME_LEVEL_COUNT_BY_OUTCOME_ID_LEVEL_AND_OPTION";
 var GET_OUTCOMES_LEVEL_BY_OPTION_NAME_OUTCOME_ID_AND_LEVEL_ID = "GET_OUTCOMES_LEVEL_BY_OPTION_NAME_OUTCOME_ID_AND_LEVEL_ID";
+var GET_EXPECTED_OUTCOME_LEVEL_ID_BY_OPTION_NAME_AND_LEVEL_ID = "GET_EXPECTED_OUTCOME_LEVEL_ID_BY_OPTION_NAME_AND_LEVEL_ID";
 
 function insExpectedOutcomeLevel(expected_outcome_id,expected_outcome_option_id,hierarchylevel,userId,autoCommit){
     var params = {
@@ -71,4 +72,16 @@ function getOutcomesLevelByOptionNameOutcomeIdAndLevelId(optionName, expectedOut
     if(result.length)
         return result[0];
     return null;
+}
+
+function getExpectedOutcomeLevelIdByOptionNameAndLevelId(optionName, levelId){
+    var parameters = {};
+    parameters.in_option_name = optionName;
+    parameters.in_hierarchy_level_id = levelId;
+    var rdo = db.executeProcedureManual(GET_EXPECTED_OUTCOME_LEVEL_ID_BY_OPTION_NAME_AND_LEVEL_ID, parameters);
+    var result = db.extractArray(rdo.out_result);
+    if(result.length)
+        return result[0];
+    else
+        return null;
 }

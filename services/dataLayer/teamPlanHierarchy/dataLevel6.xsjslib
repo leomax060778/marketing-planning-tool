@@ -58,6 +58,10 @@ var spDelHl6CategoryOption = "DEL_HL6_CATEGORY_OPTION";
 var spResetHl6CategoryOptionUpdated = "RESET_HL6_CATEGORY_OPTION_UPDATED";
 var spGetCategoryByHierarchyLevelId = "GET_CATEGORY_BY_HIERARCHY_LEVEL_ID";
 var spGetOptionByCategoryId = "GET_OPTION_BY_CATEGORY_ID";
+var spInsHl6BudgetSalesUpload = "INS_HL6_BUDGET_SALES_UPLOAD";
+var GET_HL6_BY_IMPORT_ID = "GET_HL6_BY_IMPORT_ID";
+var DEL_HL6_HARD_BY_ID = "DEL_HL6_HARD_BY_ID";
+var DEL_HL6_CATEGORY_OPTION_HARD = "DEL_HL6_CATEGORY_OPTION_HARD";
 
 /*inserts*/
 function insertHl6(hl6CrmDescription,hl6Acronym,budget,hl5Id, routeToMarket
@@ -65,7 +69,11 @@ function insertHl6(hl6CrmDescription,hl6Acronym,budget,hl5Id, routeToMarket
     ,actualStartDate,actualEndDate,showOnDgCalendar,businessOwnerId,employeeResponsibleId,costCenterId, inBudget
     ,budgetSpendQ1,budgetSpendQ2,budgetSpendQ3,budgetSpendQ4,euroConversionId,hl6StatusDetailId,salesOrganizationId,createdUserId
     ,distribution_channel_id,venue,city,country,url,results_campaign_q1,results_campaign_q2,results_campaign_q3,results_campaign_q4
-    ,planned_start_date,planned_end_date,street,postal_code,autoCommit){
+    ,planned_start_date,planned_end_date,street,postal_code
+    , region
+    , event_owner
+    , number_of_participants
+    , priority_id,autoCommit, imported,import_id){
     var params = {
         'in_hl6_crm_description' : hl6CrmDescription,
         'in_acronym': hl6Acronym,
@@ -108,6 +116,12 @@ function insertHl6(hl6CrmDescription,hl6Acronym,budget,hl5Id, routeToMarket
         ,'in_planned_end_date' : planned_end_date
         ,'in_street' : street ? street : ""
         ,'in_postal_code' : postal_code ? postal_code : ""
+        , 'in_region': region || ''
+        , 'in_event_owner': event_owner || ''
+        , 'in_number_of_participants': number_of_participants || ''
+        , 'in_priority_id': priority_id
+        , 'in_imported' : imported ? imported : false
+        , 'in_import_id': import_id ? import_id : null
     };
     
     var rdo;
@@ -189,13 +203,13 @@ function getHl6StatusByHl6Id(hl6Id, autoCommit) {
     return db.extractArray(rdo.out_result)[0];
 }
 
-function getHl6ForSearch(autoCommit) {
-    var params = {};
+function getHl6ForSearch(userSessionID, isSA, autoCommit){
+	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
     var rdo;
     if(autoCommit){
-        rdo = db.executeProcedure(spGetHl6ForSearch,params);
+        rdo = db.executeProcedure(spGetHl6ForSearch,parameters);
     }else{
-        rdo = db.executeProcedureManual(spGetHl6ForSearch,params);
+        rdo = db.executeProcedureManual(spGetHl6ForSearch,parameters);
     }
     return db.extractArray(rdo.out_result);
 }
@@ -402,7 +416,11 @@ function updateHl6(hl6Id,hl6CrmDescription,budget, routeToMarket
     ,actualStartDate,actualEndDate,showOnDgCalendar,businessOwnerId,employeeResponsibleId,costCenterId, inBudget
     ,budgetSpendQ1,budgetSpendQ2,budgetSpendQ3,budgetSpendQ4,euroConversionId,hl6StatusDetailId,salesOrganizationId,userId
     ,distribution_channel_id,venue,city,country,url,results_campaign_q1,results_campaign_q2,results_campaign_q3,results_campaign_q4
-    ,planned_start_date,planned_end_date,street,postal_code,autoCommit){
+    ,planned_start_date,planned_end_date,street,postal_code
+    , region
+    , event_owner
+    , number_of_participants
+    , priority_id,autoCommit){
     var params = {
         'in_hl6_id': hl6Id,
         'in_hl6_crm_description' : hl6CrmDescription,
@@ -443,6 +461,10 @@ function updateHl6(hl6Id,hl6CrmDescription,budget, routeToMarket
         ,'in_planned_end_date' : planned_end_date
         ,'in_street' : street ? street : ""
         ,'in_postal_code' : postal_code ? postal_code : ""
+        , 'in_region': region || ''
+        , 'in_event_owner': event_owner || ''
+        , 'in_number_of_participants': number_of_participants || ''
+        , 'in_priority_id': priority_id
     };
 
     //throw JSON.stringify(params);
@@ -620,4 +642,57 @@ function getHl6Categories(){
     };
     var rdo = db.executeProcedureManual(spGetCategoryByHierarchyLevelId, params);
     return db.extractArray(rdo.out_result);
+}
+
+
+function insertHl6BudgetSalesUpload(hl6Id,organizationId,value,organizationType,description,createdUserId,autoCommit){
+    var params = {
+        'in_hl6_id' : hl6Id,
+        'in_organization_id'  : organizationId,
+        'in_value' : value,
+        'in_organization_type' : organizationType,
+        'in_description': description,
+        'in_created_user_id': createdUserId
+    };
+    var rdo;
+    if(autoCommit){
+        rdo = db.executeScalar(spInsHl6BudgetSalesUpload,params,'out_hl6_budget_sales_id');
+    }else{
+        rdo = db.executeScalarManual(spInsHl6BudgetSalesUpload,params,'out_hl6_budget_sales_id');
+    }
+    return rdo;
+}
+
+function getHl6ByImportId(importId){
+    var params = {
+        'in_import_id': importId
+    };
+    var rdo = db.executeProcedureManual(GET_HL6_BY_IMPORT_ID,params);
+    return db.extractArray(rdo.out_result);
+}
+
+function delHl6Hard(hl6Id, autoCommit){
+    var params = {
+        'in_hl6_id' : hl6Id
+    };
+    var rdo;
+    if(autoCommit){
+        rdo = db.executeScalar(DEL_HL6_HARD_BY_ID,params,'out_result');
+    }else{
+        rdo = db.executeScalarManual(DEL_HL6_HARD_BY_ID,params,'out_result');
+    }
+    return rdo;
+}
+
+function delHl6CategoryOptionHard(hl6Id, autoCommit){
+    var params = {
+        'in_hl6_id' : hl6Id
+    };
+    var rdo;
+    if(autoCommit){
+        rdo = db.executeScalar(DEL_HL6_CATEGORY_OPTION_HARD,params,'out_result');
+    }else{
+        rdo = db.executeScalarManual(DEL_HL6_CATEGORY_OPTION_HARD,params,'out_result');
+    }
+    return rdo;
 }

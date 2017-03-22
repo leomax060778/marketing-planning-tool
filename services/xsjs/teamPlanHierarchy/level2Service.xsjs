@@ -6,6 +6,7 @@ var ErrorLib = mapper.getErrors();
 var blLevel2 = mapper.getLevel2();
 var businessLavel3 = mapper.getLevel3();
 var config = mapper.getDataConfig();
+var blLevel1 = mapper.getLevel1();
 /******************************************/
 
 var method = "GET_ALL";
@@ -21,6 +22,7 @@ function processRequest(){
 //Implementation of GET call -- GET HL2
 function handleGet(parameters, userSessionID){
 	if(parameters.length > 0){
+        blLevel2.checkPermission(userSessionID, parameters[0].name, parameters[0].value);
 		/*if(parameters[0].name == method){
 			
 			var rdo = blLevel2.getAllLevel2(userSessionID);
@@ -44,7 +46,7 @@ function handleGet(parameters, userSessionID){
 		}
 		else if (parameters[0].value == section){
 			
-			var rdo = blLevel2.getLevel2ForSearch();
+			var rdo = blLevel2.getLevel2ForSearch(userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else{
@@ -58,19 +60,22 @@ function handleGet(parameters, userSessionID){
 };
 
 //Implementation of POST call -- Insert HL2
-function handlePost(reqBody,userSessionID) {	
+function handlePost(reqBody,userSessionID) {
+    blLevel1.checkPermission(userSessionID, null ,reqBody.IN_PLAN_ID);
 	var rdo =  blLevel2.insertHl2(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 }
 
 //Implementation of UPDATE call -- UPDATE HL2
 function handlePut(reqBody,userSessionID){
+    blLevel2.checkPermission(userSessionID);
 	var rdo =  blLevel2.updateHl2(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 };
 
 //Implementation of DELETE call -- Delete HL2
 function handleDelete(reqBody,userSessionID){
+    blLevel2.checkPermission(userSessionID);
 	var rdo = blLevel2.deleteHl2(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 };

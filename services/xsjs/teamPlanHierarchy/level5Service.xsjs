@@ -5,6 +5,7 @@ var httpUtil = mapper.getHttp();
 var hl5 = mapper.getLevel5();
 var ErrorLib = mapper.getErrors();
 var config = mapper.getDataConfig();
+var hl4 = mapper.getLevel4();
 /******************************************/
 var section = "FOR_SEARCH";
 var method = "method";
@@ -29,11 +30,13 @@ function handleGet(params, userId) {
 	var currentHl5Id = httpUtil.getUrlParameters().get("CURRENT_HL5");
 	var result = {};
 	if(in_hl4_id && !dataType){
+        hl4.checkPermission(userId, null, in_hl4_id);
 		result = hl5.getHl5ByHl4Id(in_hl4_id);
 	} else if (in_hl5_id) {
+        hl5.checkPermission(userId, null, in_hl5_id);
 		result = hl5.getHl5ById(in_hl5_id);
 	} else if (param_section && param_section == section){
-		result = hl5.getLevel5ForSearch();
+		result = hl5.getLevel5ForSearch(userId);
 	} else if (dataType && dataType == "DISTRIBUTION_CHANNEL"){
 		result = hl5.getAllDistributionChannel();
 	} else if (dataType && dataType == "MARKETING_PROGRAM"){
@@ -53,6 +56,7 @@ function handleGet(params, userId) {
 //Implementation of PUT call -- Update HL5
 function handlePut(reqBody, userId){
 	var parameters = httpUtil.getUrlParameters();
+    hl5.checkPermission(userId, null, parameters.get('HL5_ID') || reqBody.hl5.in_hl5_id);
 	if(parameters.length > 0){
 		var aCmd = parameters.get('method');
 		var hl5Id = parameters.get('HL5_ID');
@@ -79,12 +83,14 @@ function handlePut(reqBody, userId){
 
 //Implementation of DELETE call -- Delete HL5
 function handleDelete(reqBody, userId){
+    hl5.checkPermission(userId, null, reqBody.in_hl5_id);
 	var result = hl5.deleteHl5(reqBody, userId);
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 }
 
 //Implementation of POST call -- Insert HL5
-function handlePost(reqBody, userId) {	
+function handlePost(reqBody, userId) {
+    hl4.checkPermission(userId, null, reqBody.hl5.in_hl4_id);
 	var result = hl5.insertHl5(reqBody, userId); //return new L5 Id
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 }

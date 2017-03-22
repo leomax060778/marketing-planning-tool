@@ -230,8 +230,8 @@ function getLevel1ByFilters(budgetYearId, regionId, subRegionId, userId) {
 //    return dataHl2.getLevelByOrganizationAcronym(acronym);
 //}
 
-function getLevel1ForSearch() {
-    var result = dataHl1.getLevel1ForSearch();
+function getLevel1ForSearch(userSessionID) {
+    var result = dataHl1.getLevel1ForSearch(userSessionID, util.isSuperAdmin(userSessionID) ? 1:0);
     var resultRefactor = [];
     result.forEach(function (object) {
         var aux = {};
@@ -548,4 +548,14 @@ function uiToServerParser(object) {
     data = JSON.parse(data);
 
     return data;
+}
+
+function checkPermission(userSessionID, method, hl1Id){
+    if(((method && method == "HL1_ID") || !method) && !util.isSuperAdmin(userSessionID)){
+        var usersL1 = userbl.getUserByHl1Id(hl1Id).users_in;
+        var users = usersL1.find(function(user){return user.USER_ID == userSessionID});
+        if(!users){
+            throw ErrorLib.getErrors().CustomError("","level1/handlePermission","User hasn´t permission for this resource.");
+        }
+    }
 }

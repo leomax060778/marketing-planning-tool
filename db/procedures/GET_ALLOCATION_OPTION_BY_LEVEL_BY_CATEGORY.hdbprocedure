@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_OPTION_BY_LEVEL_BY_CATEGORY" (
+    IN in_allocation_category_id bigint,
+    IN in_hierarchy_level_id bigint,
+	OUT out_result TABLE (
+	OPTION_ID integer,
+	OPTION_NAME NVARCHAR(255)
+	)
+ 	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result =
+		 SELECT AO.ALLOCATION_OPTION_ID AS OPTION_ID,
+		 AO.NAME AS OPTION_NAME
+		 FROM ALLOCATION_CATEGORY_OPTION_LEVEL ACOL
+		 INNER JOIN HIERARCHY_LEVEL HL ON HL.hierarchy_level_id = ACOL.hierarchy_level_id
+		 INNER JOIN ALLOCATION_OPTION AO ON AO.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+		WHERE ACOL.allocation_category_id = in_allocation_category_id
+		AND HL.hierarchy_level_id = in_hierarchy_level_id;
+
+END;

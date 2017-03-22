@@ -12,6 +12,8 @@ var blRegion = mapper.getRegion();
 var blSubRegion =  mapper.getSubRegion();
 var mail = mapper.getMail();
 var config = mapper.getDataConfig();
+
+var userbl = mapper.getUser();
 /*************************************************/
 
 var INTERLOCK_STATUS = {
@@ -27,8 +29,14 @@ var CONTACT_TYPE = {
 };
 /*************************************************/
 
-function getInterlockReport(){
-	var interlockReport = dataInterlock.getInterlockReport();
+function getInterlockReport(userId){
+
+	var isSA = false;
+	if (config.getApplySuperAdminToAllInitiatives()) {
+		isSA = userbl.isSuperAdmin(userId) ? 1 : 0;
+	}
+
+	var interlockReport = dataInterlock.getInterlockReport(userId, isSA);
 	return interlockReport;	
 }
 

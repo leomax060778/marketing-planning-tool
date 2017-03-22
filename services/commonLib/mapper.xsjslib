@@ -236,6 +236,16 @@ function getEmployeeResponsible(){
     return $.xsplanningtool.services.businessLayer.settings.employeeResponsibleLib;
 }
 
+function getResponsiblePerson(){
+    $.import("xsplanningtool.services.businessLayer.settings","responsiblePersonLib");
+    return $.xsplanningtool.services.businessLayer.settings.responsiblePersonLib;
+}
+
+function getBudgetApprover(){
+    $.import("xsplanningtool.services.businessLayer.settings","budgetApproverLib");
+    return $.xsplanningtool.services.businessLayer.settings.budgetApproverLib;
+}
+
 function getApi(){
     $.import("xsplanningtool.services.businessLayer.api","apiLib");
     return $.xsplanningtool.services.businessLayer.api.apiLib;
@@ -291,7 +301,15 @@ function getAllocationCategoryOptionLevelLib(){
     return $.xsplanningtool.services.businessLayer.settings.allocationCategoryOptionLevelLib;
 }
 
+function getUploadL5L6Lib(){
+    $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","uploadL5L6Lib");
+    return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.uploadL5L6Lib;
+}
 
+function getPriority(){
+    $.import("xsplanningtool.services.businessLayer.settings","priorityLib");
+    return $.xsplanningtool.services.businessLayer.settings.priorityLib;
+}
 /************Data Layer Mapper*****************/
 
 function getdbHelper(){
@@ -312,6 +330,11 @@ function getDataLogError(){
 function getDataApplication(){
     $.import("xsplanningtool.services.dataLayer.settings","dataApplication");
     return $.xsplanningtool.services.dataLayer.settings.dataApplication;
+}
+
+function getDataPriority(){
+    $.import("xsplanningtool.services.dataLayer.settings","dataPriority");
+    return $.xsplanningtool.services.dataLayer.settings.dataPriority;
 }
 
 function getDataLevel3(){
@@ -555,6 +578,16 @@ function getDataEmployeeResponsible(){
     return $.xsplanningtool.services.dataLayer.settings.dataEmployeeResponsible;
 }
 
+function getDataResponsiblePerson(){
+    $.import("xsplanningtool.services.dataLayer.settings","dataResponsiblePerson");
+    return $.xsplanningtool.services.dataLayer.settings.dataResponsiblePerson;
+}
+
+function getDataBudgetApprover(){
+    $.import("xsplanningtool.services.dataLayer.settings","dataBudgetApprover");
+    return $.xsplanningtool.services.dataLayer.settings.dataBudgetApprover;
+}
+
 function getDataApi(){
     $.import("xsplanningtool.services.dataLayer.api","dataApi");
     return $.xsplanningtool.services.dataLayer.api.dataApi;
@@ -583,4 +616,9 @@ function getDataExpectedOutcomeOption(){
 function getDataExpectedOutcomeLevel(){
     $.import("xsplanningtool.services.dataLayer.settings","dataExpectedOutcomeLevel");
     return $.xsplanningtool.services.dataLayer.settings.dataExpectedOutcomeLevel;
+}
+
+function getDataUploadL5L6(){
+    $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataUploadL5L6");
+    return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataUploadL5L6;
 }

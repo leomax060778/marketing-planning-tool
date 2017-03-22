@@ -155,6 +155,19 @@ function getErrors(){
         return e;
     }
 
+    Errors.ImportError  = function(message,stack, details){
+        var e={};
+        e.name = "There aren't matches for this object.";
+        e.message = message || "There aren't matches for this object.";
+        e.code = 456;
+        e.stack = stack || "";
+        e.details = details || "without details";
+        e.row = {};
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
+
     /******************* 500 **********************************************/
     Errors.InternalServerError  = function(message,stack, details){
     	var e={};
@@ -222,6 +235,7 @@ function getErrors(){
         '453':  Errors.Hl6AcronymError(),
         '454':  Errors.OutOfRange(),
         '455':  Errors.NoCurrencyForBudgetYear(),
+        '456':  Errors.ImportError(),
         '500':  Errors.InternalServerError(),
         '501':  Errors.NotImplemented(),
         '503':  Errors.ServiceUnavailable(),

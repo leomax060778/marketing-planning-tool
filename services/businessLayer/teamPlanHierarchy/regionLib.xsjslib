@@ -14,14 +14,11 @@ function getRegionById(regionId) {
 }
 
 function insertRegion(objRegion, userId) {
-
-	if (validateInsertRegion(objRegion)) {
-		if (!dataRegion.existRegion(objRegion))
-			return dataRegion.insertRegion(objRegion, userId);
-		else
-			throw ErrorLib.getErrors().CustomError("Region name already exist",
-					"regionLib/handlePost/insertRegion", objRegion);
-	}
+	var region = dataRegion.existRegion(objRegion);
+	if (region)
+		throw ErrorLib.getErrors().CustomError("","regionLib/handlePost/insertRegion", "Region name already exist", objRegion);
+	else
+		return dataRegion.insertRegion(objRegion, userId);
 }
 
 function updateRegion(objRegion, userId) {

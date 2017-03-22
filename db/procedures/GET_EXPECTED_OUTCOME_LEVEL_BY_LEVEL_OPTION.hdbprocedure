@@ -3,7 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_EXPECTED_OUTCOME_LE
         IN in_hierarchy_level_name NVARCHAR(255),
         IN in_outcomes_id BIGINT,
         OUT out_result TABLE(
-              expected_outcome_level_id BIGINT
+              expected_outcome_level_id INTEGER
         )
 )
 LANGUAGE SQLSCRIPT

@@ -45,6 +45,9 @@
         <viewAttribute datatype="DECIMAL" id="REQUESTED_BUDGET_PRO" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="COUNT_L4_BY_INTERLOCK_PROP" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="REQUESTS_PROP" length="19" scale="10"/>
+        <viewAttribute datatype="INTEGER" id="HL1_ID"/>
+        <viewAttribute datatype="INTEGER" id="HL2_ID"/>
+        <viewAttribute datatype="INTEGER" id="HL3_ID"/>
       </viewAttributes>
       <calculatedViewAttributes/>
       <definition> 
@@ -55,8 +58,9 @@
  	            hl2.ORGANIZATION_ACRONYM, hl2.ORGANIZATION_NAME, --1 AS REQUESTER_ORGANIZATION
  	            COALESCE(subregion.SUBREGION_NAME, region.REGION_NAME,hl2.ORGANIZATION_ACRONYM) AS REQUESTER_ORGANIZATION
  	            , COALESCE(region.REGION_NAME,'WW') AS REQUESTER_REGION
-			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
-			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl1.hl1_id = hl2.hl1_id
+				, hl1.HL1_ID
+			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1
+			 	LEFT JOIN  &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2 ON hl1.hl1_id = hl2.hl1_id
 			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; region ON hl1.REGION_ID = region.REGION_ID
 			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; subregion ON hl1.SUBREGION_ID = subregion.SUBREGION_ID
 			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0;
@@ -269,6 +273,9 @@
         , IFNULL(countL4ByIR.COUNT_L4_BY_INTERLOCK,0) AS COUNT_L4_BY_INTERLOCK
         , hl2.REQUESTER_ORGANIZATION
         , hl2.REQUESTER_REGION
+        , hl2.HL1_ID
+        , hl2.HL2_ID
+        , hl3.HL3_ID
 	
 		FROM :va_interlockRequest IR 
 		INNER JOIN :va_countL4ByIR countL4ByIR on countL4ByIR.ENABLED = IR.ENABLED
@@ -326,6 +333,9 @@
         , IR.REQUESTED_BUDGET / IR.COUNT_KPI_BY_L4 AS REQUESTED_BUDGET_PRO
         , IR.COUNT_L4_BY_INTERLOCK / IR.COUNT_KPI_BY_L4 / IR.COUNT_IR AS COUNT_L4_BY_INTERLOCK_PROP
         , IR.COUNT_IR / IR.COUNT_KPI_BY_L4 AS REQUESTS_PROP
+        , COALESCE(IR.HL1_ID,0) AS HL1_ID
+        , COALESCE(IR.HL2_ID,0) AS HL2_ID
+        , COALESCE(IR.HL3_ID,0) AS HL3_ID
 	
 		FROM :va_sub_out IR;
 	
@@ -488,6 +498,18 @@ END /********* End Procedure Script ************/</definition>
       <measure id="REQUESTS_PROP" order="36" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="REQUESTS_PROP"/>
         <measureMapping columnObjectName="Script_View" columnName="REQUESTS_PROP"/>
+      </measure>
+      <measure id="HL1_ID" order="37" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL1"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL1_ID"/>
+      </measure>
+      <measure id="HL2_ID" order="38" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL2"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL2_ID"/>
+      </measure>
+      <measure id="HL3_ID" order="39" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HL3"/>
+        <measureMapping columnObjectName="Script_View" columnName="HL3_ID"/>
       </measure>
     </baseMeasures>
     <calculatedMeasures/>

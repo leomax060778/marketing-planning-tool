@@ -27,6 +27,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_HL4_ID" (
             , PLANNED_END_DATE timestamp
             , STREET NVARCHAR(255)
             , POSTAL_CODE NVARCHAR(20)
+             , IMPORTED tinyint
+                        , IMPORT_ID INTEGER
         )
 )
 LANGUAGE SQLSCRIPT
@@ -73,6 +75,8 @@ va_intermidate = SELECT
         ,HL5.PLANNED_END_DATE
         ,HL5.STREET
         ,HL5.POSTAL_CODE
+        ,HL5.IMPORTED as IMPORTED
+                ,HL5.IMPORT_ID as IMPORT_ID
 
 
     FROM HL5 Hl5
@@ -116,6 +120,8 @@ out_result = SELECT
         ,va_hl5.PLANNED_END_DATE
         ,va_hl5.STREET
         ,va_hl5.POSTAL_CODE
+        ,va_hl5.IMPORTED
+                ,va_hl5.IMPORT_ID
 		
     FROM :va_intermidate va_hl5
     LEFT JOIN HL6 hl6 ON hl6.HL5_ID = va_hl5.hl5_id AND hl6.enabled=1 AND hl6.deleted=0
@@ -124,7 +130,8 @@ out_result = SELECT
 	va_hl5.HL5_ID,va_hl5.HL5_CRM_DESCRIPTION,va_hl5.HL5_ACRONYM,va_hl5.CRM_ID,va_hl5.IN_BUDGET,va_hl5.STATUS_ID,
 		va_hl5.STATUS_DETAIL,va_hl5.CREATED_BY,va_hl5.OWNER_EMAIL,va_hl5.HL5_BUDGET,
 		va_hl5.EURO_CONVERSION_ID,va_hl5.ROUTE_TO_MARKET_ID,va_hl5.ROUTE_TO_MARKET,va_hl5.VENUE,va_hl5.CITY,va_hl5.COUNTRY
-		,va_hl5.URL,va_hl5.SALES_ORGANIZATION_ID,va_hl5.PLANNED_START_DATE,va_hl5.PLANNED_END_DATE,va_hl5.STREET,va_hl5.POSTAL_CODE
+		,va_hl5.URL,va_hl5.SALES_ORGANIZATION_ID,va_hl5.PLANNED_START_DATE,va_hl5.PLANNED_END_DATE,va_hl5.STREET,va_hl5.POSTAL_CODE,va_hl5.IMPORTED
+                                                                                                                                                    ,va_hl5.IMPORT_ID
 		ORDER BY va_hl5.HL5_ACRONYM ASC;
 		
 END;

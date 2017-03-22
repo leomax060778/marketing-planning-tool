@@ -1,5 +1,10 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_MARKETING_PROGRAM" (
-	OUT output_result TABLE(MARKETING_PROGRAM_ID BIGINT, NAME NVARCHAR(100)) )
+        OUT output_result TABLE(
+            MARKETING_PROGRAM_ID BIGINT
+            , NAME NVARCHAR(100)
+            , DESCRIPTION NVARCHAR(255)
+        )
+    )
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
@@ -8,8 +13,9 @@ BEGIN
 /***************************** 
 	Write your procedure logic 
  *****************************/
-	output_result = SELECT MARKETING_PROGRAM_ID,
-						NAME
+	output_result = SELECT MARKETING_PROGRAM_ID
+						, NAME
+						, DESCRIPTION
 				 FROM MARKETING_PROGRAM
 				 WHERE deleted = 0
 				 AND enabled = 1

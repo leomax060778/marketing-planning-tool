@@ -1,5 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FOR_SEARCH" (
-		OUT out_result TABLE (
+		IN in_user_id bigint
+		, IN in_isSA tinyint
+		, OUT out_result TABLE (
 			id bigint,
 			parent_id bigint,
 			BUDGET_YEAR BIGINT,
@@ -15,7 +17,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FOR_SEARCH" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-	out_result = SELECT HL3.hl3_id as id
+	out_result = SELECT DISTINCT HL3.hl3_id as id
 		, HL3.hl2_id as parent_id
 		, BGY.BUDGET_YEAR
 		, HL1.acronym
@@ -24,6 +26,7 @@ BEGIN
 		, SUBREGION.subregion_name
 		, CONCAT(CONCAT(CONCAT(HL1.acronym, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.acronym) AS path
 	FROM HL3
+	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID
 	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
 	INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id
 	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
@@ -31,5 +34,6 @@ BEGIN
 	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
 	WHERE HL3.deleted = 0
 	  AND HL3.enabled = 1
+	  AND (in_isSA = 1 OR HL3_USER.USER_ID = in_user_id)
 	  ORDER BY path, organization_acronym;
 END;

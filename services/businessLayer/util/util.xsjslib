@@ -1,3 +1,7 @@
+$.import("xsplanningtool.services.commonLib", "mapper");
+var config = mapper.getDataConfig();
+var userbl = mapper.getUser();
+/** ***********END INCLUDE LIBRARIES*************** */
 function validateIsNumber(value){
 	return !isNaN(value);
 }
@@ -83,4 +87,12 @@ function validateDateEndMayorStart(dateStart,dateEnd)
 		return true;
 	}
 	return false;
+}
+
+function isSuperAdmin(userId){
+    var isSA = false;
+    if (config.getApplySuperAdminToAllInitiatives()) {
+        isSA = userbl.isSuperAdmin(userId);
+    }
+    return isSA;
 }

@@ -81,7 +81,7 @@ function getLevel3ById(objHl3, userId) {
 function getLevel3ByAcronym(objHl3, userId) {
 	var parameters = {};
 	parameters.in_acronym = objHl3.IN_ACRONYM.toUpperCase();
-	parameters.in_hl2_id = objHl3.IN_HL2_ID
+	parameters.in_hl1_id = objHl3.IN_HL1_ID;
 	var result = db.executeProcedureManual(GET_HL3_BY_ACRONYM, parameters);
 	var list = db.extractArray(result.out_result);
 	if(list.length)
@@ -106,8 +106,8 @@ function getHl3AllocatedBudget(hl3Id, hl4Id) {
 	return null;
 }
 
-function getLevel3ForSearch(){
-	var parameters = {};
+function getLevel3ForSearch(userSessionID, isSA){
+	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
 	var result = db.executeProcedure(spGetHl3ForSerach,parameters);	
 	return db.extractArray(result.out_result);
 }

@@ -225,8 +225,8 @@ function getAllLevel2(hl1Id, userId) {
     return dataHl2.getAllLevel2(hl1Id);
 }
 
-function getLevel2ForSearch() {
-    var result = dataHl2.getLevel2ForSearch();
+function getLevel2ForSearch(userSessionID) {
+    var result = dataHl2.getLevel2ForSearch(userSessionID, util.isSuperAdmin(userSessionID) ? 1:0);
     var resultRefactor = [];
     result.forEach(function (object) {
         var aux = {};
@@ -516,5 +516,15 @@ function checkBudgetStatus(hl1Id, userId, hl2Id, newHl2Budget) {
             result.hasChanged = result.emailListInBudget.length || result.emailListOutBudget.length;
         }
         return result;
+    }
+}
+
+function checkPermission(userSessionID, method, hl2Id){
+    if(((method && method == "HL2_ID") || !method) && !util.isSuperAdmin(userSessionID)){
+        var usersL2 = userbl.getUserByHl2Id(hl2Id).users_in;
+        var users = usersL2.find(function(user){return user.USER_ID == userSessionID});
+        if(!users){
+            throw ErrorLib.getErrors().CustomError("","level2/handlePermission","User hasn´t permission for this resource.");
+        }
     }
 }

@@ -4,6 +4,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_MARKETING_PROGRAM_B
         OUT out_result TABLE(
               MARKETING_PROGRAM_ID BIGINT
             , NAME NVARCHAR(255)
+            , DESCRIPTION NVARCHAR(255)
         )
 )
 LANGUAGE SQLSCRIPT
@@ -16,6 +17,7 @@ out_result =
 	select 
 	 MARKETING_PROGRAM_ID
 	,NAME
+	, DESCRIPTION
 	FROM MARKETING_PROGRAM
 	WHERE 
 	upper(name) = upper(IN_NAME)

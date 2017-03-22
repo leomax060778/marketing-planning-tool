@@ -7,20 +7,17 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ID" (
 		, distribution_channel_id bigint
 		, budget decimal(19, 6)
 		, hl4_id bigint
-		
 		, campaign_objective_id bigint
 		, campaign_type_id bigint
 		, campaign_subtype_id bigint
 		, marketing_program_id integer
 		, marketing_activity_id integer
-		
 		, actual_start_date timestamp
 		, actual_end_date timestamp
 		, show_on_dg_calendar tinyint
 		, business_owner_id bigint
 		, employee_responsible_id bigint
 		, cost_center_id bigint
-		
 		, in_budget tinyint
 		, budget_spend_q1 decimal(19, 2)
 		, budget_spend_q2 decimal(19, 2)
@@ -28,22 +25,26 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ID" (
 		, budget_spend_q4 decimal(19, 2)
 		, euro_conversion_id bigint
 		, hl5_status_detail_id bigint
-		,created_date_tz timestamp
-		,modified_date_tz timestamp
-		,created_user_id bigint
-		,modified_user_id bigint
-		,enabled tinyint
-		,deleted tinyint
-		, ROUTE_TO_MARKET_ID BIGINT
-        , VENUE NVARCHAR(255)
-        , CITY NVARCHAR(255)
-        , COUNTRY NVARCHAR(255)
-        , URL NVARCHAR(255)
-        , SALES_ORGANIZATION_ID bigint
-        , PLANNED_START_DATE timestamp
-        , PLANNED_END_DATE timestamp
-        , STREET NVARCHAR(255)
-        , POSTAL_CODE NVARCHAR(20)
+		, created_date_tz timestamp
+		, modified_date_tz timestamp
+		, created_user_id bigint
+		, modified_user_id bigint
+		, enabled tinyint
+		, deleted tinyint
+		, route_to_market_id bigint
+        , venue nvarchar(255)
+        , city nvarchar(255)
+        , country nvarchar(255)
+        , url nvarchar(255)
+        , sales_organization_id bigint
+        , planned_start_date timestamp
+        , planned_end_date timestamp
+        , street nvarchar(255)
+        , postal_code nvarchar(20)
+        , region nvarchar(255)
+        , event_owner nvarchar(255)
+        , number_of_participants nvarchar(255)
+        , priority_id integer
 		)
 		
 ) 
@@ -53,50 +54,51 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ID" (
 	READS SQL DATA AS
 BEGIN
 out_result = select 
-hl5_id,
-hl5_crm_description 
-, acronym
-, distribution_channel_id 
-, budget 
-, hl4_id 
-
-, campaign_objective_id 
-, campaign_type_id 
-, campaign_subtype_id 
-, marketing_program_id 
-, marketing_activity_id 
-
-, actual_start_date 
-, actual_end_date 
-, show_on_dg_calendar 
-, business_owner_id 
-, employee_responsible_id 
-, cost_center_id 
-
-, in_budget 
-, budget_spend_q1 
-, budget_spend_q2 
-, budget_spend_q3 
-, budget_spend_q4 
-, euro_conversion_id 
-, hl5_status_detail_id
-,CREATED_DATE_TZ,
-MODIFIED_DATE_TZ,
-CREATED_USER_ID,
-MODIFIED_USER_ID,
-ENABLED,
-DELETED
-, ROUTE_TO_MARKET_ID
-, VENUE
-, CITY
-, COUNTRY
-, URL
-, SALES_ORGANIZATION_ID
-, PLANNED_START_DATE
-, PLANNED_END_DATE
-, STREET
-, POSTAL_CODE
- FROM HL5
- WHERE HL5_ID = in_hl5_id
- AND ENABLED = 1 AND DELETED = 0;
+                hl5_id
+                , hl5_crm_description
+                , acronym
+                , distribution_channel_id
+                , budget
+                , hl4_id
+                , campaign_objective_id
+                , campaign_type_id
+                , campaign_subtype_id
+                , marketing_program_id
+                , marketing_activity_id
+                , actual_start_date
+                , actual_end_date
+                , show_on_dg_calendar
+                , business_owner_id
+                , employee_responsible_id
+                , cost_center_id
+                , in_budget
+                , budget_spend_q1
+                , budget_spend_q2
+                , budget_spend_q3
+                , budget_spend_q4
+                , euro_conversion_id
+                , hl5_status_detail_id
+                , created_date_tz
+                , modified_date_tz
+                , created_user_id
+                , modified_user_id
+                , enabled
+                , deleted
+                , route_to_market_id
+                , venue
+                , city
+                , country
+                , url
+                , sales_organization_id
+                , planned_start_date
+                , planned_end_date
+                , street
+                , postal_code
+                , region
+                , event_owner
+                , number_of_participants
+                , priority_id
+                 FROM HL5
+                 WHERE HL5_ID = in_hl5_id
+                 AND ENABLED = 1 AND DELETED = 0;
 END;

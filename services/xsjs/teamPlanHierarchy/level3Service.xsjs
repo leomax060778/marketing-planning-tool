@@ -17,6 +17,7 @@ function processRequest() {
 
 // function to manage an post request
 function handlePost(reqBody, userSessionID) {
+    businessLavel3.checkPermission(userSessionID, null ,reqBody.IN_HL2_ID);
 	var rdo = businessLavel3.createHl3(reqBody, userSessionID);
 	return httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
@@ -25,6 +26,7 @@ function handlePost(reqBody, userSessionID) {
 function handleGet(parameters, userSessionID) {
 	var rdo = {};
 	if (parameters.length > 0) {
+        businessLavel3.checkPermission(userSessionID, parameters[0].name, parameters[0].value);
 		if (parameters[0].name === GET_ALL_HL3) {
 			// get by hl2 and userid
 			rdo = businessLavel3.getAllLevel3(parameters[0].value,
@@ -36,7 +38,7 @@ function handleGet(parameters, userSessionID) {
 					userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		} else if (parameters[0].value == section){
-			var rdo = businessLavel3.getLevel3ForSearch();
+			var rdo = businessLavel3.getLevel3ForSearch(userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		} else {
 			throw ErrorLib.getErrors().BadRequest(
@@ -51,12 +53,14 @@ function handleGet(parameters, userSessionID) {
 
 // function to manage an put request
 function handlePut(reqBody,userSessionID) {
+    businessLavel3.checkPermission(userSessionID);
 	var rdo = businessLavel3.updateHl3(reqBody, userSessionID);
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 
 // function to manage an del request
 function handleDelete(reqBody,userSessionID) {
+    businessLavel3.checkPermission(userSessionID);
 	var rdo = businessLavel3.deleteHl3(reqBody, userSessionID);
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }

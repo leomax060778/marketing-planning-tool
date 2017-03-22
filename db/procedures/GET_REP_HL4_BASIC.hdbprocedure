@@ -1,6 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_REP_HL4_BASIC" ( 
 
 IN in_filter VARCHAR(5000)
+, IN in_user_id BIGINT
+, IN in_isSA TINYINT
 , OUT out_result TABLE(
 	  BUDGET_YEAR_ID bigint
 	, ORGANIZATION_ACRONYM NVARCHAR(255)
@@ -10,10 +12,8 @@ IN in_filter VARCHAR(5000)
 	, HL2_BUDGET_TOTAL decimal(19, 6)
 	, REMAINING decimal(19, 6)
 	, ALLOCATED decimal(19, 6)
-	--, VALUE decimal(19, 6)
 	, PERCENTAGE decimal(19, 6)
 	, BUDGET_REGION_NAME NVARCHAR(55)
-	--, PERCENTAGE decimal(19, 6)
 	, REGION_ID BIGINT
 	)
 	 ,OUT out_result_rg_name TABLE (REGION_NAME nvarchar(255))
@@ -23,8 +23,25 @@ IN in_filter VARCHAR(5000)
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	out_result = 
-	APPLY_FILTER("_SYS_BIC"."xsplanningtool.db.data.views/CV_BASIC_REPORT", :in_filter);
-    
+	
+	va_user_fiilter = SELECT BUDGET_YEAR_ID
+						, ORGANIZATION_ACRONYM
+						, BUDGET_YEAR
+						, PLAN_ID
+						, PLAN
+						, HL2_BUDGET_TOTAL
+						, REMAINING
+						, ALLOCATED
+						, PERCENTAGE
+						, BUDGET_REGION_NAME
+						, REGION_ID
+						FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_BASIC_REPORT" cvReport
+						where cvReport.PLAN_ID IN (SELECT hl2User.HL2_ID FROM "_SYS_BIC"."xsplanningtool.db.data.views/AT_HL2_USER" hl2User
+						    WHERE (in_isSA = 1 OR hl2User.USER_ID = in_user_id));
+						--('PLACEHOLDER' = ('$$inuser_id$$', '[:user_id]'));
+
+	out_result = APPLY_FILTER(:va_user_fiilter, :in_filter);
+	--APPLY_FILTER("_SYS_BIC"."xsplanningtool.db.data.views/CV_BASIC_REPORT", :in_filter);
+	
    out_result_rg_name = select REGION_NAME from "PLANNING_TOOL"."REGION";
 END;

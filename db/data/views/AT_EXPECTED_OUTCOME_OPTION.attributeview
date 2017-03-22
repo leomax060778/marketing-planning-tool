@@ -19,6 +19,10 @@
       <descriptions defaultDescription="EXPECTED_OUTCOME_OPTION_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EXPECTED_OUTCOME_OPTION" columnName="EXPECTED_OUTCOME_OPTION_ID"/>
     </attribute>
+    <attribute id="CSV_ALIAS" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CSV_ALIAS"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EXPECTED_OUTCOME_OPTION" columnName="CSV_ALIAS"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <privateDataFoundation>

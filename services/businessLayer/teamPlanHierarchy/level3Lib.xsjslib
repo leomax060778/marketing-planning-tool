@@ -15,6 +15,7 @@ var businessError = mapper.getLogError();
 var userRoleLib = mapper.getUserRole();
 var config = mapper.getDataConfig();
 var userbl = mapper.getUser();
+var util = mapper.getUtil();
 /** ***********END INCLUDE LIBRARIES*************** */
 var LEVEL3 = 3;
 var L2_MSG_TEAM_NOT_FOUND = "The Team/Priority can not be found.";
@@ -43,8 +44,8 @@ function getLevel3ById(hl3Id, userId) {
 	return data.getLevel3ById(objHl3, userId);
 }
 
-function getLevel3ForSearch(){
-	var result = data.getLevel3ForSearch();
+function getLevel3ForSearch(userSessionID){
+	var result = data.getLevel3ForSearch(userSessionID, util.isSuperAdmin(userSessionID) ? 1 : 0);
 	var resultRefactor = [];
 	result.forEach(function(object){
 		var aux = {};
@@ -68,6 +69,8 @@ function getLevel3ByAcronym(objHl3, userId) {
 }
 
 function existsHl3(objHl3, userId){
+	var hl2 = dataHl2.getLevel2ById(objHl3);
+	objHl3.IN_HL1_ID = hl2.HL1_ID;
 	var hl3 = getLevel3ByAcronym(objHl3, userId);
 	if (hl3.HL3_ID && Number(hl3.HL3_ID) !== Number(objHl3.IN_HL3_ID)) 
 		return true;
@@ -485,4 +488,14 @@ function checkBudgetStatus(hl2Id, userId, hl3Id, newHl3Budget) {
 		}
 		return result;
 	}
+}
+
+function checkPermission(userSessionID, method, hl3Id){
+    if(((method && method == "GET_BY_HL3_ID") || !method) && !util.isSuperAdmin(userSessionID)){
+        var usersL3 = userbl.getUserByHl3Id(hl3Id).users_in;
+        var users = usersL3.find(function(user){return user.USER_ID == userSessionID});
+        if(!users){
+            throw ErrorLib.getErrors().CustomError("","level3/handlePermission","User hasn´t permission for this resource.");
+        }
+    }
 }

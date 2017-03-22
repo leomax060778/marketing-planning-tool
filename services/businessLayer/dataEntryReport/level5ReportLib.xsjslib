@@ -17,6 +17,7 @@ var dataObjective = mapper.getDataObjectives();
 var dataRouteToMarket = mapper.getDataRouteToMarket();
 var dataMarketingOrganization = mapper.getDataMarketingOrganization();
 var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
+var dataPriority = mapper.getDataPriority();
 /** ***********END INCLUDE LIBRARIES*************** */
 var l5ReportFields = {
 	"ACRONYM": "ID"
@@ -48,6 +49,13 @@ var l5ReportFields = {
 	,"POSTAL_CODE": "Postal Code"
 	,"ROUTE_TO_MARKET_ID": "Route to Market"
 	,"CATEGORY": ""
+	,"PARENT_PATH": "Parent"
+	, "RESPONSIBLE_PERSON_ID": "Responsible Person"
+	, "BUDGET_APPROVER_ID": "Budget Approver"
+	, "REGION": "Region"
+	, "EVENT_OWNER": "Event Owner"
+	, "NUMBER_OF_PARTICIPANTS": "Number Of Participants"
+	, "PRIORITY_ID": "Priority"
 
 };
 
@@ -99,11 +107,10 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 			} else {
 				var object = {};
 				object.display_name = l5ReportFields[field];
-
+				var CRM_ACRONYM = "CRM";
+				var path = dataPath.getPathByLevelParent(5, hl5['HL4_ID']);
 				switch (field){
 					case "ACRONYM":
-						var CRM_ACRONYM = "CRM";
-						var path = dataPath.getPathByLevelParent(5, hl5['HL4_ID']);
 						if (path.length > 0) {
 							object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + hl5['ACRONYM'];
 						}
@@ -142,8 +149,6 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 					//TODO:
 					case "MARKETING_ACTIVITY_ID":
 						if(hl5['MARKETING_ACTIVITY_ID']) {
-							var CRM_ACRONYM = "CRM";
-							var path = dataPath.getPathByLevelParent(5, hl5['HL4_ID']);
 							var hl5MarketingActivity = dataHl5.getHl5ById(hl5['MARKETING_ACTIVITY_ID']);
 							if (path.length > 0) {
 								object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + hl5MarketingActivity['ACRONYM'];
@@ -166,6 +171,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 							//object.value = dbER.getEmployeeResponsibleById(hl5[field]).FULL_NAME;
 						}
 						break;
+
 					case "MARKETING_PROGRAM_DESC":
 						if(hl5['MARKETING_PROGRAM_ID']){
 							object.value = dataMarketingProgram.getMarketingProgramById(hl5['MARKETING_PROGRAM_ID']).NAME;
@@ -199,6 +205,14 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 						break;
 					case "ACTUAL_END_DATE":
 						object.value =  (new Date(hl5[field])).toLocaleDateString();
+						break;
+					case "PARENT_PATH":
+						if (path.length > 0) {
+							object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+						}
+						break;
+					case "PRIORITY_ID":
+						object.value = dataPriority.getPriorityById(hl5[field]).NAME;
 						break;
 					default:
 						object.value = hl5[field];

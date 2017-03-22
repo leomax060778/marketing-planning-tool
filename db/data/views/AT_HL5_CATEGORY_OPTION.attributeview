@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL5_CATEGORY_OPTION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4_CATEGORY_OPTION"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="AMOUNT" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="AMOUNT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_CATEGORY_OPTION" columnName="AMOUNT"/>
+    </attribute>
+    <attribute id="ENABLED" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_CATEGORY_OPTION" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_CATEGORY_OPTION" columnName="DELETED"/>
+    </attribute>
+    <attribute id="HL5_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_CATEGORY_OPTION" columnName="HL5_ID"/>
+    </attribute>
+    <attribute id="ALLOCATION_CATEGORY_OPTION_LEVEL_ID" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ALLOCATION_CATEGORY_OPTION_LEVEL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_CATEGORY_OPTION" columnName="ALLOCATION_CATEGORY_OPTION_LEVEL_ID"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL5_CATEGORY_OPTION"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL5_CATEGORY_OPTION" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="21" y="32"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

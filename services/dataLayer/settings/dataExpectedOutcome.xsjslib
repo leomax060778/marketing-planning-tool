@@ -32,6 +32,10 @@ var spInsertHl5ExpOutcome = "INS_HL5_EXPECTED_OUTCOMES";
 var spInsertHl5ExpOutcomeDetail = "INS_HL5_EXPECTED_OUTCOMES_DETAIL";
 var spDeleteHl5ExpOutcome = "DEL_HL5_EXPECTED_OUTCOMES_BY_HL5_ID";
 var spDeleteHl5ExpOutcomeDetail = "DEL_HL5_EXPECTED_OUTCOMES_DETAIL_BY_HL5_ID";
+var spDeleteHl5ExpOutcomeDetailHard = "DEL_HL5_EXPECTED_OUTCOMES_DETAIL_BY_HL5_ID_HARD";
+var spDeleteHl6ExpOutcomeDetailHard = "DEL_HL6_EXPECTED_OUTCOMES_DETAIL_BY_HL6_ID_HARD";
+var spDeleteHl5ExpOutcomeHard = "DEL_HL5_EXPECTED_OUTCOMES_BY_HL5_ID_HARD";
+var spDeleteHl6ExpOutcomeHard = "DEL_HL6_EXPECTED_OUTCOMES_BY_HL6_ID_HARD";
 /****end L5**************************************************/
 
 /**L6***********************************************/
@@ -236,6 +240,13 @@ function deleteHl5ExpectedOutcomes(in_hl5_id, in_user_id){
     return rdo;
 }
 
+function deleteHl5ExpectedOutcomesHard(in_hl5_id){
+    var parameters = {};
+    parameters.in_hl5_id = in_hl5_id;
+    var rdo = db.executeScalarManual(spDeleteHl5ExpOutcomeHard, parameters, 'out_result');
+    return rdo;
+}
+
 function deleteHl5ExpectedOutcomesDetail(in_hl5_id, in_user_id){
     var parameters = {};
     parameters.in_hl5_id = in_hl5_id;
@@ -243,9 +254,30 @@ function deleteHl5ExpectedOutcomesDetail(in_hl5_id, in_user_id){
     var rdo = db.executeScalarManual(spDeleteHl5ExpOutcomeDetail, parameters, 'out_result');
     return rdo;
 }
+
+function deleteHl5ExpectedOutcomesDetailHard(in_hl5_id){
+    var parameters = {};
+    parameters.in_hl5_id = in_hl5_id;
+    var rdo = db.executeScalarManual(spDeleteHl5ExpOutcomeDetailHard, parameters, 'out_result');
+    return rdo;
+}
 /**FIN HL5****************************/
 
 /**HL6****************************/
+function deleteHl6ExpectedOutcomesHard(in_hl6_id){
+    var parameters = {};
+    parameters.in_hl6_id = in_hl6_id;
+    var rdo = db.executeScalarManual(spDeleteHl6ExpOutcomeHard, parameters, 'out_result');
+    return rdo;
+}
+
+function deleteHl6ExpectedOutcomesDetailHard(in_hl6_id){
+    var parameters = {};
+    parameters.in_hl6_id = in_hl6_id;
+    var rdo = db.executeScalarManual(spDeleteHl6ExpOutcomeDetailHard, parameters, 'out_result');
+    return rdo;
+}
+
 function getExpectedOutcomeByHl6Id(id){
     if(id){
         var rdo = db.executeProcedure(spGetExpOutByHl6Id, {'in_hl6_id':id});

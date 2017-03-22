@@ -20,6 +20,11 @@ function updateAllocationOption(reqbody, userId) {
 }
 
 function insertAllocationOption(reqBody, userId) {
+
+	var objOption = dbOption.getAllocationOptionByName(reqBody.IN_NAME);
+	if(objOption)
+		throw ErrorLib.getErrors().CustomError("","AllocationOptionService", "Cannot create the option beacause exists another with same name");
+
 	return dbOption.insertAllocationOption(reqBody.IN_NAME, userId);
 }
 function getAllocationOption(){

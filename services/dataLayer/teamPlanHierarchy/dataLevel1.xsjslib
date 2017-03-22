@@ -113,8 +113,8 @@ function getHl1AllocatedBudget(hl1Id, hl2Id) {
     return null;
 }
 
-function getLevel1ForSearch(){
-    var parameters = {};
+function getLevel1ForSearch(userSessionID, isSA){
+	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
     var result = db.executeProcedureManual(GET_HL1_FOR_SEARCH, parameters);
     return db.extractArray(result.out_result);
 }

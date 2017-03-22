@@ -2,8 +2,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ASSIGNED_OPTION_BY_
     IN in_category_id BIGINT,
     IN in_level_id BIGINT,
 	OUT out_result TABLE (
-	allocation_category_id BIGINT
-	, allocation_option_id BIGINT
+	allocation_category_id INTEGER
+    , allocation_option_id INTEGER
 	, name NVARCHAR(60)
  	)
  	)

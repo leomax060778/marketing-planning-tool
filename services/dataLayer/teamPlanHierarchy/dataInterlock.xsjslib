@@ -49,8 +49,12 @@ var spUpdContactData = "UPD_HASH_CONTACT_DATA";
 /******************************************************/
 
 /********** GET **********/
-function getInterlockReport() {
-	var result = db.extractArray(db.executeProcedure(spGetInterlockReport, {}).out_result);
+function getInterlockReport(isSA, userId) {
+	var parameters = {
+		in_user_id: userId,
+		in_isSA: isSA
+	};
+	var result = db.extractArray(db.executeProcedureManual(spGetInterlockReport, parameters).out_result);
 	return result;
 }
 

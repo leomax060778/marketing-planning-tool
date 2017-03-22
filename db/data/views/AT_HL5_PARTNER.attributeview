@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL5_PARTNER" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4_PARTNER"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="DELETED" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="DELETED"/>
+    </attribute>
+    <attribute id="ENABLED" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="VALUE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="VALUE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="VALUE"/>
+    </attribute>
+    <attribute id="REGION_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REGION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="REGION_ID"/>
+    </attribute>
+    <attribute id="HL5_ID" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="HL5_ID"/>
+    </attribute>
+    <attribute id="PARTNER_TYPE_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PARTNER_TYPE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="PARTNER_TYPE_ID"/>
+    </attribute>
+    <attribute id="PARTNER_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PARTNER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="PARTNER_ID"/>
+    </attribute>
+    <attribute id="PARTNER_NAME" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PARTNER_NAME"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER" columnName="PARTNER_NAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL5_PARTNER"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL5_PARTNER" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="14" y="22"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

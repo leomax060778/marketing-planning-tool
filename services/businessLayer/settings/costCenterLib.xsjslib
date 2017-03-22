@@ -173,6 +173,7 @@ function delCostCenterEmployeeResponsibleByCostCenterId(costCenterId, userId, ty
 }
 
 function updCostCenter(data, userId, isUpload){
+
 	data = uiToServerParser(data);
 	var costCenterId = data.COST_CENTER_ID;
 
@@ -187,7 +188,10 @@ function updCostCenter(data, userId, isUpload){
 	if(!isUpload) {
 		var firstTime = true;
 		data.employee_responsible.forEach(function(employeeResponsible){
-			updCostCenterEmployeeResponsible(costCenterId, employeeResponsible.EMPLOYEE_RESPONSIBLE_ID, userId, firstTime);
+			if(!employeeResponsible.EMPLOYEE_RESPONSIBLE_ID){
+				employeeResponsible.EMPLOYEE_RESPONSIBLE_ID = dataEmployeeResponsible.insEmployeeResponsible(employeeResponsible.FULL_NAME, employeeResponsible.EMPLOYEE_NUMBER, userId);
+			}
+						updCostCenterEmployeeResponsible(costCenterId, employeeResponsible.EMPLOYEE_RESPONSIBLE_ID, userId, firstTime);
 			firstTime = false;
 		});
 		updCostCenterTeams(data.COST_CENTER_ID, data.cost_center_teams, userId, data.SALE_ORGANIZATION_ID);
@@ -226,7 +230,6 @@ function updCostCenterTeams(costCenterId, costCenterTeams, userId, saleOrganizat
 function updCostCenterEmployeeResponsible(costCenterId, costCenterEmployeeResponsible, userId, firsTime){
 	if(firsTime)
 		delCostCenterEmployeeResponsibleByCostCenterId(costCenterId, userId, 'hard');
-
 	if(!dataCostCenter.getCostCenterEmployee(costCenterEmployeeResponsible, costCenterId)) {
 		insCostCenterEmployeeResponsible(costCenterId, costCenterEmployeeResponsible, userId);
 	}

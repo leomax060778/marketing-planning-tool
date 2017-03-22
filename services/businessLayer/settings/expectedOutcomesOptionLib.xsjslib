@@ -24,6 +24,10 @@ var map = {
     'IN_HL': ''
 };
 
+function getAllExpectedOutcomeOptionIncludeDeleted(){
+    return dataExpectedOutcomeOption.getAllExpectedOutcomeOptionIncludeDeleted();
+}
+
 function getAllOption() {
     return dataExpectedOutcomeOption.getAllExpectedOutcomeOption();
 }

@@ -4,6 +4,8 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataBudget = mapper.getDataBudgetReports();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
+var userbl = mapper.getUser();
+var config = mapper.getDataConfig();
 /*************************************************/
 
 function getAllBudget(){
@@ -26,11 +28,24 @@ function getHl4ByFilter2(reqBody,userSessionID){
 	return result;	
 }
 
+function getHl2ByHl1Id(hl1Id, userId) {
+    var isSA = false;
+    if (config.getApplySuperAdminToAllInitiatives()) {
+        isSA = userbl.isSuperAdmin(userId);
+    }
+    return dataHl2.getHl2ByHl1Id(hl1Id, userId, isSA);
+}
+
 function getHl4ByFilter(reqBody,userSessionID){
 	var result = [];
 	var arrPlan = [];
 	var arrRegion = [];
 	var arrBudgetYear = [];
+	
+	var isSA = false;
+    if (config.getApplySuperAdminToAllInitiatives()) {
+        isSA = userbl.isSuperAdmin(userSessionID) ? 1 : 0;
+    }
 	
 	//if has filter plan then apply filter by parameter, else apply filter to related user plan
 	if(reqBody.arrPlan)
@@ -45,7 +60,7 @@ function getHl4ByFilter(reqBody,userSessionID){
 		arrBudgetYear = reqBody.arrBudgetYear;
 
 	
-	var myBudget = dataBudget.getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userSessionID);
+	var myBudget = dataBudget.getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, isSA, userSessionID);
 	
 	if(myBudget){
 		var aux = {};

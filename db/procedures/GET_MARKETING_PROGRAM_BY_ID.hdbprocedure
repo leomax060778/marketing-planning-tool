@@ -1,7 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_MARKETING_PROGRAM_BY_ID"(
     IN in_marketing_program_id bigint,
 	OUT out_result TABLE (MARKETING_PROGRAM_ID BIGINT, 
-						  NAME NVARCHAR(255)
+						  NAME NVARCHAR(255),
+						  DESCRIPTION NVARCHAR(255)
 						)
 	) 
 	LANGUAGE SQLSCRIPT
@@ -13,6 +14,7 @@ out_result =
 select 
 	MARKETING_PROGRAM_ID
 	,NAME
+	,DESCRIPTION
 	from MARKETING_PROGRAM
 	where ENABLED = 1 AND DELETED = 0 AND MARKETING_PROGRAM_ID = in_marketing_program_id
 	ORDER BY NAME ASC;

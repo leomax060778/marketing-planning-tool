@@ -13,6 +13,7 @@ var l4ReportFields = {"ACRONYM": "ID",
 		"HL4_DETAILS": "Initiative/Campaign Details",
 		"HL4_BUSINESS_DETAILS": "Business Value",
 		"HL4_FNC_BUDGET_TOTAL_MKT": "Budget",
+		"PARENT_PATH": "Parent",
 		"CATEGORY": ""};
 
 function getAllL4DEReport(userId) {
@@ -60,15 +61,40 @@ function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
 				var object = {};
 				object.display_name = l4ReportFields[field];
 				// When Acronym/ID display the CRM path for L4 entry
-				if(l4ReportFields[field] == "ID"){
-					var CRM_ACRONYM = "CRM";
-					var path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+				var CRM_ACRONYM = "CRM";
+				var path = '';
+
+				switch (field){
+					case 'ACRONYM':
+						path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+						if (path.length > 0) {
+							object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl4['ACRONYM'];
+						}
+						break;
+					case 'PARENT_PATH':
+						path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+						if (path.length > 0) {
+							object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+						}
+						break;
+					default:
+						object.value = hl4[field];
+						break;
+				}
+
+				/*if(field == "ACRONYM"){
+					path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
 					if (path.length > 0) {
 						object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl4['ACRONYM'];
 					}
+				}else if(field){
+					path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+					if (path.length > 0) {
+						object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+					}
 				}else{
 					object.value = hl4[field];
-				}
+				}*/
 								
 				object.changed = checkChangedField(changedFields, field);
 				data.hl4.push(object);

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL5" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="HL5_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="HL5_ID"/>
+    </attribute>
+    <attribute id="HL5_CRM_DESCRIPTION" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_CRM_DESCRIPTION"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="HL5_CRM_DESCRIPTION"/>
+    </attribute>
+    <attribute id="ACRONYM" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ACRONYM"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="ACRONYM"/>
+    </attribute>
+    <attribute id="BUDGET" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="BUDGET"/>
+    </attribute>
+    <attribute id="HL4_ID" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL4_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="HL4_ID"/>
+    </attribute>
+    <attribute id="IN_BUDGET" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IN_BUDGET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="IN_BUDGET"/>
+    </attribute>
+    <attribute id="BUDGET_SPEND_Q1" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUDGET_SPEND_Q1"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="BUDGET_SPEND_Q1"/>
+    </attribute>
+    <attribute id="BUDGET_SPEND_Q2" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUDGET_SPEND_Q2"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="BUDGET_SPEND_Q2"/>
+    </attribute>
+    <attribute id="BUDGET_SPEND_Q3" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUDGET_SPEND_Q3"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="BUDGET_SPEND_Q3"/>
+    </attribute>
+    <attribute id="BUDGET_SPEND_Q4" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUDGET_SPEND_Q4"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="BUDGET_SPEND_Q4"/>
+    </attribute>
+    <attribute id="HL5_STATUS_DETAIL_ID" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_STATUS_DETAIL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="HL5_STATUS_DETAIL_ID"/>
+    </attribute>
+    <attribute id="ENABLED" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="DELETED"/>
+    </attribute>
+    <attribute id="MODIFIED_DATE_TZ" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MODIFIED_DATE_TZ"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="MODIFIED_DATE_TZ"/>
+    </attribute>
+    <attribute id="CREATED_DATE_TZ" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CREATED_DATE_TZ"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="CREATED_DATE_TZ"/>
+    </attribute>
+    <attribute id="ACTUAL_START_DATE" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ACTUAL_START_DATE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="ACTUAL_START_DATE"/>
+    </attribute>
+    <attribute id="ACTUAL_END_DATE" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ACTUAL_END_DATE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="ACTUAL_END_DATE"/>
+    </attribute>
+    <attribute id="PLANNED_START_DATE" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PLANNED_START_DATE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="PLANNED_START_DATE"/>
+    </attribute>
+    <attribute id="PLANNED_END_DATE" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PLANNED_END_DATE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="PLANNED_END_DATE"/>
+    </attribute>
+    <attribute id="CAMPAIGN_OBJECTIVE_ID" order="20" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_OBJECTIVE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="CAMPAIGN_OBJECTIVE_ID"/>
+    </attribute>
+    <attribute id="DISTRIBUTION_CHANNEL_ID" order="21" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DISTRIBUTION_CHANNEL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="DISTRIBUTION_CHANNEL_ID"/>
+    </attribute>
+    <attribute id="CAMPAIGN_TYPE_ID" order="22" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_TYPE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="CAMPAIGN_TYPE_ID"/>
+    </attribute>
+    <attribute id="CAMPAIGN_SUBTYPE_ID" order="23" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_SUBTYPE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="CAMPAIGN_SUBTYPE_ID"/>
+    </attribute>
+    <attribute id="MARKETING_PROGRAM_ID" order="24" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MARKETING_PROGRAM_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="MARKETING_PROGRAM_ID"/>
+    </attribute>
+    <attribute id="BUSINESS_OWNER_ID" order="25" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUSINESS_OWNER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="BUSINESS_OWNER_ID"/>
+    </attribute>
+    <attribute id="EMPLOYEE_RESPONSIBLE_ID" order="26" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EMPLOYEE_RESPONSIBLE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="EMPLOYEE_RESPONSIBLE_ID"/>
+    </attribute>
+    <attribute id="COST_CENTER_ID" order="27" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="COST_CENTER_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="COST_CENTER_ID"/>
+    </attribute>
+    <attribute id="ROUTE_TO_MARKET_ID" order="28" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ROUTE_TO_MARKET_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="ROUTE_TO_MARKET_ID"/>
+    </attribute>
+    <attribute id="SALES_ORGANIZATION_ID" order="29" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SALES_ORGANIZATION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="SALES_ORGANIZATION_ID"/>
+    </attribute>
+    <attribute id="PRIORITY_ID" order="30" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PRIORITY_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="PRIORITY_ID"/>
+    </attribute>
+    <attribute id="VENUE" order="31" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="VENUE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="VENUE"/>
+    </attribute>
+    <attribute id="CITY" order="32" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CITY"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="CITY"/>
+    </attribute>
+    <attribute id="COUNTRY" order="33" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="COUNTRY"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="COUNTRY"/>
+    </attribute>
+    <attribute id="URL" order="34" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="URL"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="URL"/>
+    </attribute>
+    <attribute id="STREET" order="35" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="STREET"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="STREET"/>
+    </attribute>
+    <attribute id="POSTAL_CODE" order="36" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="POSTAL_CODE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="POSTAL_CODE"/>
+    </attribute>
+    <attribute id="NUMBER_OF_PARTICIPANTS" order="37" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NUMBER_OF_PARTICIPANTS"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="NUMBER_OF_PARTICIPANTS"/>
+    </attribute>
+    <attribute id="REGION" order="38" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REGION"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="REGION"/>
+    </attribute>
+    <attribute id="EVENT_OWNER" order="39" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EVENT_OWNER"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5" columnName="EVENT_OWNER"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL5"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL5" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="10" y="10"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

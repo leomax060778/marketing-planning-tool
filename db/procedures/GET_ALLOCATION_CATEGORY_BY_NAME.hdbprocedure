@@ -1,5 +1,5 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_CATEGORY_BY_NAME" (
-    IN in_name BIGINT,
+    IN in_name NVARCHAR(255),
 	OUT out_result TABLE (
 	category_id BIGINT
 	, measure_id BIGINT
@@ -18,7 +18,8 @@ BEGIN
 			   name,
 			   description
 		FROM ALLOCATION_CATEGORY
-		WHERE NAME = in_name AND enabled = 1 AND deleted = 0
+		WHERE upper(NAME) = upper(in_name)
+		AND enabled = 1 AND deleted = 0
 		ORDER BY name;
 
 END;

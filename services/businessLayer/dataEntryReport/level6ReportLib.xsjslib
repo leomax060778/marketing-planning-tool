@@ -17,6 +17,7 @@ var dataBusinessOwner = mapper.getDataBusinessOwner();
 var dbER = mapper.getDataEmployeeResponsible();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
+var dataPriority = mapper.getDataPriority();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 var l6ReportFields = {
@@ -49,6 +50,7 @@ var l6ReportFields = {
     , "POSTAL_CODE": "Postal Code"
     , "ROUTE_TO_MARKET_ID": "Route to Market"
     , "CATEGORY": ""
+    , "PARENT_PATH": "Parent"
 };
 
 function getAllL6DEReport(userId) {
@@ -99,11 +101,10 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
         } else {
             var object = {};
             object.display_name = l6ReportFields[field];
-
+            var CRM_ACRONYM = "CRM";
+            var path = dataPath.getPathByLevelParent(6, hl6['HL5_ID']);
             switch (field) {
                 case "ACRONYM":
-                    var CRM_ACRONYM = "CRM";
-                    var path = dataPath.getPathByLevelParent(6, hl6['HL5_ID']);
                     if (path.length > 0) {
                         object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + hl6['ACRONYM'];
                     }
@@ -149,8 +150,6 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
 
                 case "MARKETING_ACTIVITY_ID":
                     if (hl6['MARKETING_ACTIVITY_ID']) {
-                        var CRM_ACRONYM = "CRM";
-                        var path = dataPath.getPathByLevelParent(5, hl5['HL4_ID']);
                         var hl6MarketingActivity = dataHl5.getHl5ById(hl6['MARKETING_ACTIVITY_ID']);
                         if (path.length > 0) {
                             object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + hl6MarketingActivity['ACRONYM'];
@@ -204,6 +203,14 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                     break;
                 case "ACTUAL_END_DATE":
                     object.value = (new Date(hl6[field])).toLocaleDateString();
+                    break;
+                case "PARENT_PATH":
+                    if (path.length > 0) {
+                        object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+                    }
+                    break;
+                case "PRIORITY_ID":
+                    object.value = dataPriority.getPriorityById(hl6[field]).NAME;
                     break;
                 default:
                     object.value = hl6[field];

@@ -95,8 +95,8 @@ function getHl2AllocatedBudget(hl2Id, hl3Id) {
 	return null;
 }
 
-function getLevel2ForSearch(){
-	var parameters = {};
+function getLevel2ForSearch(userSessionID, isSA){
+	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
 	var result = db.executeProcedure(spGetHl2ForSerach,parameters);	
 	return db.extractArray(result.out_result);
 }

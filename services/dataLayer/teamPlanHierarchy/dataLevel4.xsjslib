@@ -161,8 +161,8 @@ function getCountHl4Childrens(hl4_id){
 		return db.executeScalarManual(spGET_COUNT_HL5_BY_HL4_ID,{'in_hl4_id':hl4_id},'out_total_hl5');
 }
 
-function getLevel4ForSearch(){
-	var parameters = {};
+function getLevel4ForSearch(userSessionID, isSA){
+	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
 	var result = db.executeProcedure(spGetHl4ForSerach,parameters);	
 	return db.extractArray(result.out_result);
 }

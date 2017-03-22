@@ -19,8 +19,9 @@ function processRequest(){
 //Implementation of GET call -- GET HL1
 function handleGet(parameters, userSessionID){
 	if(parameters.length > 0){
+        blLevel1.checkPermission(userSessionID, parameters[0].name, parameters[0].value);
+
 		if(parameters[0].name == method){
-			
 			var rdo = blLevel1.getAllLevel1();
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);				
 		}
@@ -40,7 +41,7 @@ function handleGet(parameters, userSessionID){
 		}
 		else if (parameters[0].name == section){
 			
-			var rdo = blLevel1.getLevel1ForSearch();
+			var rdo = blLevel1.getLevel1ForSearch(userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else{
@@ -61,12 +62,15 @@ function handlePost(reqBody,userSessionID) {
 
 //Implementation of UPDATE call -- UPDATE HL1
 function handlePut(reqBody,userSessionID){
+    blLevel1.checkPermission(userSessionID);
 	var rdo =  blLevel1.updateHl1(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 }
 
 //Implementation of DELETE call -- Delete HL1
 function handleDelete(reqBody,userSessionID){
+    blLevel1.checkPermission(userSessionID);
+
 	var rdo = blLevel1.deleteHl1(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 }

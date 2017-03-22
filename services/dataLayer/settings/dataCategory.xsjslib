@@ -21,6 +21,7 @@ var spGET_CATEGORY_BY_ID = "GET_CATEGORY_BY_ID";
 
 var INS_ALLOCATION_CATEGORY = "INS_ALLOCATION_CATEGORY";
 var GET_ALLOCATION_CATEGORY = "GET_ALLOCATION_CATEGORY";
+var GET_ALL_ALLOCATION_CATEGORY = "GET_ALL_ALLOCATION_CATEGORY";
 var GET_ALLOCATION_CATEGORY_BY_ID = "GET_ALLOCATION_CATEGORY_BY_ID";
 var GET_ALLOCATION_CATEGORY_BY_NAME = "GET_ALLOCATION_CATEGORY_BY_NAME";
 var GET_ALLOCATION_CATEGORY_IN_USE_BY_CATGEORY_ID = "GET_ALLOCATION_CATEGORY_IN_USE_BY_CATGEORY_ID";
@@ -168,6 +169,11 @@ function insertAllocationCategory(description, name, measureId, userId, autoComm
 }
 function getAllocationCategory(){
 	var result = db.executeProcedureManual(GET_ALLOCATION_CATEGORY, {});
+	return db.extractArray(result.out_result);
+}
+
+function getAllAllocationCategory(){
+	var result = db.executeProcedureManual(GET_ALL_ALLOCATION_CATEGORY, {});
 	return db.extractArray(result.out_result);
 }
 

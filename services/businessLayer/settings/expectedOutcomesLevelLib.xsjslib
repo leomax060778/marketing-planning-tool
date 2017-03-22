@@ -46,6 +46,10 @@ function updateExpectedOutcomesLevel(parameters, modifiedUserId) {
     return resultTransaction;
 }
 
+function getExpectedOutcomeLevelIdByOptionNameAndLevelId(optionName, levelId){
+    return dataExpectedOutcomesLevel.getExpectedOutcomeLevelIdByOptionNameAndLevelId(optionName, levelId);
+}
+
 function uiToServerParser(object) {
     var data = JSON.stringify(object, function (key, value) {
         if (Array.isArray(value)) {

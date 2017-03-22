@@ -55,6 +55,9 @@ BEGIN
 	       	, (var_h2.COUNT_INTERLOCKS / var_h1.TOTAL_INTERLOCKS ) AS COUNT_INICIATIVE_PROP
 		
 			, (var_h2.L4_BUD_PROP * (var_h2.COUNT_INTERLOCKS / var_h1.TOTAL_INTERLOCKS )) as L4_BUD_PROP_INIC 
+			, var_h2.HL1_ID
+	        , var_h2.HL2_ID
+	        , var_h2.HL3_ID
 		
 		from 
 		(
@@ -101,6 +104,9 @@ BEGIN
 		        , case when STATUS_DETAIL = 'No Response' then 1 else 0 END COUNT_NO_RESPONSE_INTERLOCKS
 		        , case when STATUS_DETAIL = 'Rejected' then 1 else 0 END COUNT_REJECTED_INTERLOCKS
 		        , case when STATUS_DETAIL = 'Request Info' then 1 else 0 END COUNT_REQUEST_INFO_INTERLOCKS
+		        , HL1_ID
+		        , HL2_ID
+		        , HL3_ID
 		        	
 			FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_INTERLOCK_PROCESS_REPORT"
 		)

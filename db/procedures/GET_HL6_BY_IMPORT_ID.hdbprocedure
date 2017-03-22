@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_IMPORT_ID" (
+	in in_import_id BIGINT
+	,out out_result TABLE (
+		hl6_id integer
+		)
+
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+out_result = select
+             hl6_id
+             from hl6
+             where import_id = in_import_id;
+
+END;

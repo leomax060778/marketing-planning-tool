@@ -3,6 +3,7 @@
   <descriptions defaultDescription="AT_HL2"/>
   <informationModelLayout relativeWidthScenario="27"/>
   <attributes>
+  
     <attribute id="HL2_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
       <descriptions defaultDescription="HL2_ID"/>
       <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL2" columnName="HL2_ID"/>

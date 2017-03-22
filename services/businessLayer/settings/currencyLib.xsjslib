@@ -29,3 +29,7 @@ function InsertOrUpdateCurrency(currencies, budgetYearId){
 	}
 	return 0;
 }
+
+function getCurrencyByDefaultBudgetYearIdAbbr(abbr){
+	return dbCurrency.getCurrencyByDefaultBudgetYearIdAbbr(abbr);
+}

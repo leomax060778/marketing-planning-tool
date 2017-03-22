@@ -38,6 +38,12 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6"
     ,in in_planned_end_date timestamp
     ,in in_street nvarchar(255)
     ,in in_postal_code nvarchar(20)
+    ,in in_region nvarchar(255)
+        ,in in_event_owner nvarchar(255)
+        ,in in_number_of_participants nvarchar(255)
+        ,in in_priority_id bigint
+     ,IN IN_IMPORTED TINYINT
+     ,IN_IMPORT_ID BIGINT
 	,OUT out_hl6_id bigint 
 	) 
 	LANGUAGE SQLSCRIPT
@@ -84,6 +90,12 @@ BEGIN
 ,planned_end_date
 ,street
 ,postal_code
+, region
+    , event_owner
+    , number_of_participants
+    , priority_id
+    ,IMPORTED
+    ,IMPORT_ID
 	)
 	VALUES (
  in_hl6_crm_description
@@ -124,6 +136,12 @@ BEGIN
 ,in_planned_end_date
 ,in_street
 ,in_postal_code
+, in_region
+, in_event_owner
+, in_number_of_participants
+, in_priority_id
+, IN_IMPORTED
+, IN_IMPORT_ID
 );
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_id FROM "PLANNING_TOOL"."HL6";

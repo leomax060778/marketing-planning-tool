@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_GET_EXPECTED_OUTCOME_LEVEL" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_GET_EXPECTED_OUTCOME_LEVEL"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="INTEGER" id="EXPECTED_OUTCOME_OPTION_ID"/>
+        <viewAttribute datatype="INTEGER" id="EXPECTED_OUTCOME_LEVEL_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="CSV_ALIAS" length="255"/>
+        <viewAttribute datatype="INTEGER" id="HIERARCHY_LEVEL_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out = (select EOO.EXPECTED_OUTCOME_OPTION_ID as EXPECTED_OUTCOME_OPTION_ID
+, EOL.EXPECTED_OUTCOME_LEVEL_ID AS EXPECTED_OUTCOME_LEVEL_ID
+,  EOO.CSV_ALIAS as CSV_ALIAS
+, EOL.HIERARCHY_LEVEL_ID
+FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_EXPECTED_OUTCOME_OPTION&quot; EOO 
+INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_EXPECTED_OUTCOME_LEVEL&quot; EOL ON EOL.EXPECTED_OUTCOME_OPTION_ID = EOO.EXPECTED_OUTCOME_OPTION_ID
+WHERE EOO.CSV_ALIAS IS NOT NULL);
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="CSV_ALIAS" order="3">
+        <descriptions defaultDescription="CSV_ALIAS"/>
+        <keyMapping columnObjectName="Script_View" columnName="CSV_ALIAS"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="EXPECTED_OUTCOME_OPTION_ID" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="EXPECTED_OUTCOME_OPTION_ID"/>
+        <measureMapping columnObjectName="Script_View" columnName="EXPECTED_OUTCOME_OPTION_ID"/>
+      </measure>
+      <measure id="EXPECTED_OUTCOME_LEVEL_ID" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="EXPECTED_OUTCOME_LEVEL_ID"/>
+        <measureMapping columnObjectName="Script_View" columnName="EXPECTED_OUTCOME_LEVEL_ID"/>
+      </measure>
+      <measure id="HIERARCHY_LEVEL_ID" order="4" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HIERARCHY_LEVEL_ID"/>
+        <measureMapping columnObjectName="Script_View" columnName="HIERARCHY_LEVEL_ID"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

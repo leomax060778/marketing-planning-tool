@@ -12,7 +12,7 @@ function processRequest(){
 }
 
 function handleGet(parameters, userSessionID){
-	var rdo = interlockLib.getInterlockReport();
+	var rdo = interlockLib.getInterlockReport(userSessionID);
 	httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };
 

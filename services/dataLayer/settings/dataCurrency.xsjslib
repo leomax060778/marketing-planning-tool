@@ -9,6 +9,7 @@ var spGET_ALL_CURRENCY = "GET_ALL_CURRENCY";
 var spGET_CURRENCY = "GET_CURRENCY";
 var spINS_CURRENCY = "INS_CURRENCY";
 var spUPD_CURRENCY = "UPD_CURRENCY";
+var spGET_CURRENCY_BY_DEFAULT_BUDGET_YEAR_AND_ABBR = "GET_CURRENCY_BY_DEFAULT_BUDGET_YEAR_AND_ABBR";
 /******************************************************/
 function InsertCurrency(country, abbr, currencyName, value, userId, budgetYearId,autoCommit){
 	var params = {
@@ -71,4 +72,17 @@ function existsCurrency(id, abbr, budgetYearId){
 	var result =db.executeProcedure(spGET_CURRENCY, params);
 	var resultExtract = db.extractArray(result.out_result);
 	return resultExtract.length > 0;
+}
+
+function getCurrencyByDefaultBudgetYearIdAbbr(abbr){
+	var params = {
+		'in_currency_abbreviation': abbr
+	}
+
+	var result =db.executeProcedure(spGET_CURRENCY_BY_DEFAULT_BUDGET_YEAR_AND_ABBR, params);
+	var resultExtract = db.extractArray(result.out_result);
+	if (resultExtract.length > 0)
+		return resultExtract[0];
+	else
+		return null;
 }

@@ -5,6 +5,7 @@ var httpUtil = mapper.getHttp();
 var hl4 = mapper.getLevel4();
 var ErrorLib = mapper.getErrors();
 var config = mapper.getDataConfig();
+var businessLevel3 = mapper.getLevel3();
 /******************************************/
 var section = "FOR_SEARCH";
 var method = "method";
@@ -36,12 +37,15 @@ function handleGet(params, userId) {
 	var in_hl4_id = httpUtil.getUrlParameters().get("HL4_ID");
 	var param_section = httpUtil.getUrlParameters().get("section");
 	var result = {};
+
 	if(in_hl3_id){
+        businessLevel3.checkPermission(userId, null, in_hl3_id);
 		result = hl4.getHl4(in_hl3_id);
 	} else if (in_hl4_id) {
+        hl4.checkPermission(userId, null, in_hl4_id);
 		result = hl4.getHl4ById(in_hl4_id);
 	} else if (param_section && param_section == section){
-		result = hl4.getLevel4ForSearch();
+		result = hl4.getLevel4ForSearch(userId);
 	} else{
 		throw ErrorLib.getErrors().BadRequest("","level4Services/handleGet","invalid parameter name (can be: HL3_ID, HL4_ID or section)");
 	}
@@ -52,6 +56,7 @@ function handleGet(params, userId) {
 //Implementation of PUT call -- Update HL4
 function handlePut(reqBody, userId){
 	var parameters = httpUtil.getUrlParameters();
+    businessLavel4.checkPermission(userId, null, parameters.get('HL4_ID') || reqBody.hl4.in_hl4_id);
 	if(parameters.length > 0){
 		var aCmd = parameters.get('method');
 		var hl4Id = parameters.get('HL4_ID');
@@ -78,12 +83,14 @@ function handlePut(reqBody, userId){
 
 //Implementation of DELETE call -- Delete HL4
 function handleDelete(reqBody, userId){
+    businessLavel4.checkPermission(userId, null, reqBody.in_hl4_id);
 	var result =  hl4.deleteHl4(reqBody, userId);
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 };
 
 //Implementation of POST call -- Insert HL4
-function handlePost(reqBody, userId) {	
+function handlePost(reqBody, userId) {
+    businessLavel3.checkPermission(userId, null, reqBody.hl4.in_hl3_id);
 	var result = hl4.insertHl4(reqBody, userId); //return new L4 Id
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 }

@@ -1,0 +1,13 @@
+{
+    "description": "Update L5 detailed report",
+    "action": "xsplanningtool.services.job:updL5DetailedReport.xsjs::updateReportTable",
+    "schedules": [
+       {
+          "description": "Update records in table used for Reporting",
+          "xscron": "* * * * * * 59",
+          "parameter": {
+                "app": "MPT"
+             }
+       }
+    ]
+}

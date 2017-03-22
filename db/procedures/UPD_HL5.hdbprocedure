@@ -37,6 +37,10 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5" (
     ,in in_planned_end_date timestamp
     ,in in_street nvarchar(255)
     ,in in_postal_code nvarchar(20)
+    ,in in_region nvarchar(255)
+    ,in in_event_owner nvarchar(255)
+    ,in in_number_of_participants nvarchar(255)
+    ,in in_priority_id bigint
 	,OUT out_result int
 )
    LANGUAGE SQLSCRIPT
@@ -79,7 +83,11 @@ BEGIN
     planned_start_date = in_planned_start_date,
     planned_end_date = in_planned_end_date,
     street = in_street,
-    postal_code = in_postal_code
+    postal_code = in_postal_code,
+    region = in_region,
+    event_owner = in_event_owner,
+    number_of_participants = in_number_of_participants,
+    priority_id = in_priority_id
 
     where hl5_id = in_hl5_id;
 

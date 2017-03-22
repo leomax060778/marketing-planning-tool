@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_HL5_BUDGET" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_HL4_BUDGET_REGION"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="HL5_BUDGET_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_BUDGET_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="HL5_BUDGET_ID"/>
+    </attribute>
+    <attribute id="HL5_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HL5_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="HL5_ID"/>
+    </attribute>
+    <attribute id="ORGANIZATION_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="ORGANIZATION_ID"/>
+    </attribute>
+    <attribute id="PERCENTAGE" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PERCENTAGE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="PERCENTAGE"/>
+    </attribute>
+    <attribute id="ORGANIZATION_TYPE" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ORGANIZATION_TYPE"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="ORGANIZATION_TYPE"/>
+    </attribute>
+    <attribute id="ENABLED" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET" columnName="DELETED"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="HL5_BUDGET"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="HL5_BUDGET" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

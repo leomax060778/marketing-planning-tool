@@ -45,6 +45,10 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_ID"(
 			PLANNED_END_DATE TIMESTAMP,
 			STREET NVARCHAR(255),
 			POSTAL_CODE NVARCHAR(20)
+			,REGION nvarchar(255)
+            ,EVENT_OWNER nvarchar(255)
+            ,NUMBER_OF_PARTICIPANTS nvarchar(255)
+            ,PRIORITY_ID bigint
 		)
 	)
 	LANGUAGE SQLSCRIPT
@@ -97,6 +101,10 @@ BEGIN
 				PLANNED_END_DATE, 
 				STREET, 
 				POSTAL_CODE
+				,REGION
+                ,EVENT_OWNER
+                ,NUMBER_OF_PARTICIPANTS
+                ,PRIORITY_ID
 			FROM HL6
 			WHERE HL6_ID = in_hl6_id
 				AND ENABLED = 1
