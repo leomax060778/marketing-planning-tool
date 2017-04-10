@@ -56,7 +56,15 @@ function handlePut(reqBody, userSessionID){
 };
 
 function handleDelete(reqBody, userSessionID){
-    var rdo = blUploadL5L6.deleteDataUploadL5L6ByImportId(reqBody, userSessionID);
-    httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);};
+    var method = httpUtil.getUrlParameters().get("method");
+    if(method == "DICTIONARY"){
+        var rdo = blUploadL5L6.deleteDictionary(userSessionID);
+        httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+    }else{
+        var rdo = blUploadL5L6.deleteDataUploadL5L6ByImportId(reqBody, userSessionID);
+        httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+    }
+}
+
 
 processRequest();

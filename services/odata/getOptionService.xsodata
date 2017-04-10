@@ -1,9 +1,0 @@
-service  {
-	"sap-planning-tool.db.data.views::AV_OPTION"
-	as "Options"
-	keys ("OPTION_ID")
-	parameters via entity
-	create forbidden
-	update forbidden
-	delete forbidden;  
-} 

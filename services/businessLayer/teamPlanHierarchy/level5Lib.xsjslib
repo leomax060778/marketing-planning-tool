@@ -404,13 +404,13 @@ function insertHl5FromUpload(data, userId){
 
 function validateHl5Upload(data){
     if (!data.ACRONYM)
-        throw ErrorLib.getErrors().ImportError("", "hl5Services/handlePost/insertHl5", L5_MSG_INITIATIVE_ACRONYM);
+        throw ErrorLib.getErrors().ImportError("", "hl5Services/handlePost/insertHl5-data.ACRONYM", L5_MSG_INITIATIVE_ACRONYM);
 
     //if (data.hl5.ACRONYM.length !== 4)
       //  throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", L5_MSG_INITIATIVE_ACRONYM_LENGTH);
 
     if (existsHl5(data))
-        throw ErrorLib.getErrors().ImportError("", "hl5Services/handlePost/insertHl5", L5_MSG_INITIATIVE_EXISTS);
+        throw ErrorLib.getErrors().ImportError("", "hl5Services/handlePost/insertHl5-existsHl5", L5_MSG_INITIATIVE_EXISTS);
 
     //if (util.validateDateEndMayorStart((new Date(data.hl5.ACTUAL_START_DATE)), (new Date(data.hl5.ACTUAL_END_DATE))))
     //    throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L5_MSG_INITIATIVE_INVALID_DATE_RANGE);

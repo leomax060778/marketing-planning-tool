@@ -360,18 +360,18 @@ function validateHl6Upload(data){
 
 
     if (!data.ACRONYM) {
-        var error = ErrorLib.getErrors().ImportError();
+        var error = ErrorLib.getErrors().ImportError("","level6Lib/validateHl6Upload-data.ACRONYM",L6_MSG_INITIATIVE_NOT_FOUND);
         error.row = valuesToArray(data);
-        error.details = L6_MSG_INITIATIVE_NOT_FOUND;
+        //error.details = L6_MSG_INITIATIVE_NOT_FOUND;
         throw error;
     }
     //if (data.hl5.ACRONYM.length !== 4)
     //  throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", L5_MSG_INITIATIVE_ACRONYM_LENGTH);
 
     if (existsHl6(data)) {
-        var error = ErrorLib.getErrors().ImportError();
+        var error = ErrorLib.getErrors().ImportError("","level6Lib/validateHl6Upload-existsHl6",L6_MSG_INITIATIVE_CRM_ACRONYM_EXISTS);
         error.row = valuesToArray(data);
-        error.details = L6_MSG_INITIATIVE_CRM_ACRONYM_EXISTS;
+       // error.details = L6_MSG_INITIATIVE_CRM_ACRONYM_EXISTS;
         throw error;
     }
     //if (util.validateDateEndMayorStart((new Date(data.hl5.ACTUAL_START_DATE)), (new Date(data.hl5.ACTUAL_END_DATE))))

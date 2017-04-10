@@ -19,6 +19,7 @@ var INS_IMPORT_L5_L6 = "INS_IMPORT_L5_L6";
 var GET_UPLOAD_L5_L6_LOG = "GET_UPLOAD_L5_L6_LOG";
 var GET_IMPORT = "GET_IMPORT";
 var UPD_IMPORT_L5_L6 = "UPD_IMPORT_L5_L6";
+var DEL_DICTIONARY_L5_L6_BY_USER_ID = "DEL_DICTIONARY_L5_L6_BY_USER_ID";
 
 var hierarchyLevel = {
     "hl5": 2,
@@ -135,4 +136,13 @@ function updateImport(importId, userId){
     };
     var rdo = db.executeScalarManual(UPD_IMPORT_L5_L6, params, "out_result");
     return rdo;
+}
+
+function deleteDictionary(userId){
+    var params = {
+        'in_user_id': userId
+    };
+    var rdo = db.executeScalarManual(DEL_DICTIONARY_L5_L6_BY_USER_ID, params, "out_result");
+    return rdo;
+
 }

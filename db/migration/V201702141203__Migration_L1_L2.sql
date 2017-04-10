@@ -95,7 +95,8 @@ BEGIN
    	VALUE_CONSTRAINT := '';
 
 	SELECT COALESCE(CONSTRAINT_NAME, '') INTO VALUE_CONSTRAINT from "SYS"."REFERENTIAL_CONSTRAINTS"
-	WHERE TABLE_NAME = IN_TABLE_NAME AND REFERENCED_TABLE_NAME = IN_REFERENCED_TABLE_NAME;
+	WHERE TABLE_NAME = IN_TABLE_NAME AND REFERENCED_TABLE_NAME = IN_REFERENCED_TABLE_NAME
+	AND SCHEMA_NAME = 'PLANNING_TOOL';
 
 	IF (:VALUE_CONSTRAINT <> '' )
 	THEN
@@ -128,15 +129,15 @@ ALTER TABLE "PLANNING_TOOL"."HL2" ALTER ("TEAM_TYPE_ID" bigint NULL);
 ---------------------
 insert into "PLANNING_TOOL"."RESOURCE"(name, object_name, created_user_id) values('L1','level1',1);
 ---------------------
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(1, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 9, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(1, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 10, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(1, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 11, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(2, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 9, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(2, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 10, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(3, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 9, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(3, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 10, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(4, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 9, 1);
-insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(4, (SELECT TOP 1 CURRENT_IDENTITY_VALUE() FROM "PLANNING_TOOL"."RESOURCE"), 10, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(1, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 9, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(1, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 10, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(1, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 11, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(2, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 9, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(2, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 10, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(3, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 9, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(3, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 10, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(4, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 9, 1);
+insert into "PLANNING_TOOL"."ROLE_PERMISSION"(role_id, resource_id, permission_id, created_user_id) values(4, (SELECT MAX(RESOURCE_ID) FROM RESOURCE), 10, 1);
 
 --drop procedures
 DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_FILTER";

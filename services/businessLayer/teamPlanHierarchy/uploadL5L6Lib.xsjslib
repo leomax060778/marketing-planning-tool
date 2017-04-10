@@ -208,7 +208,7 @@ function processor(userId, arrayPaths,IMPORT_ID) {
                     if(cell.HIERARCHY_LEVEL_ID)
                         hl.HIERARCHY_LEVEL_ID = cell.HIERARCHY_LEVEL_ID;
 
-                    if (cell.KEY_L5_L6 == 'HL5_ID'){
+                    if (cell.KEY_L5_L6 == 'HL5_ID' || cell.KEY_L5_L6 == 'HL4_ID'){
                         hl.PARENT = cell.VALUE_L5_L6;
                     }
                         
@@ -252,9 +252,9 @@ function processor(userId, arrayPaths,IMPORT_ID) {
                         else if (cell.KEY_L5_L6 == 'BUDGET') {
                             budget = Number(parseNumberBudget(cell.VALUE_L5_L6));
                             if (!processDistributionComplete(row, budget)) {
-                                var error = ErrorLib.getErrors().ImportError();
+                                var error = ErrorLib.getErrors().ImportError("","uploadL5L6Lib/Processor/","Distribution budget is not complete.");
                                 error.row = row;
-                                error.details = "Distribution budget is not complete.";
+                                //error.details = "Distribution budget is not complete.";
                                 throw error;
                             }
                             hl[cell.KEY_L5_L6] = budget;
@@ -273,9 +273,9 @@ function processor(userId, arrayPaths,IMPORT_ID) {
                         ) {
                             var newDate = cell.VALUE_L5_L6;
                             if(!new Date(newDate).valueOf()) {
-                                var error = ErrorLib.getErrors().ImportError();
+                                var error = ErrorLib.getErrors().ImportError("","uploadL5L6Lib/processor/",MSG_INVALID_DATE_FORMAT);
                                 error.row = row;
-                                error.detail = MSG_INVALID_DATE_FORMAT;
+                                //error.detail = MSG_INVALID_DATE_FORMAT;
                                 throw error;
                             }
                             hl[cell.KEY_L5_L6] = (new Date(newDate)).toISOString();
@@ -293,7 +293,9 @@ function processor(userId, arrayPaths,IMPORT_ID) {
                         if (obj.PATH.indexOf(hl.PARENT) >= 0){
                             hl.ACRONYM = obj.PATH.substring(hl.PARENT.length);
                         } else {
-                            var error = ErrorLib.getErrors().ImportError("","",MSG_ACRONYM_NOT_FOUND);
+                            //var error = ErrorLib.getErrors().ImportError("","uploadL5L6Lib/processor",MSG_ACRONYM_NOT_FOUND);
+                            var error = ErrorLib.getErrors().ImportError("","path: "+obj.PATH +" parent: "+hl.PARENT
+                                ,MSG_ACRONYM_NOT_FOUND);
                             error.row = row;
                             throw error;
                         }
@@ -309,7 +311,7 @@ function processor(userId, arrayPaths,IMPORT_ID) {
                         hl.ACRONYM = obj.PATH.substring(hl.PARENT.length);
                     else{
 
-                        var error = ErrorLib.getErrors().ImportError("","",MSG_RECORD_WITHOUT_PARENT);
+                        var error = ErrorLib.getErrors().ImportError("","uploadL5L6Lib/processor",MSG_RECORD_WITHOUT_PARENT);
                         error.row = row;
                         throw error;
                     }
@@ -329,7 +331,7 @@ function processor(userId, arrayPaths,IMPORT_ID) {
                 hl.IMPORT_ID = IMPORT_ID;
 
                 if(hl.HIERARCHY_LEVEL_ID != 2 && hl.HIERARCHY_LEVEL_ID !=3){
-                    var error = ErrorLib.getErrors().ImportError("","","This record is incomplete or is not HL5/6");
+                    var error = ErrorLib.getErrors().ImportError("","uploadL5L6Lib/processor","This record is incomplete or is not HL5/6");
                     error.row = row;
                     throw error;
                 }
@@ -345,7 +347,13 @@ function processor(userId, arrayPaths,IMPORT_ID) {
             }
         }
     });
+
+
     return true;
+}
+
+function deleteDictionary(userId){
+    return dataUploadL5L6.deleteDictionary(userId);
 }
 
 function parseNumberBudget(stringValue){
@@ -400,7 +408,7 @@ function processDistributionComplete(row, budgetAsigned) {
 function validate(row) {
 
     var parent;
-    var error = ErrorLib.getErrors().ImportError();
+    var error = ErrorLib.getErrors().ImportError("","uploadL5L6Lib/validate/","");
     error.row = row;
 
     var fieldMapper;
@@ -471,7 +479,7 @@ function logImportError(error, IMPORT_ID, userId) {
     }
 
     dataUploadL5L6.insertLog(keys, values, 1,
-        "logImportError - PATH: " + path + separator + "HL_ID: " + level + separator + "DETAIL: " + error.details, IMPORT_ID,
+        "logImportError - PATH: " + path + separator + "HL_ID: " + level + separator + "DETAIL: " + error.toString(), IMPORT_ID,
         userId);
 }
 
