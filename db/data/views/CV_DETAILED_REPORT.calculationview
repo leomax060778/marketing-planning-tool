@@ -14,69 +14,69 @@
         <viewAttribute datatype="NVARCHAR" id="L1_ACRONYM" length="25"/>
         <viewAttribute datatype="NVARCHAR" id="L1_DESCRIPTION" length="255"/>
         <viewAttribute datatype="INTEGER" id="BUDGET_YEAR"/>
-        <viewAttribute id="L1_BUDGET" datatype="DECIMAL" length="28" scale="2"/>
+        <viewAttribute id="L1_BUDGET" datatype="DECIMAL" length="28" scale="10"/>
         <viewAttribute id="COUNT_L1" datatype="INTEGER"/>
         <viewAttribute datatype="NVARCHAR" id="REGION_NAME" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="SUBREGION_NAME" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="L2_ACRONYM" length="25"/>
         <viewAttribute datatype="NVARCHAR" id="L2_NAME" length="255"/>
-        <viewAttribute datatype="DECIMAL" id="L2_BUDGET" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="L2_BUDGET" length="19" scale="10"/>
         <viewAttribute datatype="NVARCHAR" id="L3_ACRONYM" length="25"/>
         <viewAttribute datatype="NVARCHAR" id="L3_DESCRIPTION" length="100"/>
-        <viewAttribute datatype="DECIMAL" id="L3_BUDGET" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="L3_BUDGET" length="19" scale="10"/>
         <viewAttribute id="L4_ID" datatype="BIGINT"/>
         <viewAttribute id="L4_ACRONYM" datatype="NVARCHAR" length="255"/>
         <viewAttribute id="L4_CRM_DESCRIPTION" datatype="NVARCHAR" length="255"/>
         <viewAttribute id="L4_STATUS_DETAIL" datatype="NVARCHAR" length="255"/>
         <viewAttribute id="COUNT_L4" datatype="INTEGER"/>
-        <viewAttribute datatype="DECIMAL" id="BUDGET_Q1" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="BUDGET_Q2" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="BUDGET_Q3" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="BUDGET_Q4" length="19" scale="2"/>
-        <viewAttribute id="L4_BUDGET" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="BUDGET_SPEND_Q1" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="BUDGET_SPEND_Q2" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="BUDGET_SPEND_Q3" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="BUDGET_SPEND_Q4" datatype="DECIMAL" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_Q1" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_Q2" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_Q3" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_Q4" length="19" scale="10"/>
+        <viewAttribute id="L4_BUDGET" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="BUDGET_SPEND_Q1" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="BUDGET_SPEND_Q2" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="BUDGET_SPEND_Q3" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="BUDGET_SPEND_Q4" datatype="DECIMAL" length="19" scale="10"/>
         <viewAttribute datatype="NVARCHAR" id="CATEGORY_NAME" length="60"/>
         <viewAttribute datatype="NVARCHAR" id="OPTION_NAME" length="255"/>
-        <viewAttribute datatype="DECIMAL" id="OPTION_AMOUNT" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="OPTION_AMOUNT" length="19" scale="10"/>
         <viewAttribute datatype="NVARCHAR" id="BUDGET_TYPE" length="255"/>
-        <viewAttribute datatype="DECIMAL" id="BUDGET_PERCENTAGE" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_PERCENTAGE" length="19" scale="10"/>
         <viewAttribute id="CAMPAIGN_TYPE" datatype="NVARCHAR" length="127"/>
         <viewAttribute id="CAMPAIGN_NAME" datatype="NVARCHAR" length="255"/>
-        <viewAttribute datatype="DECIMAL" id="KPI_EURO_VALUE" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="KPI_AMOUNT_VOLUME" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="KPI_EURO_VALUE" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="KPI_AMOUNT_VOLUME" length="19" scale="10"/>
         <viewAttribute id="COUNT_KPI_BY_L4" datatype="INTEGER"/>
-        <viewAttribute datatype="DECIMAL" id="TOTAL_MY_BUDGET" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="TOTAL_SALE" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="TOTAL_PARTNER" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="TOTAL_BUDGET" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="TOTAL_MY_BUDGET" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="TOTAL_SALE" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="TOTAL_PARTNER" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="TOTAL_BUDGET" length="19" scale="10"/>
       
         <viewAttribute id="ROW_COUNTER" datatype="INTEGER"/>
       
-        <viewAttribute id="L1_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="2"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="2"/>
+        <viewAttribute id="L1_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L2_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L3_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L4_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
       
-        <viewAttribute id="COUNT_L4_PROP" datatype="DECIMAL" length="19" scale="2"/>
+        <viewAttribute id="COUNT_L4_PROP" datatype="DECIMAL" length="19" scale="10"/>
       </viewAttributes>
       <calculatedViewAttributes/>
       <definition>/********* Begin Procedure Script ************/ 
@@ -720,7 +720,9 @@ END /********* End Procedure Script ************/</definition>
       </measure>
     
       <measure id="COUNT_L4_PROP" order="65" aggregationType="sum" measureType="simple">
+    
         <measureMapping columnObjectName="Script_View" columnName="COUNT_L4_PROP"/>
+    
       </measure>
     </baseMeasures>
     <calculatedMeasures/>

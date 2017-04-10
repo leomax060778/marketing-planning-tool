@@ -282,15 +282,16 @@ function getAllCentralTeam(centralTeamId){
 
 /*check if can update object because is not same another in db*/
 function canUpdate(objLevel2){
-	var currentL2 = getLevel2ById(objLevel2);
-	var objHl2Other = dataHl2.getLevelByAcronymAndOrganizationAcronym(objLevel2.IN_ACRONYM,objLevel2.IN_BUDGET_YEAR_ID, objLevel2.IN_ORGANIZATION_ACRONYM);//getLevel2ByAcronym(objLevel2.IN_ACRONYM);
-	if(/*isCentralTeam(objLevel2) ||*/ !objHl2Other) return true;
-	//check the same object
-	if(currentL2.HL2_ID!==objHl2Other.HL2_ID 
-			/*&& objLevel2.IN_ACRONYM.toUpperCase()===objHl2Other.ACRONYM.toUpperCase()*/)
-		return false;
-	else
-		return true;
+	function canUpdate(objLevel2){
+		var currentL2 = getLevel2ById(objLevel2);
+		var objHl2Other = dataHl2.getLevelByAcronymAndOrganizationAcronym(objLevel2.IN_ACRONYM,objLevel2.IN_BUDGET_YEAR_ID, objLevel2.IN_ORGANIZATION_ACRONYM);//getLevel2ByAcronym(objLevel2.IN_ACRONYM);
+		if(!objHl2Other) return true;
+		//check the same object
+		if(currentL2.HL2_ID != objHl2Other.HL2_ID)
+			return false;
+		else
+			return true;
+	}
 }
 
 /*check if can update object because is not same another in db*/

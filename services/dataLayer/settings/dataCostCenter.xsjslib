@@ -12,7 +12,6 @@ var GET_COST_CENTER_TEAMS_BY_CENTER_ID = "GET_COST_CENTER_TEAMS_BY_CENTER_ID";
 var GET_COST_CENTER_COUNT_BY_CODE = "GET_COST_CENTER_COUNT_BY_CODE";
 var GET_COST_CENTER_COUNT_BY_NAME = "GET_COST_CENTER_COUNT_BY_NAME";
 var GET_COST_CENTER_AVAILABLE_TEAMS = "GET_COST_CENTER_AVAILABLE_TEAMS";
-var GET_COST_CENTER_BY_HL5_ID_SALE_ORGANIZATION_ID = "GET_COST_CENTER_BY_HL5_ID_SALE_ORGANIZATION_ID";
 var INS_COST_CENTER = "INS_COST_CENTER";
 var INS_COST_CENTER_TEAMS = "INS_COST_CENTER_TEAMS";
 var UPD_COST_CENTER = "UPD_COST_CENTER";
@@ -77,23 +76,13 @@ function getCostCenterAvailableTeams(editMode, costCenterId){
 	return db.extractArray(list.out_result);
 }
 
-function getCostCenterByL5IdSaleOrganizationId(hl5Id, saleOrganizationId){
-	var parameters = {
-		in_hl5_id: hl5Id,
-		in_sale_organization_id: saleOrganizationId
-	};
-	var list = db.executeProcedureManual(GET_COST_CENTER_BY_HL5_ID_SALE_ORGANIZATION_ID, parameters);
-	return db.extractArray(list.out_result)[0] || null;
-}
-
-function insCostCenter(name, description, userId, code, employeeResponsibleId, salesOrganizationId){
+function insCostCenter(name, description, userId, code, employeeResponsibleId){
 	var parameters = {
 		in_name: name,
 		in_user_id: userId,
 		in_code: code,
 		in_description: description,
-		in_employee_responsible_id: employeeResponsibleId,
-		in_sales_organization_id: salesOrganizationId
+		in_employee_responsible_id: employeeResponsibleId
 	};
 	return db.executeScalarManual(INS_COST_CENTER, parameters, 'out_cost_center_id');
 }
@@ -107,15 +96,14 @@ function insCostCenterTeams(costCenterId, userId, hl3Id){
 	return db.executeScalarManual(INS_COST_CENTER_TEAMS, parameters, 'out_cost_center_teams_id');
 }
 
-function updCostCenter(costCenterId, name, description, userId, code, employeeResponsibleId, salesOrganizationId){
+function updCostCenter(costCenterId, name, description, userId, code, employeeResponsibleId){
 	var parameters = {
 		in_cost_center_id: costCenterId,
 		in_name: name,
 		in_description: description,
 		in_user_id: userId,
 		in_code: code,
-		in_employee_responsible_id: employeeResponsibleId,
-        in_sales_organization_id: salesOrganizationId
+		in_employee_responsible_id: employeeResponsibleId
 	};
 	return db.executeScalarManual(UPD_COST_CENTER, parameters, 'out_result');
 }

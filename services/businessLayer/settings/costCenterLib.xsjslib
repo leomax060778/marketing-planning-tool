@@ -1,11 +1,8 @@
 $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataCostCenter = mapper.getDataCostCenter();
-var dataHl2 = mapper.getDataLevel2();
 var dataHl3 = mapper.getDataLevel3();
-var dbMO = mapper.getDataMarketingOrganization();
 var dataEmployeeResponsible = mapper.getDataEmployeeResponsible();
-var dbBudget = mapper.getDataBudgetYear();
 var ErrorLib = mapper.getErrors();
 /** ***********END INCLUDE LIBRARIES*************** */
 var map = {
@@ -15,8 +12,7 @@ var map = {
 	"in_long_name": "DESCRIPTION",
 	"in_employee_responsible_id": 'EMPLOYEE_RESPONSIBLE_ID',
 	"in_full_name": "FULL_NAME",
-	"in_employee_number": "EMPLOYEE_NUMBER",
-	"in_marketing_organization_id": "SALE_ORGANIZATION_ID"
+	"in_employee_number": "EMPLOYEE_NUMBER"
 };
 
 var COST_CENTER_NOT_FOUND = "The Cost Center can not be found.";
@@ -48,7 +44,6 @@ function getCostCenterById(costCenterId){
 	rdo.DESCRIPTION = costCenter.DESCRIPTION;
 	rdo.EMPLOYEE_RESPONSIBLE_ID = costCenter.EMPLOYEE_RESPONSIBLE_ID;
 	rdo.NAME = costCenter.NAME;
-	rdo.SALE_ORGANIZATION_ID = costCenter.SALE_ORGANIZATION_ID;
 
 	rdo.COST_CENTER_TEAMS = getAssignedTeams(costCenterId);
 	rdo.COST_CENTER_AVAILABLE_TEAMS = getCostCenterAvailableTeams(1,costCenterId);
@@ -73,10 +68,6 @@ function getCostCenterAvailableTeams(editMode,costCenterId){
 	return availableTeams;
 }
 
-function getCostCenterByL5IdSaleOrganizationId(hl5Id, saleOrganizationId, userId){
-	return dataCostCenter.getCostCenterByL5IdSaleOrganizationId(hl5Id, saleOrganizationId);
-}
-
 function getAssignedTeams(costCenterId){
 	var assignedTeams = [];
 	var teams = dataCostCenter.getCostCenterTeamsByCostCenterId(costCenterId);
@@ -87,34 +78,27 @@ function getAssignedTeams(costCenterId){
 }
 
 function insCostCenter(data, userId){
+	var costCenterId = null;
 	data = uiToServerParser(data);
-	//validate(data, 'insert');
+	validate(data, 'insert');
 
 	var employeeResponsibleId = data.employee_responsible.EMPLOYEE_RESPONSIBLE_ID;
 	if(employeeResponsibleId){
 		dataEmployeeResponsible.updEmployeeResponsible(employeeResponsibleId, data.employee_responsible.FULL_NAME, data.employee_responsible.EMPLOYEE_NUMBER, userId);
-	} else if(data.employee_responsible.FULL_NAME && data.employee_responsible.EMPLOYEE_NUMBER){
-		employeeResponsibleId = dataEmployeeResponsible.insEmployeeResponsible(data.employee_responsible.FULL_NAME, data.employee_responsible.EMPLOYEE_NUMBER, userId);
 	} else {
-		employeeResponsibleId = null;
+		employeeResponsibleId = dataEmployeeResponsible.insEmployeeResponsible(data.employee_responsible.FULL_NAME, data.employee_responsible.EMPLOYEE_NUMBER, userId);
 	}
 
-	var costCenterId = dataCostCenter.insCostCenter(data.NAME, data.DESCRIPTION, userId, data.CODE, employeeResponsibleId, data.SALE_ORGANIZATION_ID);
+	costCenterId = dataCostCenter.insCostCenter(data.NAME, data.DESCRIPTION, userId, data.CODE, employeeResponsibleId);
 	//insCostCenterTeams(costCenterId, data.cost_center_teams, userId);
 	return costCenterId;
 }
 
-function insCostCenterTeams(costCenterId, costCenterTeams, userId, isUpload){
-	if(!isUpload){
-		costCenterTeams.forEach(function(teamId){
-			dataCostCenter.insCostCenterTeams(costCenterId, userId, teamId);
-		});
-	} else {
-		dataCostCenter.insCostCenterTeams(costCenterId, userId, costCenterTeams);
-	}
-
+function insCostCenterTeams(costCenterId, costCenterTeams, userId){
+	costCenterTeams.forEach(function(teamId){
+		dataCostCenter.insCostCenterTeams(costCenterId, userId, teamId);
+	});
 }
-
 
 function delCostCenterTeamsByCostCenterId(costCenterId, userId, type){
 	if(type == 'hard')
@@ -125,24 +109,21 @@ function delCostCenterTeamsByCostCenterId(costCenterId, userId, type){
 
 function updCostCenter(data, userId, isUpload){
 	data = uiToServerParser(data);
-	//validate(data, 'update',isUpload);
+	validate(data, 'update',isUpload);
 	var employeeResponsibleId = data.employee_responsible.EMPLOYEE_RESPONSIBLE_ID;
 	if(employeeResponsibleId){
 		dataEmployeeResponsible.updEmployeeResponsible(employeeResponsibleId, data.employee_responsible.FULL_NAME, data.employee_responsible.EMPLOYEE_NUMBER, userId);
 	} else {
 		employeeResponsibleId = dataEmployeeResponsible.insEmployeeResponsible(data.employee_responsible.FULL_NAME, data.employee_responsible.EMPLOYEE_NUMBER, userId);
 	}
-	dataCostCenter.updCostCenter(data.COST_CENTER_ID, data.NAME, data.DESCRIPTION, userId, data.CODE, employeeResponsibleId, data.SALE_ORGANIZATION_ID);
-
-	if(!isUpload)
-		updCostCenterTeams(data.COST_CENTER_ID, data.cost_center_teams ,userId);
-
+	dataCostCenter.updCostCenter(data.COST_CENTER_ID, data.NAME, data.DESCRIPTION, userId, data.CODE, employeeResponsibleId);
+	updCostCenterTeams(data.COST_CENTER_ID, data.cost_center_teams, userId);
 	return data;
 }
 
-function updCostCenterTeams(costCenterId, costCenterTeams, userId, isUpload){
+function updCostCenterTeams(costCenterId, costCenterTeams, userId){
 	delCostCenterTeamsByCostCenterId(costCenterId, userId, 'hard');
-	insCostCenterTeams(costCenterId, costCenterTeams, userId, isUpload);
+	insCostCenterTeams(costCenterId, costCenterTeams, userId);
 }
 
 function delCostCenter(data, userId){
@@ -235,54 +216,19 @@ function uploadCostCenter(data, userId){
 	var costCenterList = data.batch;
 	var costCenterUpdated = 0;
 	var costCenterCreated = 0;
-	var costCenterId;
 	var isUpload = true;
-	var duplicatedCostCenter = [];
 	costCenterList.forEach(function(costCenter){
 		var cc = dataCostCenter.getCostCenterByCode(costCenter.in_code);
-
-		if(!costCenter.employee_responsible || !costCenter.employee_responsible.in_employee_number){
-			costCenter.employee_responsible.in_employee_responsible_id = 0;
-		} else {
-			var employeeResponsible = dataEmployeeResponsible.getEmployeeResponsibleByEmployeeNumber(costCenter.employee_responsible.in_employee_number);
-			costCenter.employee_responsible.in_employee_responsible_id = employeeResponsible ? employeeResponsible.EMPLOYEE_RESPONSIBLE_ID : 0;
-		}
-		costCenter.in_name = costCenter.in_name || costCenter.in_code;
-
-		var saleOrganization = dbMO.getMarketingOrganizationByName(costCenter.in_marketing_organization);
-		costCenter.in_marketing_organization_id = saleOrganization ? saleOrganization.SALES_ORGANIZATION_ID : null;
-
+		costCenter.employee_responsible.in_employee_responsible_id = dataEmployeeResponsible.getEmployeeResponsibleByEmployeeNumber(costCenter.employee_responsible.in_employee_number).EMPLOYEE_RESPONSIBLE_ID || 0;
 		if(!cc || !cc.COST_CENTER_ID){
-			costCenterId = insCostCenter(costCenter, userId);
+			insCostCenter(costCenter, userId);
 			costCenterCreated++;
 		} else {
 			costCenter.in_cost_center_id = cc.COST_CENTER_ID;
-			costCenterId = cc.COST_CENTER_ID;
 			updCostCenter(costCenter, userId, isUpload);
 			costCenterUpdated++;
 		}
-
-		if(costCenter.in_plan && costCenter.in_team) {
-			var pathParts = costCenter.in_plan.split('-');
-			var planAcronym = pathParts[0].substr(0, 2);
-			//throw JSON.stringify(planAcronym);
-			var budgetYearAcronym = '20' + pathParts[0].substr(2, 2);
-			var organizationAcronym = pathParts[1];
-			var budgetYear = dbBudget.getBudgetYear(budgetYearAcronym);
-			var hl2 = dataHl2.getLevelByAcronymAndOrganizationAcronym(planAcronym,budgetYear.BUDGET_YEAR_ID,organizationAcronym);
-			var teamId = dataHl3.getLevel3ByAcronym({IN_ACRONYM: costCenter.in_team, IN_HL2_ID: hl2.HL2_ID}).HL3_ID;
-			if (teamId) {
-				if (duplicatedCostCenter.indexOf(costCenter.in_code) !== -1) {
-					insCostCenterTeams(costCenterId, teamId, userId, isUpload);
-				} else {
-
-					duplicatedCostCenter.push(costCenter.in_code);
-					updCostCenterTeams(costCenterId, teamId, userId, isUpload);
-				}
-			}
-		}
 	});
-
 	return {costCenterCreated: costCenterCreated, costCenterUpdated: costCenterUpdated};
 }
 

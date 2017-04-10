@@ -116,16 +116,8 @@ function getHl5ById(id) {
     var sale = dataHl5.getHl5SalesByHl5Id(id);
     var currencyValueAux = dataEuroConversion.getEuroConversionValueById(hl5.EURO_CONVERSION_ID);
     var hl5_category = getHl5CategoryOption(id);
-    var hl4SalesKeys = Object.keys(sale);
-    var totalAmount = 0;
-    //hl4SalesKeys.forEach(function (hl4SalesKey) {
-    sale.forEach(function (elem) {
-        totalAmount = totalAmount + Number(elem.AMOUNT);
-    });
-    //});
-    sale.total = totalAmount;
     hl5.BUDGET = (Number(hl5.BUDGET) * Number(currencyValueAux)).toFixed(2);
-    hl5.in_totalbudget = Number(hl5.BUDGET) + Number(partner.total) + Number(sale.total);
+
     var result = {
         "hl5": hl5,
         "expectedOutcomes": expectedOutcomesLib.getExpectedOutcomesByHl5Id(id),
@@ -984,8 +976,7 @@ function serverToUiParser(object) {
     var hl5_sale = {
         regions: [],
         globalteams: [],
-        others: [],
-        total: ""
+        others: []
     };
     var hl5_budget = {
         regions: [],
@@ -1023,9 +1014,9 @@ function serverToUiParser(object) {
             aux.DESCRIPTION = obj.DESCRIPTION;
             aux.AMOUNT = obj.AMOUNT;
             hl5_sale.others.push(aux);
-        };
+        }
+        ;
     });
-    hl5_sale.total = object.sale.total;
 
     object.sale = hl5_sale;
     object.myBudget = hl5_budget;

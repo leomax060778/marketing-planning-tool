@@ -31,9 +31,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6"
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
 	DECLARE va_acronym INT;
-	DECLARE va_acronym_string NVARCHAR(25);
 	va_acronym := 0;
-	va_acronym_string:='';
 		
 	select case when L6COUNT = 0 then 1 else L6COUNT end into va_acronym
 	from (
@@ -44,8 +42,7 @@ BEGIN
 	then
 		select CAST(HL6.acronym AS INT) + 1 into va_acronym from HL6 where HL6.HL6_ID = (SELECT max(HL6_ID) FROM HL6 where HL5_ID = in_hl5_id);
 	END IF;
-
-	va_acronym_string:= CONCAT(SUBSTRING('000', 1, 3 - LENGTH(TO_NVARCHAR(va_acronym))), TO_NVARCHAR(va_acronym));
+	
 	INSERT INTO HL6 
 	(
  hl6_crm_description
@@ -76,7 +73,7 @@ BEGIN
 	)
 	VALUES (
  in_hl6_crm_description
-,va_acronym_string
+,va_acronym
 ,in_budget
 ,in_hl5_id
 ,in_route_to_market_id

@@ -58,16 +58,24 @@ function ExecutePermission(){ return "Execute"}
 /**************************/
 
 /***************************************************************************/
-
 /**************URLs********************/
-var AppUrl = "http://rtm-bmo.bue.sap.corp:1081/mpt-testing/webapp";
-var UrlLogin = "http://rtm-bmo.bue.sap.corp:1081/mpt-testing/webapp/index.html";
+//var AppUrl = "http://OPT.Hana.com";
+//var UrlLogin = "http://OPT.Hana.com";
+///**********************************/
+//
+///**************Email Accounts**********************/
+//var SMTPAccount = "lpeccin@folderit.net";//"info_planningtool@sap.com";//  //adderes configured  - SMTP server
+//var SupportAccount ="lpeccin@folderit.net";// "support_planningtool@sap.com";
+//var SiteA
+/**************URLs********************/
+var AppUrl = "http://OPT.Hana.com";
+var UrlLogin = "http://OPT.Hana.com";
 /**********************************/
 
 /**************Email Accounts**********************/
-var SMTPAccount = "info_planningtool@sap.com";//  //SMTP server configuration
-var SupportAccount = "support_planningtool@sap.com";
-var SiteAdministrator = "support_planningtool@sap.com";
+var SMTPAccount = "lpeccin@folderit.net";//"info_planningtool@sap.com";//  //adderes configured  - SMTP server
+var SupportAccount ="lpeccin@folderit.net";// "support_planningtool@sap.com";
+var SiteAdministrator = "lpeccin@folderit.net";// "support_planningtool@sap.com";
 /*****************************************/
 
 //TODO: move this to configuration

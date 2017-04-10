@@ -62,7 +62,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 						var CRM_ACRONYM = "CRM";
 						var path = dataPath.getPathByLevelParent(5, hl5['HL4_ID']);
 						if (path.length > 0) {
-							object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + hl5['ACRONYM'];
+							object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl5['ACRONYM'];
 						}
 						break;
 					default:
@@ -72,6 +72,17 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 						break;
 				}
 
+
+
+				//if(l5ReportFields[field] == "ID"){
+				//	var CRM_ACRONYM = "CRM";
+				//	var path = dataPath.getPathByLevelParent(5, hl5['HL4_ID']);
+				//	if (path.length > 0) {
+				//		object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl5['ACRONYM'];
+				//	}
+				//}else{
+				//	object.value = hl5[field];
+				//}
 				object.changed = checkChangedField(changedFields, field);
 				data.hl5.push(object);
 			}

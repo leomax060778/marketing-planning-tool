@@ -8,8 +8,7 @@ var ErrorLib = mapper.getErrors();
 
 var BY_ID = "BY_ID";
 var HL6_ID = "HL6_ID";
-var TEAMS = 'ALL';
-var HL5_ID = 'HL5_ID';
+var TEAMS = 'ALL'
 
 
 function processRequest() {
@@ -28,9 +27,6 @@ function handleGet(parameters, userSessionID) {
                 break;
             case TEAMS:
                 rdo = costCenterLib.getCostCenterAvailableTeams();
-                break;
-            case HL5_ID:
-                rdo = costCenterLib.getCostCenterByL5IdSaleOrganizationId(parameters[0].value, parameters[1].value);
                 break;
             default:
                 throw ErrorLib.getErrors().BadRequest("","objectiveService/handleGet","invalid parameter name (can be: BY_ID, HL6_ID or TEAMS)");

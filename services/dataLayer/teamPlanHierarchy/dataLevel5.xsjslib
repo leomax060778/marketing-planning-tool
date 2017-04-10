@@ -60,7 +60,6 @@ function getHl5ByHl4Id(hl4Id){
 	var params = {
 			'in_hl4_id': hl4Id
 		};
-	throw hl4Id;
 	var rdo = db.executeProcedureManual(spGetHl5ByHl4Id,params);
 	return db.extractArray(rdo.out_result);
 }

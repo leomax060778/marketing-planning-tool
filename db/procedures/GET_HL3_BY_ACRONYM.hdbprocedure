@@ -1,7 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_BY_ACRONYM" (
 	IN in_acronym NVARCHAR(25),
 	IN in_hl2_id bigint,
-	OUT out_result TABLE(hl3_id integer)
+	OUT out_result TABLE(hl3_id BIGINT)
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 

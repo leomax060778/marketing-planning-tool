@@ -12,7 +12,8 @@
         <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_TYPE_NAME" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="INTERLOCK_ENTITY_NAME" length="100"/>
         <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_ACRONYM" length="25"/>
-        <viewAttribute datatype="NVARCHAR" id="CONTACT_DATA" length="1000"/>
+        <viewAttribute datatype="NVARCHAR" id="REQUESTER_ORGANIZATION" length="255"/>
+        <viewAttribute id="CONTACT_DATA" datatype="NVARCHAR" length="1000"/>
         <viewAttribute datatype="NVARCHAR" id="REQUESTED_RESOURCE" length="140"/>
         <viewAttribute datatype="DECIMAL" id="REQUESTED_BUDGET" length="19" scale="2"/>
         <viewAttribute datatype="NVARCHAR" id="STATUS_DETAIL" length="50"/>
@@ -49,8 +50,11 @@
  BEGIN 
  
     va_hl2 = SELECT hl2.HL2_ID, hl2.DESCRIPTION AS L1_DESCRIPTION, hl2.ACRONYM,
- 	            hl2.ORGANIZATION_ACRONYM, hl2.ORGANIZATION_NAME
+ 	            hl2.ORGANIZATION_ACRONYM, hl2.ORGANIZATION_NAME, --1 AS REQUESTER_ORGANIZATION
+ 	            COALESCE(subregion.SUBREGION_NAME, region.REGION_NAME,hl2.ORGANIZATION_ACRONYM) AS REQUESTER_ORGANIZATION
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
+			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; region ON hl2.REGION_ID = region.REGION_ID
+			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; subregion ON hl2.SUBREGION_ID = subregion.SUBREGION_ID
 			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0;
 			 	
  	va_hl3 = SELECT hl3.HL3_ID, hl3.HL2_ID, hl3.HL3_DESCRIPTION AS L3_DESCRIPTION, hl3.ACRONYM
@@ -238,6 +242,7 @@
         , hl4ExpectedOutcomesDetail.KPI_AMOUNT_VOLUME       
         , hl4ExpectedOutcomesDetail.COMMENTS
         , IFNULL(countL4ByIR.COUNT_L4_BY_INTERLOCK,0) AS COUNT_L4_BY_INTERLOCK
+        , hl2.REQUESTER_ORGANIZATION
 	
 		FROM :va_interlockRequest IR 
 		INNER JOIN :va_countL4ByIR countL4ByIR on countL4ByIR.ENABLED = IR.ENABLED
@@ -261,6 +266,7 @@
 	  IR.ORGANIZATION_TYPE_NAME
 	, IR.INTERLOCK_ENTITY_NAME
 	, IR.ORGANIZATION_ACRONYM
+	, IR.REQUESTER_ORGANIZATION
 	, IR.CONTACT_DATA
 	, IR.REQUESTED_RESOURCE
 	, IR.REQUESTED_BUDGET
@@ -312,75 +318,79 @@ END /********* End Procedure Script ************/</definition>
         <descriptions defaultDescription="RECIEVER_ORGANIZATION"/>
         <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_ACRONYM"/>
       </attribute>
-      <attribute id="CONTACT_DATA" order="4">
+      <attribute id="REQUESTER_ORGANIZATION" order="4">
+        <descriptions defaultDescription="RECIEVER_CONTACT_DATA"/>
+        <keyMapping columnObjectName="Script_View" columnName="REQUESTER_ORGANIZATION"/>
+      </attribute>
+      <attribute id="CONTACT_DATA" order="5">
         <descriptions defaultDescription="RECIEVER_CONTACT_DATA"/>
         <keyMapping columnObjectName="Script_View" columnName="CONTACT_DATA"/>
       </attribute>
-      <attribute id="REQUESTED_RESOURCE" order="5">
+      <attribute id="REQUESTED_RESOURCE" order="6">
         <descriptions defaultDescription="REQUESTED_RESOURCE"/>
         <keyMapping columnObjectName="Script_View" columnName="REQUESTED_RESOURCE"/>
       </attribute>
-      <attribute id="STATUS_DETAIL" order="7">
+      <attribute id="STATUS_DETAIL" order="8">
         <descriptions defaultDescription="STATUS_DETAIL"/>
         <keyMapping columnObjectName="Script_View" columnName="STATUS_DETAIL"/>
       </attribute>
-      <attribute id="REQUESTER" order="8">
+      <attribute id="REQUESTER" order="9">
         <descriptions defaultDescription="REQUESTOR_USER"/>
         <keyMapping columnObjectName="Script_View" columnName="REQUESTER"/>
       </attribute>
-      <attribute id="PATH" order="11">
+      <attribute id="PATH" order="12">
         <descriptions defaultDescription="REQUESTOR_L4"/>
         <keyMapping columnObjectName="Script_View" columnName="PATH"/>
       </attribute>
-      <attribute id="L1_ID" order="12">
+      <attribute id="L1_ID" order="13">
         <descriptions defaultDescription="L1_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="L1_ID"/>
       </attribute>
-      <attribute id="L1_DESCRIPTION" order="13">
+      <attribute id="L1_DESCRIPTION" order="14">
         <descriptions defaultDescription="L1_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="L1_DESCRIPTION"/>
       </attribute>
-      <attribute id="L2_ID" order="14">
+      <attribute id="L2_ID" order="15">
         <descriptions defaultDescription="L2_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="L2_ID"/>
       </attribute>
-      <attribute id="L2_DESCRIPTION" order="15">
+      <attribute id="L2_DESCRIPTION" order="16">
         <descriptions defaultDescription="L2_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="L2_DESCRIPTION"/>
       </attribute>
-      <attribute id="L3_ID" order="16">
+      <attribute id="L3_ID" order="17">
         <descriptions defaultDescription="L3_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="L3_ID"/>
       </attribute>
-      <attribute id="L3_DESCRIPTION" order="17">
+      <attribute id="L3_DESCRIPTION" order="18">
         <descriptions defaultDescription="l3_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="L3_DESCRIPTION"/>
       </attribute>
-      <attribute id="L4_ID" order="18">
+      <attribute id="L4_ID" order="19">
         <descriptions defaultDescription="L4_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="L4_ID"/>
       </attribute>
-      <attribute id="L4_DESCRIPTION" order="19">
+      <attribute id="L4_DESCRIPTION" order="20">
         <descriptions defaultDescription="L4_DESCRIPTION"/>
         <keyMapping columnObjectName="Script_View" columnName="L4_DESCRIPTION"/>
       </attribute>
-      <attribute id="BUSINESS_VALUE" order="20">
+      <attribute id="BUSINESS_VALUE" order="21">
         <descriptions defaultDescription="BUSINESS_VALUE"/>
         <keyMapping columnObjectName="Script_View" columnName="BUSINESS_VALUE"/>
       </attribute>
-      <attribute id="INITIATIVE_DETAILS" order="21">
+      <attribute id="INITIATIVE_DETAILS" order="22">
         <descriptions defaultDescription="INITIATIVE_DETAILS"/>
         <keyMapping columnObjectName="Script_View" columnName="INITIATIVE_DETAILS"/>
       </attribute>
-      <attribute id="KPI_TYPE" order="24">
+      <attribute id="KPI_TYPE" order="25">
         <descriptions defaultDescription="KPI_TYPE"/>
         <keyMapping columnObjectName="Script_View" columnName="KPI_TYPE"/>
       </attribute>
-      <attribute id="KPI_DESC" order="25">
+      <attribute id="KPI_DESC" order="26">
         <descriptions defaultDescription="KPI_DESC"/>
         <keyMapping columnObjectName="Script_View" columnName="KPI_DESC"/>
       </attribute>
-      <attribute id="COMMENTS" order="30">
+      <attribute id="COMMENTS" order="31">
         <descriptions defaultDescription="COMMENTS"/>
         <keyMapping columnObjectName="Script_View" columnName="COMMENTS"/>
       </attribute>
@@ -394,51 +404,51 @@ END /********* End Procedure Script ************/</definition>
       </layout>
     </privateDataFoundation>
     <baseMeasures>
-      <measure id="REQUESTED_BUDGET" order="6" aggregationType="sum" measureType="simple">
+      <measure id="REQUESTED_BUDGET" order="7" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="REQUESTED_BUDGET"/>
         <measureMapping columnObjectName="Script_View" columnName="REQUESTED_BUDGET"/>
       </measure>
-      <measure id="CREATED_DATE" order="9" aggregationType="min" measureType="simple">
+      <measure id="CREATED_DATE" order="10" aggregationType="min" measureType="simple">
         <descriptions defaultDescription="CREATED_DATE"/>
         <measureMapping columnObjectName="Script_View" columnName="CREATED_DATE"/>
       </measure>
-      <measure id="STATUS_CHAGE_DATE" order="10" aggregationType="min" measureType="simple">
+      <measure id="STATUS_CHAGE_DATE" order="11" aggregationType="min" measureType="simple">
         <descriptions defaultDescription="STATUS_CHANGE_DATES"/>
         <measureMapping columnObjectName="Script_View" columnName="STATUS_CHAGE_DATE"/>
       </measure>
-      <measure id="L4_BUDGET" order="22" aggregationType="sum" measureType="simple">
+      <measure id="L4_BUDGET" order="23" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="L4_BUDGET"/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET"/>
       </measure>
-      <measure id="L4_BUD_PROP" order="23" aggregationType="sum" measureType="simple">
+      <measure id="L4_BUD_PROP" order="24" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="L4_BUD_PROP"/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUD_PROP"/>
       </measure>
-      <measure id="KPI_EURO_VALUE" order="26" aggregationType="sum" measureType="simple">
+      <measure id="KPI_EURO_VALUE" order="27" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="KPI_EURO_VALUE"/>
         <measureMapping columnObjectName="Script_View" columnName="KPI_EURO_VALUE"/>
       </measure>
-      <measure id="KPI_EURO_VALUE_PROP" order="27" aggregationType="sum" measureType="simple">
+      <measure id="KPI_EURO_VALUE_PROP" order="28" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="KPI_EURO_VALUE_PROP"/>
         <measureMapping columnObjectName="Script_View" columnName="KPI_EURO_VALUE_PROP"/>
       </measure>
-      <measure id="KPI_AMOUNT_VOLUME" order="28" aggregationType="sum" measureType="simple">
+      <measure id="KPI_AMOUNT_VOLUME" order="29" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="KPI_AMOUNT_VOLUME"/>
         <measureMapping columnObjectName="Script_View" columnName="KPI_AMOUNT_VOLUME"/>
       </measure>
-      <measure id="KPI_AMOUNT_VOLUME_PROP" order="29" aggregationType="sum" measureType="simple">
+      <measure id="KPI_AMOUNT_VOLUME_PROP" order="30" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="KPI_AMOUNT_VOLUME_PROP"/>
         <measureMapping columnObjectName="Script_View" columnName="KPI_AMOUNT_VOLUME_PROP"/>
       </measure>
-      <measure id="REQUESTED_BUDGET_PRO" order="31" aggregationType="sum" measureType="simple">
+      <measure id="REQUESTED_BUDGET_PRO" order="32" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="REQUESTED_BUDGET_PRO"/>
         <measureMapping columnObjectName="Script_View" columnName="REQUESTED_BUDGET_PRO"/>
       </measure>
-      <measure id="COUNT_L4_BY_INTERLOCK_PROP" order="32" aggregationType="sum" measureType="simple">
+      <measure id="COUNT_L4_BY_INTERLOCK_PROP" order="33" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="COUNT_L4_BY_INTERLOCK_PROP"/>
         <measureMapping columnObjectName="Script_View" columnName="COUNT_L4_BY_INTERLOCK_PROP"/>
       </measure>
-      <measure id="REQUESTS_PROP" order="33" aggregationType="sum" measureType="simple">
+      <measure id="REQUESTS_PROP" order="34" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="REQUESTS_PROP"/>
         <measureMapping columnObjectName="Script_View" columnName="REQUESTS_PROP"/>
       </measure>

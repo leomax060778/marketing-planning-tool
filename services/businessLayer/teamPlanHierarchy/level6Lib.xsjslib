@@ -717,7 +717,6 @@ function sendProcessingReportEmail(hl6Id) {
     var hl6 = dataHl6.getHl6ById(hl6Id);
     //var hl5 = dataHl5.getHl5ById(hl6.HL5_ID);
     var hl6OwnerEmail = getUserById(hl6.CREATED_USER_ID).EMAIL;
-    throw JSON.stringify(hl6OwnerEmail);
     var body = '<p> Dear Colleague </p>';
     body += '<p>An initiative has been created in CRM.</p><br>';
     body += '<p>' + appUrl + '/TeamPlanHierarchy/Level5/edit/' + hl6.HL5_ID

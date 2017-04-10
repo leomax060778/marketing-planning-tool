@@ -5,8 +5,6 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_COST_CENTER" (
         IN in_user_id BIGINT,
         IN in_code NVARCHAR(255),
         IN in_employee_responsible_id BIGINT,
-        IN in_sales_organization_id BIGINT,
-
 		OUT out_result BIGINT
 	) 
 	LANGUAGE SQLSCRIPT
@@ -20,7 +18,6 @@ BEGIN
 		DESCRIPTION = in_description,
 		COST_CENTER_CODE = in_code,
 		EMPLOYEE_RESPONSIBLE_ID = in_employee_responsible_id,
-  SALE_ORGANIZATION_ID = in_sales_organization_id,
 		modified_user_id = in_user_id,
 		modified_date_tz = CURRENT_TIMESTAMP
 		where COST_CENTER_ID = in_cost_center_id;
