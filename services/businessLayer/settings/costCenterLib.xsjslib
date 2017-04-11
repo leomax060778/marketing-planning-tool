@@ -43,6 +43,7 @@ function getCostCenterById(costCenterId){
 	rdo.COST_CENTER_ID = costCenter.COST_CENTER_ID;
 	rdo.DESCRIPTION = costCenter.DESCRIPTION;
 	rdo.EMPLOYEE_RESPONSIBLE_ID = costCenter.EMPLOYEE_RESPONSIBLE_ID;
+    rdo.SALE_ORGANIZATION_ID = costCenter.SALE_ORGANIZATION_ID;
 	rdo.NAME = costCenter.NAME;
 
 	rdo.COST_CENTER_TEAMS = getAssignedTeams(costCenterId);
