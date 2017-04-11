@@ -10,26 +10,27 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_HL4_ID" (
             , STATUS_DETAIL NVARCHAR(255)
             , CREATED_BY NVARCHAR(255)
             , OWNER_EMAIL NVARCHAR(500)
-            , HL5_BUDGET DECIMAL
+            , HL5_BUDGET DECIMAL(19,2)
             , EURO_CONVERSION_ID BIGINT
-            , TOTAL_HL6 INT
-            , QUANTITY_HL6_OUT_BUDGET INT
-            , ALLOCATED DECIMAL
-            , REMAINING DECIMAL
+            , TOTAL_HL6 INTEGER
+            , QUANTITY_HL6_OUT_BUDGET INTEGER
+            , ALLOCATED DECIMAL(19,2)
+            , REMAINING DECIMAL(19,2)
         )
 )
+
 LANGUAGE SQLSCRIPT
 SQL SECURITY INVOKER
 DEFAULT SCHEMA "PLANNING_TOOL"
 AS
 BEGIN
-	
+
 va_intermidate = SELECT
         hl5.hl5_ID AS HL5_ID
         ,hl5.hl5_crm_description AS HL5_CRM_DESCRIPTION
-        ,hl5.acronym AS HL5_ACRONYM       
-	    ,    
-	     CONCAT(  
+        ,hl5.acronym AS HL5_ACRONYM
+	    ,
+	     CONCAT(
 	         CONCAT(
 	        	CONCAT(
 	        		CONCAT(
@@ -40,8 +41,8 @@ va_intermidate = SELECT
 					,'-')
 				,hl4.acronym)
              ,hl5.acronym)
-		AS CRM_ID 
-        
+		AS CRM_ID
+
         ,hl5.IN_BUDGET as IN_BUDGET
         ,hl5.hl5_status_detail_id AS STATUS_ID
         ,hl5_status_detail.detail AS STATUS_DETAIL
@@ -78,13 +79,21 @@ out_result = SELECT
 		, SUM(CASE WHEN  HL6.IN_BUDGET IS NULL THEN 0 WHEN HL6.IN_BUDGET = 0 THEN 1 ELSE 0 END) QUANTITY_HL6_OUT_BUDGET --# of L6 out off budget
 		, COALESCE(SUM(HL6.budget),0) AS ALLOCATED
 		, COALESCE((va_hl5.HL5_BUDGET - SUM(HL6.budget)), va_hl5.HL5_BUDGET) AS REMAINING
-		
+
     FROM :va_intermidate va_hl5
     LEFT JOIN HL6 hl6 ON hl6.HL5_ID = va_hl5.hl5_id AND hl6.enabled=1 AND hl6.deleted=0
 
-	GROUP BY 
-	va_hl5.HL5_ID,va_hl5.HL5_CRM_DESCRIPTION,va_hl5.HL5_ACRONYM,va_hl5.CRM_ID,va_hl5.IN_BUDGET,va_hl5.STATUS_ID,
-		va_hl5.STATUS_DETAIL,va_hl5.CREATED_BY,va_hl5.OWNER_EMAIL,va_hl5.HL5_BUDGET,
-		va_hl5.EURO_CONVERSION_ID;
+	GROUP BY
+	va_hl5.HL5_ID
+	,va_hl5.HL5_CRM_DESCRIPTION
+	,va_hl5.HL5_ACRONYM
+	,va_hl5.CRM_ID
+	,va_hl5.IN_BUDGET
+	,va_hl5.STATUS_ID
+	,va_hl5.STATUS_DETAIL
+	,va_hl5.CREATED_BY
+	,va_hl5.OWNER_EMAIL
+	,va_hl5.HL5_BUDGET
+	,va_hl5.EURO_CONVERSION_ID;
 		
 END;
