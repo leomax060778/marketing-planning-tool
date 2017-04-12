@@ -133,7 +133,7 @@
 	va_hl4CategoryOption = SELECT hl4CategoryOption.HL4_ID, category.NAME AS CATEGORY_NAME, hl4CategoryOption.AMOUNT AS OPTION_AMOUNT, options.NAME AS OPTION_NAME
 				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_CATEGORY_OPTION&quot; hl4CategoryOption
 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY_OPTION_LEVEL&quot; ACOL 
-					ON hl4CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = hl4CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+					ON hl4CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_OPTION&quot; options ON options.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY&quot; category ON category.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
 			 	WHERE hl4CategoryOption.ENABLED = 1 AND hl4CategoryOption.DELETED = 0 AND hl4CategoryOption.AMOUNT != 0;

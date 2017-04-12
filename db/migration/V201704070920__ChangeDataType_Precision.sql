@@ -27,6 +27,6 @@ ALTER TABLE "PLANNING_TOOL"."HL5_EXPECTED_OUTCOMES_DETAIL" DROP ("VOLUME_VALUE_B
 -- *************************************************************************************
 -- Update schema version
 INSERT INTO SCHEMA_VERSION(VERSION, DESCRIPTION, SCRIPT)
-VALUES('V5.0.0-33', 'Change DataType Precision', 'V201704070920__ChangeDataType_Precision.sql');
+VALUES('V5.0.0-34', 'Change DataType Precision', 'V201704070920__ChangeDataType_Precision.sql');
 
 COMMIT;
