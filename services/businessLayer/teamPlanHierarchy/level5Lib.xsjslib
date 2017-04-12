@@ -656,26 +656,26 @@ function checkBudgetStatus(objHl4, hl5_id, new_hl5_budget) {
             
             var total = 0;
 
-            for (var i = 0; i < resultHl5.out_result.length; i++) {
+            for (var i = 0; i < resultHl5.length; i++) {
                 //objHl3.IN_HL5_FNC_BUDGET_TOTAL came from request
                 //total	+ resOdb.out_hl5_budget_total_mkt asigned on hl5
 
-                if (objHl4.HL4_FNC_BUDGET_TOTAL < total + parseFloat(resultHl5.out_result[i].BUDGET)) {
-                    dataHl5.updateHl5BudgetStatus(resultHl5.out_result[i].HL5_ID, 0);
+                if (objHl4.HL4_FNC_BUDGET_TOTAL < total + parseFloat(resultHl5[i].BUDGET)) {
+                    dataHl5.updateHl5BudgetStatus(resultHl5[i].HL5_ID, 0);
                     //store hl5id and users to be send email when register change to in budget
-                    result.emailListOutBudget.push(resultHl5.out_result[i]);
+                    result.emailListOutBudget.push(resultHl5[i]);
                 } else {
-                    dataHl5.updateHl5BudgetStatus(resultHl5.out_result[i].HL5_ID, 1);
-                    total = total + parseFloat(resultHl5.out_result[i].BUDGET);
+                    dataHl5.updateHl5BudgetStatus(resultHl5[i].HL5_ID, 1);
+                    total = total + parseFloat(resultHl5[i].BUDGET);
                     //is completed
-                    /*if(resultHl5.out_result[i].STATUS_ID === 3){
-                     dataHl5.changeStatusHl5(resultHl5.out_result[i].HL5_ID, 5, userId);
+                    /*if(resultHl5[i].STATUS_ID === 3){
+                     dataHl5.changeStatusHl5(resultHl5[i].HL5_ID, 5, userId);
                      }*/
                     //store hl5id and users to be send email when register change to in budget
-                    result.emailListInBudget.push(resultHl5.out_result[i]);
+                    result.emailListInBudget.push(resultHl5[i]);
                 }
             }
-            result.out_result = resultHl5.out_result.length;
+            result.out_result = resultHl5.length;
         }
         return result;
     }
