@@ -18,6 +18,6 @@ BEGIN
 			   description
 		FROM ALLOCATION_CATEGORY
 		WHERE enabled = 1 AND deleted = 0
-		ORDER BY name;
+		ORDER BY upper(name);
 
 END;

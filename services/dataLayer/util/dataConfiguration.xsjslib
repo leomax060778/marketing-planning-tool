@@ -89,31 +89,31 @@ var OriginMessageInterlock = {
 };
 
 function getAppUrl(){
-	return getConfigurationByName("AppUrl")[0].CONF_VALUE;
+	return getConfigurationByName("AppUrl")[0].VALUE;
 }
 
 function getLoginUrl(){
-	return getConfigurationByName("UrlLogin")[0].CONF_VALUE;
+	return getConfigurationByName("UrlLogin")[0].VALUE;
 }
 
 function getSMTPAccount(){
-	return getConfigurationByName("SMTPAccount")[0].CONF_VALUE;
+	return getConfigurationByName("SMTPAccount")[0].VALUE;
 }
 
 function getSupportAccount(){
-	return getConfigurationByName("SupportAccount")[0].CONF_VALUE;
+	return getConfigurationByName("SupportAccount")[0].VALUE;
 }
 
 function getSiteAdminAccount(){
-	return getConfigurationByName("SiteAdministrator")[0].CONF_VALUE;
+	return getConfigurationByName("SiteAdministrator")[0].VALUE;
 }
 
 function getTokenLifeTimeSeconds(){
-	return parseInt(getConfigurationByName("tokenLifeTimeSeconds")[0].CONF_VALUE);
+	return parseInt(getConfigurationByName("tokenLifeTimeSeconds")[0].VALUE);
 }
 
 function getDefaultPassword(){
-	return getConfigurationByName("defaultPassword")[0].CONF_VALUE;
+	return getConfigurationByName("defaultPassword")[0].VALUE;
 }
 
 function getRoleEnum(){
@@ -125,20 +125,20 @@ function getOriginMessageInterlock(){
 }
 
 function getActivateNotificationLevel2(){
-	return getConfigurationByName("notifyLevel2")[0].CONF_VALUE;
+	return getConfigurationByName("notifyLevel2")[0].VALUE;
 }
 
 function getActivateNotificationLevel3(){
-	return getConfigurationByName("notifyLevel3")[0].CONF_VALUE;
+	return getConfigurationByName("notifyLevel3")[0].VALUE;
 }
 
 
 function getNotifyLevel2Account(){
-	return getConfigurationByName("notifyLevel2Account")[0].CONF_VALUE;
+	return getConfigurationByName("notifyLevel2Account")[0].VALUE;
 }
 
 function getNotifyLevel3Account(){
-	return getConfigurationByName("notifyLevel3Account")[0].CONF_VALUE;
+	return getConfigurationByName("notifyLevel3Account")[0].VALUE;
 }
 
 function getHash() {

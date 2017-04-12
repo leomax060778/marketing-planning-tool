@@ -23,5 +23,6 @@ BEGIN
 				FROM INTERLOCK_CENTRAL_REGION_CONTACT_DATA
 				WHERE enabled = 1 and deleted = 0
 				and contact_type = in_contact_type
-				AND contact_type_id = in_contact_type_id; 
+				AND contact_type_id = in_contact_type_id
+				order by upper(bmo_leads);
 END;

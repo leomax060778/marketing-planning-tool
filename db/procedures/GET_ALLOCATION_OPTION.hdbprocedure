@@ -14,5 +14,5 @@ BEGIN
 			   name
 		FROM ALLOCATION_OPTION
 		WHERE enabled = 1 AND deleted = 0
-		ORDER BY name;
+		ORDER BY upper(name);
 END;

@@ -9,6 +9,13 @@ var ErrorLib = mapper.getErrors();
 var db = mapper.getdbHelper();
 /** ********************************************** */
 
+var RoleEnum = {
+	SuperAdmin: 1,
+	Admin: 2,
+	DataEntry: 3,
+	CampaignManager: 4
+};
+
 /* Return all permissions for roles */
 function getAllPermissionByRole() {
 	// get the roles
@@ -127,9 +134,9 @@ function getPermissionByRole(roleId) {
 		var rolePermissionsConfiguration = {
 			"ROLE" : roles[i].NAME,
 			"ROLE_ID" : roles[i].ROLE_ID,
-			"PERMISSIONS" : rolePermissions
+			"PERMISSIONS" : rolePermissions,
+			"READONLY": roles[i].ROLE_ID == RoleEnum.SuperAdmin
 		}
-
 		jsonData.push(rolePermissionsConfiguration);
 	}
 
@@ -152,13 +159,13 @@ function updateRolePermission(rolePermissions, modifiedUser) {
 
 	// update the role permissions
 	try {
+		var roleId = null;
+		var resourceId = null;
+		var permissionId = null;
+		var enabled = false;
+		var resultTransaction = null;
+		var permissionEnabled = null;
 		if (validateRolePermission(rolePermissions)) {
-			var roleId = null;
-			var resourceId = null;
-			var permissionId = null;
-			var enabled = false;
-			var resultTransaction = null;
-			var permissionEnabled = null;
 
 			for (var i = 0; i < rolePermissions.length; i++) {
 				roleId = rolePermissions[i].ROLE_ID;
@@ -204,8 +211,8 @@ function updateRolePermission(rolePermissions, modifiedUser) {
 			} else {
 				db.rollback();
 			}
-			return resultTransaction;
 		}
+		return resultTransaction;
 	} catch (e) {
 		db.rollback();
 		throw e;
@@ -229,6 +236,9 @@ function validateRolePermission(rolePermissions) {
 					"userServices/handlePost/updateRolePermission",
 					"The ROLE ID in ROLE PERMISSION is not found");
 		}
+
+		if(rolePermissions[i].ROLE_ID == RoleEnum.SuperAdmin)
+			return false;
 
 		if (!rolePermissions[i].PERMISSIONS) {
 			throw ErrorLib.getErrors().CustomError("",

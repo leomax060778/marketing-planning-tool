@@ -12,5 +12,5 @@ BEGIN
 		SELECT expected_outcome_id, name
 		from EXPECTED_OUTCOME 
 		where deleted = 0 and enabled = 1
-		order by name;
+		order by upper(name);
 END;

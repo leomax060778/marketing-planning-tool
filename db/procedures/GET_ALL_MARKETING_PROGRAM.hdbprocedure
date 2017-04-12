@@ -19,5 +19,5 @@ BEGIN
 				 FROM MARKETING_PROGRAM
 				 WHERE deleted = 0
 				 AND enabled = 1
-				 ORDER BY NAME;
+				 ORDER BY upper(NAME);
 END;
