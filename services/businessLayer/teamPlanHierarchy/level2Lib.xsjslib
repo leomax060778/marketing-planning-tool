@@ -23,7 +23,7 @@ var TEAM_TYPE_CENTRAL = "2";
 
 var L1_MSG_CENTRAL_TEAM_EXISTS = "Another Central Team with the same acronym already exists.";
 var L1_MSG_PLAN_EXISTS = "Another Plan with the same acronym already exists";
-var L1_MSG_LEVEL_1_EXISTS = "Another Level1 with the same acronym, budget year and organization acronym already exists";
+var L1_MSG_LEVEL_1_EXISTS = "Another Team with the same organization acronym already exists";
 var L1_MSG_PLAN_NO_CREATED = "The Plan could not be created.";
 var L1_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";
 var L1_MSG_PLAN_NOT_FOUND = "The Plan can not be found.";
@@ -273,9 +273,6 @@ function validateInsertHl2(objLevel2) {
     var BreakException = {};
     var keys = ['IN_HL2_BUDGET_TOTAL', 'IN_ORGANIZATION_ACRONYM', 'IN_ORGANIZATION_NAME'];
 
-    //var keysTeamType = [
-    //	        ];
-
     if (!objLevel2)
         throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePost/insertHl2", L1_MSG_PLAN_NOT_FOUND);
 
@@ -287,23 +284,6 @@ function validateInsertHl2(objLevel2) {
             } else {
                 // validate attribute type
                 isValid = validateType(key, objLevel2[key]);
-                //the organization type is Central team
-                //if(key === 'IN_TEAM_TYPE_ID' && objLevel2[key] > 1){
-                //	keysTeamType.forEach(function(k) {
-                //		if (objLevel2[k] === null || objLevel2[k] === undefined) {
-                //			errors[k] = null;
-                //			throw BreakException;
-                //		} else {
-                //			 validate attribute type
-                //isValid = validateType(k, objLevel2[k])
-                //if (!isValid) {
-                //	errors[k] = objLevel2[k];
-                //	throw BreakException;
-                //}
-                //}
-                //});
-                //}
-
                 if (!isValid) {
                     errors[key] = objLevel2[key];
                     throw BreakException;
@@ -312,6 +292,8 @@ function validateInsertHl2(objLevel2) {
         });
         isValid = true;
     } catch (e) {
+        if (e.code == 450)
+            throw e.details;
         if (e !== BreakException)
             throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePost/insertHl2", e.toString());
         else
@@ -339,23 +321,6 @@ function validateUpdateHl2(objLevel2) {
                 // validate attribute type
                 isValid = validateType(key, objLevel2[key])
 
-                //the organization type is Central team
-                //if (key === 'IN_TEAM_TYPE_ID' && objLevel2[key] > 1) {
-                //    keysTeamType.forEach(function (k) {
-                //        if (objLevel2[k] === null || objLevel2[k] === undefined) {
-                //            errors[k] = null;
-                //            throw BreakException;
-                //        } else {
-                //            // validate attribute type
-                //            isValid = validateType(k, objLevel2[k])
-                //            if (!isValid) {
-                //                errors[k] = objLevel2[k];
-                //                throw BreakException;
-                //            }
-                //        }
-                //    });
-                //}
-
                 if (!isValid) {
                     errors[key] = objLevel2[key];
                     throw BreakException;
@@ -375,26 +340,17 @@ function validateUpdateHl2(objLevel2) {
 
 //Check data types
 function validateType(key, value) {
-    var regex = /^(0|([1-9]\d{0,8}))(\.\d{1,2})?$/;
     var valid = true;
     switch (key) {
-        //case 'IN_ACRONYM':
-        //	valid = value.length > 0 && value.length <= 2;
-        //	break;
-        //case 'IN_DESCRIPTION':
         case 'IN_ORGANIZATION_NAME':
             valid = value.length > 0 && value.length <= 255;
             break;
-        //case 'IN_BUDGET_YEAR_ID':
-        //	valid = !isNaN(value) && value > 0;
-        //	break;
         case 'IN_USER_ID':
         case 'IN_HL2_ID':
-            //case 'TEAM_TYPE_ID':
             valid = !isNaN(value) && value > 0;
             break;
         case 'IN_HL2_BUDGET_TOTAL':
-            valid = regex.test(value) && value >= 0;
+            valid = Number(value);
             break;
         case 'IN_ORGANIZATION_ACRONYM':
             valid = value.replace(/\s/g, "").length == 3;

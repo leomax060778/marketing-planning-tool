@@ -42,8 +42,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6"
         ,in in_event_owner nvarchar(255)
         ,in in_number_of_participants nvarchar(255)
         ,in in_priority_id bigint
-     ,IN IN_IMPORTED TINYINT
-     ,IN_IMPORT_ID BIGINT
+     ,in IN_IMPORTED TINYINT
+     ,in IN_IMPORT_ID BIGINT
 	,OUT out_hl6_id bigint 
 	) 
 	LANGUAGE SQLSCRIPT

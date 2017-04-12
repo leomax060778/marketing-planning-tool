@@ -17,16 +17,30 @@ function updateCategoryOptionLevel(data, userId) {
 		var totalOptions = data.IN_OPTION_LIST.length;
 
 		dataCategoryOptionLevel.deleteAllocationCATEGORYOptionLevel(data.IN_CATEGORY_ID, HIERARCHY_LEVEL[data.IN_LEVEL.toUpperCase()],userId);
-		dataCategoryOptionLevel.updateAllocationCategoryOptionLevelProcessingReport(
+
+		/*dataCategoryOptionLevel.updateAllocationCategoryOptionLevelProcessingReport(
 			data.IN_CATEGORY_ID, HIERARCHY_LEVEL[data.IN_LEVEL.toUpperCase()],
-			data.IN_PROCESSING_REPORT,userId);
+			data.IN_PROCESSING_REPORT,userId);*/
+
 		for(var i = 0; i < totalOptions; i++){
-			dataCategoryOptionLevel.insertAllocationCATEGORYOptionLevel(
-				data.IN_CATEGORY_ID,
-				data.IN_OPTION_LIST[i],
-				HIERARCHY_LEVEL[data.IN_LEVEL.toUpperCase()],
-				data.IN_PROCESSING_REPORT,
-				 userId);
+			var categoryOptionLevel = dataCategoryOptionLevel.getAllocationOptionLevelByCategoryAndLevelId(data.IN_CATEGORY_ID, data.IN_LEVEL, data.IN_OPTION_LIST[i]);
+
+			if(categoryOptionLevel && categoryOptionLevel.ALLOCATION_CATEGORY_OPTION_LEVEL_ID){
+                dataCategoryOptionLevel.updateAllocationCategoryOptionLevel(
+                    data.IN_CATEGORY_ID,
+                    HIERARCHY_LEVEL[data.IN_LEVEL.toUpperCase()],
+                    data.IN_OPTION_LIST[i],
+                    data.IN_PROCESSING_REPORT,
+                    userId);
+			} else {
+                dataCategoryOptionLevel.insertAllocationCATEGORYOptionLevel(
+                    data.IN_CATEGORY_ID,
+                    data.IN_OPTION_LIST[i],
+                    HIERARCHY_LEVEL[data.IN_LEVEL.toUpperCase()],
+                    data.IN_PROCESSING_REPORT,
+                    userId);
+            }
+
 			++countInsert;
 		}
 

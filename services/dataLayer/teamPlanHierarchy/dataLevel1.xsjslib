@@ -76,9 +76,12 @@ function getLevel1ById(hl1Id){
     return {};
 }
 
-function getLevel1ByUser(userId){
+function getLevel1ByUser(isSuperAdmin, userId){
     var result = {};
-    var parameters = {'in_user_id': userId};
+    var parameters = {
+        'in_user_id': userId,
+        'in_is_super_Admin': isSuperAdmin ? 1 : 0
+    };
     var list = db.executeProcedureManual(GET_HL1_BY_USER_ID, parameters);
     result.out_result = db.extractArray(list.out_result);
     result.out_total_budget = list.out_total_budget;

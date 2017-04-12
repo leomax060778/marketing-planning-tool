@@ -55,12 +55,12 @@ function getLevel1ById(hl1Id) {
     return dataHl1.getLevel1ById(hl1Id);
 }
 
-function getPlanByUser(userId) {
+/*function getPlanByUser(userId) {
     if (!userId)
         throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found", "level1Lib/getPlanByUser", L1_MSG_USER_NOT_FOUND);
 
     return dataHl1.getLevel1ByUser(userId);
-}
+}*/
 
 /*INSERT A NEW HL2 WITH CREO O MORE USERS ASICIATIONS*/
 function insertHl1(data, userId) {
@@ -204,7 +204,8 @@ function getLevel1ByUser(userId) {
     if (!userId)
         throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found", "level1Services/handleGet/getLevel1ByUser", L1_MSG_USER_NOT_FOUND);
 
-    return dataHl1.getLevel1ByUser(userId);
+    var isSA = util.isSuperAdmin(userId);
+    return dataHl1.getLevel1ByUser(isSA, userId);
 }
 
 //Get an Level 1 data by filter (in_budget_year_id, in_plan_id, in_region_id, in_subregion_id can be null)
@@ -213,7 +214,6 @@ function getLevel1ByFilters(budgetYearId, regionId, subRegionId, userId) {
 
     if (config.getApplySuperAdminToAllInitiatives()) {
         isSA = userbl.isSuperAdmin(userId);
-        //throw JSON.stringify({budgetYearId: budgetYearId, regionId: regionId, subRegionId: subRegionId, isSA: isSA});
     }
     return dataHl1.getLevel1ByFilters(budgetYearId, regionId, subRegionId, userId, isSA);
 }
@@ -349,7 +349,9 @@ function validateHl1(data) {
 
         isValid = true;
     } catch (e) {
-        if (e !== BreakException)
+        if (e.code == 450)
+            throw e.details;
+        else if(e !== BreakException )
             throw ErrorLib.getErrors().CustomError("", "hl1Services/handlePost/insertHl1", e.toString());
         else
             throw ErrorLib.getErrors().CustomError("", "hl1Services/handlePost/insertHl1"
@@ -358,68 +360,8 @@ function validateHl1(data) {
     return isValid;
 }
 
-//function validateUpdateHl2(objLevel2) {
-//    var isValid = false;
-//    var errors = {};
-//    var BreakException = {};
-//    var keys = ['IN_HL2_ID',
-//        'IN_ACRONYM',
-//        'IN_DESCRIPTION',
-//        'IN_HL2_BUDGET_TOTAL',
-//        'IN_TEAM_TYPE_ID'];
-//
-//    var keysTeamType = ['IN_ORGANIZATION_ACRONYM',
-//        'IN_ORGANIZATION_NAME'
-//    ];
-//    if (!objLevel2)
-//        throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2", L1_MSG_PLAN_NOT_FOUND);
-//
-//    try {
-//        keys.forEach(function (key) {
-//            if (objLevel2[key] === null || objLevel2[key] === undefined) {
-//                errors[key] = null;
-//                throw BreakException;
-//            } else {
-//                // validate attribute type
-//                isValid = validateType(key, objLevel2[key])
-//
-//                //the organization type is Central team
-//                if (key === 'IN_TEAM_TYPE_ID' && objLevel2[key] > 1) {
-//                    keysTeamType.forEach(function (k) {
-//                        if (objLevel2[k] === null || objLevel2[k] === undefined) {
-//                            errors[k] = null;
-//                            throw BreakException;
-//                        } else {
-//                            // validate attribute type
-//                            isValid = validateType(k, objLevel2[k])
-//                            if (!isValid) {
-//                                errors[k] = objLevel2[k];
-//                                throw BreakException;
-//                            }
-//                        }
-//                    });
-//                }
-//
-//                if (!isValid) {
-//                    errors[key] = objLevel2[key];
-//                    throw BreakException;
-//                }
-//            }
-//        });
-//        isValid = true;
-//    } catch (e) {
-//        if (e !== BreakException)
-//            throw e;
-//        else
-//            throw ErrorLib.getErrors().CustomError("", "hl2Services/handlePut/updateHl2"
-//                , JSON.stringify(errors));
-//    }
-//    return isValid;
-//}
-
 //Check data types
 function validateType(key, value) {
-    var regex = /^(0|([1-9]\d{0,8}))(\.\d{1,2})?$/;
     var valid = true;
     switch (key) {
         case 'ACRONYM':
@@ -437,7 +379,7 @@ function validateType(key, value) {
             valid = !isNaN(value) && value > 0;
             break;
         case 'BUDGET':
-            valid = regex.test(value) && value >= 0;
+            valid = Number(value);
             break;
     }
     return valid;
@@ -485,51 +427,6 @@ function validateHl1User(listObjHl2User) {
 function validateHl1UserPair(userId, hl1Id) {
     return dataHl1User.existsHl1UserPair(userId, hl1Id);
 }
-
-/*function isCentralTeam(objLevel2) {
- return objLevel2['IN_TEAM_TYPE_ID'] > 1;
- }*/
-
-//function sendEmail(resBudgetStatus, userId) {
-//    var stringInHl4 = "List In Budget: ";
-//    var stringOutHl4 = "List Out Budget: ";
-//
-//    if (resBudgetStatus) {
-//        try {
-//            if (resBudgetStatus.emailListInBudget.length > 0) {
-//                for (var i = 0; i < resBudgetStatus.emailListInBudget.length; i++) {
-//                    var objHl3 = resBudgetStatus.emailListInBudget[i];
-//                    if (objHl3)
-//                        stringInHl3 = stringInHl3 + "<p>" + i + " - " + "ACRONYM: " + objHl3.ACRONYM + ", DESCRIPTION: " + objHl3.HL3_DESCRIPTION + "</p>";
-//                }
-//            }
-//
-//            if (resBudgetStatus.emailListOutBudget.length > 0) {
-//                for (var i = 0; i < resBudgetStatus.emailListOutBudget.length; i++) {
-//                    var objHl3 = resBudgetStatus.emailListOutBudget[i];
-//                    if (objHl3)
-//                        stringOutHl3 = stringOutHl3 + "<p>" + i + " - " + "ACRONYM: " + objHl3.ACRONYM + ", DESCRIPTION: " + objHl3.HL3_DESCRIPTION + "</p>";
-//                }
-//            }
-//
-//            //get owner email
-//            //TODO: find owner created hl4
-//            //var ownerTo =
-//            var to = 'framirez@folderit.net';
-//            var body = '<p> Dear Colleague </p><p>We send the list of INITIATIVE/CAMPAIGN shipped in or out of budget</p>';
-//            body = body + stringInHl3;
-//            body = body + stringOutHl3;
-//            var mailObject = mail.getJson([{
-//                "address": to
-//            }], "Marketing Planning Tool - Lits of TEAM/PRIORITY shipped in or out of budget", body);
-//
-//            mail.sendMail(mailObject, true);
-//        }
-//        catch (e) {
-//            throw e;
-//        }
-//    }
-//}
 
 function uiToServerParser(object) {
     var data = JSON.stringify(object, function (key, value) {

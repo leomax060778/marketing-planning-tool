@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::REGION_CAN_DELETE" ( 
 IN in_region_id bigint, 
-OUT out_result tinyint
+OUT out_result integer
 )
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -12,8 +12,8 @@ BEGIN
  *****************************/
 	SELECT COUNT(R.REGION_ID) INTO out_result 
 	FROM REGION R 
-	INNER JOIN SUBREGION SR ON SR.REGION_ID = R.REGION_ID
-	INNER JOIN HL2 ON HL2.REGION_ID = R.REGION_ID
+	LEFT JOIN SUBREGION SR ON SR.REGION_ID = R.REGION_ID
+	LEFT JOIN HL2 ON HL2.REGION_ID = R.REGION_ID
 	WHERE R.REGION_ID = in_region_id;
 	
 END;

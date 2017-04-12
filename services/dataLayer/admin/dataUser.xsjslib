@@ -8,6 +8,7 @@ var ErrorLib = mapper.getErrors();
 var spGetAll = "GET_ALL_USER";
 var spGetUserById = "GET_USER_BY_ID";
 var spGetUserByUserName = "GET_USER_BY_USERNAME";
+var spGetUserByEmail = "GET_USER_BY_EMAIL";
 var spInseruser = "INS_USER";
 var spUpdateUser = "UPD_USER";
 var spDeleteUser = "DEL_USER";
@@ -76,6 +77,13 @@ function getUserByUserName(userName){
 		}
 	}
 	return null;
+}
+
+function getUserByEmail(email){
+    var rdo = db.executeProcedureManual(spGetUserByEmail, {
+        'in_email' : email
+    });
+    return db.extractArray(rdo.out_result)[0];
 }
 
 function getUserByHl2Id(hl2Id) {

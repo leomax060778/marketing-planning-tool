@@ -2,7 +2,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL2" (
     IN in_hl1_id BIGINT
 	, OUT out_result TABLE (
 		hl2_id BIGINT
-		, hl2_budget_total DECIMAL(19, 6)
+		, hl2_budget_total DECIMAL(19, 2)
 		, organization_acronym NVARCHAR(25)
 		, organization_name NVARCHAR(255)
         , crt_related TINYINT

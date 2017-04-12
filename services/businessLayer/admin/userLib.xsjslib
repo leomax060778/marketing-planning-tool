@@ -45,6 +45,10 @@ function getUserByUserName(userName) {
     return dbUser.getUserByUserName(userName);
 }
 
+function getUserByEmail(email) {
+    return dbUser.getUserByEmail(email);
+}
+
 function getUserByHl1Id(hl1Id) {
     if (!hl1Id)
         throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
@@ -181,6 +185,11 @@ function insertUser(user, createUser) {
                 throw ErrorLib.getErrors().CustomError("",
                     "userServices/handlePost/insertUser", "The User Name already exists");
             }
+
+            if(getUserByEmail(user.EMAIL)){
+                throw ErrorLib.getErrors().CustomError("",
+                    "userServices/handlePost/insertUser", "Another user with the same email already exists");
+            }
             // Hash password
             userPassword = !user.USE_DEFAULT_PASSWORD
             && validatePassword(user.PASSWORD) ? user.PASSWORD
@@ -237,6 +246,18 @@ function updateUser(user, updateUser) {
     if (!util.validateIsNumber(user.USER_ID))
         throw ErrorLib.getErrors().CustomError("",
             "userServices/handlePost/updateUser", "The USER_ID is invalid");
+
+    var userByUserName = getUserByUserName(user.USER_NAME);
+    if (userByUserName && userByUserName.USER_ID != user.USER_ID) {
+        throw ErrorLib.getErrors().CustomError("",
+            "userServices/handlePost/insertUser", "The User Name already exists");
+    }
+
+    var userByEmail = getUserByEmail(user.EMAIL);
+    if(userByEmail && userByEmail.USER_ID != user.USER_ID){
+        throw ErrorLib.getErrors().CustomError("",
+            "userServices/handlePost/insertUser", "Another user with the same email already exists");
+    }
 
     try {
         var updUserId = null;
@@ -384,10 +405,12 @@ function validatePassword(pass) {
     // letters
     // New passwords must be 6 letters (and/or numbers and/or most special
     // characters) in length
-    if (!util.validateLength(pass, 15, 6) || !util.validateIsPassword(pass))
+    /*if (!util.validateLength(pass, 15, 6, 'PASSWORD') || !util.validateIsPassword(pass))
         throw ErrorLib.getErrors()
             .CustomError("", "userServices/handlePost/insertUser",
-                "The PASSWORD is invalid");
+                "The PASSWORD is invalid");*/
+    util.validateLength(pass, 15, 6, 'PASSWORD');
+    util.validateIsPassword(pass);
 
     return true;
 }

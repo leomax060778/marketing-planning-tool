@@ -6,23 +6,23 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_HL1_ID" (
 		hl2_id BIGINT
 		, hl1_id integer
 		, organization_acronym NVARCHAR(25)
-		, hl2_budget_total DECIMAL(19, 6)
+		, hl2_budget_total DECIMAL(19, 2)
         , hl3_total_count INTEGER
         , QUANTITY_HL3_OUT_BUDGET INTEGER
-        , ALLOCATED DECIMAL(19, 6)
-        , REMAINING DECIMAL(19, 6)
+        , ALLOCATED DECIMAL(19, 2)
+        , REMAINING DECIMAL(19, 2)
 		)
-	, OUT out_total_budget DECIMAL(19, 6)
-	, OUT out_remaining_budget	DECIMAL(19, 6)
+	, OUT out_total_budget DECIMAL(19, 2)
+	, OUT out_remaining_budget	DECIMAL(19, 2)
 )
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	DECLARE va_total_budget DECIMAL(19, 6);
-	DECLARE va_remaining_budget DECIMAL(19, 6);
-	DECLARE va_hl2_assigned_budget DECIMAL(19, 6);
+	DECLARE va_total_budget DECIMAL(19, 2);
+	DECLARE va_remaining_budget DECIMAL(19, 2);
+	DECLARE va_hl2_assigned_budget DECIMAL(19, 2);
 	va_total_budget := 0;
 	va_remaining_budget := 0;
 	va_hl2_assigned_budget := 0;

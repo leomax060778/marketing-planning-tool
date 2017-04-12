@@ -32,12 +32,24 @@ function updateMarketingProgram(campaignSubTypeData, userId) {
     return dataMarketingProgram.updateMarketingProgram(campaignSubTypeData.IN_MARKETING_PROGRAM_ID, campaignSubTypeData.IN_NAME, campaignSubTypeData.IN_DESCRIPTION || campaignSubTypeData.IN_NAME, userId);
 }
 
-function deleteMarketingProgram(campaignSubTypeData, userId) {
+function deleteMarketingProgram(marketingProgram, userId, confirm) {
 
-    if (!campaignSubTypeData.IN_MARKETING_PROGRAM_ID)
+    if (!marketingProgram.IN_MARKETING_PROGRAM_ID)
         throw ErrorLib.getErrors().CustomError("",
             "marketingProgramServices/handleDelete/deleteMarketingProgram",
             "The MARKETING_PROGRAM_ID is not found");
+    if (confirm) {
+        return dataMarketingProgram.deleteMarketingProgram(marketingProgram.IN_MARKETING_PROGRAM_ID, userId);
+    } else {
+        var countRegisters = dataMarketingProgram.checkInUseMarketingProgramById(marketingProgram.IN_MARKETING_PROGRAM_ID);
+        var retValue = 0;
+        if (countRegisters > 0)
+            throw ErrorLib.getErrors().ConfirmDelete("",
+                "marketingProgramServices/handleDelete/checkInUseMarketingProgramById",
+                countRegisters);
+        else
+            retValue = dataMarketingProgram.deleteMarketingProgram(marketingProgram.IN_MARKETING_PROGRAM_ID, userId);
 
-    return dataMarketingProgram.deleteMarketingProgram(campaignSubTypeData.IN_MARKETING_PROGRAM_ID, userId);
+        return retValue;
+    }
 }

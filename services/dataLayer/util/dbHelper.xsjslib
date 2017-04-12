@@ -40,7 +40,7 @@ function executeProcedure(spName, parameters){
 	catch(e){
 		HDB_CONNECTION.rollback();
 		validateErrorCode(e, spName);
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedure");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedure");
 	}
 	finally{
 		if (!HDB_CONNECTION.isClosed())
@@ -60,7 +60,7 @@ function executeProcedureManual(spName, parameters){
 	}
 	catch(e){	
 		validateErrorCode(e, spName);
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedureManual");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedureManual");
 	}
 	return result;
 }
@@ -85,7 +85,7 @@ function executeScalar(spName, parameters, out_result){
 	catch(e){
 		HDB_CONNECTION.rollback();
 		validateErrorCode(e, spName);
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalar");	
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalar");
 }
 	finally{
 		
@@ -109,7 +109,7 @@ function executeDecimalManual(spName, parameters, out_result){
 	}
 	catch(e){
 		validateErrorCode(e, spName);
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");	
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");
     }
 		
 	return value;
@@ -128,7 +128,7 @@ function executeScalarManual(spName, parameters, out_result){
 	}
 	catch(e){
 		validateErrorCode(e, spName);
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");	
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");
     }
 		
 	return value;
@@ -150,7 +150,7 @@ function executeQuery(query){
 	}
 	catch(e){
 		//validateErrorCode(e, spName);
-		throw errors.getErrors().InternalServerError("Internal Server Error - SQL ",query +"++++"+ e.toString(),"dbHelper.executeQuery");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",query +"++++"+ e.toString(),"dbHelper.executeQuery");
 	}
 
 	return value;
@@ -202,91 +202,3 @@ function validateErrorCode(error, spName){
 
 }
 
-
-
-
-/********************* whitout testing ***************************/
-/* INSERT MASIVE DATA
- * tableName = "my_table"
- * parameters = [[param1, param2,....,paramN],...,[param1,param2,...,paramN]]
- * */
-function executeInsert(tableName, parameters){
-	var result = 0;
-	
-	try{
-		HDB_CONNECTION.AutoCommit(0);		
-		var query = getInsert(tableName, parameters);
-		result = HDB_CONNECTION.executeUpdate(query,parameters);				
-		HDB_CONNECTION.commit();
-	}
-	catch(e){
-		HDB_CONNECTION.rollback();
-		result = 0;
-	}
-	finally{
-		if (!HDB_CONNECTION.isClosed())
-			HDB_CONNECTION.close();
-	}
-	
-	return result;
-}
-
-/* UPDATE DATA
- * tableName = "my_table"
- * parameters = [[param1, param2,....,paramN],...,[param1,param2,...,paramN]]
- * */
-function executeUpdate(tableName, parameters){
-	var result = true;
-	
-	try{
-		HDB_CONNECTION.AutoCommit(0);		
-		var fn = HDB_CONNECTION.executeUpdate(query,parameters);				
-		HDB_CONNECTION.commit();
-	}
-	catch(e){
-		HDB_CONNECTION.rollback();
-		result = false;
-	}
-	finally{
-		if (!HDB_CONNECTION.isClosed())
-			HDB_CONNECTION.close();
-	}
-	
-	return result;
-}
-
-function getUpdate(tableName){
-	var param = "(";
-	for(var a=0; a<parameters; a++){
-		if(a != 0) param = param + ",";
-		param = param + "?";
-	}
-	param = param + ")";
-	
-	
-	
-	return 'UPDATE INTO "'+DB_NAME+'"."'+tableName+'" VALUES '+param;
-}
-
-function getInsert(tableName){
-	var param = '(';
-	for(var a=0; a<parameters; a++){
-		if(a != 0) param = param + ',';
-		param = param + '?';
-	}
-	param = param + ')';
-	
-	var query = 'INSERT INTO "'+DB_NAME+'"."'+tableName+'" VALUES '+param;
-	
-	return "'"+query+"'";
-}
-
-function getCaller(name, parameters){
-	var param = "(";
-	for(var a=0; a<parameters; a++){
-		if(a != 0) param = param + ",";
-		param = param + "?";
-	}
-	param = param + ")";
-	return 'CALL '+DB_NAME+'."'+DB_SP_PATH+'::'+name+'"'+param;
-}

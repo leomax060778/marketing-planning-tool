@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_ALLOCATION_CATEGORY_OPTION_LEVEL" (
+	IN in_category_id BIGINT,
+	IN in_level_id integer,
+	IN in_option_id bigint,
+	IN in_user_id BIGINT,
+	IN in_in_processing_report tinyint,
+	OUT out_result integer
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+        UPDATE ALLOCATION_CATEGORY_OPTION_LEVEL
+        SET IN_PROCESSING_REPORT = in_in_processing_report
+            , modified_date_tz = CURRENT_TIMESTAMP
+            , modified_user_id = in_user_id
+            , enabled = 1
+            , deleted = 0
+        WHERE HIERARCHY_LEVEL_ID = in_level_id
+         AND ALLOCATION_CATEGORY_ID = in_category_id
+         AND ALLOCATION_OPTION_ID = in_option_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END

@@ -24,38 +24,35 @@ var map = {};
 var mapKPY = {};
 var mapCategory = {};
 
+//map to asosciate hierarchy_level_id and business layer method to create new l5 or l6
 var mapInsertHierarchyLevelInsert = {
  2: blLevel5.insertHl5FromUpload,
  3: blLevel6.insertHl6FromUpload
  }
 
+//get map excel upload file configuration for static relation between field on database tables and excel column header
 function getMapHLExcel() {
     return dataUploadL5L6.getMapHLExcel();
 
 }
 
+//get object value from map from a key
 function getValue(element_key) {
     return map.filter(function (elem) {
         return elem.COLUMN_NAME == element_key
     })[0];
 }
 
-/*
- MAP_L5_L6_ID bigint ,
- TYPE TINYINT,
- COLUMN_NAME NVARCHAR(255),
- CSV_COLUMN_NAME NVARCHAR(255),
- DATA_TYPE NVARCHAR(25),
- FOREIGN_TABLE_NAME NVARCHAR(255),
- FOREIGN_COLUMN_REFERENCE NVARCHAR(255),
- FOREIGN_COLUMN_FILTER NVARCHAR(255))
-
- category_id BIGINT
- , measure_id BIGINT
- , name NVARCHAR(60)
- , description NVARCHAR(255)
- */
-
+//define a map for all expected outcomes options on database
+//the main fields are:
+//TYPE: 0 to L5, 1 to L6
+//MAP_L5_L6_ID: unique expected outcome option id
+//CSV_COLUMN_NAME: column name in csv file related to expected outcome option with the same name in database
+//COLUMN_NAME: Same as above field
+//DATA_TYPE: needed to cast use or custom handler
+//FOREIGN_TABLE_NAME: Referenced table (only for static configuration)
+//FOREIGN_COLUMN_REFERENCE: Referenced field in above table needed to extract value (only for static configuration)
+//FOREIGN_COLUMN_FILTER: needed table column name to find foreign register
 function getMapKPY() {
     var rdo = [];
     var expectedOutcomes = expectedLib.getAllExpectedOutcomeOptionIncludeDeleted();
@@ -90,6 +87,16 @@ function getMapKPY() {
     return rdo;
 }
 
+//define a map for all categories on database
+//the main fields are:
+//TYPE: 0 to L5, 1 to L6
+//MAP_L5_L6_ID: unique id category
+//CSV_COLUMN_NAME: column name related to category with the same name
+//COLUMN_NAME: Same as above field
+//DATA_TYPE: needed to cast use or custom handler
+//FOREIGN_TABLE_NAME: Referenced table (only for static configuration)
+//FOREIGN_COLUMN_REFERENCE: Referenced field in above table needed to extract value (only for static configuration)
+//FOREIGN_COLUMN_FILTER: needed table column name to find foreign register
 function getMapCategories() {
     var rdo = [];
     var categories = categoryLib.getAllAllocationCategory();
@@ -122,6 +129,7 @@ function getMapCategories() {
     return rdo;
 }
 
+//create a complete map with Excel, Categories and expected outcomes (KPI)
 function getMapHLExcelComplete() {
     var rdo = this.getMapHLExcel();
     //concat is slower, but easier to read
@@ -134,6 +142,7 @@ function getMapHLExcelComplete() {
     return rdo;
 }
 
+//check if is a category by name
 function isCategory(key) {
     for (var i = 0; i < mapCategory.length; i++) {
         var category = mapCategory[i];
@@ -144,6 +153,7 @@ function isCategory(key) {
     return false;
 }
 
+//insert dictionary register in database
 function insertDictionaryL5L6(payload, userId) {
 
     for (var i = 0; i < payload.length; i++) {
@@ -164,6 +174,7 @@ function getForeignId(tableName, columnReference, columnFilter, findValue, other
     return dataUploadL5L6.getForeignId(tableName, columnReference, columnFilter, findValue, otherCondition);
 }
 
+//get all distinct path from dictionary L5 and L6
 function getAllPathFromDictionary(userId){
     var result={};
         result.hl5 = getHL5PathFromDictionary(userId);
@@ -172,15 +183,17 @@ function getAllPathFromDictionary(userId){
     return result;
 }
 
-
+//get all distinct path from dictionary for level 5
 function getHL5PathFromDictionary(userId){
     return dataUploadL5L6.getHL5PathFromDictionary(userId);
 }
 
+//get all distinct path from dictionary for level 6
 function getHL6PathFromDictionary(userId){
     return dataUploadL5L6.getHL6PathFromDictionary(userId);
 }
 
+//
 function processor(userId, arrayPaths,IMPORT_ID) {
     var HLs = [];
 

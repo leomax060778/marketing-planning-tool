@@ -168,6 +168,18 @@ function getErrors(){
         return e;
     }
 
+    Errors.ConfirmDelete  = function(message,stack, details){
+        var e={};
+        e.name = "The user client must confirm next action.";
+        e.message = message || "The user client must confirm next action.";
+        e.code = 457;
+        e.stack = stack || "";
+        e.details = details || "without details";
+        e.row = {};
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
     /******************* 500 **********************************************/
     Errors.InternalServerError  = function(message,stack, details){
     	var e={};
@@ -175,7 +187,7 @@ function getErrors(){
         e.message = message || "Internal Server Error";
         e.code = 500;
         e.stack = stack || "";
-        e.details = details || "without details";
+        e.details = details || "Unexpected Error.";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -220,6 +232,18 @@ function getErrors(){
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
     }
+
+    Errors.DBError  = function(message,stack, details){
+        var e={};
+        e.name = "Data Base Error";
+        e.message = message || "Data Base Error";
+        e.code = 550;
+        e.stack = stack || "";
+        e.details = details || "Data Base Error";
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
     
 
     Errors.list = {
@@ -236,10 +260,12 @@ function getErrors(){
         '454':  Errors.OutOfRange(),
         '455':  Errors.NoCurrencyForBudgetYear(),
         '456':  Errors.ImportError(),
+        '457':  Errors.ConfirmDelete(),
         '500':  Errors.InternalServerError(),
         '501':  Errors.NotImplemented(),
         '503':  Errors.ServiceUnavailable(),
-        '511':  Errors.NetworkAuthenticationRequired()
+        '511':  Errors.NetworkAuthenticationRequired(),
+        '550':  Errors.DBError()
     };
 
     Errors.getError = function (code){

@@ -44,7 +44,8 @@ function handlePut(reqBody, userId) {
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 function handleDelete(reqBody, userId) {
-    var rdo = blCampaignSubType.deleteCampaignSubType(reqBody, userId);
+    var confirm = httpUtil.getUrlParameters().get("CONFIRM_OK");
+    var rdo = blCampaignSubType.deleteCampaignSubType(reqBody, userId, confirm);
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 processRequest();

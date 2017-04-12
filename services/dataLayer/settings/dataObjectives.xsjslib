@@ -11,6 +11,7 @@ var UPD_OBJECTIVE = "UPD_OBJECTIVE";
 var GET_OBJECTIVE_BY_ID = "GET_OBJECTIVE_BY_ID";
 var DEL_OBJECTIVE = "DEL_OBJECTIVE";
 var GET_OBJECTIVE_BY_NAME = "GET_OBJECTIVE_BY_NAME";
+var GET_COUNT_OBJECTIVES_IN_USE_BY_ID = "GET_COUNT_OBJECTIVES_IN_USE_BY_ID";
 
 function getAllObjectives(){
 	var parameters = {};	
@@ -58,3 +59,7 @@ function getObjectiveByName(name){
 	return null;
 }
 
+function checkInUseObjectiveById(objectiveId){
+	var parameters = {'in_objecive_id': objectiveId};
+	return db.executeScalarManual(GET_COUNT_OBJECTIVES_IN_USE_BY_ID, parameters, "out_result");
+}

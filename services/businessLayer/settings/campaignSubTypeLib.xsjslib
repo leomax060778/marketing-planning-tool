@@ -1,6 +1,7 @@
 $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataCampaignSubType = mapper.getDataCampaignSubType();
+var dataCampaignObjective = mapper.getDataCampaignObjective();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 
@@ -49,12 +50,25 @@ function updateCampaignSubType(campaignSubTypeData, userId) {
     return dataCampaignSubType.updateCampaignSubType(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID, campaignSubTypeData.IN_NAME, userId);
 }
 
-function deleteCampaignSubType(campaignSubTypeData, userId) {
+function deleteCampaignSubType(campaignSubTypeData, userId, confirm) {
 
     if (!campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID)
         throw ErrorLib.getErrors().CustomError("",
             "campaignTypeServices/handleDelete/deleteCampaignSubType",
             "The CAMPAIGN_TYPE_ID is not found");
 
-    return dataCampaignSubType.deleteCampaignSubType(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID, userId);
+    if (confirm) {
+        dataCampaignObjective.deleteObjectiveCampaignTypeByCampaignSubTypeId(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID);
+        return dataCampaignSubType.deleteCampaignSubType(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID, userId);
+    } else {
+        var countRegisters = dataCampaignSubType.checkInUseCampaignSubTypeById(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID);
+        if (countRegisters > 0) {
+            throw ErrorLib.getErrors().ConfirmDelete("",
+                "objectiveServices/handleDelete/checkInUseCampaignSubTypeById",
+                countRegisters);
+        } else {
+            dataCampaignObjective.deleteObjectiveCampaignTypeByCampaignSubTypeId(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID);
+            return dataCampaignSubType.deleteCampaignSubType(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID, userId);
+        }
+    }
 }

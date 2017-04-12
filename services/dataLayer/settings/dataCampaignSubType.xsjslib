@@ -12,6 +12,7 @@ var GET_CAMPAIGN_SUB_TYPE_BY_NAME = "GET_CAMPAIGN_SUB_TYPE_BY_NAME";
 var INS_CAMPAIGN_SUB_TYPE = "INS_CAMPAIGN_SUB_TYPE";
 var UPD_CAMPAIGN_SUB_TYPE = "UPD_CAMPAIGN_SUB_TYPE";
 var DEL_CAMPAIGN_SUB_TYPE = "DEL_CAMPAIGN_SUB_TYPE";
+var GET_COUNT_CAMPAIGN_SUB_TYPE_IN_USE_BY_ID = "GET_COUNT_CAMPAIGN_SUB_TYPE_IN_USE_BY_ID";
 
 function getAllCampaignSubType() {
     var parameters = {};
@@ -68,4 +69,9 @@ function deleteCampaignSubType(campaignTypeId, userId) {
     parameters.IN_CAMPAIGN_SUB_TYPE_ID = campaignTypeId;
     parameters.IN_MODIFIED_USER_ID = userId;
     return db.executeScalarManual(DEL_CAMPAIGN_SUB_TYPE, parameters, "out_result");
+}
+
+function checkInUseCampaignSubTypeById(subTypeId){
+    var parameters = {'in_campaign_subtype_id': subTypeId};
+    return db.executeScalarManual(GET_COUNT_CAMPAIGN_SUB_TYPE_IN_USE_BY_ID, parameters, "out_result");
 }

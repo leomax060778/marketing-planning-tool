@@ -1,42 +1,42 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ID" ( 
 	in in_hl5_id BIGINT
 	,OUT out_result TABLE (
-		hl5_id bigint
+		hl5_id integer
 		, hl5_crm_description nvarchar(100)
 		, acronym nvarchar(25)
-		, distribution_channel_id bigint
+		, distribution_channel_id integer
 		, budget decimal(19, 6)
-		, hl4_id bigint
-		, campaign_objective_id bigint
-		, campaign_type_id bigint
-		, campaign_subtype_id bigint
+		, hl4_id integer
+		, campaign_objective_id integer
+		, campaign_type_id integer
+		, campaign_subtype_id integer
 		, marketing_program_id integer
 		, marketing_activity_id integer
 		, actual_start_date timestamp
 		, actual_end_date timestamp
 		, show_on_dg_calendar tinyint
-		, business_owner_id bigint
-		, employee_responsible_id bigint
-		, cost_center_id bigint
+		, business_owner_id integer
+		, employee_responsible_id integer
+		, cost_center_id integer
 		, in_budget tinyint
 		, budget_spend_q1 decimal(19, 2)
 		, budget_spend_q2 decimal(19, 2)
 		, budget_spend_q3 decimal(19, 2)
 		, budget_spend_q4 decimal(19, 2)
-		, euro_conversion_id bigint
-		, hl5_status_detail_id bigint
+		, euro_conversion_id integer
+		, hl5_status_detail_id integer
 		, created_date_tz timestamp
 		, modified_date_tz timestamp
-		, created_user_id bigint
-		, modified_user_id bigint
+		, created_user_id integer
+		, modified_user_id integer
 		, enabled tinyint
 		, deleted tinyint
-		, route_to_market_id bigint
+		, route_to_market_id integer
         , venue nvarchar(255)
         , city nvarchar(255)
         , country nvarchar(255)
         , url nvarchar(255)
-        , sales_organization_id bigint
+        , sales_organization_id integer
         , planned_start_date timestamp
         , planned_end_date timestamp
         , street nvarchar(255)

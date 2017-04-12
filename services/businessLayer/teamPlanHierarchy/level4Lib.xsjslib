@@ -615,7 +615,7 @@ function updateHl4(data, userId) {
                 data.hl4_category.forEach(function (hl4Category) {
                     hl4Category.hl4_category_option.forEach(function (hl4CategoryOption) {
                         hl4CategoryOption.in_amount = hl4CategoryOption.in_amount || 0;
-                        hl4CategoryOption.in_updated = hl4CategoryOption.in_updated ? hl4CategoryOption.in_updated : 0;
+                        hl4CategoryOption.in_updated = hl4CategoryOption.in_updated || 0;
                         hl4Category.in_category_option_level_id = dataCategoryOptionLevel.getAllocationOptionLevelByCategoryAndLevelId(hl4Category.in_category_id, 'hl4', hl4CategoryOption.in_option_id).ALLOCATION_CATEGORY_OPTION_LEVEL_ID;
                         dataCategoryOptionLevel.updateCategoryOption(hl4Category.in_category_option_level_id, hl4CategoryOption.in_amount, userId, hl4CategoryOption.in_updated, 'HL4');
                     });
@@ -968,16 +968,26 @@ function categoryChanged(data, existInCrm) {
 //Option1: option from UI
 //Option2: option from DB
 function CompareOptions(Option1, Option2, existInCrm) {
-    Option1.in_updated = 1;
+    var hasChanged = false;
+    if (Number(Option1.in_amount) === Number(Option2.in_amount)) {
+        hasChanged = false;
+        Option1.in_updated = Option2.in_updated;
+    } else {
+        Option1.in_updated = 1;
+        hasChanged = true;
 
-    if (Number(Option1.in_amount) && Option2.in_updated) return !!Option1.in_updated;
+        if (Number(Option1.in_amount) && Option2.in_updated){
+            return hasChanged;
+        }
 
-    if ((!Number(Option1.in_amount) && !Number(Option2.in_amount)) ||
-        (!Number(Option1.in_amount) && Number(Option2.in_amount) && !existInCrm) ||
-        (Number(Option1.in_amount) && Number(Option2.in_amount) && Number(Option1.in_amount) == Number(Option2.in_amount)))
-        Option1.in_updated = 0;
-
-    return !!Option1.in_updated;
+        if ((!Number(Option1.in_amount) && !Number(Option2.in_amount)) ||
+            (!Number(Option1.in_amount) && Number(Option2.in_amount) && !existInCrm)
+        ) {
+            Option1.in_updated = 0;
+            hasChanged = false;
+        }
+    }
+    return hasChanged;
 }
 
 function getOptionFromList(listOptions, OptionId) {

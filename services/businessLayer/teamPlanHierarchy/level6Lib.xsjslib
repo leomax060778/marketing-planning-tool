@@ -58,7 +58,7 @@ var L6_MSG_INITIATIVE_CAMPAIGN_SUBTYPE = "The Campaign/Activity & Sub tactic cam
 var L6_MSG_INITIATIVE_ACTUAL_START_DATE = "The Campaign/Activity & Sub tactic actual start date cannot be found.";
 var L6_MSG_INITIATIVE_ACTUAL_END_DATE = "The Campaign/Activity & Sub tactic actual end date cannot be found.";
 var L6_MSG_INITIATIVE_SALES_ORGANIZATION = "The Campaign/Activity & Sub tactic sales organization cannot be found.";
-var L6_MSG_INITIATIVE_INVALID_DATE_RANGE = "The Actual End Date must be mayor than Actual Start Date";
+var L6_MSG_INITIATIVE_INVALID_DATE_RANGE = "The Actual End Date must be greater than Actual Start Date";
 var L6_CAMPAIGN_FORECASTING_KPIS_DETAILS = "Campaign Forecasting / KPIS details amount value is not valid.";
 var L6_CAMPAIGN_FORECASTING_KPIS_DETAILS_EURO = "Campaign Forecasting / KPIS details euro value is not valid.";
 var L6_CAMPAIGN_FORECASTING_KPIS_NOT_VALID = "Campaign Forecasting / KPIS is not valid.";
@@ -385,7 +385,6 @@ function validateHl6Upload(data){
 
 function insertHl6FromUpload(data, userId){
     var hl6_id = 0;
-//throw JSON.stringify(data);
     if(validateHl6Upload(data)) {
 
         hl6_id = dataHl6.insertHl6(data.HL6_CRM_DESCRIPTION,
@@ -653,7 +652,7 @@ function updateCategoryOptions(data, userId) {
         //var hl6_category_id = dataHl6.getHl6Category(data.hl6.HL6_ID, hl6Category.CATEGORY_ID)[0].HL6_CATEGORY_ID;
         hl6Category.hl6_category_option.forEach(function (hl6CategoryOption) {
             hl6CategoryOption.AMOUNT = hl6CategoryOption.AMOUNT || 0;
-            hl6CategoryOption.UPDATED = hl6CategoryOption.AMOUNT ? 1 : 0;
+            hl6CategoryOption.UPDATED = hl6CategoryOption.UPDATED || 0;
             hl6Category.in_category_option_level_id = dataCategoryOptionLevel.getAllocationOptionLevelByCategoryAndLevelId(hl6Category.CATEGORY_ID, 'hl6', hl6CategoryOption.OPTION_ID).ALLOCATION_CATEGORY_OPTION_LEVEL_ID;
             dataCategoryOptionLevel.updateCategoryOption(hl6Category.in_category_option_level_id, hl6CategoryOption.AMOUNT, userId, hl6CategoryOption.UPDATED, 'HL6');
         });
@@ -953,16 +952,26 @@ function getOptionFromList(listOptions, OptionId) {
 //Option1: option from UI
 //Option2: option from DB
 function compareOptions(Option1, Option2, existInCrm) {
-    Option1.UPDATED = 1;
+    var hasChanged = false;
+    if (Number(Option1.AMOUNT) === Number(Option2.AMOUNT)) {
+        hasChanged = false;
+        Option1.UPDATED = Option2.UPDATED;
+    } else {
+        Option1.UPDATED = 1;
+        hasChanged = true;
 
-    if (Number(Option1.AMOUNT) && Option2.UPDATED) return !!Option1.UPDATED;
+        if (Number(Option1.AMOUNT) && Option2.UPDATED){
+            return hasChanged;
+        }
 
-    if ((!Number(Option1.AMOUNT) && !Number(Option2.AMOUNT)) ||
-        (!Number(Option1.AMOUNT) && Number(Option2.AMOUNT) && !existInCrm) ||
-        (Number(Option1.AMOUNT) && Number(Option2.AMOUNT) && Number(Option1.AMOUNT) == Number(Option2.AMOUNT)))
-        Option1.UPDATED = 0;
-
-    return !!Option1.UPDATED;
+        if ((!Number(Option1.AMOUNT) && !Number(Option2.AMOUNT)) ||
+            (!Number(Option1.AMOUNT) && Number(Option2.AMOUNT) && !existInCrm)
+        ) {
+            Option1.UPDATED = 0;
+            hasChanged = false;
+        }
+    }
+    return hasChanged;
 }
 
 function isMyBudgetComplete(hl6Budget) {
@@ -1053,7 +1062,6 @@ function checkBudgetStatus(objHl5, hl6_id, new_hl6_budget) {
 
             for (var i = 0; i < resultHl6.length; i++) {
                 if (parseFloat(objHl5.BUDGET) < total + parseFloat(resultHl6[i].HL6_BUDGET)) {
-                    //throw JSON.stringify(parseFloat(objHl5.BUDGET) < total + parseFloat(resultHl6[i].HL6_BUDGET));
                     dataHl6.hl6ChangeInOUTBudget(resultHl6[i].HL6_ID, 0);
                     // store hl6id and users to be send email when register
                     // change to in budget

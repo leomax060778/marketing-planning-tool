@@ -18,7 +18,7 @@ function handleGet(parameters, userSessionID) {
 	if(parameters.length > 0){
 		switch(parameters[0].name){
 			case "GET_ALL_BY_USER":
-				rdo = blLevel1.getPlanByUser(userSessionID);
+				rdo = blLevel1.getLevel1ByUser(userSessionID);
 				break;
 			default:
 				throw ErrorLib.getErrors().BadRequest("","planService/handleGet","invalid parameter name (can be: GET_ALL_BY_USER)");

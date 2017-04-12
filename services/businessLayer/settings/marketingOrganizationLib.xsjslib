@@ -24,8 +24,14 @@ function UpdateMarketingOrganization(organization, userId){
 }
 
 function DeleteMarketingOrganization(organization, userId){
-	if(organization)
-		return dbMO.DeleteMarketingOrganization(organization.SALES_ORGANIZATION_ID, userId, true);
+	if(organization.SALES_ORGANIZATION_ID){
+		if(dbMO.getMarketingOrganizationUses(organization.SALES_ORGANIZATION_ID))
+            throw ErrorLib.getErrors().CustomError("",
+                "marketingOrganizationServices/handleDelete/delMarketingOrganization/DeleteMarketingOrganization",
+                "Cannot delete this marketing organization, it´s in use.");
+
+        return dbMO.DeleteMarketingOrganization(organization.SALES_ORGANIZATION_ID, userId, true);
+    }
 	return ErrorLib.getErrors().BadRequest("","","Marketing Organization is empty");
 }
 

@@ -536,7 +536,7 @@ function updateHl5(hl5Id,hl5CrmDescription,inAcronym,distributionChannelId,budge
 		'in_budget_spend_q4' : budgetSpendQ4,
 		'in_euro_conversion_id' : euroConversionId,
 		'in_hl5_status_detail_id' : hl5StatusDetailId,
-		'in_created_user_id' : createdUserId,
+		'in_modified_user_id' : createdUserId,
 		'in_route_to_market' : route_to_market ,
 		'in_venue': venue?venue:"",
 		'in_city': city?city:"",

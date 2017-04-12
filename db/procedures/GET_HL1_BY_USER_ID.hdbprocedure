@@ -1,5 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_USER_ID" (
 	IN in_user_id BIGINT
+	,IN in_is_super_Admin tinyint
 	,OUT out_result TABLE (
 		hl1_id BIGINT
 		, acronym NVARCHAR(25)
@@ -16,19 +17,19 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_USER_ID" (
 		, REGION_NAME NVARCHAR(255)
 		, SUBREGION_NAME NVARCHAR(255)
 		, BUDGET_YEAR BIGINT
-		, budget DECIMAL(19, 6)
+		, budget DECIMAL(19, 2)
         , team_type_id BIGINT
         , implement_execution_level TINYINT
         , crt_related TINYINT
 		)
-	, OUT out_total_budget DECIMAL(19, 6)
+	, OUT out_total_budget DECIMAL(19, 2)
 )
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	DECLARE va_total_budget DECIMAL(19, 6);
+	DECLARE va_total_budget DECIMAL(19, 2);
 	va_total_budget := 0;
 
 	out_result =
@@ -59,7 +60,7 @@ BEGIN
 	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL1.budget_year_id
 
 	WHERE
-		HL1_USER.USER_ID = in_user_id
+		(HL1_USER.USER_ID = in_user_id OR in_is_super_Admin = 1)
 		AND HL1.deleted = 0
 		AND HL1.enabled = 1
 	ORDER BY HL1.acronym;
@@ -69,7 +70,7 @@ BEGIN
 	FROM HL1
 	INNER JOIN HL1_USER HU ON HL1.hl1_id = HU.hl1_id
 	WHERE
-	HU.user_id = in_user_id
+	(HU.USER_ID = in_user_id OR in_is_super_Admin = 1)
 	AND HL1.deleted = 0
 	AND HL1.enabled = 1;
 

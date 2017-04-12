@@ -48,7 +48,6 @@ BEGIN
 
 	ELSEIF in_lh = 6 THEN
 	out_result = SELECT
-            	     CONCAT(
                      	CONCAT(
                      		 CONCAT(
                      			CONCAT(
@@ -59,7 +58,6 @@ BEGIN
                      					, hl3.acronym)
                      				,'-')
                      			,hl4.acronym)
-                     		,'-')
                      ,hl5.acronym)
     				 AS path_tph
     		FROM HL5

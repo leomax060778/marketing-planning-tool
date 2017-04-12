@@ -622,3 +622,38 @@ function getDataUploadL5L6(){
     $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataUploadL5L6");
     return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataUploadL5L6;
 }
+
+
+/***************************************** LEGACY *****************************************/
+function getLevel5Legacy(){
+    $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","level5LibLegacy");
+    return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.level5LibLegacy;
+}
+function getLevel6Legacy(){
+    $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","level6LibLegacy");
+    return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.level6LibLegacy;
+}
+function getLevel5DEReportLegacy(){
+    $.import("xsplanningtool.services.businessLayer.dataEntryReport","level5ReportLibLegacy");
+    return $.xsplanningtool.services.businessLayer.dataEntryReport.level5ReportLibLegacy;
+}
+function getLevel6DEReportLegacy(){
+    $.import("xsplanningtool.services.businessLayer.dataEntryReport","level6ReportLibLegacy");
+    return $.xsplanningtool.services.businessLayer.dataEntryReport.level6ReportLibLegacy;
+}
+function getDataLevel5Legacy(){
+    $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataLevel5Legacy");
+    return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataLevel5Legacy;
+}
+function getDataLevel6Legacy(){
+    $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataLevel6Legacy");
+    return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataLevel6Legacy;
+}
+function getDataLevel5ReportLegacy(){
+    $.import("xsplanningtool.services.dataLayer.dataEntryReport","dataLevel5ReportLegacy");
+    return $.xsplanningtool.services.dataLayer.dataEntryReport.dataLevel5ReportLegacy;
+}
+function getDataLevel6ReportLegacy(){
+    $.import("xsplanningtool.services.dataLayer.dataEntryReport","dataLevel6ReportLegacy");
+    return $.xsplanningtool.services.dataLayer.dataEntryReport.dataLevel6ReportLegacy;
+}

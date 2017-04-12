@@ -7,6 +7,7 @@ var ErrorLib = mapper.getErrors();
 /** *************************************** */
 
 var BY_ID = "BY_ID";
+var CONFIRM_OK = "CONFIRM_OK";
 
 function processRequest() {
     return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,"",true);
@@ -37,8 +38,10 @@ function handlePut(reqBody, userSessionID) {
     var rdo = blObjectives.updateObjective(reqBody, userSessionID);
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };
+
 function handleDelete(reqBody, userSessionID) {
-    var rdo = blObjectives.deleteObjective(reqBody, userSessionID);
+    var confirm = httpUtil.getUrlParameters().get("CONFIRM_OK");
+    var rdo = blObjectives.deleteObjective(reqBody, userSessionID, confirm);
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 };
 

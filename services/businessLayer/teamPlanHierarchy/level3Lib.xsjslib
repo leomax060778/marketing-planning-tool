@@ -326,9 +326,7 @@ function validateUpdateHl3(objHl3) {
 
 // Local method to check data types
 function validateType(key, value) {
-	var regex = /^(0|([1-9]\d{0,8}))(\.\d{1,10})?$/;
 	var valid = true;
-
 	switch (key) {
 	case 'IN_ACRONYM':
         valid = value.replace(/\s/g, "").length === 3;
@@ -343,15 +341,10 @@ function validateType(key, value) {
 		valid = !isNaN(value) && value > 0;
 		break;
 	case 'IN_HL3_FNC_BUDGET_TOTAL':
-		valid = regex.test(value) && value >= 0;
+		valid = Number(value);
 		break;
 	}
 	return valid;
-}
-
-
-function createEmail(){
-	
 }
 
 //TODO: send email to owner user of hl4id´s. That is HL4 created user

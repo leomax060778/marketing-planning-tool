@@ -1,0 +1,12 @@
+
+INSERT INTO APPLICATION(NAME, DESCRIPTION, OWNER, CREATED_USER_ID) VALUES('MPT','MARKETING PLANNING TOOL', 'SAP', 1);
+
+INSERT INTO APPLICATION_VERSION(VERSION,  RELEASE_NOTES, APPLICATION_ID, CREATED_USER_ID)
+VALUES('1.0.0','',1,1);
+
+-- *************************************************************************************
+-- Update schema version
+INSERT INTO SCHEMA_VERSION(VERSION, DESCRIPTION, SCRIPT)
+VALUES('V5.0.0-33', 'Insert Application', 'V201703281055__Application_insert.sql');
+
+COMMIT;

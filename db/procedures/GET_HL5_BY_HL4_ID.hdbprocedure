@@ -42,7 +42,6 @@ va_intermidate = SELECT
         ,hl5.hl5_crm_description AS HL5_CRM_DESCRIPTION
         ,hl5.acronym AS HL5_ACRONYM       
 	    ,    
-	     CONCAT(
          			CONCAT(
          	         CONCAT(
          	        	CONCAT(
@@ -53,7 +52,6 @@ va_intermidate = SELECT
          						, hl3.acronym)
          					,'-')
          				,hl4.acronym)
-         			,'-')
          		 ,hl5.acronym)
 		AS CRM_ID 
         
@@ -87,7 +85,7 @@ va_intermidate = SELECT
     INNER JOIN BUDGET_YEAR BGY ON hl1.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
     INNER JOIN CURRENCY euro_conversions ON hl4.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
     INNER JOIN hl5_status_detail hl5_status_detail ON hl5_status_detail.hl5_status_detail_id = hl5.hl5_status_detail_id
-    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl4.created_user_id
+    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl5.created_user_id
     LEFT JOIN ROUTE_TO_MARKET RTM ON RTM.ROUTE_TO_MARKET_ID = HL5.ROUTE_TO_MARKET_ID
     WHERE hl5.enabled=1 AND hl5.deleted=0
 	AND hl5.hl4_id = in_hl4_id;

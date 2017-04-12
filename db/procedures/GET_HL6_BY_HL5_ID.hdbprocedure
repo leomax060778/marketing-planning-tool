@@ -29,7 +29,6 @@ va_intermidate = SELECT
         ,hl6.hl6_crm_description AS HL6_CRM_DESCRIPTION
         ,hl6.acronym AS HL6_ACRONYM       
 	    ,    
-	      CONCAT(
          			CONCAT(
          	         CONCAT(
          	        	CONCAT(
@@ -40,7 +39,6 @@ va_intermidate = SELECT
          						, hl3.acronym)
          					,'-')
          				,hl4.acronym)
-         				,'-')
                       ,hl5.acronym)
 		AS HL5_PATH
 
@@ -65,7 +63,7 @@ va_intermidate = SELECT
     INNER JOIN BUDGET_YEAR BGY ON hl1.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
     INNER JOIN CURRENCY euro_conversions ON hl4.euro_conversion_id = euro_conversions.euro_conversion_id  AND euro_conversions.enabled=1 AND euro_conversions.deleted=0
     INNER JOIN hl6_status_detail hl6_status_detail ON hl6_status_detail.hl6_status_detail_id = hl6.hl6_status_detail_id
-    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl5.created_user_id
+    INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl6.created_user_id
     INNER JOIN SALE_ORGANIZATION saleOrganization ON saleOrganization.SALES_ORGANIZATION_ID = HL6.SALES_ORGANIZATION_ID
     WHERE hl6.enabled=1 AND hl6.deleted=0
 	AND hl6.hl5_id = in_hl5_id;

@@ -10,6 +10,8 @@ var GET_ALLOCATION_OPTION_LEVEL = "GET_ALLOCATION_OPTION_LEVEL";
 
 var GET_ALLOCATION_CATEGORY_BY_CAT_ID_LEVEL_ID = "GET_ALLOCATION_CATEGORY_BY_CAT_ID_LEVEL_ID";
 var UPD_ALLOCATION_CAT_OPT_LEV_PROCESSING_REPORT = "UPD_ALLOCATION_CAT_OPT_LEV_PROCESSING_REPORT";
+
+var UPD_ALLOCATION_CATEGORY_OPTION_LEVEL = "UPD_ALLOCATION_CATEGORY_OPTION_LEVEL";
 /*********************************************************************************************************/
 var hierarchyLevel = {
 	"hl3": 4,
@@ -60,7 +62,18 @@ function updateAllocationCategoryOptionLevelProcessingReport(categoryId, levelId
 		rdo = db.executeScalarManual(UPD_ALLOCATION_CAT_OPT_LEV_PROCESSING_REPORT,params,'out_result');
 	}
 	return rdo;
+}
 
+function updateAllocationCategoryOptionLevel(categoryId, levelId, optionId, processingReport, userId,autoCommit){
+    var params = {
+        'in_category_id': categoryId,
+        'in_level_id': levelId,
+        'in_option_id':optionId,
+        'in_user_id' : userId,
+        'in_in_processing_report':processingReport
+    };
+
+    return db.executeScalarManual(UPD_ALLOCATION_CATEGORY_OPTION_LEVEL,params,'out_result');
 }
 
 function deleteAllocationCATEGORYOptionLevel(categoryId, levelId,userId, autoCommit){
@@ -116,7 +129,7 @@ function getAllocationOptionByCategoryAndLevel(allocation_category_id, level){
 
 function getAllocationOptionLevelByCategoryAndLevelId(allocation_category_id, level, optionId){
 	if(allocation_category_id && level){
-		var rdo = db.executeProcedureManual(GET_ALLOCATION_OPTION_LEVEL,{'in_allocation_category_id':allocation_category_id, 'in_hierarchy_level_id': hierarchyLevel[level], 'in_option_id':optionId});
+		var rdo = db.executeProcedureManual(GET_ALLOCATION_OPTION_LEVEL,{'in_allocation_category_id':allocation_category_id, 'in_hierarchy_level_id': hierarchyLevel[level.toLowerCase()], 'in_option_id':optionId});
 		return db.extractArray(rdo.out_result)[0];
 	}
 	return null;
@@ -142,6 +155,7 @@ function updateCategoryOption(categoryOptionLevelId, amount, userId, updated, le
 		'in_user_id': userId,
 		'in_updated': updated
 	};
+
 	var storedProcedure = "UPD_"+ level.toUpperCase() +"_ALLOCATION_CATEGORY_OPTION";
 	var rdo = db.executeScalarManual(storedProcedure, parameters, 'out_result');
 	return rdo;

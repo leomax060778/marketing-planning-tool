@@ -73,12 +73,6 @@ function getApplySuperAdminToAllInitiatives(){
 }
 /***************************************/
 
-/**************Email Accounts**********************/
-//var SMTPAccount = "lpeccin@folderit.net";//"info_planningtool@sap.com";//  //adderes configured  - SMTP server
-//var SupportAccount ="lpeccin@folderit.net";// "support_planningtool@sap.com";
-//var SiteAdministrator = "lpeccin@folderit.net";// "support_planningtool@sap.com";
-/*****************************************/
-
 
 //this Enum represent the "PLANNING_TOOL"."ROLE" table
 var RoleEnum = {

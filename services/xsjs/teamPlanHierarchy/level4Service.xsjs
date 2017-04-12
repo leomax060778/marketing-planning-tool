@@ -56,7 +56,7 @@ function handleGet(params, userId) {
 //Implementation of PUT call -- Update HL4
 function handlePut(reqBody, userId){
 	var parameters = httpUtil.getUrlParameters();
-    businessLavel4.checkPermission(userId, null, parameters.get('HL4_ID') || reqBody.hl4.in_hl4_id);
+    hl4.checkPermission(userId, null, parameters.get('HL4_ID') || reqBody.hl4.in_hl4_id);
 	if(parameters.length > 0){
 		var aCmd = parameters.get('method');
 		var hl4Id = parameters.get('HL4_ID');
@@ -90,7 +90,7 @@ function handleDelete(reqBody, userId){
 
 //Implementation of POST call -- Insert HL4
 function handlePost(reqBody, userId) {
-    businessLavel3.checkPermission(userId, null, reqBody.hl4.in_hl3_id);
+    businessLevel3.checkPermission(userId, null, reqBody.hl4.in_hl3_id);
 	var result = hl4.insertHl4(reqBody, userId); //return new L4 Id
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 }

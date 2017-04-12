@@ -18,6 +18,7 @@ var dbER = mapper.getDataEmployeeResponsible();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
 var dataPriority = mapper.getDataPriority();
+var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
 /** ***********END INCLUDE LIBRARIES*************** */
 
 var l6ReportFields = {

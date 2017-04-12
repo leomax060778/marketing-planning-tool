@@ -22,7 +22,8 @@ function handlePut(reqBody, userId) {
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 function handleDelete(reqBody, userId) {
-    var rdo = blMarketingProgram.deleteMarketingProgram(reqBody, userId);
+    var confirm = httpUtil.getUrlParameters().get("CONFIRM_OK");
+    var rdo = blMarketingProgram.deleteMarketingProgram(reqBody, userId, confirm);
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 processRequest();

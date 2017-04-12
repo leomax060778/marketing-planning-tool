@@ -11,6 +11,7 @@ var spGET_MARKETING_PROGRAM_BY_ID = "GET_MARKETING_PROGRAM_BY_ID";
 var INS_MARKETING_PROGRAM = "INS_MARKETING_PROGRAM";
 var UPD_MARKETING_PROGRAM = "UPD_MARKETING_PROGRAM";
 var DEL_MARKETING_PROGRAM = "DEL_MARKETING_PROGRAM";
+var GET_COUNT_MARKETING_PROGRAM_IN_USE_BY_ID = "GET_COUNT_MARKETING_PROGRAM_IN_USE_BY_ID";
 
 
 
@@ -57,4 +58,8 @@ function deleteMarketingProgram(marketingProgramId, userId) {
     parameters.IN_MARKETING_PROGRAM_ID = marketingProgramId;
     parameters.IN_MODIFIED_USER_ID = userId;
     return db.executeScalarManual(DEL_MARKETING_PROGRAM, parameters, "out_result");
+}
+function checkInUseMarketingProgramById(marketingProgramId){
+    var parameters = {'in_marketing_program_id': marketingProgramId};
+    return db.executeScalarManual(GET_COUNT_MARKETING_PROGRAM_IN_USE_BY_ID, parameters, "out_result");
 }

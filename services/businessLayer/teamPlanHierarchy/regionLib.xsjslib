@@ -32,8 +32,8 @@ function deleteRegion(objRegion, userId) {
         return dataRegion.delRegion(objRegion, userId);
     }
 	else
-		throw ErrorLib.getErrors().CustomError("Region can not be delete",
-				"regionLib/handlePost/deleteRegion", objRegion);
+		throw ErrorLib.getErrors().CustomError("",
+				"regionLib/handlePost/deleteRegion", "Region can not be delete");
 }
 
 function validateDeleteRegion(objRegion) {

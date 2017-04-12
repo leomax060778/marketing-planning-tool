@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_PARTNER" (
 		IN in_hl4_id bigint,
-		IN in_value decimal,
+		IN in_value decimal, 
 		IN in_region_id bigint,
 		IN in_created_user_id bigint,
 		IN in_partner_name nvarchar(512),
@@ -27,6 +27,7 @@ BEGIN
 		in_partner_name,
 		in_partner_type_id
 		);
+		
 
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_partner_id FROM "PLANNING_TOOL"."HL4_PARTNER";
 END;

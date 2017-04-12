@@ -26,7 +26,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5" (
 	,in in_budget_spend_q4 decimal(19, 2)
 	,in in_euro_conversion_id bigint
 	,in in_hl5_status_detail_id bigint
-	,in in_created_user_id bigint
+	,in in_modified_user_id bigint
 	,in in_route_to_market bigint
     ,in in_venue nvarchar(255)
     ,in in_city nvarchar(255)
@@ -73,7 +73,7 @@ BEGIN
 	budget_spend_q4 = in_budget_spend_q4,
 	euro_conversion_id = in_euro_conversion_id,
 	hl5_status_detail_id = in_hl5_status_detail_id,
-	created_user_id = in_created_user_id,
+	modified_user_id = in_modified_user_id,
 	route_to_market_id = in_route_to_market,
     venue = in_venue,
     city = in_city,
