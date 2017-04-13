@@ -434,7 +434,7 @@ function insertHl5(hl5CrmDescription,acronym,distributionChannelId,budget,hl4Id
 		, 'in_event_owner': event_owner || ''
 		, 'in_number_of_participants': number_of_participants || ''
 		, 'in_priority_id': priority_id
-		, 'in_imported': imported ? imported : false
+		, 'in_imported': imported ? imported : 0
 		, 'IN_IMPORT_ID' : import_id ? import_id : null
 	};
 

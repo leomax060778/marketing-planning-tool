@@ -52,12 +52,13 @@ BEGIN
    				END) AS hl4_out_budget_count,
    				HL3.hl3_description
 	FROM HL3
-	INNER JOIN HL3_USER HU ON HL3.hl3_id = HU.hl3_id
+	--INNER JOIN HL3_USER HU ON HL3.hl3_id = HU.hl3_id
 	LEFT JOIN HL4 ON HL3.hl3_id = HL4.hl3_id  AND HL4.deleted = 0 AND HL4.enabled = 1
 	LEFT JOIN CURRENCY EC ON HL4.euro_conversion_id = EC.euro_conversion_id
 	LEFT JOIN :va_intermidate va_hl4 ON va_hl4.hl3_id = HL3.hl3_id
 	WHERE HL3.hl2_id = in_hl2_id
-	  AND (HU.USER_ID = in_user_id OR in_is_super_Admin = 1)
+	  --AND (HU.USER_ID = in_user_id OR in_is_super_Admin = 1)
+	  AND HL3.HL3_ID IN (SELECT HL3_ID FROM HL3_USER WHERE USER_ID = in_user_id OR in_is_super_Admin = 1)
 	  AND HL3.deleted = 0
 	  AND HL3.enabled = 1
 	GROUP BY GROUPING SETS ((HL3.hl3_id, HL3.acronym, HL3.hl3_fnc_budget_total, HL3.in_budget

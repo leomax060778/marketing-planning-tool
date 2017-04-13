@@ -10,12 +10,12 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_HL4_ID" (
             , STATUS_DETAIL NVARCHAR(255)
             , CREATED_BY NVARCHAR(255)
             , OWNER_EMAIL NVARCHAR(500)
-            , HL5_BUDGET DECIMAL
+            , HL5_BUDGET DECIMAL(19,2)
             , EURO_CONVERSION_ID BIGINT
             , TOTAL_HL6 INT
             , QUANTITY_HL6_OUT_BUDGET INT
-            , ALLOCATED DECIMAL
-            , REMAINING DECIMAL
+            , ALLOCATED DECIMAL(19,2)
+            , REMAINING DECIMAL(19,2)
             , ROUTE_TO_MARKET_ID BIGINT
             , ROUTE_TO_MARKET NVARCHAR(255)
             , VENUE NVARCHAR(255)

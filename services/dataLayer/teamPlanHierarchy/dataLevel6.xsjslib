@@ -120,10 +120,10 @@ function insertHl6(hl6CrmDescription,hl6Acronym,budget,hl5Id, routeToMarket
         , 'in_event_owner': event_owner || ''
         , 'in_number_of_participants': number_of_participants || ''
         , 'in_priority_id': priority_id
-        , 'in_imported' : imported ? imported : false
+        , 'in_imported' : imported ? imported : 0
         , 'in_import_id': import_id ? import_id : null
     };
-    
+
     var rdo;
     if(autoCommit){
         rdo = db.executeScalar(spInsHl6,params,'out_hl6_id');
@@ -467,7 +467,6 @@ function updateHl6(hl6Id,hl6CrmDescription,budget, routeToMarket
         , 'in_priority_id': priority_id
     };
 
-    //throw JSON.stringify(params);
     var rdo = db.executeScalarManual(spUpdHl6,params,'out_result');
     return rdo;
 }

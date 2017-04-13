@@ -10,7 +10,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_HL5_ID" (
             , STATUS_DETAIL NVARCHAR(255)
             , CREATED_BY NVARCHAR(255)
             , OWNER_EMAIL NVARCHAR(500)
-            , HL6_BUDGET DECIMAL
+            , HL6_BUDGET DECIMAL(19,2)
             , EURO_CONVERSION_ID BIGINT
             , CRT_RELATED TINYINT
             , SALE_ORGANIZATION NVARCHAR(255)

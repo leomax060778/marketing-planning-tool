@@ -37,7 +37,7 @@ var map = {
 
 var L1_MSG_CENTRAL_TEAM_EXISTS = "Another Central Team with the same acronym already exists.";
 var L1_MSG_PLAN_EXISTS = "Another Plan with the same acronym already exists";
-var L1_MSG_LEVEL_1_EXISTS = "Another Level1 with the same acronym, budget year and organization acronym already exists";
+var L1_MSG_LEVEL_1_EXISTS = "Another Level1 with the same acronym and budget year already exists";
 var L1_MSG_PLAN_NO_CREATED = "The Plan could not be created.";
 var L1_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";
 var L1_MSG_PLAN_NOT_FOUND = "The Plan can not be found.";

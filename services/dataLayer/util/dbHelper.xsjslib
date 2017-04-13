@@ -40,7 +40,7 @@ function executeProcedure(spName, parameters){
 	catch(e){
 		HDB_CONNECTION.rollback();
 		validateErrorCode(e, spName);
-		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedure");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"Unexpected Error.");
 	}
 	finally{
 		if (!HDB_CONNECTION.isClosed())
@@ -60,7 +60,7 @@ function executeProcedureManual(spName, parameters){
 	}
 	catch(e){	
 		validateErrorCode(e, spName);
-		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeProcedureManual");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"Unexpected Error.");
 	}
 	return result;
 }
@@ -85,7 +85,7 @@ function executeScalar(spName, parameters, out_result){
 	catch(e){
 		HDB_CONNECTION.rollback();
 		validateErrorCode(e, spName);
-		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalar");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"Unexpected Error.");
 }
 	finally{
 		
@@ -109,7 +109,7 @@ function executeDecimalManual(spName, parameters, out_result){
 	}
 	catch(e){
 		validateErrorCode(e, spName);
-		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"Unexpected Error.");
     }
 		
 	return value;
@@ -128,7 +128,7 @@ function executeScalarManual(spName, parameters, out_result){
 	}
 	catch(e){
 		validateErrorCode(e, spName);
-		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"dbHelper.executeScalarManual");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",spName + e.toString(),"Unexpected Error.");
     }
 		
 	return value;
@@ -150,7 +150,7 @@ function executeQuery(query){
 	}
 	catch(e){
 		//validateErrorCode(e, spName);
-		throw errors.getErrors().DBError("Internal Server Error - SQL ",query +"++++"+ e.toString(),"dbHelper.executeQuery");
+		throw errors.getErrors().DBError("Internal Server Error - SQL ",query +"++++"+ e.toString(),"Unexpected Error.");
 	}
 
 	return value;
