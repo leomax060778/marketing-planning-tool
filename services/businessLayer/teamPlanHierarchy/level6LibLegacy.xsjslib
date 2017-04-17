@@ -27,6 +27,8 @@ var dataObj = mapper.getDataObjectives();
 var level5Lib = mapper.getLevel5Legacy();
 var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
 var allocationCategory = mapper.getAllocationCategoryLib();
+var blLevel2 = mapper.getLevel2();
+var blRegion = mapper.getRegion();
 /** ********************************************** */
 
 var levelCampaign = "Campaign/Activity & Sub tactic";
@@ -290,11 +292,22 @@ function insertHl6(data, userId) {
 
             setHl6Status(hl6_id, data.hl6.HL6_STATUS_DETAIL_ID, userId);
 
-            //insert Budget
-            insertBudget(data);
+            //inserts budget regions
+            var regions = blRegion.getAllRegions();
+            var centralTeams = blLevel2.getAllCentralTeam(0);
 
-            //insert Sales
-            insertSales(data, conversionValue);
+            regions.forEach(function (myBudget) {
+                myBudget.HL6_ID = hl6_id;
+                dataHl6.insertHl6BudgetSalesUpload(myBudget.HL6_ID, myBudget.REGION_ID, 0, ORGANIZATION_TYPE["REGIONAL"], "", userId);
+            });
+
+            centralTeams.forEach(function (sale) {
+                sale.HL6_ID = hl6_id;
+                dataHl6.insertHl6BudgetSalesUpload(sale.HL6_ID, sale.HL2_ID, 0, ORGANIZATION_TYPE["CENTRAL"], "", userId);
+            });
+            //insert sale other data
+            dataHl6.insertHl6Sale(hl6_id, null, 0, ORGANIZATION_TYPE["OTHER"], "Other", userId);
+            /***********************************/
 
 
             //insert insertPartners
@@ -342,31 +355,6 @@ function validateHl6Upload(data) {
         throw error;
     }
     return true;
-}
-
-
-function insertBudget(data) {
-    if (data.hl6_budget) {
-        data.hl6_budget.forEach(function (myBudget) {
-            myBudget.HL6_ID = data.hl6.HL6_ID;
-            myBudget.CREATED_USER_ID = data.hl6.CREATED_USER_ID;
-            dataHl6.insertHl6Budget(myBudget.HL6_ID, myBudget.ORGANIZATION_ID, myBudget.PERCENTAGE, ORGANIZATION_TYPE[myBudget.ORGANIZATION_TYPE], myBudget.CREATED_USER_ID || data.hl6.USER_ID);
-        });
-    }
-}
-
-function insertSales(data, conversionValue) {
-    if (data.hl6_sale) {
-        data.hl6_sale.forEach(function (sale) {
-            sale.HL6_ID = data.hl6.HL6_ID;
-            sale.CREATED_USER_ID = data.hl6.CREATED_USER_ID;
-            sale.AMOUNT = Number(sale.AMOUNT) /* / conversionValue*/;
-            sale.DESCRIPTION = ORGANIZATION_TYPE[sale.ORGANIZATION_TYPE] === 3 ? sale.DESCRIPTION : null;
-            sale.ORGANIZATION_ID = ORGANIZATION_TYPE[sale.ORGANIZATION_TYPE] !== 3 ? sale.ORGANIZATION_ID : null;
-            dataHl6.insertHl6Sale(sale.HL6_ID, sale.ORGANIZATION_ID, sale.AMOUNT / conversionValue, ORGANIZATION_TYPE[sale.ORGANIZATION_TYPE], sale.DESCRIPTION, sale.CREATED_USER_ID || data.hl6.USER_ID);
-
-        });
-    }
 }
 
 function insertPartners(data, conversionValue) {
