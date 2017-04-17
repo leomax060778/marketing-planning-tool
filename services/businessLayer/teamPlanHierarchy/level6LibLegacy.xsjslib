@@ -433,9 +433,8 @@ function updateHl6(data, userId) {
 
         setHl6Status(data.hl6.HL6_ID, data.hl6.HL6_STATUS_DETAIL_ID, userId);
 
-        updateBudget(data/*, conversionValue*/);
-
-        updateSales(data, conversionValue);
+        // updateBudget(data/*, conversionValue*/);
+        // updateSales(data, conversionValue);
 
         updatePartners(data, conversionValue);
 
@@ -458,15 +457,15 @@ function updateCategoryOptions(data, userId) {
 }
 
 
-function updateBudget(data/*, conversionValue*/) {
-    dataHl6.delHl6BudgetHard(data.hl6.HL6_ID, data.hl6.USER_ID);
-    insertBudget(data/*, conversionValue*/);
-}
-
-function updateSales(data, conversionValue) {
-    dataHl6.delHl6SaleHard(data.hl6.HL6_ID, data.hl6.USER_ID);
-    insertSales(data, conversionValue);
-}
+// function updateBudget(data/*, conversionValue*/) {
+//     dataHl6.delHl6BudgetHard(data.hl6.HL6_ID, data.hl6.USER_ID);
+//     insertBudget(data/*, conversionValue*/);
+// }
+//
+// function updateSales(data, conversionValue) {
+//     dataHl6.delHl6SaleHard(data.hl6.HL6_ID, data.hl6.USER_ID);
+//     insertSales(data, conversionValue);
+// }
 
 function updatePartners(data, conversionValue) {
     dataPartner.deleteHl6Partner(data.hl6.HL6_ID, data.hl6.USER_ID);
