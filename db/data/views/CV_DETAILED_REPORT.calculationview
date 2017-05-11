@@ -125,9 +125,9 @@
 			 	
 			 	UNION ALL
 			 	
- 				(SELECT hl4BudgetRoute.HL4_ID, hl4BudgetRoute.PERCENTAGE AS BUDGET_PERCENTAGE, hl3.L3_ACRONYM AS BUDGET_TYPE
+ 				(SELECT hl4BudgetRoute.HL4_ID, hl4BudgetRoute.PERCENTAGE AS BUDGET_PERCENTAGE, hl2.L2_ACRONYM AS BUDGET_TYPE
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_ROUTE&quot; hl4BudgetRoute
-			 	INNER JOIN :va_hl3 hl3 ON hl3.HL3_ID = hl4BudgetRoute.ROUTE_ID
+			 	INNER JOIN :va_hl2 hl2 ON hl2.HL2_ID = hl4BudgetRoute.ROUTE_ID
 			 	WHERE hl4BudgetRoute.ENABLED = 1 AND hl4BudgetRoute.DELETED = 0 AND hl4BudgetRoute.PERCENTAGE != 0);
 			 	
 	va_hl4CategoryOption = SELECT hl4CategoryOption.HL4_ID, category.NAME AS CATEGORY_NAME, hl4CategoryOption.AMOUNT AS OPTION_AMOUNT, options.NAME AS OPTION_NAME
