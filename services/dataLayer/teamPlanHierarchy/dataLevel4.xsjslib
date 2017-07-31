@@ -20,6 +20,7 @@ var spGetHl4CategoryByCategoryId = "GET_HL4_CATEGORY_BY_CATEGORY_ID";
 var spGetAllHl4 = "GET_ALL_HL4";
 var spGetHl4CategoryOptionByHl4IdOptionId = "GET_HL4_CATEGORY_OPTION_BY_HL4_ID_OPTION_ID";
 var spGET_COUNT_HL5_BY_HL4_ID = "GET_COUNT_HL5_BY_HL4_ID";
+var GET_IMPLEMENT_EXECUTION_LEVEL_BY_HL4_ID = "GET_IMPLEMENT_EXECUTION_LEVEL_BY_HL4_ID";
 
 var spInsertHl4 = "INS_HL4";
 var spInsertHl4_Category = "INS_HL4_CATEGORY";
@@ -75,7 +76,7 @@ function getHl4(id){
 
 function getHl4ById(id){
 	if(id != ""){
-		var rdo = db.executeProcedure(spGetHl4ById,{'in_hl4_id':id});
+		var rdo = db.executeProcedureManual(spGetHl4ById,{'in_hl4_id':id});
 		return db.extractArray(rdo.out_hl4)[0];
 	}	
 	return null;
@@ -161,10 +162,26 @@ function getCountHl4Childrens(hl4_id){
 		return db.executeScalarManual(spGET_COUNT_HL5_BY_HL4_ID,{'in_hl4_id':hl4_id},'out_total_hl5');
 }
 
-function getLevel4ForSearch(userSessionID, isSA){
-	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
+function getLevel4ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userSessionID, isSA){
+    var parameters = {
+        in_budget_year_id: budgetYearId
+        , in_region_id: regionId
+        , in_subRegion_id: subRegionId
+        , in_limit: limit
+        , in_offset: offset
+        , in_user_id: userSessionID
+        , in_isSA: isSA
+    };
 	var result = db.executeProcedure(spGetHl4ForSerach,parameters);	
-	return db.extractArray(result.out_result);
+	return {result: db.extractArray(result.out_result), total_rows: result.total_rows};
+}
+
+function getImplementExecutionLevel(hl4Id) {
+	var parameters = {
+		in_hl4_id: hl4Id
+	};
+    var rdo = db.executeScalarManual(GET_IMPLEMENT_EXECUTION_LEVEL_BY_HL4_ID, parameters, 'out_result');
+    return rdo;
 }
 
 function insertHl4(parameters){

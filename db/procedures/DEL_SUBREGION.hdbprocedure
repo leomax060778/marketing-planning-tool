@@ -11,7 +11,7 @@ BEGIN
 	Write your procedure logic 
  *****************************/
  		UPDATE subregion
-		SET subregion.deleted = 1,
+		SET subregion.deleted = 1,enabled = 0,
 			subregion.modified_user_id = in_modified_user_id,
 			subregion.modified_date_tz = CURRENT_TIMESTAMP
 		FROM "PLANNING_TOOL"."SUBREGION" subregion

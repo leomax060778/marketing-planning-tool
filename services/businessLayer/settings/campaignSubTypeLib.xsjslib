@@ -26,7 +26,10 @@ function getAllCampaignSubTypeByTypeId(idCampaignType, idObjective, returnMode) 
             available: dataCampaignSubType.getAllAvailableCampaignSubTypeByCampaignTypeId(idCampaignType, idObjective)
         };
     } else {
-        return dataCampaignSubType.getAllCampaignSuTypeByCampaignTypeId(idCampaignType, idObjective);
+        if(idObjective)
+            return dataCampaignSubType.getAllCampaignSuTypeByCampaignTypeId(idCampaignType, idObjective);
+
+        return dataCampaignSubType.getCampaignSuTypeByCampaignTypeId(idCampaignType);
     }
 }
 
@@ -48,6 +51,17 @@ function existCampaignSubTypeByName(payload) {
 
 function updateCampaignSubType(campaignSubTypeData, userId) {
     return dataCampaignSubType.updateCampaignSubType(campaignSubTypeData.IN_CAMPAIGN_SUB_TYPE_ID, campaignSubTypeData.IN_NAME, userId);
+}
+
+function updateDateRules(data, userId){
+    return dataCampaignSubType.updateDateRules(
+        data.CAMPAIGN_TYPE_ID,
+        data.CAMPAIGN_SUBTYPE_ID,
+        data.VALIDATE_DATE_RULE,
+        data.ACTUAL_START_DATE_ROLLOVER_TEXT,
+        data.ACTUAL_END_DATE_ROLLOVER_TEXT,
+        userId
+    );
 }
 
 function deleteCampaignSubType(campaignSubTypeData, userId, confirm) {

@@ -31,17 +31,21 @@ function handleGet(parameters, userSessionID){
 		}
 		else if (parameters[0].name == GET_HL1_BY_FILTER){
 			//var objFilter = {};
-
-			var budgetYearId = parameters[1].name == "BUDGET_YEAR_ID" ? parameters[1].value : null;
-			var regionId = parameters[2].name == "REGION_ID" ? parameters[2].value : null;
-			var subRegionId = parameters[3].name == "SUBREGION_ID" ? parameters[3].value : null;
+			var budgetYearId = httpUtil.getUrlParameters().get("BUDGET_YEAR_ID") || null;
+			var regionId = httpUtil.getUrlParameters().get("REGION_ID") || null;
+			var subRegionId = httpUtil.getUrlParameters().get("SUBREGION_ID") || null;
 
 			var rdo = blLevel1.getLevel1ByFilters(budgetYearId, regionId, subRegionId, userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
-		else if (parameters[0].name == section){
-			
-			var rdo = blLevel1.getLevel1ForSearch(userSessionID);
+		else if (httpUtil.getUrlParameters().get("section") == section){
+            var budgetYearId = httpUtil.getUrlParameters().get("BUDGET_YEAR_ID") || null;
+            var regionId = httpUtil.getUrlParameters().get("REGION_ID") || null;
+            var subRegionId = httpUtil.getUrlParameters().get("SUBREGION_ID") || null;
+            var limit = httpUtil.getUrlParameters().get("LIMIT") || null;
+            var offset = httpUtil.getUrlParameters().get("OFFSET") || null;
+
+			var rdo = blLevel1.getLevel1ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userSessionID);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else{

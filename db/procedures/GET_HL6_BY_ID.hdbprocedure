@@ -49,6 +49,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_ID"(
             ,EVENT_OWNER nvarchar(255)
             ,NUMBER_OF_PARTICIPANTS nvarchar(255)
             ,PRIORITY_ID bigint
+            , CO_FUNDED TINYINT
+            , ALLOW_BUDGET_ZERO TINYINT
+            , IS_POWER_USER TINYINT
 		)
 	)
 	LANGUAGE SQLSCRIPT
@@ -105,6 +108,9 @@ BEGIN
                 ,EVENT_OWNER
                 ,NUMBER_OF_PARTICIPANTS
                 ,PRIORITY_ID
+                , CO_FUNDED
+                , ALLOW_BUDGET_ZERO
+                , IS_POWER_USER
 			FROM HL6
 			WHERE HL6_ID = in_hl6_id
 				AND ENABLED = 1

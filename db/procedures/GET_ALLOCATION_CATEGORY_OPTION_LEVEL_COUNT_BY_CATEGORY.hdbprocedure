@@ -1,0 +1,12 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_CATEGORY_OPTION_LEVEL_COUNT_BY_CATEGORY" (
+	IN in_category_id bigint,
+	OUT out_result integer
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	SELECT COALESCE(COUNT(allocation_category_option_level_id), 0) INTO out_result
+    	from allocation_category_option_level ACOL
+    	where ACOL.allocation_category_id = in_category_id;
+END;

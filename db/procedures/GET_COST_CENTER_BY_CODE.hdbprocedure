@@ -1,5 +1,5 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COST_CENTER_BY_CODE" (
-    IN in_code BIGINT
+    IN in_code NVARCHAR(255)
     ,OUT out_result TABLE(
     	COST_CENTER_ID BIGINT,
         NAME nvarchar(255),

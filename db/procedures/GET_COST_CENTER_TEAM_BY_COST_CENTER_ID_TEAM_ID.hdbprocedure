@@ -1,6 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COST_CENTER_TEAM_BY_COST_CENTER_ID_TEAM_ID" (
     IN in_cost_center_id BIGINT
-    ,IN in_team_id BIGINT
+    --,IN in_team_id BIGINT
+    ,IN costCenterTeams TABLE (in_team_id bigint)
     ,OUT out_result TABLE(
     	COST_CENTER_ID BIGINT,
                 HL3_ID BIGINT,
@@ -25,5 +26,6 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COST_CENTER_TEAM_BY
              WHERE COST_CENTER_TEAMS.ENABLED = 1
              AND COST_CENTER_TEAMS.DELETED = 0
              AND COST_CENTER_TEAMS.COST_CENTER_ID = in_cost_center_id
-             and COST_CENTER_TEAMS.HL3_ID = in_team_id;
+             --and COST_CENTER_TEAMS.HL3_ID = in_team_id;
+             and COST_CENTER_TEAMS.HL3_ID in (select in_team_id from :costCenterTeams);
     END;

@@ -1,5 +1,5 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_ID" (  
-	IN in_category_id BIGINT,
+	--IN in_category_id BIGINT,
 	IN in_hierarchy_level_id bigint,
 	OUT out_result TABLE (category_id integer, in_processing_report TINYINT)
 ) 
@@ -15,6 +15,7 @@ BEGIN
     , acol.in_processing_report
     FROM allocation_category ac
     inner join allocation_category_option_level acol on acol.allocation_category_id = ac.allocation_category_id
-    WHERE ac.allocation_category_id = in_category_id
-    and acol.hierarchy_level_id = in_hierarchy_level_id;
+    WHERE
+    --ac.allocation_category_id = in_category_id and
+    acol.hierarchy_level_id = in_hierarchy_level_id;
 END;

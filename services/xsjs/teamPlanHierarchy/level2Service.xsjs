@@ -23,12 +23,7 @@ function processRequest(){
 function handleGet(parameters, userSessionID){
 	if(parameters.length > 0){
         blLevel2.checkPermission(userSessionID, parameters[0].name, parameters[0].value);
-		/*if(parameters[0].name == method){
-			
-			var rdo = blLevel2.getAllLevel2(userSessionID);
-			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);				
-		}
-		else*/ if (parameters[0].name == hl2Id){
+		if (parameters[0].name == hl2Id){
 			var objLevel2 = {};
 			objLevel2.IN_HL2_ID = parameters[0].value;
 			
@@ -36,8 +31,9 @@ function handleGet(parameters, userSessionID){
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].name == GET_ALL_CENTRAL_TEAM){
-			
-			var rdo = blLevel2.getAllCentralTeam(0);
+			var hl_id = httpUtil.getUrlParameters().get("HL_ID") || null;
+			var level = httpUtil.getUrlParameters().get("LEVEL") || null;
+			var rdo = blLevel2.getAllCentralTeam(0, hl_id, level);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].name == HL1_ID){
@@ -45,8 +41,13 @@ function handleGet(parameters, userSessionID){
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else if (parameters[0].value == section){
-			
-			var rdo = blLevel2.getLevel2ForSearch(userSessionID);
+			var budget_year_id = httpUtil.getUrlParameters().get("BUDGET_YEAR_ID") || null;
+			var region_id = httpUtil.getUrlParameters().get("REGION_ID") || null;
+			var subregion_id = httpUtil.getUrlParameters().get("SUBREGION_ID") || null;
+			var limit = httpUtil.getUrlParameters().get("LIMIT") || null;
+			var offset = httpUtil.getUrlParameters().get("OFFSET") || null;
+
+			var rdo = blLevel2.getLevel2ForSearch(userSessionID, budget_year_id, region_id, subregion_id, limit, offset);
 			httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 		}
 		else{
@@ -68,14 +69,14 @@ function handlePost(reqBody,userSessionID) {
 
 //Implementation of UPDATE call -- UPDATE HL2
 function handlePut(reqBody,userSessionID){
-    blLevel2.checkPermission(userSessionID);
+    blLevel2.checkPermission(userSessionID, null, reqBody.IN_HL2_ID);
 	var rdo =  blLevel2.updateHl2(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 };
 
 //Implementation of DELETE call -- Delete HL2
 function handleDelete(reqBody,userSessionID){
-    blLevel2.checkPermission(userSessionID);
+    blLevel2.checkPermission(userSessionID, null, reqBody.IN_HL2_ID);
 	var rdo = blLevel2.deleteHl2(reqBody,userSessionID);
 	return httpUtil.handleResponse(rdo,httpUtil.OK,httpUtil.AppJson);
 };

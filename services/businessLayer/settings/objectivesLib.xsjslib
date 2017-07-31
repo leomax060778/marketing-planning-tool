@@ -7,8 +7,19 @@ var dataCampaignObjective = mapper.getDataCampaignObjective();
 
 var OBJECTIVE_EXISTS = "Already exists an Objective with the name you want to enter.";
 
+function getObjectiveAnswerByObjectiveId(objectiveAnswer, objectiveId){
+	return objectiveAnswer.OBJECTIVE_ID == objectiveId;
+}
+
 function getAllObjectives() {
-	return dataObjective.getAllObjectives();
+	var answerObjectives = dataObjective.getAnswerForAllObjectives();
+	var objectives =  JSON.parse(JSON.stringify(dataObjective.getAllObjectives()));
+	for (var i = 0; i < objectives.length; i++) {
+		objectives[i].answers = answerObjectives.filter(function (objectiveAnswer){
+			return getObjectiveAnswerByObjectiveId(objectiveAnswer, objectives[i].OBJECTIVE_ID);
+		});
+	}
+	return objectives;
 }
 
 function getObjectiveById(objectiveId){

@@ -38,6 +38,13 @@ function getUserById(id) {
     return dbUser.getUserById(id);
 }
 
+function getUserApproversByHL1Id(id){
+    if (!id)
+        throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
+            "userServices/handleGet/getUserApproversByHL1Id", id);
+    return dbUser.getUserApproversByHl1Id(id);
+}
+
 function getUserByUserName(userName) {
     if (!userName)
         throw ErrorLib.getErrors().BadRequest("The Parameter userName is not found",
@@ -85,18 +92,62 @@ function getUserByHl2IdToNewL3(hl2Id) {
 function userLevelPermission(data, userId) {
     validate(data);
 
+    var arrPermissionInsertL1 = [];
+    var arrPermissionDeleteL1 = [];
+    var arrPermissionInsertL2 = [];
+    var arrPermissionDeleteL2 = [];
+    var arrPermissionInsertL3 = [];
+    var arrPermissionDeleteL3 = [];
     data.forEach(function (PERMISSIONS) {
-        var levelUserId = PERMISSIONS.USER_ID;
-        var levelId = PERMISSIONS.LEVEL_ID;
-        var level = PERMISSIONS.LEVEL;
-        if (PERMISSIONS.PERMISSION) {
-            var rdo = dbUser.existsHlUserPair(levelUserId, levelId, level) ? true :
-                dbUser.insertLevelUser(levelId, levelUserId, level, userId);
-        } else {
-            dbUser.deleteLevelUser(levelUserId, levelId, level);
+        var objPerm = {};
+        var hl_id = "in_hl"+PERMISSIONS.LEVEL+"_id";
+        objPerm[hl_id] = PERMISSIONS.LEVEL_ID;
+        objPerm.in_user_id = PERMISSIONS.USER_ID;
+
+        switch(PERMISSIONS.LEVEL){
+            case 1:
+                if (PERMISSIONS.PERMISSION) {
+                    objPerm.in_created_user_id = userId;
+                    if(!dbUser.existsHlUserPair(PERMISSIONS.USER_ID, PERMISSIONS.LEVEL_ID, PERMISSIONS.LEVEL))
+                        arrPermissionInsertL1.push(objPerm);
+                } else {
+                    arrPermissionDeleteL1.push(objPerm);
+                }
+                break;
+            case 2:
+                if (PERMISSIONS.PERMISSION) {
+                    objPerm.in_created_user_id = userId;
+                    if(!dbUser.existsHlUserPair(PERMISSIONS.USER_ID, PERMISSIONS.LEVEL_ID, PERMISSIONS.LEVEL))
+                        arrPermissionInsertL2.push(objPerm);
+                } else {
+                    arrPermissionDeleteL2.push(objPerm);
+                }
+                break;
+            case 3:
+                if (PERMISSIONS.PERMISSION) {
+                    objPerm.in_created_user_id = userId;
+                    if(!dbUser.existsHlUserPair(PERMISSIONS.USER_ID, PERMISSIONS.LEVEL_ID, PERMISSIONS.LEVEL))
+                        arrPermissionInsertL3.push(objPerm);
+                } else {
+                    arrPermissionDeleteL3.push(objPerm);
+                }
+                break;
         }
     });
 
+    if(arrPermissionInsertL1.length > 0)
+        dbUser.insertLevelUser(arrPermissionInsertL1,1);
+    if(arrPermissionInsertL2.length > 0)
+        dbUser.insertLevelUser(arrPermissionInsertL2,2);
+    if(arrPermissionInsertL3.length > 0)
+        dbUser.insertLevelUser(arrPermissionInsertL3,3);
+
+    if(arrPermissionDeleteL1.length > 0)
+        dbUser.deleteLevelUser(arrPermissionDeleteL1, 1);
+    if(arrPermissionDeleteL2.length > 0)
+        dbUser.deleteLevelUser(arrPermissionDeleteL2, 2);
+    if(arrPermissionDeleteL3.length > 0)
+        dbUser.deleteLevelUser(arrPermissionDeleteL3, 3);
     return data;
 }
 
@@ -145,7 +196,6 @@ function validate(data) {
                         return permission.LEVEL_ID == hl2.HL1_ID;
                     });
                     if (!level1.length) {
-                        throw JSON.stringify(level1);
                         throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", NOT_PERMISSION_PARENT_LEVEL);
                     }
 
@@ -487,4 +537,31 @@ function isSuperAdmin(userId) {
 
 function getPermissionForLevelByUser(level, levelId, userId) {
     return dbUser.getPermissionForLevelByUser(level, levelId, userId);
+}
+
+//Verify if the user is in the HL2 Budget Approver list
+function validateHL2BudgetApproverByUserId(HL2Id, userId){
+	if(!HL2Id){
+		throw ErrorLib.getErrors().BadRequest("The Parameter HL2Id is not found",
+	            "/validateHL2BudgetApprover", HL2Id);
+	}
+	
+	if(!userId){
+		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found",
+	            "/validateHL2BudgetApprover", userId);
+	}
+	
+	var userList = getUserByHl2Id(HL2Id);
+	var approversList = userList.users_in;
+	var listLengh = approversList.length;
+	
+	//Check if the HL2 has any approver
+	if(listLengh > 0){
+		//Search the user ID in the list of Approvers
+		for(var i = 0; i < listLengh; i++) {
+			if (Number(approversList[i]["USER_ID"]) === Number(userId)) return true;
+		}
+	}
+		
+	return false;
 }

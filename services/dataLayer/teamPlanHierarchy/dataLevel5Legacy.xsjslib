@@ -223,8 +223,16 @@ function getHl5StatusByHl5Id(id){
 	return null;
 }
 
-function getHl5ForSearch(userSessionID, isSA){
-	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
+function getHl5ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userSessionID, isSA){
+	var parameters = {
+		in_budget_year_id: budgetYearId
+		, in_region_id: regionId
+		, in_subRegion_id: subRegionId
+		, in_limit: limit
+		, in_offset: offset
+		, in_user_id: userSessionID
+		, in_isSA: isSA
+	};
 		var rdo = db.executeProcedureManual(spGetHl5ForSearch,parameters);
 		return db.extractArray(rdo.out_result);
 }
@@ -278,19 +286,12 @@ function insertHl5Category(hl5Id,categoryId,createdUserId,inProcessingReport,aut
 	return rdo;
 }
 
-function insertHl5CRMBinding(hl5Id,columnName,changed,displayName,userId,autoCommit){
-	var params = {
-		'in_hl5_id' : hl5Id,
-		'in_column_name'  : columnName,
-		'in_changed' : changed,
-		'in_display_name' : displayName,
-		'in_user_id': userId
-	};
+function insertHl5CRMBinding(data,autoCommit){
 	var rdo;
 	if(autoCommit){
-		rdo = db.executeScalar(spInsHl5CrmBinding,params,'out_hl5_crm_binding_id');
+		rdo = db.executeScalar(spInsHl5CrmBinding,data,'out_hl5_crm_binding_id');
 	}else{
-		rdo = db.executeScalarManual(spInsHl5CrmBinding,params,'out_hl5_crm_binding_id');
+		rdo = db.executeScalarManual(spInsHl5CrmBinding,data,'out_hl5_crm_binding_id');
 	}
 	return rdo;
 }
@@ -327,19 +328,12 @@ function insertHl5CategoryOption(hl5CategoryId,optionId,amount,createdUserId, up
 	return rdo;
 }
  
-function insertHl5Budget(hl5Id,organizationId,percentage,organizationType,createdUserId,autoCommit){
-	var params = {
-		'in_hl5_id' : hl5Id,
-		'in_organization_id'  : organizationId,
-		'in_percentage' : percentage,
-		'in_organization_type' : organizationType,
-		'in_created_user_id': createdUserId
-	};
+function insertHl5Budget(data,autoCommit){
 	var rdo;
 	if(autoCommit){
-		rdo = db.executeScalar(spInsHl5Budget,params,'out_hl5_budget_id');
+		rdo = db.executeScalar(spInsHl5Budget,data,'out_hl5_budget_id');
 	}else{
-		rdo = db.executeScalarManual(spInsHl5Budget,params,'out_hl5_budget_id');
+		rdo = db.executeScalarManual(spInsHl5Budget,data,'out_hl5_budget_id');
 	}
 	return rdo;
 }
@@ -362,20 +356,12 @@ function insertHl5BudgetSalesUpload(hl5Id,organizationId,value,organizationType,
 	return rdo;
 }
 
-function insertHl5Sale(hl5Id,organizationId,amount,organizationType,description,createdUserId,autoCommit){
-	var params = {
-		'in_hl5_id' : hl5Id,
-		'in_organization_id'  : organizationId,
-		'in_amount' : amount,
-		'in_organization_type' : organizationType,
-		'in_description': description,
-		'in_created_user_id' : createdUserId
-	};
+function insertHl5Sale(data,autoCommit){
 	var rdo;
 	if(autoCommit){
-		rdo = db.executeScalar(spInsHl5Sales,params,'out_hl5_sales_id');
+		rdo = db.executeScalar(spInsHl5Sales,data,'out_hl5_sales_id');
 	}else{
-		rdo = db.executeScalarManual(spInsHl5Sales,params,'out_hl5_sales_id');
+		rdo = db.executeScalarManual(spInsHl5Sales,data,'out_hl5_sales_id');
 	}
 	return rdo;
 }
@@ -390,7 +376,7 @@ function insertHl5(hl5CrmDescription,acronym,distributionChannelId,budget,hl4Id
 	, region
 	, event_owner
 	, number_of_participants
-	, priority_id,autoCommit, imported, import_id){
+	, priority_id,autoCommit, imported, import_id, co_funded, allow_budget_zero, is_power_user){
 	var params = {
 		'in_hl5_crm_description' : hl5CrmDescription,
 		'in_acronym' : acronym,
@@ -436,6 +422,9 @@ function insertHl5(hl5CrmDescription,acronym,distributionChannelId,budget,hl4Id
 		, 'in_priority_id': priority_id
 		, 'in_imported': imported ? imported : 0
 		, 'IN_IMPORT_ID' : import_id ? import_id : null
+		, 'in_co_funded': co_funded ? co_funded : 0
+		, 'in_allow_budget_zero': allow_budget_zero ? allow_budget_zero : 0
+		, 'in_is_power_user': is_power_user && Number(is_power_user) ? is_power_user : 1
 	};
 
 	
@@ -480,20 +469,12 @@ function changeStatusHl5(hl5Id, statusId,userId, autoCommit){
 }
 
 //autoCommit = false then executeScalarManual else executeScalar.
-function updHl5ChangedFields(hl5CrmBindingId, hl5Id, columnName, changed, userId, displayName, autoCommit){
-	var params = {
-		'in_hl5_crm_binding_id' : hl5CrmBindingId,
-		'in_hl5_id'  : hl5Id,
-		'in_column_name': columnName,
-		'in_changed' : changed,
-		'in_user_id':userId,
-		'in_display_name' : displayName
-	};
+function updHl5ChangedFields(data, autoCommit){
 	var rdo;
 	if(autoCommit){
-		rdo = db.executeScalar(spUpdHl5ChangedFields,params,'out_result');
+		rdo = db.executeScalar(spUpdHl5ChangedFields,data,'out_result');
 	}else{
-		rdo = db.executeScalarManual(spUpdHl5ChangedFields,params,'out_result');
+		rdo = db.executeScalarManual(spUpdHl5ChangedFields,data,'out_result');
 	}
 	return rdo;
 }
@@ -508,7 +489,7 @@ function updateHl5(hl5Id,hl5CrmDescription,inAcronym,distributionChannelId,budge
 	, region
 	, event_owner
 	, number_of_participants
-	, priority_id,autoCommit){
+	, priority_id, co_funded, allow_budget_zero,is_power_user, autoCommit){
 	var params = {
 		'in_hl5_id' : hl5Id,
 		'in_hl5_crm_description' : hl5CrmDescription,
@@ -551,6 +532,9 @@ function updateHl5(hl5Id,hl5CrmDescription,inAcronym,distributionChannelId,budge
 		, 'in_event_owner': event_owner || ''
 		, 'in_number_of_participants': number_of_participants || ''
 		, 'in_priority_id': priority_id
+		, 'in_co_funded': co_funded ? co_funded : 0
+		, 'in_allow_budget_zero': allow_budget_zero ? allow_budget_zero : 0
+		, 'in_is_power_user': is_power_user && Number(is_power_user) ? is_power_user : 1
 	};
 
 	var rdo;
@@ -562,17 +546,8 @@ function updateHl5(hl5Id,hl5CrmDescription,inAcronym,distributionChannelId,budge
 	return rdo;
 }
 
-function updateHl5CRMBinding(hl5_id, column_name, changed, user_id, display_name,hl5CrmBindingId){
-	var parameters = {
-		"in_hl5_crm_binding_id": hl5CrmBindingId,
-		"in_hl5_id": hl5_id,
-		"in_column_name": column_name,
-		"in_changed": changed,
-		"in_user_id": user_id,
-		"in_display_name": display_name
-	};
-
-	var rdo = db.executeScalarManual(spUpdHl5ChangedFields, parameters, 'out_result');
+function updateHl5CRMBinding(data){
+	var rdo = db.executeScalarManual(spUpdHl5ChangedFields, data, 'out_result');
 	return rdo;
 }
 

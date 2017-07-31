@@ -16,13 +16,14 @@ var userRoleLib = mapper.getUserRole();
 var config = mapper.getDataConfig();
 var userbl = mapper.getUser();
 var util = mapper.getUtil();
+var budgetYear = mapper.getBudgetYear();
 /** ***********END INCLUDE LIBRARIES*************** */
 var LEVEL3 = 3;
-var L2_MSG_TEAM_NOT_FOUND = "The Team/Priority can not be found.";
+var L2_MSG_TEAM_NOT_FOUND = "The Priority/Sub-Team can not be found.";
 var L2_MSG_NO_PRIVILEGE = "Not enough privilege to do this action.";
-var L2_MSG_TEAM_CANT_DELETE = "The selected Team/Priority can not be deleted because has childs.";
-var L2_MSG_PLAN_NOT_FOUND = "The Plan to new Team/Priority can not be found.";
-var L2_MSG_TEAM_EXISTS = "Another Team/Priority with the same acronym already exists.";
+var L2_MSG_TEAM_CANT_DELETE = "The selected Priority/Sub-Team can not be deleted because has childs.";
+var L2_MSG_PLAN_NOT_FOUND = "The Plan to new Priority/Sub-Team can not be found.";
+var L2_MSG_TEAM_EXISTS = "Another Priority/Sub-Team with the same acronym already exists.";
 
 // Get all Level 3 data by level 2 id
 function getAllLevel3(hl2Id, userId) {
@@ -33,8 +34,64 @@ function getAllLevel3(hl2Id, userId) {
 	if (config.getApplySuperAdminToAllInitiatives()) {
 		isSA = userbl.isSuperAdmin(userId);
 	}
+	var result = {};
+	result = data.getAllLevel3(objHl2, userId, isSA);
+	result.budget_year = budgetYear.getBudgetYearByLevelParent(3, hl2Id, true);
+	return result;
+}
 
-	return data.getAllLevel3(objHl2, userId, isSA);
+function getAllHl3GroupByHl1(budgetYearId, regionId, subRegionId){
+    return getHl3ByUserGroupByHl1(null, budgetYearId, regionId, subRegionId);
+}
+
+function getHl3ByUserGroupByHl1(userId, budgetYearId, regionId, subRegionId) {
+    var isSA = userId ? util.isSuperAdmin(userId) : 1;
+    var hl3 = data.getHl3PathByUserId(userId || 0, isSA, budgetYearId || 0, regionId || 0, subRegionId || 0);
+    var collection = {};
+    var L0 = 'CRM-';
+    hl3.forEach(function (item) {
+        if(!collection[item.HL1_ID]) {
+            collection[item.HL1_ID] = {
+                HL1_ID: item.HL1_ID
+                , PATH: L0 + item.HL1_PATH
+                , HL1_DESCRIPTION: item.HL1_DESCRIPTION
+                , CHILDREN: {}
+            };
+        }
+    	/*var hl3 = {
+    		HL3_ID: item.HL3_ID,
+			PATH: L0 + item.HL3_PATH,
+			HL3_DESCRIPTION: item.HL3_DESCRIPTION
+    	};
+		if(!collection[item.HL1_ID]) {
+			collection[item.HL1_ID] = {
+				HL1_ID: item.HL1_ID
+				, PATH: L0 + item.HL1_PATH
+				, HL1_DESCRIPTION: item.HL1_DESCRIPTION
+				, CHILDREN: [hl3]
+			};
+		} else {
+			collection[item.HL1_ID].CHILDREN.push(hl3);
+		}*/
+    });
+    hl3.forEach(function (item) {
+        if(!collection[item.HL1_ID].CHILDREN[item.HL2_ID]) {
+            collection[item.HL1_ID].CHILDREN[item.HL2_ID] = {
+                HL2_ID: item.HL2_ID
+                , PATH: L0 + item.HL2_PATH
+                , HL2_DESCRIPTION: item.HL2_DESCRIPTION
+                , CHILDREN: []
+            };
+        }
+    });
+    hl3.forEach(function (item) {
+        collection[item.HL1_ID].CHILDREN[item.HL2_ID].CHILDREN.push({
+            HL3_ID: item.HL3_ID,
+            PATH: L0 + item.HL3_PATH,
+            HL3_DESCRIPTION: item.HL3_DESCRIPTION
+        });
+    });
+    return collection;
 }
 
 // Get an Level 3 data by id
@@ -44,24 +101,30 @@ function getLevel3ById(hl3Id, userId) {
 	return data.getLevel3ById(objHl3, userId);
 }
 
-function getLevel3ForSearch(userSessionID){
-	var result = data.getLevel3ForSearch(userSessionID, util.isSuperAdmin(userSessionID) ? 1 : 0);
+function getLevel3ForSearch(userSessionID,budget_year_id,region_id,subregion_id,offset,limit){
+	var defaultBudgetYear = budgetYear.getDefaultBudgetYear();
+	var query = data.getLevel3ForSearch(
+		userSessionID,
+		util.isSuperAdmin(userSessionID) ? 1 : 0,
+		budget_year_id || defaultBudgetYear.BUDGET_YEAR_ID,
+		region_id,
+		subregion_id,
+		offset,
+		limit);
+	var result = query.result;
 	var resultRefactor = [];
-	result.forEach(function(object){
+	for (var i = 0; i < result.length; i++) {
 		var aux = {};
-		
+		var object = result[i];
 		aux.ID = object.ID;
 		aux.PARENT_ID = object.PARENT_ID;
-		aux.BUDGET_YEAR = Number(ctypes.Int64(object.BUDGET_YEAR));
-		aux.ACRONYM = object.ACRONYM;
 		aux.ORGANIZATION_ACRONYM = object.ORGANIZATION_ACRONYM;
 		aux.REGION_NAME = object.REGION_NAME;
 		aux.SUBREGION_NAME = object.SUBREGION_NAME;
 		aux.PATH = "CRM-" + object.PATH;
-		
 		resultRefactor.push(aux);
-	});
-	return resultRefactor;
+	}
+	return {result: resultRefactor, total_rows: query.total_rows};
 }
 
 function getLevel3ByAcronym(objHl3, userId) {
@@ -71,6 +134,7 @@ function getLevel3ByAcronym(objHl3, userId) {
 function existsHl3(objHl3, userId){
 	var hl2 = dataHl2.getLevel2ById(objHl3);
 	objHl3.IN_HL1_ID = hl2.HL1_ID;
+
 	var hl3 = getLevel3ByAcronym(objHl3, userId);
 	if (hl3.HL3_ID && Number(hl3.HL3_ID) !== Number(objHl3.IN_HL3_ID)) 
 		return true;
@@ -140,7 +204,8 @@ function createHl3(objHl3, userId) {
 	var result = 0;
 	if (validateFormHl3(objHl3)) {
 		// validate HL2 exist by id
-		if (!blLevel2.existHl2(objHl3))
+        var hl2 = dataHl2.getLevel2ById(objHl3);
+		if (!hl2 || !hl2.HL2_ID)
 			throw ErrorLib.getErrors().CustomError("",
 					"hl3Services/handlePost/insertHl3",
 					L2_MSG_PLAN_NOT_FOUND);
@@ -172,6 +237,28 @@ function createHl3(objHl3, userId) {
 	return result;
 }
 
+//Insert new HL3 version based on the current HL1.
+function insertLevel3Version(currentHL3, userId){
+	//Insert the new version	
+	if(validateLevel3Version(currentHL3)){
+		return data.insertLevel3Version(	
+				currentHL3.HL3_ID, 
+				currentHL3.VERSION,
+				currentHL3.ACRONYM,
+				currentHL3.HL3_DESCRIPTION,
+				currentHL3.HL3_FNC_BUDGET_TOTAL,
+				userId,
+				currentHL3.BUSINESS_OWNER_ID,
+				currentHL3.ORIGIN_PLAN_ID,
+				currentHL3.HL2_ID,
+				currentHL3.CRM_ID,
+				currentHL3.HL3_HIERARCHY_ID,
+				currentHL3.HL3_STATUS_DETAIL_ID,
+				currentHL3.IN_BUDGET										
+		);
+	}
+}
+
 // Update an object of HL3
 //return an object {"out_result_hl3": {},"out_result_hl3_fnc": null,"out_crm_id": "0","out_budget_flag": 0}
 //"out_crm_id": "0". More than zero if some acronym or description or business owner changed
@@ -183,12 +270,24 @@ function updateHl3(objHl3, userId) {
 		
 		if(existsHl3(objHl3, userId))
 			throw ErrorLib.getErrors().CustomError("",
-					"hl3Services/handlePost/updateHl3",
+					"",
 					L2_MSG_TEAM_EXISTS);
 		
 		try {
-				objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, objHl3.IN_HL3_ID, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
-				result = data.updateLevel3(objHl3, userId);
+			//Obtain current HL3
+			var currentHL3 = data.getLevel3ById(objHl3, userId);
+			currentHL3 = JSON.parse(JSON.stringify(currentHL3));
+			objHl3.VERSION = currentHL3.VERSION;
+			
+			//Insert new HL3 version, if the date is into the valid range
+            if(budgetYear.getLockFlagByHlIdLevel(currentHL3.HL3_ID, 'HL3') && validateChanges(currentHL3, objHl3)){
+            	insertLevel3Version(currentHL3, userId);
+            	//Update HL3 version
+            	objHl3.VERSION = currentHL3.VERSION + 1;
+            }
+            
+			objHl3.IN_IN_BUDGET = checkBudgetStatus(objHl3.IN_HL2_ID, userId, objHl3.IN_HL3_ID, objHl3.IN_HL3_FNC_BUDGET_TOTAL);
+			result = data.updateLevel3(objHl3, userId);
 
 			if (result) {
 				//if budget change
@@ -227,15 +326,22 @@ function setUsersHl3(objHl3, userId){
 	try{
 		//update users
 		var listObjHl3User = objHl3.USERS;
-		if(listObjHl3User){					
+		if(listObjHl3User){
 			if(validateHl3User(listObjHl3User)){
+                var hl3User = [];
 				//delete all in HL3_USER
 				dataHl3User.delAllLevel3User(objHl3);
 				for (var i = 0; i < listObjHl3User.length; i++) {
 					if(!validateHl3UserPair(listObjHl3User[i], objHl3))
 						//insert pair (hl3_id, user_id)	
-						dataHl3User.insertLevel3User(listObjHl3User[i], objHl3, userId);
-				}																
+                        hl3User.push({
+                            in_hl3_id: objHl3.IN_HL3_ID
+                            , in_user_id: listObjHl3User[i].IN_USER_ID
+                            , in_created_user_id: userId
+                        });
+				}
+				if(hl3User.length)
+                    dataHl3User.insertLevel3User(hl3User);//listObjHl3User[i], objHl3, userId);
 			}	
 		}
 		else{
@@ -295,7 +401,7 @@ function validateUpdateHl3(objHl3) {
 
 	if (!objHl3)
 		throw ErrorLib.getErrors().CustomError("",
-				"hl3Services/handlePost/updateHl3",
+				"",
 				"The object HL3 is not found");
 
 	try {
@@ -316,10 +422,10 @@ function validateUpdateHl3(objHl3) {
 	} catch (e) {
 		if (e !== BreakException)
 			throw ErrorLib.getErrors().CustomError("",
-					"hl3Services/handlePost/updateHl3", e.toString());
+					"", e.toString());
 		else
 			throw ErrorLib.getErrors().CustomError("",
-					"hl3Services/handlePost/updateHl3", JSON.stringify(errors));
+					"", JSON.stringify(errors));
 	}
 	return isValid;
 }
@@ -341,7 +447,7 @@ function validateType(key, value) {
 		valid = !isNaN(value) && value > 0;
 		break;
 	case 'IN_HL3_FNC_BUDGET_TOTAL':
-		valid = Number(value);
+		valid = Number(value) > 0;
 		break;
 	}
 	return valid;
@@ -491,4 +597,147 @@ function checkPermission(userSessionID, method, hl3Id){
             throw ErrorLib.getErrors().CustomError("","level3/handlePermission","User hasn´t permission for this resource.");
         }
     }
+}
+
+function getHistory(HL3_ID){
+	return dataHl3.getAllHl3VersionByHl3Id(HL3_ID);
+}
+
+//Check data types for version insert
+function validateVersionType(key, value) {
+    var valid = true;
+    switch (key) {
+        case 'HL3_ID':
+        case 'HL2_ID':
+        case 'HL3_STATUS_DETAIL_ID':
+        case 'BUSINESS_OWNER_ID':
+            valid = !isNaN(value) && value > 0;
+            break;
+        case 'VERSION':
+            valid = !isNaN(value) && value > 0;
+            break;
+        case 'ACRONYM':
+            valid = value.length > 0 && value.length <= 25;
+            break;
+        case 'HL3_DESCRIPTION':
+            valid = value.length > 0 && value.length <= 255;
+            break;
+        case 'IN_BUDGET':
+            valid = !isNaN(value) && (value === 0 || value === 1);
+            break;
+        case 'ORIGIN_PLAN_ID':
+        case 'CRM_ID':
+        case 'HL3_HIERARCHY_ID':
+            valid = !value || (!isNaN(value) && value > 0);
+            break;
+        case 'HL3_FNC_BUDGET_TOTAL':
+            valid = !value || !isNaN(value);
+            break;            
+    }
+    return valid;
+}
+
+function validateLevel3Version(data){
+	var isValid = false;
+    var errors = {};
+    var BreakException = {};
+    
+    var keys = [
+                'HL3_ID', 
+                'VERSION',
+                'ACRONYM',
+                'HL3_DESCRIPTION',
+                'HL3_STATUS_DETAIL_ID',
+                'BUSINESS_OWNER_ID',
+                'HL2_ID',
+                'IN_BUDGET'
+                ];
+    
+    var optionalKeys = [
+                        'ORIGIN_PLAN_ID',
+                        'CRM_ID',
+                        'HL3_HIERARCHY_ID',
+                        'HL3_FNC_BUDGET_TOTAL'
+                        ];
+
+    try {
+
+            keys.forEach(function (key) {
+                if (data[key] === null || data[key] === undefined) {
+                    errors[key] = null;
+                    throw BreakException;
+                } else {
+                    // validate attribute type
+                    isValid = validateVersionType(key, data[key]);
+                    if (!isValid) {
+                        errors[key] = data[key];
+                        throw BreakException;
+                    }
+                }
+            });
+            
+            optionalKeys.forEach(function(key) {
+    			// validate attribute type
+    			isValid = validateVersionType(key, data[key]);
+    				if (!isValid) {
+    					errors[key] = data[key];
+    					throw BreakException;
+    				}
+
+    		});
+            
+        isValid = true;
+        
+    } catch (e) {
+        if (e !== BreakException)
+            throw ErrorLib.getErrors().CustomError("", "hl3Services/handlePut/validateLevel3Version", e.toString());
+        else
+            throw ErrorLib.getErrors().CustomError("", "hl3Services/handlePut/validateLevel3Version"
+                , JSON.stringify(errors));
+    }
+    return isValid;
+}
+
+function validateChanges(originalHL3, newHL3){
+	var validation = false;
+
+	Object.keys(newHL3).forEach(function(key){
+		switch(key){
+			case 'IN_ACRONYM':
+				if(originalHL3.ACRONYM !== newHL3.IN_ACRONYM){
+					validation = true;
+				}
+				break;
+			case 'IN_HL3_DESCRIPTION':
+				if(originalHL3.HL3_DESCRIPTION !== newHL3.IN_HL3_DESCRIPTION){
+					validation = true;
+				}
+				break;
+			case 'IN_BUSINESS_OWNER_ID':
+				if(Number(originalHL3.BUSINESS_OWNER_ID) !==  Number(newHL3.IN_BUSINESS_OWNER_ID)){
+					validation = true;
+				}
+				break;
+			case 'IN_HL3_FNC_BUDGET_TOTAL':
+				if(Number(originalHL3.HL3_FNC_BUDGET_TOTAL) !== Number(newHL3.IN_HL3_FNC_BUDGET_TOTAL)){
+					validation = true;
+				}
+				break;
+		}
+	});
+
+	return validation;
+}
+
+
+function getHistory(HL3_ID){
+	return data.getAllHl3VersionByHl3Id(HL3_ID);
+}
+
+function getHistoryDetail(HL_ID, VERSION){
+	return data.getLevel3VersionById(HL_ID, VERSION);
+}
+
+function getHistoryAllFirstVersion(hl_id, userSessionID){
+	return data.getLevel3VersionForFilter(hl_id,userSessionID, userbl.isSuperAdmin(userSessionID) );
 }

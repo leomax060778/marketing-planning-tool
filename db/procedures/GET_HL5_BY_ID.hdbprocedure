@@ -45,6 +45,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_ID" (
         , event_owner nvarchar(255)
         , number_of_participants nvarchar(255)
         , priority_id integer
+        , co_funded tinyint
+        , allow_budget_zero tinyint
+        , is_power_user tinyint
 		)
 		
 ) 
@@ -98,6 +101,9 @@ out_result = select
                 , event_owner
                 , number_of_participants
                 , priority_id
+                , co_funded
+                , allow_budget_zero
+                , is_power_user
                  FROM HL5
                  WHERE HL5_ID = in_hl5_id
                  AND ENABLED = 1 AND DELETED = 0;

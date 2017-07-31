@@ -1,11 +1,12 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_CRM_BINDING" (
-	IN in_hl5_id BIGINT,
-	IN in_column_name NVARCHAR(255),
-	IN in_changed TINYINT,
-	IN in_display_name NVARCHAR(255),
-	IN in_user_id BIGINT,
-	OUT out_hl5_crm_binding_id BIGINT
-	 ) 
+IN crmBinding TABLE (
+	 in_hl5_id BIGINT,
+	 in_column_name NVARCHAR(255),
+	 in_changed TINYINT,
+	 in_display_name NVARCHAR(255),
+	 in_user_id BIGINT)
+	,OUT out_hl5_crm_binding_id BIGINT
+)
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
@@ -16,7 +17,8 @@ BEGIN
  *****************************/
  
  		INSERT INTO "PLANNING_TOOL"."HL5_CRM_BINDING"(hl5_id, column_name, column_changed, display_name, created_user_id)
-		VALUES(in_hl5_id, in_column_name, in_changed, in_display_name, in_user_id);
+		--VALUES(in_hl5_id, in_column_name, in_changed, in_display_name, in_user_id);
+		(select in_hl5_id, in_column_name, in_changed, in_display_name, in_user_id from :crmBinding);
 		
 		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_crm_binding_id FROM "PLANNING_TOOL"."HL5_CRM_BINDING";
 		

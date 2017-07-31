@@ -1,0 +1,86 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL1_VERSION_BY_HL1_ID" (
+    IN in_hl1_id BIGINT
+	, OUT out_result TABLE (
+     hl1_id bigint
+	,version integer
+    ,acronym NVARCHAR(25)
+    ,description NVARCHAR(255)
+    ,budget DECIMAL(19, 2)
+    ,budget_year_id bigint
+    ,region_id bigint
+    ,subregion_id bigint
+    ,crt_related tinyint
+    ,implement_execution_level tinyint
+    ,team_type_id bigint
+    ,created_date_tz timestamp
+    ,region_name nvarchar(255)
+    ,subregion_name nvarchar(255)
+    ,budget_year integer
+    ,path nvarchar(255)
+	)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	AUX =
+select
+hl1.hl1_id
+,hl1.version
+,hl1.acronym
+,hl1.description
+,hl1.budget
+,hl1.budget_year_id
+,hl1.region_id
+,hl1.subregion_id
+,hl1.crt_related
+,hl1.implement_execution_level
+,hl1.team_type_id
+,hl1.modified_date_tz as created_date_tz
+from hl1
+where hl1.hl1_id = in_hl1_id AND hl1.enabled = 1 and hl1.deleted = 0
+
+union
+
+select
+hl1_version.hl1_id
+,hl1_version.version
+,hl1_version.acronym
+,hl1_version.description
+,hl1_version.budget
+,hl1_version.budget_year_id
+,hl1_version.region_id
+,hl1_version.subregion_id
+,hl1_version.crt_related
+,hl1_version.implement_execution_level
+,hl1_version.team_type_id
+,hl1_version.created_date_tz
+from hl1_version
+where hl1_version.hl1_id = in_hl1_id;
+
+out_result = select
+    T.hl1_id
+    ,T.version
+    ,T.acronym
+    ,T.description
+    ,T.budget
+    ,T.budget_year_id
+    ,T.region_id
+    ,T.subregion_id
+    ,T.crt_related
+    ,T.implement_execution_level
+    ,T.team_type_id
+    ,T.created_date_tz
+    ,region.region_name
+    ,subregion.subregion_name
+    ,budget_year.budget_year
+    ,CONCAT('CRM-',CONCAT(T.ACRONYM, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR.BUDGET_YEAR), 3, 2))) AS PATH
+    from :AUX AS T
+    LEFT JOIN REGION ON T.REGION_ID = REGION.REGION_ID
+    LEFT JOIN SUBREGION ON SUBREGION.SUBREGION_ID = T.SUBREGION_ID
+    LEFT JOIN BUDGET_YEAR ON BUDGET_YEAR.BUDGET_YEAR_ID = T.BUDGET_YEAR_ID
+    ORDER BY T.VERSION ASC;
+
+END;

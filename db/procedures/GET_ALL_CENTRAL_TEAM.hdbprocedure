@@ -1,5 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_CENTRAL_TEAM" ( 
 	IN in_hl2_id bigint,
+	IN in_budget_year_id bigint,
 	OUT out_result TABLE (
 		hl2_id BIGINT
 		, organization_acronym NVARCHAR(25)
@@ -22,6 +23,7 @@ BEGIN
 		AND HL2.enabled = 1
 		AND HL2.HL2_ID <> in_hl2_id
 		AND HL1.TEAM_TYPE_ID = 2 -- 2 means it is a CENTRAL TEAM
+		AND (hl1.budget_year_id = in_budget_year_id OR in_budget_year_id = 0)
 	ORDER BY HL2.ORGANIZATION_ACRONYM;
 	
 END;

@@ -8,7 +8,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_DICTIONARY_L5_L6_BY
 	AS
 BEGIN
 
-    delete from DICTIONARY_L5_L6
+    delete from UPLOAD_DICTIONARY
      WHERE created_user_id = in_user_id;
 	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

@@ -1,7 +1,7 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_DATA_FROM_DICTIONARY_BY_PATH" (
          IN IN_PATH nvarchar(255)
         ,IN IN_USER_ID BIGINT
-		,OUT out_result TABLE (dictionary_l5_l6_id bigint, path nvarchar(255), key_l5_l6 nvarchar(255), value_l5_l6 nvarchar(2000), hierarchy_level_id tinyint)
+		,OUT out_result TABLE (UPLOAD_DICTIONARY_ID bigint, path nvarchar(255), UPLOAD_KEY nvarchar(255), UPLOAD_VALUE nvarchar(2000), hierarchy_level_id tinyint)
 	)
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
@@ -9,12 +9,12 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_DATA_FROM_DICTIONAR
 BEGIN
 	out_result =
 	select
-	  dictionary_l5_l6_id
+	  UPLOAD_DICTIONARY_ID
 	, path
-	, key_l5_l6
-	, value_l5_l6
+	, UPLOAD_KEY
+	, UPLOAD_VALUE
 	, hierarchy_level_id
-	from dictionary_l5_l6
+	from UPLOAD_DICTIONARY
    where enabled = 1 and deleted = 0
    and created_user_id = IN_USER_ID
    and path = IN_PATH;

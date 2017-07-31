@@ -1,8 +1,10 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_ALLOCATION_CATEGORY_OPTION" (
-    IN in_category_option_level_id bigint,
-    IN in_amount DECIMAL(19, 2),
-    IN in_user_id bigint,
-    IN in_updated TINYINT,
+    IN categoryOption TABLE(
+        in_category_option_level_id bigint,
+        in_amount DECIMAL(19, 2),
+        in_user_id bigint,
+        in_updated TINYINT
+    ),
 	OUT out_result int
 )
 	LANGUAGE SQLSCRIPT
@@ -14,7 +16,10 @@ BEGIN
 		modified_user_id = in_user_id,
 		modified_date_tz = CURRENT_TIMESTAMP,
 		updated = in_updated
-		where allocation_category_option_level_id = in_category_option_level_id;
+		from HL4_CATEGORY_OPTION, (
+            select IN_AMOUNT, IN_USER_ID, IN_UPDATED, IN_CATEGORY_OPTION_LEVEL_ID from :categoryOption
+        ) T
+		where allocation_category_option_level_id = T.IN_CATEGORY_OPTION_LEVEL_ID;
         
         SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

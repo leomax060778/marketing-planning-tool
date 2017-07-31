@@ -44,6 +44,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5"
     ,in in_priority_id bigint
     ,IN IN_IMPORTED TINYINT
     ,IN IN_IMPORT_ID BIGINT
+    ,IN in_co_funded tinyint
+    ,IN in_allow_budget_zero tinyint
+    ,IN in_is_power_user tinyint
 
 	,OUT out_hl5_id bigint
 	) 
@@ -97,6 +100,9 @@ BEGIN
     , priority_id
     , IMPORTED
     , IMPORT_ID
+    , co_funded
+    , allow_budget_zero
+    , is_power_user
 	)
 	VALUES (
      in_hl5_crm_description
@@ -144,7 +150,9 @@ BEGIN
     , in_priority_id
     , IN_IMPORTED
     , IN_IMPORT_ID
-    
+    , in_co_funded
+    , in_allow_budget_zero
+    , in_is_power_user
 );
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_id FROM "PLANNING_TOOL"."HL5";

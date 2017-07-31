@@ -37,13 +37,13 @@ var hierarchyLevel = {
 		"hl6": 3
 }
 
-function getCategoryById(id, hl){
+function getCategoryById(hl){
 	var params = {
-		'in_category_id' : id
-		, 'in_hierarchy_level_id' : hierarchyLevel[hl]
+		//'in_category_id' : id,
+		'in_hierarchy_level_id' : hierarchyLevel[hl]
 	};
 	var result =db.executeProcedure(spGET_CATEGORY_BY_ID, params);
-	return db.extractArray(result.out_result)[0];
+	return db.extractArray(result.out_result);
 }
 
 function getCountByHlId(hl){	

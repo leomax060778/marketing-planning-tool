@@ -18,7 +18,7 @@ BEGIN
 
  OUT_RESULT =
  
- SELECT MAP_L5_L6_ID  , TYPE ,
+ SELECT UPLOAD_MAP_ID as MAP_L5_L6_ID  , TYPE ,
                                	COLUMN_NAME ,
                                	CSV_COLUMN_NAME ,
                                	DATA_TYPE ,
@@ -26,8 +26,9 @@ BEGIN
                                	FOREIGN_COLUMN_REFERENCE,
                                	FOREIGN_COLUMN_FILTER,
                                	OTHER_CONDITION
- FROM MAP_L5_L6
+ FROM UPLOAD_MAP
  WHERE deleted = 0
-   AND enabled = 1;
+   AND enabled = 1
+   AND TYPE = 0 OR TYPE = 1;
 
 END;

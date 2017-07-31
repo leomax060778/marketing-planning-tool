@@ -21,6 +21,53 @@ function getAllOutcomes(hl){
 	}
 };
 
+function getWizardQuestions(){
+    var spResult = dataOutcome.getWizardQuestions();
+    var questions = {};
+
+    for (var i = 0; i < spResult.length; i++) {
+        var obj = spResult[i];
+        if(!questions[obj.QUESTION_ID])
+            questions[obj.QUESTION_ID] = {QUESTION: obj.QUESTION, ANSWERS: []};
+
+        questions[obj.QUESTION_ID].ANSWERS.push({ANSWER_ID: obj.ANSWER_ID, ANSWER: obj.ANSWER});
+    }
+    questions = util.objectToArray(questions);
+
+    return questions;
+}
+
+function getKpiVolumeValue(campaignTypeId,campaignSubtypeId, kpiOptionId, answers){
+    var answersCollection = [];
+    var result = {VOLUME: null, VALUE: null};
+    answers.forEach(function (answerId) {
+        answersCollection.push({KPI_ANSWER_ID: answerId});
+    });
+
+    var answerAverage = dataOutcome.getAnswerAverage(answersCollection, answers.length);
+
+    var scale = (answerAverage >= 0 && answerAverage < 1.5) ? 'SMALL'
+        : (answerAverage >= 1.5 && answerAverage < 2.5) ? 'MEDIUM'
+        : (answerAverage >= 2.5 && answerAverage < 3.5) ? 'LARGE'
+        : (answerAverage >= 3.5) ? 'X_LARGE' : null;
+
+    if(scale){
+    	var spResult = dataOutcome.getKpiVolumeValue(campaignTypeId,campaignSubtypeId, kpiOptionId);
+        var values = {};
+        spResult.forEach(function (benchmark) {
+            if(Number(benchmark.TYPE)) {
+                values.VOLUME = benchmark[scale + '_SCALE_CAMPAIGN'];
+            } else {
+                values.VALUE = benchmark[scale + '_SCALE_CAMPAIGN'];
+            }
+        });
+        result.VOLUME = values.VOLUME || null;
+        result.VALUE = values.VALUE || null;
+    }
+    
+    return result;
+};
+
 function getOutcomesByOtId(outcomeTypeId, hlId){
         if(!outcomeTypeId)
                 throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found","outcomesServices/handleGet/getByHlId",outcomeTypeId);

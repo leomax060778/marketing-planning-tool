@@ -14,6 +14,7 @@ var spUpdateUser = "UPD_USER";
 var spDeleteUser = "DEL_USER";
 var spUpdatePass = "UPD_USER_PASSWORD";
 var spGetUsersByHl1Id = "GET_USERS_BY_HL1_ID";
+var spGetUsersApproversByHl1Id = "GET_USERS_APPROVERS_BY_HL1_ID";
 var spGetUsersByHl2Id = "GET_USERS_BY_HL2_ID";
 var spGetUsersByHl3Id = "GET_USERS_BY_HL3_ID";
 var spGetHash = "GET_HASH_SHA256";
@@ -65,6 +66,18 @@ function getUserByRoleId(id) {
 		return db.extractArray(rdo.USER_ROLE);
 	}
 	return null;
+}
+
+function getUserApproversByHl1Id(hl1Id) {
+	var res = {};
+	if (hl1Id > 0) {
+		var rdo = db.executeProcedure(spGetUsersApproversByHl1Id, {
+			'in_hl1_id' : hl1Id
+		});
+		res.users_in = db.extractArray(rdo.users_in);
+		res.users_out = db.extractArray(rdo.users_out);
+	}
+	return res;
 }
 
 function getUserByUserName(userName){
@@ -189,35 +202,26 @@ function getPasswordHash(pass) {
 	return null;	
 }
 
-function insertLevelUser(hlId, levelUserId, level, userId){
-	var parameters = {};
-	var hl_id = "in_hl"+level+"_id";
-	parameters[hl_id] = hlId;
-	parameters.in_user_id = levelUserId;
-	parameters.in_created_user_id = userId;
-
+function insertLevelUser(arrData, level){
 	var INS_HL_USER = 'INS_HL' + level + '_USER';
-
-	return db.executeScalarManual(INS_HL_USER,parameters, "out_hl" + level + "_user_id");
+	return db.executeScalarManual(INS_HL_USER, arrData, "out_hl" + level + "_user_id");
 }
 
-function deleteLevelUser(lUserId, hlId, level){
-	var parameters = {};
-	var hl_id = "in_hl"+level+"_id";
-	parameters[hl_id] = hlId;
-
-
+function deleteLevelUser(arrData, level){
 	var DEL_HL_USER = "";
 	switch (level){
-		case 1:DEL_HL_USER = 'DEL_HL1_USER_BY_ID';
-				parameters.IN_L1_USER_ID  = lUserId;break;
-		case 2:DEL_HL_USER = 'DEL_HL2_USER_BY_ID';
-				parameters.in_l2_user_id = lUserId;break;
-		case 3:DEL_HL_USER = 'DEL_HL3_USER'
-				parameters.in_user_id = lUserId;break;
+		case 1:
+			DEL_HL_USER = 'DEL_HL1_USER_BY_ID';
+			break;
+		case 2:
+			DEL_HL_USER = 'DEL_HL2_USER_BY_ID';
+			break;
+		case 3:
+			DEL_HL_USER = 'DEL_HL3_USER';
+			;break;
 	}
 
-	return db.executeScalarManual(DEL_HL_USER,parameters,"out_result");
+	return db.executeScalarManual(DEL_HL_USER,arrData,"out_result");
 }
 
 function existsHlUserPair(levelUserId, hlId, level){

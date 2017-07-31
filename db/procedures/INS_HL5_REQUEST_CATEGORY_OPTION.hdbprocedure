@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_REQUEST_CATEGORY_OPTION" (
+    IN hl5RequestCategoryOption TABLE(
+        IN_HL5_ID BIGINT
+        , IN_REQUEST_CATEGORY_OPTION_ID BIGINT
+        , IN_USER_ID BIGINT
+    ),
+    OUT out_result bigint
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO "PLANNING_TOOL"."HL5_REQUEST_CATEGORY_OPTION" (
+	    hl5_id
+	    ,service_request_category_option_level_id
+	    ,created_user_id
+	    )
+	(SELECT IN_HL5_ID
+	        , IN_REQUEST_CATEGORY_OPTION_ID
+	        , IN_USER_ID
+	FROM :hl5RequestCategoryOption);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM "PLANNING_TOOL"."HL5_REQUEST_CATEGORY_OPTION";
+END;

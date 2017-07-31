@@ -9,7 +9,6 @@ var spGetHl6ById = "GET_HL6_BY_ID";
 var spGetHl6ByAcronym = "GET_HL6_BY_ACRONYM";
 var spGetHl6StatusByHl6Id = "GET_HL6_STATUS_BY_HL6_ID";
 var spGetHl6ForSearch = "GET_HL6_FOR_SEARCH";
-var spGetAllHl6 = "GET_ALL_HL6";
 var spGetHl6TotalBudgetByHl5Id = "GET_ALL_HL6_TOTAL_BUDGET";
 var spGetHl6RemainingBudgetByHl5Id = "GET_ALL_HL6_REMAINING_BUDGET";
 var spGetNewHL6ID = "GET_NEW_HL6_ID";
@@ -65,7 +64,10 @@ function insertHl6(hl6CrmDescription, hl6Acronym, budget, hl5Id, routeToMarket
     , campaignObjectiveId, campaignTypeId, campaignSubTypeId
     , actualStartDate, actualEndDate, employeeResponsibleId, costCenterId, inBudget
     , budgetSpendQ1, budgetSpendQ2, budgetSpendQ3, budgetSpendQ4, euroConversionId, hl6StatusDetailId, salesOrganizationId, createdUserId
-    , distribution_channel_id, autoCommit, imported, import_id) {
+    , distribution_channel_id, co_funded, allow_budget_zero
+    , marketingProgramId, marketingActivityId, showOnDgCalendar, businessOwnerId, venue, city, country, url, planned_start_date, planned_end_date
+    , street, postal_code, region, event_owner, number_of_participants, priority_id, imported, import_id, autoCommit
+) {
     var params = {
         'in_hl6_crm_description' : hl6CrmDescription,
         'in_acronym': hl6Acronym,
@@ -75,13 +77,13 @@ function insertHl6(hl6CrmDescription, hl6Acronym, budget, hl5Id, routeToMarket
         'in_campaign_objective_id' : campaignObjectiveId,
         'in_campaign_type_id' : campaignTypeId,
         'in_campaign_subtype_id' : campaignSubTypeId,
-        'in_marketing_program_id' : null,
-        'in_marketing_activity_id' : null,
+        'in_marketing_program_id' : marketingProgramId,
+        'in_marketing_activity_id' : marketingActivityId,
 
         'in_actual_start_date' : actualStartDate,
         'in_actual_end_date' : actualEndDate,
-        'in_show_on_dg_calendar' : 0,
-        'in_business_owner_id' : null,
+        'in_show_on_dg_calendar' : showOnDgCalendar || 0,
+        'in_business_owner_id' : businessOwnerId,
         'in_employee_responsible_id' : employeeResponsibleId,
         'in_cost_center_id' : costCenterId,
 
@@ -95,25 +97,28 @@ function insertHl6(hl6CrmDescription, hl6Acronym, budget, hl5Id, routeToMarket
         'in_sales_organization_id' : salesOrganizationId,
         'in_created_user_id' : createdUserId,
         'in_distribution_channel_id' : distribution_channel_id ? distribution_channel_id : null,
-        'in_venue' : "",
-        'in_city' : "",
-        'in_country' : "",
-        'in_url' : "",
+        'in_venue' : venue || "",
+        'in_city' : city || "",
+        'in_country' : country || "",
+        'in_url' : url || "",
 
         'in_results_campaign_q1' :0,
         'in_results_campaign_q2' :0,
         'in_results_campaign_q3' :0,
         'in_results_campaign_q4' :0
-        ,'in_planned_start_date' : actualStartDate
-        ,'in_planned_end_date' : actualEndDate
-        ,'in_street' :  ""
-        ,'in_postal_code' :  ""
-        , 'in_region': ''
-        , 'in_event_owner': ''
-        , 'in_number_of_participants': ''
-        , 'in_priority_id': null
+        ,'in_planned_start_date' : planned_start_date
+        ,'in_planned_end_date' : planned_end_date
+        ,'in_street' :  street || ""
+        ,'in_postal_code' :  postal_code || ""
+        , 'in_region': region || ''
+        , 'in_event_owner': event_owner || ''
+        , 'in_number_of_participants': number_of_participants || ''
+        , 'in_priority_id': priority_id ? priority_id : null
         , 'in_imported' : imported ? imported : 0
         , 'in_import_id': import_id ? import_id : null
+        , 'in_co_funded': co_funded ? co_funded : 0
+        , 'in_allow_budget_zero': allow_budget_zero ? allow_budget_zero : 0
+        , 'in_is_power_user': 1
     };
 
     var rdo;
@@ -193,8 +198,16 @@ function getHl6StatusByHl6Id(hl6Id, autoCommit) {
     return db.extractArray(rdo.out_result)[0];
 }
 
-function getHl6ForSearch(userSessionID, isSA, autoCommit) {
-    var parameters = {in_user_id: userSessionID, in_isSA: isSA};
+function getHl6ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userSessionID, isSA, autoCommit) {
+    var parameters = {
+        in_budget_year_id: budgetYearId
+        , in_region_id: regionId
+        , in_subRegion_id: subRegionId
+        , in_limit: limit
+        , in_offset: offset
+        , in_user_id: userSessionID
+        , in_isSA: isSA
+    };
     var rdo;
     if (autoCommit) {
         rdo = db.executeProcedure(spGetHl6ForSearch, parameters);
@@ -204,6 +217,7 @@ function getHl6ForSearch(userSessionID, isSA, autoCommit) {
     return db.extractArray(rdo.out_result);
 }
 
+/*
 function getAllHl6(autoCommit) {
     var params = {};
     var rdo;
@@ -214,7 +228,7 @@ function getAllHl6(autoCommit) {
     }
     return db.extractArray(rdo.out_hl6)[0];
 }
-
+*/
 function insertHl6Budget(hl6Id, organizationId, percentage, organizationType, createdUserId, autoCommit) {
     var params = {
         'in_hl6_id': hl6Id,
@@ -231,23 +245,10 @@ function insertHl6Budget(hl6Id, organizationId, percentage, organizationType, cr
     }
     return rdo;
 }
+function insertHl6Sale(data){
 
-function insertHl6Sale(hl6Id, organizationId, amount, organizationType, description, createdUserId, autoCommit) {
-    var params = {
-        'in_hl6_id': hl6Id,
-        'in_organization_id': organizationId,
-        'in_amount': amount,
-        'in_organization_type': organizationType,
-        'in_description': description,
-        'in_created_user_id': createdUserId
-    };
-    var rdo;
-    if (autoCommit) {
-        rdo = db.executeScalar(spInsHl6Sales, params, 'out_hl6_sales_id');
-    } else {
-        rdo = db.executeScalarManual(spInsHl6Sales, params, 'out_hl6_sales_id');
-    }
-    return rdo;
+    return db.executeScalarManual(spInsHl6Sales,data,'out_hl6_sales_id');
+
 }
 
 function hl6ChangeInOUTBudget(hl6Id, budgetStatus, autoCommit) {
@@ -346,27 +347,15 @@ function hl6ChangeStatus(hl6Id, statusId, userId, autoCommit) {
     return db.executeScalarManual(spHl6ChangeStatus, params, 'out_result');
 }
 
-function insertHl6CRMBinding(hl6Id, columnName, changed, displayName, userId) {
-    var parameters = {
-        "in_hl6_id": hl6Id,
-        "in_column_name": columnName,
-        "in_changed": changed,
-        "in_user_id": userId,
-        "in_display_name": displayName
-    };
-    return db.executeScalarManual(spInsertHl6CRMBinding, parameters, 'out_hl6_crm_binding_id');
+
+function insertHl6CRMBinding(data){
+    var rdo = db.executeScalarManual(spInsertHl6CRMBinding, data, 'out_hl6_crm_binding_id');
+    return rdo;
 }
 
-function updateHl6CRMBinding(hl6CrmBindingId, hl6Id, columnName, changed, displayName, userId) {
-    var parameters = {
-        "in_hl6_crm_binding_id": hl6CrmBindingId,
-        "in_hl6_id": hl6Id,
-        "in_column_name": columnName,
-        "in_changed": changed,
-        "in_user_id": userId,
-        "in_display_name": displayName
-    };
-    return db.executeScalarManual(spUpdateHl6CRMBinding, parameters, 'out_result');
+function updateHl6CRMBinding(data){
+    var rdo = db.executeScalarManual(spUpdateHl6CRMBinding, data, 'out_result');
+    return rdo;
 }
 
 function getHl6MyBudgetByHl6Id(hl6Id) {
@@ -378,8 +367,8 @@ function getHl6MyBudgetByHl6Id(hl6Id) {
 }
 
 function getHl6SalesByHl6Id(hl6Id) {
-    if (id) {
-        var rdo = db.executeProcedureManual(spGetHl6SalesByHl6Id, {'in_hl6_id': hl6Id});
+    if (hl6Id) { 
+        var rdo = db.executeProcedureManual(spGetHl6SalesByHl6Id, {'in_hl_id': hl6Id});
         return db.extractArray(rdo.out_result);
     }
     return null;
@@ -399,7 +388,10 @@ function updateHl6(hl6Id, hl6CrmDescription, budget, routeToMarket
     , campaignObjectiveId, campaignTypeId, campaignSubTypeId
     , actualStartDate, actualEndDate, employeeResponsibleId, costCenterId, inBudget
     , budgetSpendQ1, budgetSpendQ2, budgetSpendQ3, budgetSpendQ4, euroConversionId, hl6StatusDetailId, salesOrganizationId, userId
-    , distribution_channel_id) {
+    , distribution_channel_id,co_funded,allow_budget_zero
+    , marketingProgramId, marketingActivityId, showOnDgCalendar, businessOwnerId, venue, city, country, url, planned_start_date, planned_end_date
+    , street, postal_code, region, event_owner, number_of_participants, priority_id
+) {
     var params = {
         'in_hl6_id': hl6Id,
         'in_hl6_crm_description' : hl6CrmDescription,
@@ -408,13 +400,13 @@ function updateHl6(hl6Id, hl6CrmDescription, budget, routeToMarket
         'in_campaign_objective_id' : campaignObjectiveId,
         'in_campaign_type_id' : campaignTypeId,
         'in_campaign_subtype_id' : campaignSubTypeId,
-        'in_marketing_program_id' : null,
-        'in_marketing_activity_id' : null,
+        'in_marketing_program_id' : marketingProgramId,
+        'in_marketing_activity_id' : marketingActivityId,
 
         'in_actual_start_date' : actualStartDate,
         'in_actual_end_date' : actualEndDate,
-        'in_show_on_dg_calendar' : 0,
-        'in_business_owner_id' : null,
+        'in_show_on_dg_calendar' : showOnDgCalendar,
+        'in_business_owner_id' : businessOwnerId,
         'in_employee_responsible_id' : employeeResponsibleId,
         'in_cost_center_id' : costCenterId,
 
@@ -428,22 +420,25 @@ function updateHl6(hl6Id, hl6CrmDescription, budget, routeToMarket
         'in_sales_organization_id' : salesOrganizationId,
         'in_modified_user_id' : userId,
         'in_distribution_channel_id' : distribution_channel_id ? distribution_channel_id : null,
-        'in_venue' : "",
-        'in_city' :  "",
-        'in_country' : "",
-        'in_url' :  "",
+        'in_venue' : venue || "",
+        'in_city' : city || "",
+        'in_country' : country || "",
+        'in_url' : url || "",
         'in_results_campaign_q1' : 0,
         'in_results_campaign_q2' : 0,
         'in_results_campaign_q3' : 0,
         'in_results_campaign_q4' : 0
-        ,'in_planned_start_date' : actualStartDate
-        ,'in_planned_end_date' : actualEndDate
-        ,'in_street' : ""
-        ,'in_postal_code' : ""
-        , 'in_region': ''
-        , 'in_event_owner': ''
-        , 'in_number_of_participants': ''
-        , 'in_priority_id': null
+        ,'in_planned_start_date' : planned_start_date
+        ,'in_planned_end_date' : planned_end_date
+        ,'in_street' :  street || ""
+        ,'in_postal_code' :  postal_code || ""
+        , 'in_region': region || ''
+        , 'in_event_owner': event_owner || ''
+        , 'in_number_of_participants': number_of_participants || ''
+        , 'in_priority_id': priority_id ? priority_id : null
+        , 'in_co_funded': co_funded ? co_funded : 0
+        , 'in_allow_budget_zero': allow_budget_zero ? allow_budget_zero : 0
+        , 'in_is_power_user': 1
     };
 
     return db.executeScalarManual(spUpdHl6, params, 'out_result');
@@ -622,13 +617,14 @@ function getHl6Categories(){
 }
 
 
-function insertHl6BudgetSalesUpload(hl6Id, organizationId, value, organizationType, description, createdUserId, autoCommit) {
+function insertHl6BudgetSalesUpload(hl6Id, organizationId, value, organizationType, description, currencyId, createdUserId, autoCommit) {
     var params = {
         'in_hl6_id': hl6Id,
         'in_organization_id': organizationId,
         'in_value': value,
         'in_organization_type': organizationType,
         'in_description': description,
+        'in_currency_id': currencyId,
         'in_created_user_id': createdUserId
     };
     var rdo;

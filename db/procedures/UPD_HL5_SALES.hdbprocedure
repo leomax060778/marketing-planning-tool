@@ -1,11 +1,11 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5_SALES"
 (
-	in in_hl5_sales_id bigint,
-	in in_organization_id bigint,
-	in in_amount decimal(19, 6),
-	in in_organization_type tinyint,
-	in in_description nvarchar(255),
-	in in_modified_user_id bigint,
+    IN hl5Sales TABLE(
+        in_hl5_sale_id bigint,
+        in_description nvarchar(255),
+        in_currency_id bigint,
+        in_user_id bigint
+    ),
 	out out_result bigint
 ) 
 	LANGUAGE SQLSCRIPT
@@ -15,13 +15,14 @@ BEGIN
 
 	UPDATE HL5_SALES
 	SET
-	organization_id = in_organization_id,
-	amount = in_amount,
-	organization_type = in_organization_type,
-	description = in_description,
-	modified_user_id = in_modified_user_id,
+	description = T.IN_DESCRIPTION,
+	currency_id = T.IN_CURRENCY_ID,
+	modified_user_id = T.IN_USER_ID,
 	modified_date_tz = CURRENT_TIMESTAMP
-	where hl5_sales_id = in_hl5_sales_id;
-	
-	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+	from HL5_SALES, (
+        select IN_HL5_SALE_ID, IN_DESCRIPTION, IN_CURRENCY_ID, IN_USER_ID from :hl5Sales
+    ) T
+    where HL5_SALES_ID = T.IN_HL5_SALE_ID;
+
+    SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

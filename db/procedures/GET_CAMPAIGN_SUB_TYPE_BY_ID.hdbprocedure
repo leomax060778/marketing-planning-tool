@@ -2,7 +2,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CAMPAIGN_SUB_TYPE_B
 		IN in_campaign_sub_type_id BIGINT, 
 		OUT out_result TABLE (
 			CAMPAIGN_SUB_TYPE_ID BIGINT,
-			NAME NVARCHAR(255)
+			NAME NVARCHAR(255),
+			ROLLOVER_TEXT NVARCHAR(1000),
+                        			EXAMPLE NVARCHAR(1000)
 		)
 	)
 	LANGUAGE SQLSCRIPT
@@ -12,7 +14,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CAMPAIGN_SUB_TYPE_B
 AS
 BEGIN
 	out_result = SELECT CAMPAIGN_SUB_TYPE_ID, 
-				NAME
+				NAME,
+				ROLLOVER_TEXT,
+				EXAMPLE
 			FROM CAMPAIGN_SUB_TYPE
 			WHERE CAMPAIGN_SUB_TYPE_ID = in_campaign_sub_type_id
 				AND ENABLED = 1

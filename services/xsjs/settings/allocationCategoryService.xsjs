@@ -29,7 +29,8 @@ function handlePost(reqBody,userId){
 
 function handleDelete(reqBody, userId){
 	var CATEGORY_ID = reqBody.CATEGORY_ID;
-	var result = AllocationCategory.deleteAllocationCategory(CATEGORY_ID, userId);
+	var confirm = httpUtil.getUrlParameters().get("CONFIRM_OK");
+	var result = AllocationCategory.deleteAllocationCategory(CATEGORY_ID, userId, confirm);
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 
 }

@@ -6,7 +6,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL3" (
 	IN in_hl3_fnc_budget_total DECIMAL(19, 2),
 	IN in_in_budget TINYINT,
 	IN in_user_id BIGINT,
-	
+	IN in_version integer,
 	OUT out_result_hl3 BIGINT,
 	OUT out_crm_id NVARCHAR(255),
 	OUT out_budget_flag TINYINT	
@@ -60,6 +60,7 @@ BEGIN
 		modified_date_tz = CURRENT_TIMESTAMP,
 		hl3_fnc_budget_total = IFNULL(in_hl3_fnc_budget_total, hl3_fnc_budget_total), --new 03-11-2016
 		in_budget = in_in_budget --new 03-11-2016
+		,HL3.version = in_version
 		WHERE hl3_id = in_hl3_id
 			AND deleted = 0
 			AND enabled = 1;

@@ -44,7 +44,6 @@
  	 			hl5.HL5_ID AS HL_ID,
  	 			CONCAT( 'CRM-',
         	         CONCAT(
-        	        	CONCAT(
         	        		CONCAT(
         	        		
         	        		CONCAT(
@@ -55,7 +54,6 @@
         						, hl3.acronym)
         					,'-')
         				,hl4.acronym)
-        				,'-')
         				,hl5.acronym))
 				 AS PATH
 		FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL5&quot; hl5

@@ -66,7 +66,8 @@ va_intermidate = SELECT
     INNER JOIN "PLANNING_TOOL"."USER" userTable ON userTable.USER_ID = hl6.created_user_id
     INNER JOIN SALE_ORGANIZATION saleOrganization ON saleOrganization.SALES_ORGANIZATION_ID = HL6.SALES_ORGANIZATION_ID
     WHERE hl6.enabled=1 AND hl6.deleted=0
-	AND hl6.hl5_id = in_hl5_id;
+	AND hl6.hl5_id = in_hl5_id
+	ORDER BY hl6.acronym ASC;
 
 out_result = SELECT
         va_hl6.HL6_ID
@@ -85,7 +86,7 @@ out_result = SELECT
 		,va_hl6.IMPORTED
         ,va_hl6.IMPORT_ID
 
-    FROM :va_intermidate va_hl6
-    ORDER BY va_hl6.HL6_ACRONYM ASC;
+    FROM :va_intermidate va_hl6;
 		
 END;
+

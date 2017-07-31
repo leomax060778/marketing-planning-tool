@@ -7,18 +7,20 @@ var ErrorLib = mapper.getErrors();
 var spGetAllBudgetYear = "GET_ALL_BUDGET_YEAR";
 var spUdpBudgetYear = "UPD_BUDGET_YEAR";
 var GET_BUDGET_YEAR = "GET_BUDGET_YEAR";
+var GET_BUDGET_YEAR_ID = "GET_BUDGET_YEAR_ID";
 var spGET_BUDGET_YEAR_BY_HL4_ID = "GET_BUDGET_YEAR_BY_HL4_ID";
 var DEL_BUDGET_YEAR = "DEL_BUDGET_YEAR";
 
-var spGET_HL2_QUANTITY_BY_BUDGET_YEAR_ID = "GET_HL2_QUANTITY_BY_BUDGET_YEAR_ID";
+var spGET_HL1_QUANTITY_BY_BUDGET_YEAR_ID = "GET_HL1_QUANTITY_BY_BUDGET_YEAR_ID";
 
 var spInsBudgetYear = "INS_BUDGET_YEAR";
 var RESET_ALL_BUDGET_YEAR_DEFAULT_YEAR = "RESET_ALL_BUDGET_YEAR_DEFAULT_YEAR";
 var spGET_BUDGET_YEAR_BY_LEVEL_PARENT = "GET_BUDGET_YEAR_BY_LEVEL_PARENT";
+var GET_LOCK_FLAG_BY_HL_ID_LEVEL = "GET_LOCK_FLAG_BY_HL_ID_LEVEL";
 /******************************************************/
 
-function getHl2QuantityByBudgetYear(budget_year_id){
-	return db.executeScalarManual(spGET_HL2_QUANTITY_BY_BUDGET_YEAR_ID,{'in_budget_year_id':budget_year_id}, 'out_result');
+function getHl1QuantityByBudgetYear(budget_year_id){
+    return db.executeScalarManual(spGET_HL1_QUANTITY_BY_BUDGET_YEAR_ID,{'in_budget_year_id':budget_year_id}, 'out_result');
 }
 
 function getAllBudgetYear(){
@@ -26,11 +28,17 @@ function getAllBudgetYear(){
 	return db.extractArray(result['out_result']);
 }
 
-function insertBudgetYear(budgetYear,startDate,endDate,defaultYear,description,userId,autoCommit){
+function getLockFlagByHlIdLevel(hlId, level){
+    return db.executeScalarManual(GET_LOCK_FLAG_BY_HL_ID_LEVEL,{'in_hl_id':hlId, 'in_level': level}, 'out_result');
+}
+
+function insertBudgetYear(budgetYear,startDate,endDate,defaultYear,description, versionedStartDate, versionedEndDate, userId,autoCommit){
 	var params = {
 		'in_budget_year' : budgetYear,
 		'in_start_date'  : startDate,
 		'in_end_date' : endDate,
+        'in_versioned_start_date'  : versionedStartDate,
+        'in_versioned_end_date' : versionedEndDate,
 		'in_default_year' : defaultYear,
 		'in_description': description,
 		'in_created_user_id' : userId
@@ -44,11 +52,13 @@ function insertBudgetYear(budgetYear,startDate,endDate,defaultYear,description,u
 	return rdo;
 }
 
-function updateBudgetYear(budgetYearId, budgetYear, startDate, endDate, defaultYear, description, userId){
+function updateBudgetYear(budgetYearId, budgetYear, startDate, endDate, defaultYear, description, versionedStartDate, versionedEndDate, userId){
 	var params = {
 			"in_budget_year_id": budgetYearId,
 			"in_start_date" : startDate,
 			"in_end_date": endDate,
+			'in_versioned_start_date'  : versionedStartDate,
+			'in_versioned_end_date' : versionedEndDate,
 			"in_default_year": defaultYear,
 			"in_description": description,
 			"in_modified_user_id": userId,
@@ -64,6 +74,14 @@ function getBudgetYear(budgetYear){
 			"in_budget_year" : budgetYear
 	};
 	var result = db.executeProcedureManual(GET_BUDGET_YEAR,params);
+	return db.extractArray(result['out_result'])[0];
+}
+
+function getBudgetYearId(budgetYearid){
+	var params = {
+		"in_budget_year" : budgetYearid
+	};
+	var result = db.executeProcedureManual(GET_BUDGET_YEAR_ID,params);
 	return db.extractArray(result['out_result'])[0];
 }
 
@@ -95,6 +113,6 @@ function getBudgetYearByLevelParent(level, hlId){
 		"in_lh" : level
 		, "in_parent_id": hlId
 	};
-	var result = db.executeProcedure(spGET_BUDGET_YEAR_BY_LEVEL_PARENT, params);
-	return db.extractArray(result['out_result'])[0].BUDGET_YEAR_ID;
+	var result = db.executeProcedureManual(spGET_BUDGET_YEAR_BY_LEVEL_PARENT, params);
+	return db.extractArray(result['out_result'])[0];
 }

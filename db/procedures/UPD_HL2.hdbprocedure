@@ -7,6 +7,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL2" (
 	,IN in_implement_execution_level tinyint
 	,in in_in_budget tinyint
 	,IN in_crt_related tinyint
+	,IN in_allow_automatic_budget_approval tinyint
+	,IN in_version integer
 	,OUT out_result bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -22,6 +24,8 @@ BEGIN
 	,HL2.implement_execution_level = in_implement_execution_level
 	,HL2.crt_related = in_crt_related
 	,HL2.in_budget = in_in_budget
+	,HL2.ALLOW_AUTOMATIC_BUDGET_APPROVAL = in_allow_automatic_budget_approval
+	,HL2.version = in_version
 	WHERE HL2.hl2_id = in_hl2_id;
 
 	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;

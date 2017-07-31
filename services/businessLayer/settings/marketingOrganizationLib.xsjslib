@@ -5,10 +5,18 @@ var ErrorLib = mapper.getErrors();
 var dbMO = mapper.getDataMarketingOrganization();
 /*************************************************/
 
-
+var hierarchyLevel = {
+	'HL4' : 1,
+	'HL5' : 2,
+	'HL6' : 3
+};
 
 function getAllMarketingOrganization(){
 	return dbMO.getAllMarketingOrganization();
+}
+
+function getAllMarketingOrganizationByLevelHlId(level, hlId){
+	return dbMO.getAllMarketingOrganizationByHlIdLevel(hierarchyLevel[level.toUpperCase()], hlId);
 }
 
 function InsertMarketingOrganization(organization, userId){

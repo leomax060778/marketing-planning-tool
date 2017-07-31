@@ -32,7 +32,7 @@ var DEL_HARD_COST_CENTER_TEAMS_BY_COST_CENTER_ID = "DEL_HARD_COST_CENTER_TEAMS_B
 var DEL_HARD_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID = "DEL_HARD_COST_CENTER_EMPLOYEE_RESPONSIBLE_BY_COST_CENTER_ID";
 var DEL_COST_CENTER_TEAMS_BY_TEAM_ID = "DEL_COST_CENTER_TEAMS_BY_TEAM_ID";
 /******************************************************/
-
+ 
 function getAllCostCenter(){
 	var parameters = {};
 	var list = db.executeProcedureManual(GET_ALL_COST_CENTER, parameters);
@@ -122,24 +122,24 @@ function getCostCenterEmployee(employeeResponsibleId, costCenterId){
 	return db.extractArray(list.out_result)[0] || null;
 }
 
-function getCostCenterTeamByMarketingOrganizationIdTeamId(marketingOrganizationId, teamId){
+function getCostCenterTeamByMarketingOrganizationIdTeamId(marketingOrganizationId, teamIdsCollection){
 	var parameters = {
 		in_marketing_organization_id: marketingOrganizationId,
-		in_team_id: teamId
+        costCenterTeams: teamIdsCollection
 	};
 	var list = db.executeProcedureManual(GET_COST_CENTER_TEAMS_BY_MARKETING_ORGANIZATION_ID_TEAM_ID, parameters);
 
 	return db.extractArray(list.out_result)[0] || null;
 }
 
-function getCostCenterTeamByCostCenterIdTeamId(costCenterId, teamId){
+function getCostCenterTeamByCostCenterIdTeamId(costCenterId, teamIdsCollection){
 	var parameters = {
 		in_cost_center_id: costCenterId,
-		in_team_id: teamId
+        costCenterTeams: teamIdsCollection
 	};
 	var list = db.executeProcedureManual(GET_COST_CENTER_TEAM_BY_COST_CENTER_ID_TEAM_ID, parameters);
 
-	return db.extractArray(list.out_result)[0] || null;
+	return db.extractArray(list.out_result) || null;
 }
 
 function costCenterInUseByTeamSaleOrganization(costCenterId, teamId, saleOrganizationId) {
@@ -173,13 +173,8 @@ function insCostCenter(name, description, userId, code, salesOrganizationId){
 	return db.executeScalarManual(INS_COST_CENTER, parameters, 'out_cost_center_id');
 }
 
-function insCostCenterTeams(costCenterId, userId, hl3Id){
-	var parameters = {
-		in_user_id: userId,
-		in_hl3_id: hl3Id,
-		in_cost_center_id: costCenterId
-	};
-	return db.executeScalarManual(INS_COST_CENTER_TEAMS, parameters, 'out_cost_center_teams_id');
+function insCostCenterTeams(insCostCenterTeams){
+	return db.executeScalarManual(INS_COST_CENTER_TEAMS, insCostCenterTeams, 'out_cost_center_teams_id');
 }
 
 function insCostCenterEmployeeResponsible(costCenterId, employeeResponsibleId, userId){

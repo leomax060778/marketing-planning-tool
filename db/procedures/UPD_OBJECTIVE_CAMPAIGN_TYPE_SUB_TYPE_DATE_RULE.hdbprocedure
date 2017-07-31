@@ -1,0 +1,23 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_OBJECTIVE_CAMPAIGN_TYPE" (
+	IN in_objective_id bigint,
+	IN in_campaign_sub_type_id bigint,
+	IN in_campaign_type_id bigint,
+	IN in_enabled tinyint,	
+	IN in_user_id bigint,
+	OUT out_result INTEGER
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		UPDATE OBJECTIVE_CAMPAIGN_TYPE_SUBTYPE rp
+        SET	rp.enabled = in_enabled,        
+            rp.modified_date_tz = CURRENT_TIMESTAMP,
+            rp.modified_user_id = in_user_id
+        WHERE rp.objective_id = in_objective_id AND
+        rp.campaign_sub_type_id = in_campaign_sub_type_id AND
+        rp.campaign_type_id = in_campaign_type_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

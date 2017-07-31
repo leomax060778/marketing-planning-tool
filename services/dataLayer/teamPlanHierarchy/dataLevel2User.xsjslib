@@ -17,13 +17,8 @@ function getAllHl2User(hl2Id){
 }
 
 /*EXECUTE QUERY TO INSERT NEW PAIR HL2_USER*/
-function insertLevel2User(objLevel2User, objLevel2, userId){
-	var parameters = {};	
-	parameters.in_hl2_id = Number(objLevel2) || objLevel2.IN_HL2_ID;
-	parameters.in_user_id = Number(objLevel2User) || objLevel2User.IN_USER_ID;
-	parameters.in_created_user_id = userId;
-	parameters.out_hl2_user_id = '?';
-	return db.executeScalarManual(INS_HL2_USER,parameters,"out_hl2_user_id");
+function insertLevel2User(data){
+	return db.executeScalarManual(INS_HL2_USER,data,"out_hl2_user_id");
 }
 
 function delAllLevel2User(objLevel2, userId){
@@ -32,11 +27,8 @@ function delAllLevel2User(objLevel2, userId){
 	return db.executeScalarManual(DEL_ALL_HL2_BY_ID,parameters,"out_result");
 }
 
-function deleteLevel2User(l2UserId, hl2Id, userId){
-	var parameters = {};
-	parameters.in_hl2_id = hl2Id;
-	parameters.in_l2_user_id = l2UserId;
-	return db.executeScalarManual(DEL_HL2_USER_BY_ID,parameters,"out_result");
+function deleteLevel2User(data){
+	return db.executeScalarManual(DEL_HL2_USER_BY_ID,data,"out_result");
 }
 
 function existsHl2UserPair(objHl2User, objLevel2){

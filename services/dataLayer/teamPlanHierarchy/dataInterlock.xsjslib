@@ -223,8 +223,8 @@ function deleteInterlockSubregionByIlId(id, userId){
 /*Interlock contact data region / central teams*/
 function getInterlockCentralRegionContacts(in_contact_type, in_contact_type_id){
     var params = {};
-    params.in_contact_type = in_contact_type;
-    params.in_contact_type_id = in_contact_type_id;
+    // params.in_contact_type = in_contact_type;
+    // params.in_contact_type_id = in_contact_type_id;
     var rdo = db.executeProcedure(spGetInterlockContactRegionCentralTeam, params);
     return db.extractArray(rdo.out_result);
 }

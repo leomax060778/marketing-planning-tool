@@ -16,13 +16,14 @@ function getAllHl1User(hl1Id){
     return list;
 }
 
-function insertLevel1User(hl1Id, level1UserId,  userId){
-    var parameters = {};
+function insertLevel1User(data){
+    /*var parameters = {};
     parameters.in_hl1_id = hl1Id;
     parameters.in_user_id = level1UserId;
     parameters.in_created_user_id = userId;
     parameters.out_hl1_user_id = '?';
-    return db.executeScalarManual(INS_HL1_USER,parameters, "out_hl1_user_id");
+    */
+    return db.executeScalarManual(INS_HL1_USER,data, "out_hl1_user_id");
 }
 
 function delAllLevel1User(hl1Id){

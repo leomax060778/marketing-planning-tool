@@ -1,5 +1,4 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_ALLOCATION_OPTION" (
-	IN in_allocation_category_id bigint,
 	IN in_hl_id bigint,
 	OUT out_option TABLE (
 	    option_id BIGINT
@@ -8,6 +7,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_ALLOCATION_OPTI
 	    , amount decimal(19, 6)
 	    , category_name NVARCHAR(60)
 	    , updated TINYINT
+	    , allocation_category_id bigint
 	    )
 	) 
 	LANGUAGE SQLSCRIPT
@@ -21,12 +21,12 @@ BEGIN
 	, hl4CO.amount
 	, category.name as category_name
 	, hl4CO.updated
+	, ACOL.allocation_category_id
 
 	FROM hl4_category_option hl4CO
 	inner join allocation_category_option_level ACOL ON ACOL.allocation_category_option_level_id = hl4CO.allocation_category_option_level_id
 	inner join allocation_option option on ACOL.allocation_option_id = option.allocation_option_id
 	inner join allocation_category category on category.allocation_category_id = ACOL.allocation_category_id
-	where ACOL.allocation_category_id = in_allocation_category_id
-	and hl4_id = in_hl_id
+	where hl4_id = in_hl_id
 	AND hl4CO.deleted = 0 and hl4CO.enabled = 1;
 END;

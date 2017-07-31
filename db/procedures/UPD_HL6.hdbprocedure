@@ -41,6 +41,10 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6"
     ,in in_event_owner nvarchar(255)
     ,in in_number_of_participants nvarchar(255)
     ,in in_priority_id bigint
+    ,IN in_co_funded tinyint
+    ,IN in_allow_budget_zero tinyint
+    ,IN in_is_power_user tinyint
+
 	,OUT out_result decimal(19, 6)
 	) 
 	LANGUAGE SQLSCRIPT
@@ -87,10 +91,13 @@ BEGIN
     ,planned_end_date = in_planned_end_date
     ,street = in_street
     ,postal_code = in_postal_code
-        , region = in_region
-        , event_owner = in_event_owner
-        , number_of_participants = in_number_of_participants
-        , priority_id = in_priority_id
+    , region = in_region
+    , event_owner = in_event_owner
+    , number_of_participants = in_number_of_participants
+    , priority_id = in_priority_id
+    , co_funded = in_co_funded
+    , allow_budget_zero = in_allow_budget_zero
+    , is_power_user = in_is_power_user
 	where hl6_id = in_hl6_id;
 	
 	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;

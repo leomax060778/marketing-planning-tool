@@ -1,0 +1,69 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_VERSION_BY_ID" (
+	in in_hl3_id bigint,
+	in in_version bigint,
+	out out_result table(
+	hl3_id bigint,
+	hl3_description nvarchar(255),
+	--business_owner_id bigint,
+    --hl2_id bigint,
+	crm_id bigint,
+	acronym nvarchar(25),
+	hl3_fnc_budget_total decimal(19, 6),
+	--hl2_budget decimal(19,2),
+	version integer,
+	in_budget tinyint,
+	--origin_plan_id bigint,
+	--hl3_hierarchy_id bigint,
+	--hl3_status_detail_id bigint,
+	PATH nvarchar(255)
+	)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	out_result =
+	(SELECT
+	HL3.HL3_ID
+	,HL3.HL3_DESCRIPTION
+	--,HL3.BUSINESS_OWNER_ID
+	--,HL3.HL2_ID
+	,HL3.CRM_ID
+	,HL3.ACRONYM
+	,HL3.HL3_FNC_BUDGET_TOTAL
+	--,HL2.HL2_BUDGET_TOTAL AS HL2_BUDGET
+	,HL3.version
+	,HL3.IN_BUDGET
+	--,HL3.ORIGIN_PLAN_ID
+	--,HL3.HL3_HIERARCHY_ID
+	--,HL3.HL3_STATUS_DETAIL_ID
+	, CONCAT(CONCAT ('CRM-',CONCAT (HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BUY.BUDGET_YEAR), 3, 2))), HL2.ORGANIZATION_ACRONYM) as PATH
+	FROM HL3_VERSION HL3
+	INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
+	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+	INNER JOIN BUDGET_YEAR BUY ON BUY.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
+	WHERE HL3.hl3_id = in_hl3_id AND HL3.version = in_version)
+	union all
+	(SELECT
+	HL3.HL3_ID
+	,HL3.HL3_DESCRIPTION
+	--,HL3.BUSINESS_OWNER_ID
+	--,HL3.HL2_ID
+	,HL3.CRM_ID
+	,HL3.ACRONYM
+	,HL3.HL3_FNC_BUDGET_TOTAL
+	--,HL2.HL2_BUDGET_TOTAL AS HL2_BUDGET
+	,HL3.version
+	,HL3.IN_BUDGET
+	--,HL3.ORIGIN_PLAN_ID
+	--,HL3.HL3_HIERARCHY_ID
+	--,HL3.HL3_STATUS_DETAIL_ID
+	, CONCAT(CONCAT ('CRM-',CONCAT (HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BUY.BUDGET_YEAR), 3, 2))), HL2.ORGANIZATION_ACRONYM) as PATH
+	FROM HL3
+	INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
+	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+	INNER JOIN BUDGET_YEAR BUY ON BUY.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
+	WHERE HL3.hl3_id = in_hl3_id AND HL3.version = in_version);
+END;

@@ -1,0 +1,106 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_BUDGET_SPEND_REQUEST_HL5" (
+	IN in_user_id bigint,
+	IN in_excluded_status_id bigint,
+	OUT out_result TABLE(
+						BUDGET_SPEND_REQUEST_ID BIGINT,
+						BUDGET_SPEND_REQUEST_TYPE_ID INTEGER,
+    					BUDGET_SPEND_REQUEST_TYPE_NAME NVARCHAR(255),
+						BUDGET_SPEND_REQUEST_STATUS_ID BIGINT,
+    					BUDGET_SPEND_REQUEST_STATUS_DISPLAY_NAME NVARCHAR(255),
+						HL5_ID BIGINT,
+						DESCRIPTION NVARCHAR(255),
+						HL5_PARTNER_TYPE_ID BIGINT,
+						HL5_PARTNER_TYPE_NAME NVARCHAR(255),
+						BUDGET NVARCHAR(255),
+						BSR_MODIFIED_DATE TIMESTAMP,
+						HL5_PATH NVARCHAR(255),
+						ROUTE_TO_MARKET NVARCHAR(25),
+						STATUS_NAME NVARCHAR(255)
+						)
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+
+	
+	related_hl2_users =	SELECT U.USER_ID, HL5.HL5_ID, HL3.HL2_ID
+								FROM "PLANNING_TOOL"."HL5" HL5
+									INNER JOIN "PLANNING_TOOL"."HL4" HL4 
+										ON HL4.hl4_id = HL5.hl4_id 
+				            		INNER JOIN "PLANNING_TOOL"."HL3" HL3
+				            			ON HL4.hl3_id = HL3.hl3_id 
+				            		INNER JOIN "PLANNING_TOOL"."HL3_USER" HL3_USER
+				            			ON HL3.HL3_ID = HL3_USER.HL3_ID
+				            		INNER JOIN "PLANNING_TOOL"."USER" U
+				            			ON U.USER_ID = in_user_id
+									INNER JOIN "PLANNING_TOOL"."HL2_USER" hl2User 
+										ON hl2User.USER_ID = U.USER_ID
+									INNER JOIN USER_ROLE userRole 
+										ON userRole.USER_ID = U.USER_ID
+								WHERE hl2User.HL2_ID = HL3.HL2_ID
+									AND U.ENABLED = 1 AND U.DELETED = 0;
+								
+								
+	out_result = 	SELECT DISTINCT	BSR.BUDGET_SPEND_REQUEST_ID,
+									BSR.BUDGET_SPEND_REQUEST_TYPE_ID,
+									BSR_TYPE.NAME AS BUDGET_SPEND_REQUEST_TYPE_NAME,
+									BSR.BUDGET_SPEND_REQUEST_STATUS_ID,
+									BSR_STATUS.DISPLAY_NAME as BUDGET_SPEND_REQUEST_STATUS_DISPLAY_NAME,
+									HL5.HL5_ID,
+									BSR.DESCRIPTION,
+									HL5_PARTNER.PARTNER_TYPE_ID AS HL5_PARTNER_TYPE_ID,
+									PARTNER_TYPE.TYPE_NAME AS HL5_PARTNER_TYPE_NAME,
+									BSR.AMOUNT AS BUDGET,
+									BSR.MODIFIED_DATE_TZ AS BSR_MODIFIED_DATE,
+									CONCAT(
+			                        CONCAT(
+			                            CONCAT(
+			                                CONCAT(
+			                                    CONCAT(
+			                                        CONCAT(
+			                                        HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)),
+			                                    '-'),
+			                                HL3.ACRONYM),
+			                            '-'),
+			                        HL4.ACRONYM),
+			                     HL5.ACRONYM)
+			            		 AS HL5_PATH,
+			            		 RTM.NAME AS ROUTE_TO_MARKET,
+			            		 BSR_STATUS.DISPLAY_NAME AS STATUS_NAME
+            		 
+				FROM "PLANNING_TOOL"."BUDGET_SPEND_REQUEST" BSR
+					INNER JOIN "PLANNING_TOOL"."HL5" HL5
+						ON HL5.HL5_ID = BSR.HL_ID
+					LEFT JOIN "PLANNING_TOOL"."HL5_PARTNER" HL5_PARTNER
+								ON HL5_PARTNER.BUDGET_SPEND_REQUEST_ID = BSR.BUDGET_SPEND_REQUEST_ID
+					LEFT JOIN "PLANNING_TOOL"."PARTNER_TYPE" PARTNER_TYPE
+								ON PARTNER_TYPE.PARTNER_TYPE_ID = HL5_PARTNER.PARTNER_TYPE_ID
+					INNER JOIN "PLANNING_TOOL"."BUDGET_SPEND_REQUEST_STATUS" BSR_STATUS 
+						ON BSR_STATUS.BUDGET_SPEND_REQUEST_STATUS_ID = BSR.BUDGET_SPEND_REQUEST_STATUS_ID
+					INNER JOIN "PLANNING_TOOL"."BUDGET_SPEND_REQUEST_TYPE" BSR_TYPE
+						ON BSR_TYPE.BUDGET_SPEND_REQUEST_TYPE_ID = BSR.BUDGET_SPEND_REQUEST_TYPE_ID
+					INNER JOIN HL4 hl4 
+						ON hl4.hl4_id = HL5.hl4_id
+            		INNER JOIN HL3 
+            			ON HL4.hl3_id = HL3.hl3_id
+            		INNER JOIN HL3_USER 
+            			ON HL3.HL3_ID = HL3_USER.HL3_ID
+                	INNER JOIN HL2 
+                		ON HL3.hl2_id = HL2.hl2_id
+                	INNER JOIN HL1
+                		ON HL2.hl1_id = HL1.hl1_id
+                	INNER JOIN :related_hl2_users HL2_USERS
+                		ON HL2_USERS.HL2_ID = HL2.HL2_ID
+            		INNER JOIN BUDGET_YEAR BGY
+            			ON HL1.budget_year_id = BGY.budget_year_id
+            		LEFT JOIN "PLANNING_TOOL"."ROUTE_TO_MARKET" RTM
+            			ON RTM.ROUTE_TO_MARKET_ID = HL5.ROUTE_TO_MARKET_ID
+            		INNER JOIN "PLANNING_TOOL"."HL5_STATUS_DETAIL" HL5_STATUS
+            			ON HL5_STATUS.HL5_STATUS_DETAIL_ID = HL5.HL5_STATUS_DETAIL_ID
+				WHERE HL5.ENABLED = 1
+					AND HL5.DELETED = 0
+					AND BSR.BUDGET_SPEND_REQUEST_STATUS_ID != in_excluded_status_id
+					AND BSR.HIERARCHY_LEVEL_ID = 2;
+END;

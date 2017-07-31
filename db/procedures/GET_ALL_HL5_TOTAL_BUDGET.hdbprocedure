@@ -11,14 +11,15 @@ BEGIN
 	va_total_budget := 0;
 
     SELECT 
-	COALESCE(SUM(HL5.BUDGET),0)
+	SUM(COALESCE(BSR.AMOUNT,HL5.BUDGET,0))
 	into va_total_budget
-	FROM HL4 
-	INNER JOIN HL5 ON HL5.HL4_ID = HL4.hl4_id AND HL5.deleted = 0 AND HL5.enabled = 1
-	WHERE 
-	HL4.enabled=1 
-	AND HL4.deleted=0
-	AND HL4.hl4_id = in_hl4_id
+	FROM HL5
+	LEFT JOIN BUDGET_SPEND_REQUEST BSR ON BSR.HL_ID = HL5.HL5_ID AND BSR.BUDGET_SPEND_REQUEST_TYPE_ID = 1
+        AND (BSR.BUDGET_SPEND_REQUEST_STATUS_ID = 1 OR BSR.BUDGET_SPEND_REQUEST_STATUS_ID = 2) AND BSR.HIERARCHY_LEVEL_ID = 2
+	WHERE
+	HL5.enabled=1
+	AND HL5.deleted=0
+	AND HL5.hl4_id = in_hl4_id
 	GROUP BY HL5.hl4_id;
 
 	out_result:= ifnull(va_total_budget,0);

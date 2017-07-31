@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CRM_PARENT_PATH" (
+  IN in_level_id bigint,
+  IN in_id bigint,
+  IN in_path nvarchar(255),
+  IN in_user_id bigint,
+
+  OUT out_result BIGINT
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER
+ DEFAULT SCHEMA "PLANNING_TOOL"
+ AS
+BEGIN
+    UPDATE CRM_PARENT_PATH
+    SET PARENT_PATH = in_path
+    , MODIFIED_USER_ID = in_user_id
+    , MODIFIED_DATE_TZ = CURRENT_TIMESTAMP
+    WHERE LEVEL_ID = in_id AND HIERARCHY_LEVEL_ID = in_level_id;
+
+    SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

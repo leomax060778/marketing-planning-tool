@@ -21,7 +21,7 @@ function updateObjectiveCampaignType(parameters, modifiedUserId) {
             "objectiveCampaignTypeServices/handlePost/updateObjectiveCampaignType",
             "The CAMPAIGN TYPE is not found");
 
-    var resultTransaction;
+    var resultTransaction = 0;
     dataObjectiveCampaignType.deleteObjectiveCampaignType(objectiveId, campaignTypeId, modifiedUserId);
     for (var i = 0; i < campaignSubTypeList.length; i++) {
         var campaignSubTypeId = campaignSubTypeList[i];

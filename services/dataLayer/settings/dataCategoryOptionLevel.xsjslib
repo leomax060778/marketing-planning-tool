@@ -4,14 +4,15 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var db = mapper.getdbHelper();
 var ErrorLib = mapper.getErrors();
 /*************************************************/
-var INS_ALLOCATION_CATEGORY_OPTION_LEVEL = "INS_ALLOCATION_CATEGORY_OPTION_LEVEL";
-var DEL_ALLOCATION_CATEGORY_OPTION_LEVEL = "DEL_ALLOCATION_RELATIONSHIP";
 var GET_ALLOCATION_OPTION_LEVEL = "GET_ALLOCATION_OPTION_LEVEL";
-
 var GET_ALLOCATION_CATEGORY_BY_CAT_ID_LEVEL_ID = "GET_ALLOCATION_CATEGORY_BY_CAT_ID_LEVEL_ID";
+var GET_ALLOCATION_CATEGORY_OPTION_LEVEL_BY_LEVEL = "GET_ALLOCATION_CATEGORY_OPTION_LEVEL_BY_LEVEL";
+var GET_ALLOCATION_CATEGORY_OPTION_LEVEL_COUNT_BY_CATEGORY = "GET_ALLOCATION_CATEGORY_OPTION_LEVEL_COUNT_BY_CATEGORY";
+var INS_ALLOCATION_CATEGORY_OPTION_LEVEL = "INS_ALLOCATION_CATEGORY_OPTION_LEVEL";
 var UPD_ALLOCATION_CAT_OPT_LEV_PROCESSING_REPORT = "UPD_ALLOCATION_CAT_OPT_LEV_PROCESSING_REPORT";
-
 var UPD_ALLOCATION_CATEGORY_OPTION_LEVEL = "UPD_ALLOCATION_CATEGORY_OPTION_LEVEL";
+var DEL_ALLOCATION_RELATIONSHIP = "DEL_ALLOCATION_RELATIONSHIP";
+var DEL_ALLOCATION_RELATIONSHIP_BY_CATEGORY_ID = "DEL_ALLOCATION_RELATIONSHIP_BY_CATEGORY_ID";
 /*********************************************************************************************************/
 var hierarchyLevel = {
 	"hl3": 4,
@@ -19,6 +20,22 @@ var hierarchyLevel = {
 	"hl5": 2,
 	"hl6": 3
 };
+
+function getAllocationCategoryOptionLevelByLevelId(level){
+    if(level){
+        var rdo = db.executeProcedureManual(GET_ALLOCATION_CATEGORY_OPTION_LEVEL_BY_LEVEL,{'in_hierarchy_level_id': hierarchyLevel[level]});
+        return db.extractArray(rdo.out_result);
+    }
+    return null;
+}
+
+function checkInUseAllocationCategoryById(categoryId){
+    if(categoryId){
+        var rdo = db.executeScalarManual(GET_ALLOCATION_CATEGORY_OPTION_LEVEL_COUNT_BY_CATEGORY,{'in_category_id': categoryId}, 'out_result');
+        return rdo;
+    }
+    return null;
+}
 
 function getAllocationCategoryByCategoryIdLevelId(categoryId, levelId){
 	var params = {
@@ -84,11 +101,19 @@ function deleteAllocationCATEGORYOptionLevel(categoryId, levelId,userId, autoCom
 	};
 	var rdo;
 	if(autoCommit){
-		rdo = db.executeScalar(DEL_ALLOCATION_CATEGORY_OPTION_LEVEL,params,'out_result');
+		rdo = db.executeScalar(DEL_ALLOCATION_RELATIONSHIP,params,'out_result');
 	}else{
-		rdo = db.executeScalarManual(DEL_ALLOCATION_CATEGORY_OPTION_LEVEL,params,'out_result');
+		rdo = db.executeScalarManual(DEL_ALLOCATION_RELATIONSHIP,params,'out_result');
 	}
 	return rdo;
+}
+
+function deleteAllocationCategoryOptionLevelByCategory(categoryId, userId){
+    var params = {
+        'in_category_id': categoryId,
+        'in_user_id' : userId
+    };
+    return db.executeScalarManual(DEL_ALLOCATION_RELATIONSHIP_BY_CATEGORY_ID,params,'out_result');
 }
 
 function getAllocationCategory(id, level){
@@ -109,10 +134,10 @@ function getAllocationOptionByCategoryOptionLevelId(categoryOptionLevelId, level
 	return null;
 }
 
-function getAllocationOptionByCategoryAndLevelId(allocation_category_id, level, hlId){
-	if(allocation_category_id && level){
+function getAllocationOptionByCategoryAndLevelId(level, hlId){
+	if(hlId && level){
 		var storedProcedure = "GET_"+ level.toUpperCase() +"_ALLOCATION_OPTION";
-		var rdo = db.executeProcedureManual(storedProcedure,{'in_allocation_category_id':allocation_category_id, 'in_hl_id': hlId});
+		var rdo = db.executeProcedureManual(storedProcedure,{'in_hl_id': hlId });
 		return db.extractArray(rdo.out_option);
 	}
 	return null;
@@ -135,30 +160,18 @@ function getAllocationOptionLevelByCategoryAndLevelId(allocation_category_id, le
 	return null;
 }
 
-function insertCategoryOption(id, categoryOptionLevelId, amount, userId, updated, level){
-	var parameters = {
-		'in_category_option_level_id': categoryOptionLevelId,
-		'in_id': id,
-		'in_amount': amount,
-		'in_created_user_id': userId,
-		'in_updated': updated
-	};
+function insertCategoryOption(data, level){
 	var storedProcedure = "INS_"+ level.toUpperCase() +"_ALLOCATION_CATEGORY_OPTION";
-	var rdo = db.executeScalarManual(storedProcedure, parameters, 'out_result_id');
+	var rdo = db.executeScalarManual(storedProcedure, data, 'out_result_id');
 	return rdo;
 }
 
-function updateCategoryOption(categoryOptionLevelId, amount, userId, updated, level){
-	var parameters = {
-		'in_category_option_level_id': categoryOptionLevelId,
-		'in_amount': amount,
-		'in_user_id': userId,
-		'in_updated': updated
-	};
-
-	var storedProcedure = "UPD_"+ level.toUpperCase() +"_ALLOCATION_CATEGORY_OPTION";
-	var rdo = db.executeScalarManual(storedProcedure, parameters, 'out_result');
-	return rdo;
+function updateCategoryOption(data, level){
+	if(level){
+		var storedProcedure = "UPD_"+ level.toUpperCase() +"_ALLOCATION_CATEGORY_OPTION";
+		var rdo = db.executeScalarManual(storedProcedure, data, 'out_result');
+		return rdo;
+	}return null;
 }
 
 function deleteCategoryOption(id, userId, level){

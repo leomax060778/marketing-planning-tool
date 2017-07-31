@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_BUDGET_SPEND_REQUEST_BY_HLID_AND_LEVEL" (
+	in in_hl_id bigint,
+	in in_hierarchy_level_id bigint,
+	OUT out_result TABLE(
+        budget_spend_request_id bigint,
+        budget_spend_request_status_id bigint,
+        budget_spend_request_type_id bigint
+	 )
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+    out_result =
+    SELECT
+    BSR.BUDGET_SPEND_REQUEST_ID,
+    BSR.BUDGET_SPEND_REQUEST_STATUS_ID,
+    BSR.BUDGET_SPEND_REQUEST_TYPE_ID
+    FROM BUDGET_SPEND_REQUEST BSR
+    INNER JOIN BUDGET_SPEND_REQUEST_STATUS BSR_STATUS ON BSR_STATUS.BUDGET_SPEND_REQUEST_STATUS_ID = BSR.BUDGET_SPEND_REQUEST_STATUS_ID
+    INNER JOIN HIERARCHY_LEVEL HL ON HL.HIERARCHY_LEVEL_ID = BSR.HIERARCHY_LEVEL_ID
+    WHERE BSR.ENABLED = 1 AND BSR.DELETED = 0
+    -- BUDGET_SPEND_REQUEST_STATUS_ID = 4 (No longer requested)
+    -- Need to get all request but not those that have 'No longer requested' status
+    and BSR.BUDGET_SPEND_REQUEST_STATUS_ID != 4
+    AND BSR.HL_ID = in_hl_id;
+END;

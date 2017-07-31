@@ -9,10 +9,10 @@ var spGetHl6ById = "GET_HL6_BY_ID";
 var spGetHl6ByAcronym = "GET_HL6_BY_ACRONYM";
 var spGetHl6StatusByHl6Id = "GET_HL6_STATUS_BY_HL6_ID";
 var spGetHl6ForSearch = "GET_HL6_FOR_SEARCH";
-var spGetAllHl6 = "GET_ALL_HL6";
 var spGetHl6TotalBudgetByHl5Id = "GET_ALL_HL6_TOTAL_BUDGET";
 var spGetHl6RemainingBudgetByHl5Id = "GET_ALL_HL6_REMAINING_BUDGET";
 var spGetNewHL6ID = "GET_NEW_HL6_ID";
+var GET_HL6_BY_USER_ID = 'GET_HL6_BY_USER_ID';
 
 /********INSERT**********************/
 var spInsHl6CrmBinding = "INS_HL6_CRM_BINDING";
@@ -41,7 +41,7 @@ var spDelHl6SalesHard = "DEL_HL6_SALES_HARD";
 var spInsertHl6CRMBinding = "INS_HL6_CRM_BINDING";
 var spUpdateHl6CRMBinding = "UPD_HL6_CHANGED_FIELDS";
 var spGetHl6MyBudgetByHl6Id = "GET_HL6_BUDGET_BY_HL6_ID";
-var spGetHl6SalesByHl6Id = "GET_HL6_SALES_BY_HL6_ID";
+var spGetHl6SalesByHl6Id = "GET_HL6_SALES_BY_ID";
 
 var spGetHl6Category = "GET_HL6_CATEGORY";
 var spGetHl6CategoryByHl6Id = "GET_HL6_CATEGORY_BY_HL6_ID";
@@ -73,7 +73,7 @@ function insertHl6(hl6CrmDescription,hl6Acronym,budget,hl5Id, routeToMarket
     , region
     , event_owner
     , number_of_participants
-    , priority_id,autoCommit, imported,import_id){
+    , priority_id,co_funded,allow_budget_zero, is_power_user,autoCommit, imported,import_id){
     var params = {
         'in_hl6_crm_description' : hl6CrmDescription,
         'in_acronym': hl6Acronym,
@@ -122,6 +122,9 @@ function insertHl6(hl6CrmDescription,hl6Acronym,budget,hl5Id, routeToMarket
         , 'in_priority_id': priority_id
         , 'in_imported' : imported ? imported : 0
         , 'in_import_id': import_id ? import_id : null
+        , 'in_co_funded': co_funded ? co_funded : 0
+        , 'in_allow_budget_zero': allow_budget_zero ? allow_budget_zero : 0
+        , 'in_is_power_user': is_power_user || Number(is_power_user) ? is_power_user : 1
     };
 
     var rdo;
@@ -160,7 +163,11 @@ function getHl6RemainingBudgetByHl5Id(hl5Id, total_budget) {
 	return db.executeDecimalManual(spGetHl6RemainingBudgetByHl5Id, params, 'out_result');
 }
 
-
+function getHl6ByUserId(userId, isSA){
+    var params = {'in_user_id': userId, 'in_issa': isSA};
+    var rdo = db.executeProcedureManual(GET_HL6_BY_USER_ID,params);
+    return db.extractArray(rdo.out_result);
+}
 
 function getHl6ById(hl6Id, autoCommit) {
     var params = {
@@ -203,61 +210,36 @@ function getHl6StatusByHl6Id(hl6Id, autoCommit) {
     return db.extractArray(rdo.out_result)[0];
 }
 
-function getHl6ForSearch(userSessionID, isSA, autoCommit){
-	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
-    var rdo;
-    if(autoCommit){
-        rdo = db.executeProcedure(spGetHl6ForSearch,parameters);
-    }else{
-        rdo = db.executeProcedureManual(spGetHl6ForSearch,parameters);
-    }
-    return db.extractArray(rdo.out_result);
-}
-
-function getAllHl6(autoCommit) {
-    var params = {};
-    var rdo;
-    if(autoCommit){
-        rdo = db.executeProcedure(spGetAllHl6,params);
-    }else{
-        rdo = db.executeProcedureManual(spGetAllHl6,params);
-    }
-    return db.extractArray(rdo.out_hl6)[0];
-}
-
-function insertHl6Budget(hl6Id,organizationId,percentage,organizationType,createdUserId,autoCommit){
-    var params = {
-        'in_hl6_id' : hl6Id,
-        'in_organization_id'  : organizationId,
-        'in_percentage' : percentage,
-        'in_organization_type' : organizationType,
-        'in_created_user_id': createdUserId
+function getHl6ForSearch(userSessionID, isSA, budget_year_id, region_id, subregion_id, limit, offset, autoCommit){
+	var parameters = {
+          in_user_id: userSessionID
+        , in_isSA: isSA
+        , in_budget_year_id: budget_year_id
+        , in_region_id: region_id
+        , in_subregion_id: subregion_id
+        , in_limit: limit
+        , in_offset: offset
     };
-    var rdo;
+    var result = {};
+    var list;
     if(autoCommit){
-        rdo = db.executeScalar(spInsHl6Budget,params,'out_hl6_budget_id');
+        list = db.executeProcedure(spGetHl6ForSearch,parameters);
     }else{
-        rdo = db.executeScalarManual(spInsHl6Budget,params,'out_hl6_budget_id');
+        list = db.executeProcedureManual(spGetHl6ForSearch,parameters);
     }
-    return rdo;
+    result.result = db.extractArray(list.out_result);
+    result.total_rows = list.totalRows;
+    return result;
 }
 
-function insertHl6Sale(hl6Id,organizationId,amount,organizationType,description,createdUserId,autoCommit){
-    var params = {
-        'in_hl6_id' : hl6Id,
-        'in_organization_id'  : organizationId,
-        'in_amount' : amount,
-        'in_organization_type' : organizationType,
-        'in_description': description,
-        'in_created_user_id' : createdUserId
-    };
-    var rdo;
-    if(autoCommit){
-        rdo = db.executeScalar(spInsHl6Sales,params,'out_hl6_sales_id');
-    }else{
-        rdo = db.executeScalarManual(spInsHl6Sales,params,'out_hl6_sales_id');
-    }
-    return rdo;
+function insertHl6Budget(data){
+        return db.executeScalarManual(spInsHl6Budget,data,'out_hl6_budget_id');
+}
+
+function insertHl6Sale(data){
+
+    return db.executeScalarManual(spInsHl6Sales,data,'out_hl6_sales_id');
+
 }
 
 function hl6ChangeInOUTBudget(hl6Id,budgetStatus, autoCommit) {
@@ -359,33 +341,20 @@ function hl6ChangeStatus(hl6Id,statusId,userId,autoCommit) {
     return rdo;
 }
 
-function insertHl6CRMBinding(hl6Id, columnName, changed, displayName, userId){
-    var parameters = {
-        "in_hl6_id": hl6Id,
-        "in_column_name": columnName,
-        "in_changed": changed,
-        "in_user_id": userId,
-        "in_display_name": displayName
-    };
-    var rdo = db.executeScalarManual(spInsertHl6CRMBinding, parameters, 'out_hl6_crm_binding_id');
+
+function insertHl6CRMBinding(data){
+    var rdo = db.executeScalarManual(spInsertHl6CRMBinding, data, 'out_hl6_crm_binding_id');
     return rdo;
 }
 
-function updateHl6CRMBinding(hl6CrmBindingId, hl6Id, columnName, changed, displayName, userId){
-    var parameters = {
-        "in_hl6_crm_binding_id": hl6CrmBindingId,
-        "in_hl6_id": hl6Id,
-        "in_column_name": columnName,
-        "in_changed": changed,
-        "in_user_id": userId,
-        "in_display_name": displayName
-    };
-    var rdo = db.executeScalarManual(spUpdateHl6CRMBinding, parameters, 'out_result');
+function updateHl6CRMBinding(data){
+    var rdo = db.executeScalarManual(spUpdateHl6CRMBinding, data, 'out_result');
     return rdo;
 }
 
 function getHl6MyBudgetByHl6Id(hl6Id){
-    if(id){
+    
+    if(hl6Id){
         var rdo = db.executeProcedureManual(spGetHl6MyBudgetByHl6Id,{'in_hl6_id': hl6Id});
         return db.extractArray(rdo.out_result);
     }
@@ -393,7 +362,7 @@ function getHl6MyBudgetByHl6Id(hl6Id){
 }
 
 function getHl6SalesByHl6Id(hl6Id){
-    if(id){
+    if(hl6Id){
         var rdo = db.executeProcedureManual(spGetHl6SalesByHl6Id,{'in_hl6_id':hl6Id});
         return db.extractArray(rdo.out_result);
     }
@@ -420,7 +389,7 @@ function updateHl6(hl6Id,hl6CrmDescription,budget, routeToMarket
     , region
     , event_owner
     , number_of_participants
-    , priority_id,autoCommit){
+    , priority_id, co_funded, allow_budget_zero,is_power_user,autoCommit){
     var params = {
         'in_hl6_id': hl6Id,
         'in_hl6_crm_description' : hl6CrmDescription,
@@ -465,6 +434,9 @@ function updateHl6(hl6Id,hl6CrmDescription,budget, routeToMarket
         , 'in_event_owner': event_owner || ''
         , 'in_number_of_participants': number_of_participants || ''
         , 'in_priority_id': priority_id
+        , 'in_co_funded': co_funded
+        , 'in_allow_budget_zero':allow_budget_zero
+        , 'in_is_power_user': is_power_user || Number(is_power_user) ? is_power_user : 1
     };
 
     var rdo = db.executeScalarManual(spUpdHl6,params,'out_result');
@@ -644,14 +616,15 @@ function getHl6Categories(){
 }
 
 
-function insertHl6BudgetSalesUpload(hl6Id,organizationId,value,organizationType,description,createdUserId,autoCommit){
+function insertHl6BudgetSalesUpload(hl6Id,organizationId,value,organizationType,description,createdUserId, currencyId,autoCommit){
     var params = {
         'in_hl6_id' : hl6Id,
         'in_organization_id'  : organizationId,
         'in_value' : value,
         'in_organization_type' : organizationType,
         'in_description': description,
-        'in_created_user_id': createdUserId
+        'in_created_user_id': createdUserId,
+        'in_currency_id': currencyId
     };
     var rdo;
     if(autoCommit){

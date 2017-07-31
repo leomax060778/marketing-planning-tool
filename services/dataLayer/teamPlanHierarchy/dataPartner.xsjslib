@@ -16,6 +16,7 @@ var spDeletetHl5Partner = "DEL_HL5_PARTNER_BY_HL5_ID";
 var spGetPartnerByHl6Id = "GET_HL6_PARTNER_BY_HL6_ID";
 var spInsertHl6Partner = "INS_HL6_PARTNER";
 var spDeletetHl6Partner = "DEL_HL6_PARTNER_BY_HL6_ID";
+var spDelHl5PartnerByPartnerId = "DEL_HL5_PARTNER_BY_PARTNER_ID";
 /******************************************************/
 
 function getPartnerByHl4Id(id){	
@@ -58,16 +59,14 @@ function getPartnerHl5ById(id){
 	return null;
 }
 
-function insertHl5Partner(hl5Id, name, partnerTypeId, regionId, value, userId){
-	var parameters = {};
-	parameters.in_hl5_id = hl5Id;
-	parameters.in_partner_name = name;
-	parameters.in_partner_type_id = partnerTypeId;
-	parameters.in_region_id = regionId;
-	parameters.in_value = value;
-	parameters.in_created_user_id = userId;
-	var rdo = db.executeScalarManual(spInsertHl5Partner, parameters, 'out_hl5_partner_id');
+function insertHl5Partner(data){
+	var rdo = db.executeScalarManual(spInsertHl5Partner, data, 'out_hl5_partner_id');
 	return rdo;
+}
+
+function updateHl5Partner(data){
+    var rdo = db.executeScalarManual(spInsertHl5Partner, data, 'out_result');
+    return rdo;
 }
 
 function deleteHl5Partner(hl5Id, userId){
@@ -78,10 +77,20 @@ function deleteHl5Partner(hl5Id, userId){
 	return rdo;
 }
 
-function getPartnerByHl5Id(id){
+function deleteHlPartnerByPartnerId(arrPartnerToDelete, level){
+
+	var sp = "DEL_"+ level.toUpperCase() +"_PARTNER_BY_PARTNER_ID";
+	var rdo = db.executeScalarManual(sp, arrPartnerToDelete, 'out_result');
+	return rdo;
+}
+
+function getPartnerByHl5Id(id, hierarchyLevel){
 	if(id){
-		var rdo = db.executeProcedure(spGetPartnerByHl5Id, {'in_hl5_id':id});
-		return db.extractArray(rdo.out_hl5_partner);
+		var rdo = db.executeProcedure(spGetPartnerByHl5Id, {'in_hl5_id':id, 'in_hierarchy_level_id':hierarchyLevel});
+		var result = {};
+		result.out_result = db.extractArray(rdo.out_result);
+		result.attachments =  db.extractArray(rdo.out_partner_attachment);
+		return result;
 	}
 	return null;
 }
@@ -94,15 +103,9 @@ function getPartnerHl6ById(id){
 	}
 	return null;
 }
-function insertHl6Partner(hl6Id, name, partnerTypeId, regionId, value, userId){
-	var parameters = {};
-	parameters.in_hl6_id = hl6Id;
-	parameters.in_partner_name = name;
-	parameters.in_partner_type_id = partnerTypeId;
-	parameters.in_region_id = regionId;
-	parameters.in_value = value;
-	parameters.in_created_user_id = userId;
-	var rdo = db.executeScalarManual(spInsertHl6Partner, parameters, 'out_hl6_partner_id');
+
+function insertHl6Partner(data){
+	var rdo = db.executeScalarManual(spInsertHl6Partner, data, 'out_hl6_partner_id');
 	return rdo;
 }
 
@@ -120,4 +123,15 @@ function getPartnerByHl6Id(id){
 		return db.extractArray(rdo.out_result);
 	}
 	return null;
+}
+
+function updatePartner(data, level){
+	var sp = "UPD_"+ level.toUpperCase() +"_PARTNER";//UPD_HL5_PARTNER or UPD_HL6_PARTNER
+	return db.executeScalarManual(sp, data, 'out_result');
+}
+
+function getPendingPartnerByPartnerId(arrPartnerToDelete, level){
+	var sp = "GET_PENDING_"+ level.toUpperCase() +"_PARTNER_BY_PARTNER_ID"; //GET_PENDING_HL5_PARTNER_BY_PARTNER_ID
+	var rdo = db.executeProcedureManual(sp, arrPartnerToDelete);
+	return db.extractArray(rdo.out_result);
 }

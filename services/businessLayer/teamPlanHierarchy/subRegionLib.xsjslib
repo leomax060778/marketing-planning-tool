@@ -38,6 +38,10 @@ function deleteSubregion(subregion, deleteUser) {
 		throw ErrorLib.getErrors().CustomError("",
 				"subregionServices/handleDelete/deleteSubregion", "The SUBREGION_ID is invalid");
 
+	if(!CanDeleteSubRegion(subregion.SUBREGION_ID))
+		throw ErrorLib.getErrors().CustomError("",
+			"subregionServices/handleDelete/deleteSubregion", "The Market Unit you want to delete is being used.");
+
 	return dataSubRegion.deleteSubregion(subregion, deleteUser);
 }
 
@@ -51,4 +55,10 @@ function validateSubregion(subregion) {
 				"subregionServices",
 				"The NAME is not found");
 	return true;
+}
+
+function CanDeleteSubRegion(subregionId){
+	var count = dataSubRegion.getCountHL1BySubRegionId(subregionId);
+	if (count > 0) return false;
+	else return true;
 }

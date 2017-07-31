@@ -5,6 +5,7 @@ var db = mapper.getdbHelper();
 var ErrorLib = mapper.getErrors();
 /*************************************************/
 var spGetContactData = "GET_CONTACT_DATA";
+var GET_CONTACT_DATA_COUNT_BY_HL2_EMAIL = "GET_CONTACT_DATA_COUNT_BY_HL2_EMAIL";
 
 var spInsertContactData = "INS_CONTACT_DATA";
 
@@ -18,6 +19,10 @@ var spUpdataContactData = "UPD_CONTACT_DATA";
 function getContactData(contactTypeId, contactType){	
 	var rdo = db.executeProcedure(spGetContactData, {'in_contact_type': contactType, 'in_contact_type_id': contactTypeId});
 	return db.extractArray(rdo.out_result);
+}
+
+function getContactDataCountByL2Email(contactTypeId, email){
+    return db.executeScalarManual(GET_CONTACT_DATA_COUNT_BY_HL2_EMAIL, {'in_email': email, 'in_contact_type_id': contactTypeId}, 'out_result');
 }
 
 function insertContactData(bmoLeads,employeeNumber,email,contactType,contactTypeId,userId){

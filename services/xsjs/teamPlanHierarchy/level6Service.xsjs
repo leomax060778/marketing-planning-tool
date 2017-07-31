@@ -15,6 +15,7 @@ var changeStatus = "CHANGESTATUS";
 var sendInCrmNotificationMail = "SENDMAIL";
 var categories = "HL5_CATEGORIES";
 var expectedOutcomes = "HL5_EXPECTED_OUTCOMES";
+var getHl6ByUserId = 'GET_HL6_BY_USER_ID';
 /******************************************/
 
 function processRequest(){	
@@ -45,12 +46,19 @@ function handleGet(params, userId) {
 		result = hl6.getHl6ById(in_hl6_id);
 	}else
 	if (param_section && param_section == section){
-		result = hl6.getLevel6ForSearch(userId);
+		var budget_year_id = httpUtil.getUrlParameters().get("BUDGET_YEAR_ID") || null;
+		var region_id = httpUtil.getUrlParameters().get("REGION_ID") || null;
+		var subregion_id = httpUtil.getUrlParameters().get("SUBREGION_ID") || null;
+		var limit = httpUtil.getUrlParameters().get("LIMIT") || null;
+		var offset = httpUtil.getUrlParameters().get("OFFSET") || null;
+		result = hl6.getLevel6ForSearch(userId, budget_year_id, region_id, subregion_id, limit, offset);
 	}else if(hl5_categories && in_hl5_id && hl5_categories == categories){
 		result = hl6.getHl6Categories(in_hl5_id);
 	}else if(hl5_expectedOutcomes && in_hl5_id && hl5_expectedOutcomes == expectedOutcomes) {
 		result = hl6.getHl6ExpectedOutcomesOptions(in_hl5_id);
-	}else{
+	} else if(param_section && param_section == getHl6ByUserId){
+        result = hl6.getHl6ByUserId(userId);
+    } else{
 		throw ErrorLib.getErrors().BadRequest("","level6Services/handleGet","invalid parameter name (can be: HL5_ID, HL6_ID or section)");
 	}
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);

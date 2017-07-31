@@ -1,8 +1,10 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_BUDGET_ROUTE" ( 
-	IN in_hl4_id bigint,
-	IN in_route_id bigint,
-	IN in_percentage decimal(19, 6),
-	IN in_created_user_id bigint,
+	IN budgetRoute Table(
+        in_hl4_id bigint,
+        in_route_id bigint,
+        in_percentage decimal(19, 6),
+        in_created_user_id bigint
+        ),
 	OUT out_hl4_budget_route_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -10,7 +12,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_BUDGET_ROUTE" (
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
 	INSERT INTO "PLANNING_TOOL"."HL4_BUDGET_ROUTE"(hl4_id,route_id,percentage,created_user_id)
-	VALUES (in_hl4_id,in_route_id,in_percentage,in_created_user_id);
+	(SELECT in_hl4_id,in_route_id,in_percentage,in_created_user_id FROM :budgetRoute);
 
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_budget_route_id FROM "PLANNING_TOOL"."HL4_BUDGET_ROUTE";
 END;

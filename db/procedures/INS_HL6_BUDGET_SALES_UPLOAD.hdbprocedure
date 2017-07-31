@@ -5,9 +5,10 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_BUDGET_SALES_UP
 	in in_value decimal(19, 6),
 	in in_organization_type tinyint,
 	in in_description nvarchar(255),
+	in in_currency_id bigint,
 	in in_created_user_id bigint,
 	out out_hl6_budget_sales_id bigint
-)
+) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
@@ -36,6 +37,7 @@ BEGIN
     	amount,
     	organization_type,
     	description,
+    	currency_id,
     	created_user_id
     	)
     	VALUES (
@@ -44,6 +46,7 @@ BEGIN
     	in_value,
     	in_organization_type,
     	in_description,
+    	in_currency_id,
     	in_created_user_id
     	);
 

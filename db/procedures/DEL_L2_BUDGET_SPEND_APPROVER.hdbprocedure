@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_L2_BUDGET_SPEND_APPROVER" (
+	IN in_l2_id BIGINT
+	, IN in_budget_approver_id TABLE (in_user_id BIGINT)
+	, OUT out_result BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		delete from hl2_budget_spend_approver
+		where hl2_id = in_l2_id; --and USER_ID not in (select in_user_id from :in_budget_approver_id);
+
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

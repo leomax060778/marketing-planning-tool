@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_BUDGET_SPEND_REQUEST_MESSAGE" (
+		  IN arrMessage TABLE(
+              in_budget_spend_request_id bigint
+            , in_message NVARCHAR(3000)
+            , in_budget_spend_request_origin_id bigint
+            , in_user_id bigint)
+	        , OUT out_result BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    UPDATE T1
+    SET
+      T1.message = T2.in_message
+    , T1.budget_spend_request_origin_id = T2.in_budget_spend_request_origin_id
+    , T1.modified_user_id = T2.in_user_id
+    , T1.modified_date_tz = CURRENT_TIMESTAMP
+    FROM BUDGET_SPEND_REQUEST_MESSAGE T1
+    INNER JOIN :arrMessage T2 ON T1.budget_spend_request_id = T2.in_budget_spend_request_id;
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

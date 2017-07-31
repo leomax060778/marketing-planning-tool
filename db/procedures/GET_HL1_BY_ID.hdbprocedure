@@ -7,19 +7,12 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_ID" (
 		, budget_year_id bigint
 		, region_id integer
 		, subregion_id integer
-		, created_date_tz timestamp
-		, modified_date_tz timestamp
-		, created_user_id bigint
-		, modified_user_id bigint
-		, enabled tinyint
-		, deleted tinyint
-		, region_name nvarchar(255)
-		, subregion_name nvarchar(255)
-		, budget_year integer
 		, budget decimal(19, 6)
         , team_type_id bigint
         , implement_execution_level tinyint
         , crt_related tinyint
+        , is_locked tinyint
+        , version integer
 		)
 )
 	LANGUAGE SQLSCRIPT
@@ -36,23 +29,14 @@ BEGIN
 		, hl1.budget_year_id
 		, hl1.region_id
 		, hl1.subregion_id
-		, hl1.created_date_tz
-		, hl1.modified_date_tz
-		, hl1.created_user_id
-		, hl1.modified_user_id
-		, hl1.enabled
-		, hl1.deleted
-		, r.region_name
-		, sr.subregion_name
-		, buy.budget_year
 		, hl1.budget
         , hl1.team_type_id
         , hl1.implement_execution_level
         , hl1.crt_related
+        , (CASE WHEN BUY.VERSIONED_END_DATE >= CURRENT_TIMESTAMP THEN 0 ELSE 1 END) AS IS_LOCKED
+        , hl1.version
 	FROM HL1
-	LEFT JOIN REGION R ON R.region_id = HL1.region_id
-	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL1.subregion_id
-	LEFT JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL1.budget_year_id
+	INNER JOIN BUDGET_YEAR BUY ON BUY.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
 	WHERE
 		HL1.hl1_id = in_hl1_id
 		AND HL1.deleted = 0

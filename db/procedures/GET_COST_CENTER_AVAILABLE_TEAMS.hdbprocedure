@@ -25,6 +25,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COST_CENTER_AVAILAB
                     WHERE teams.HL3_ID NOT IN (
                     	SELECT COST_CENTER_TEAMS.HL3_ID FROM COST_CENTER_TEAMS
                     	WHERE COST_CENTER_TEAMS.COST_CENTER_ID = in_cost_center_id
+                    	and COST_CENTER_TEAMS.deleted = 0 and COST_CENTER_TEAMS.enabled = 1
                     ) 
                     ORDER BY teams.PATH;
     END IF;

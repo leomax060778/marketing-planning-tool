@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CRM_PARENT_PATH" (
+  IN in_level_id bigint,
+  IN in_id bigint,
+  IN in_path nvarchar(255),
+  IN in_user_id bigint,
+
+  OUT out_result BIGINT
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER
+ DEFAULT SCHEMA "PLANNING_TOOL"
+ AS
+BEGIN
+ INSERT INTO CRM_PARENT_PATH (HIERARCHY_LEVEL_ID, LEVEL_ID, PARENT_PATH, CREATED_USER_ID)
+ VALUES (in_level_id, in_id, in_path, in_user_id);
+ 
+ SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM "PLANNING_TOOL"."CRM_PARENT_PATH";
+END;

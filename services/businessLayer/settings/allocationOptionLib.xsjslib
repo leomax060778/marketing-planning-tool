@@ -16,7 +16,7 @@ function deleteAllocationOption(optionId, userId){
 }
 
 function updateAllocationOption(reqbody, userId) {
-	return dbOption.updateAllocationOption(reqbody.IN_CATEGORY_OPTION_ID,reqbody.IN_NAME, userId);
+	return dbOption.updateAllocationOption(reqbody.ALLOCATION_OPTION_ID,reqbody.IN_NAME, userId);
 }
 
 function insertAllocationOption(reqBody, userId) {

@@ -3,7 +3,8 @@
 function getErrors(){
 	
 	var Errors = {};
-	
+
+    var commonStack = new Error().stack;
 	
     /******************* 400 **********************************************/
 	Errors.BadRequest = function(message,stack, details){
@@ -11,8 +12,8 @@ function getErrors(){
         e.name = "Bad Request";
         e.message = message || "Bad Request";
         e.code = 400;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -23,8 +24,8 @@ function getErrors(){
         e.name = "Unauthorized";
         e.message = message || "Unauthorized";
         e.code = 401;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
     }
@@ -34,8 +35,8 @@ function getErrors(){
         e.name = "Forbidden";
         e.message = message || "Forbidden";
         e.code = 403;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -47,8 +48,8 @@ function getErrors(){
         e.name = "Not Found";
         e.message = message || "Not Found";
         e.code = 404;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -60,8 +61,8 @@ function getErrors(){
         e.name = "Request Timeout";
         e.message = message || "Request Timeout";
         e.code = 408;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -73,8 +74,8 @@ function getErrors(){
         e.name = "Request-URI Too Long";
         e.message = message || "Request-URI Too Long";
         e.code = 414;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -86,8 +87,8 @@ function getErrors(){
         e.name = "Custom Error";
         e.message = message || "Custom Error";
         e.code = 450;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -98,8 +99,8 @@ function getErrors(){
         e.name = "Login Error";
         e.message = message || "Login Error";
         e.code = 451;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -110,8 +111,8 @@ function getErrors(){
         e.name = "Mail Error";
         e.message = message || "Mail Error";
         e.code = 452;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -122,8 +123,8 @@ function getErrors(){
         e.name = "Hl6 Acronym error";
         e.message = message || "Hl6 Acronym error";
         e.code = 453;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.data = "";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
             e.code+" -stack:"+e.stack+" -details:"+e.details};
@@ -135,8 +136,8 @@ function getErrors(){
         e.name = "Out of Range";
         e.message = message || "Out of Range";
         e.code = 454;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.data = "";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
             e.code+" -stack:"+e.stack+" -details:"+e.details};
@@ -148,8 +149,8 @@ function getErrors(){
         e.name = "No Currency for Budget Year";
         e.message = message || "No Currency for Budget Year";
         e.code = 455;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
             e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -160,8 +161,8 @@ function getErrors(){
         e.name = "There aren't matches for this object.";
         e.message = message || "There aren't matches for this object.";
         e.code = 456;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.row = {};
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
             e.code+" -stack:"+e.stack+" -details:"+e.details};
@@ -173,8 +174,8 @@ function getErrors(){
         e.name = "The user client must confirm next action.";
         e.message = message || "The user client must confirm next action.";
         e.code = 457;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.row = {};
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
             e.code+" -stack:"+e.stack+" -details:"+e.details};
@@ -186,7 +187,7 @@ function getErrors(){
         e.name = "Internal Server Error";
         e.message = message || "Internal Server Error";
         e.code = 500;
-        e.stack = stack || "";
+        e.stack = stack || commonStack;
         e.details = details || "Unexpected Error.";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
@@ -200,8 +201,8 @@ function getErrors(){
         e.name = "Not Implemented";
         e.message = message || "Not Implemented";
         e.code = 501;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -213,8 +214,8 @@ function getErrors(){
         e.name = "Service Unavailable";
         e.message = message || "Service Unavailable";
         e.code = 503;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -226,8 +227,8 @@ function getErrors(){
         e.name = "Network Authentication Required";
         e.message = message || "Network Authentication Required";
         e.code = 511;
-        e.stack = stack || "";
-        e.details = details || "without details";
+        e.stack = stack || commonStack;
+        e.details = details || "An unexpected error occurred, please try again!";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
         	e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
@@ -238,7 +239,7 @@ function getErrors(){
         e.name = "Data Base Error";
         e.message = message || "Data Base Error";
         e.code = 550;
-        e.stack = stack || "";
+        e.stack = stack || commonStack;
         e.details = details || "Data Base Error";
         e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
             e.code+" -stack:"+e.stack+" -details:"+e.details};

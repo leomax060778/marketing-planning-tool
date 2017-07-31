@@ -1,0 +1,76 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL3_VERSION_BY_HL3_ID" (
+	in in_hl3_id bigint,
+        out out_result table(
+        hl3_id bigint,
+        hl3_description nvarchar(255),
+        business_owner_id bigint,
+        origin_plan_id bigint,
+        hl2_id bigint,
+        crm_id bigint,
+        hl3_hierarchy_id bigint,
+        acronym nvarchar(25),
+        hl3_fnc_budget_total decimal(19, 6),
+        version integer,
+        created_date_tz timestamp,
+        PATH nvarchar(255)
+        )
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+aux = SELECT
+      	 HL3_ID
+      	,HL3_DESCRIPTION
+      	,BUSINESS_OWNER_ID
+      	,ORIGIN_PLAN_ID
+      	,HL2_ID
+      	,CRM_ID
+      	,HL3_HIERARCHY_ID
+      	,ACRONYM
+      	,HL3_FNC_BUDGET_TOTAL
+      	,VERSION
+      	,MODIFIED_DATE_TZ AS CREATED_DATE_TZ
+      	FROM HL3
+      	WHERE hl3_id = in_hl3_id
+      	  AND deleted = 0
+      	  AND enabled = 1
+
+      union
+
+      	SELECT
+      	 HL3_ID
+          ,HL3_DESCRIPTION
+          ,BUSINESS_OWNER_ID
+          ,ORIGIN_PLAN_ID
+          ,HL2_ID
+          ,CRM_ID
+          ,HL3_HIERARCHY_ID
+          ,ACRONYM
+          ,HL3_FNC_BUDGET_TOTAL
+          ,VERSION
+          ,CREATED_DATE_TZ
+      	FROM HL3_VERSION
+      	WHERE HL3_VERSION.hl3_id = in_hl3_id;
+	out_result =
+	SELECT
+	 T.HL3_ID
+	,T.HL3_DESCRIPTION
+	,T.BUSINESS_OWNER_ID
+	,T.ORIGIN_PLAN_ID
+	,T.HL2_ID
+	,T.CRM_ID
+	,T.HL3_HIERARCHY_ID
+	,T.ACRONYM
+	,T.HL3_FNC_BUDGET_TOTAL
+	,T.VERSION
+	,T.CREATED_DATE_TZ
+	,CONCAT('CRM-',CONCAT(CONCAT(CONCAT(HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR.BUDGET_YEAR), 3, 2)), '-'),
+           		T.ACRONYM)) AS PATH
+	FROM :aux T
+	INNER JOIN HL2 ON HL2.HL2_ID = T.HL2_ID
+	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+    LEFT JOIN BUDGET_YEAR ON BUDGET_YEAR.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
+	  order by T.version asc;
+END;

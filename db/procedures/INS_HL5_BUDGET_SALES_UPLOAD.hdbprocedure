@@ -6,6 +6,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_BUDGET_SALES_UP
 	in in_organization_type tinyint,
 	in in_description nvarchar(255),
 	in in_created_user_id bigint,
+	in in_currency_id bigint,
 	out out_hl5_budget_sales_id bigint
 )
 	LANGUAGE SQLSCRIPT
@@ -36,7 +37,8 @@ BEGIN
     	amount,
     	organization_type,
     	description,
-    	created_user_id
+    	created_user_id,
+    	currency_id
     	)
     	VALUES (
     	in_hl5_id,
@@ -44,7 +46,8 @@ BEGIN
     	in_value,
     	in_organization_type,
     	in_description,
-    	in_created_user_id
+    	in_created_user_id,
+    	in_currency_id
     	);
 
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_budget_sales_id FROM "PLANNING_TOOL"."HL5_SALES";

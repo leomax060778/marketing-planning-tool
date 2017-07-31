@@ -1,3 +1,8 @@
+function getTracer(){
+    $.import("xsplanningtool.services.commonLib","tracer");
+    return $.xsplanningtool.services.commonLib.tracer;
+}
+
 /************Business Layer Mapper*****************/
 
 function getUtil(){
@@ -33,6 +38,11 @@ function getHttp(){
 function getApplication(){
     $.import("xsplanningtool.services.businessLayer.settings","applicationLib");
     return $.xsplanningtool.services.businessLayer.settings.applicationLib;
+}
+
+function getPlanning(){
+    $.import("xsplanningtool.services.businessLayer.settings","planningLib");
+    return $.xsplanningtool.services.businessLayer.settings.planningLib;
 }
 
 function getLevel3(){
@@ -149,6 +159,11 @@ function getOutcomes2(){
 function getOutcomesType(){
     $.import("xsplanningtool.services.businessLayer.settings","outcomesTypeLib");
     return $.xsplanningtool.services.businessLayer.settings.outcomesTypeLib;
+}
+
+function getValidationLib(){
+    $.import("xsplanningtool.services.businessLayer.util","validationLib");
+    return $.xsplanningtool.services.businessLayer.util.validationLib;
 }
 
 function getOutcomes(){
@@ -301,15 +316,56 @@ function getAllocationCategoryOptionLevelLib(){
     return $.xsplanningtool.services.businessLayer.settings.allocationCategoryOptionLevelLib;
 }
 
-function getUploadL5L6Lib(){
-    $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","uploadL5L6Lib");
-    return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.uploadL5L6Lib;
+function getServiceRequestCategoryLib(){
+    $.import("xsplanningtool.services.businessLayer.settings","serviceRequestCategoryLib");
+    return $.xsplanningtool.services.businessLayer.settings.serviceRequestCategoryLib;
+}
+
+function getServiceRequestOptionLib(){
+    $.import("xsplanningtool.services.businessLayer.settings","serviceRequestOptionLib");
+    return $.xsplanningtool.services.businessLayer.settings.serviceRequestOptionLib;
+}
+
+function getServiceRequestCategoryOptionLevelLib(){
+    $.import("xsplanningtool.services.businessLayer.settings","serviceRequestCategoryOptionLevelLib");
+    return $.xsplanningtool.services.businessLayer.settings.serviceRequestCategoryOptionLevelLib;
+}
+
+function getUploadLib(){
+    $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","uploadLib");
+    return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.uploadLib;
 }
 
 function getPriority(){
     $.import("xsplanningtool.services.businessLayer.settings","priorityLib");
     return $.xsplanningtool.services.businessLayer.settings.priorityLib;
 }
+
+function getPlanning(){
+    $.import("xsplanningtool.services.businessLayer.settings","planningLib");
+    return $.xsplanningtool.services.businessLayer.settings.planningLib;
+}
+
+function getBudgetSpendRequest(){
+    $.import("xsplanningtool.services.businessLayer.budgetSpendRequest","budgetSpendRequestLib");
+    return $.xsplanningtool.services.businessLayer.budgetSpendRequest.budgetSpendRequestLib;
+}
+
+function getBudgetSpendReportLib(){
+	$.import("xsplanningtool.services.businessLayer.dataEntryReport","budgetSpendReportLib");
+    return $.xsplanningtool.services.businessLayer.dataEntryReport.budgetSpendReportLib;
+}
+
+function getBudgetSourceReportLib(){
+	$.import("xsplanningtool.services.businessLayer.reports","budgetSourceReportLib");
+    return $.xsplanningtool.services.businessLayer.reports.budgetSourceReportLib;
+}
+
+function getAttachment(){
+    $.import("xsplanningtool.services.businessLayer.attachment","attachmentLib");
+    return $.xsplanningtool.services.businessLayer.attachment.attachmentLib;
+}
+
 /************Data Layer Mapper*****************/
 
 function getdbHelper(){
@@ -365,6 +421,11 @@ function getDataUser(){
 function getDataRegion(){
     $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataRegion");
     return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataRegion;
+}
+
+function getDataValidation(){
+    $.import("xsplanningtool.services.dataLayer.util","dataValidation");
+    return $.xsplanningtool.services.dataLayer.util.dataValidation;
 }
 
 function getDataSubRegion(){
@@ -426,18 +487,6 @@ function getDataCurrency(){
     $.import("xsplanningtool.services.dataLayer.settings","dataCurrency");
     return $.xsplanningtool.services.dataLayer.settings.dataCurrency;
 }
-
-
-function getDataCategory(){
-    $.import("xsplanningtool.services.dataLayer.settings","dataCategory");
-    return $.xsplanningtool.services.dataLayer.settings.dataCategory;
-}
-
-function getDataMeasure(){
-    $.import("xsplanningtool.services.dataLayer.settings","dataMeasure");
-    return $.xsplanningtool.services.dataLayer.settings.dataMeasure;
-}
-
 
 function getDataOption(){
     $.import("xsplanningtool.services.dataLayer.settings","dataCategoryOption");
@@ -618,11 +667,21 @@ function getDataExpectedOutcomeLevel(){
     return $.xsplanningtool.services.dataLayer.settings.dataExpectedOutcomeLevel;
 }
 
-function getDataUploadL5L6(){
-    $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataUploadL5L6");
-    return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataUploadL5L6;
+function getDataServiceRequest(){
+    $.import("xsplanningtool.services.dataLayer.settings","dataServiceRequestCategoryOptionLevel");
+    return $.xsplanningtool.services.dataLayer.settings.dataServiceRequestCategoryOptionLevel;
 }
 
+
+function getDataUpload(){
+    $.import("xsplanningtool.services.dataLayer.teamPlanHierarchy","dataUpload");
+    return $.xsplanningtool.services.dataLayer.teamPlanHierarchy.dataUpload;
+}
+
+function getDataAttachment(){
+    $.import("xsplanningtool.services.dataLayer.attachment","dataAttachment");
+    return $.xsplanningtool.services.dataLayer.attachment.dataAttachment;
+}
 
 /***************************************** LEGACY *****************************************/
 function getLevel5Legacy(){
@@ -656,4 +715,19 @@ function getDataLevel5ReportLegacy(){
 function getDataLevel6ReportLegacy(){
     $.import("xsplanningtool.services.dataLayer.dataEntryReport","dataLevel6ReportLegacy");
     return $.xsplanningtool.services.dataLayer.dataEntryReport.dataLevel6ReportLegacy;
+}
+
+function getDataBudgetSpendRequest(){
+    $.import("xsplanningtool.services.dataLayer.budgetSpendRequest","dataBudgetSpendRequest");
+    return $.xsplanningtool.services.dataLayer.budgetSpendRequest.dataBudgetSpendRequest;
+}
+
+function getDataBudgetSpendReport(){
+	$.import("xsplanningtool.services.dataLayer.dataEntryReport","dataBudgetSpendReport");
+    return $.xsplanningtool.services.dataLayer.dataEntryReport.dataBudgetSpendReport;
+}
+
+function getDataBudgetSourceReport(){
+    $.import("xsplanningtool.services.dataLayer.reports","dataBudgetSourceReport");
+    return $.xsplanningtool.services.dataLayer.reports.dataBudgetSourceReport;
 }

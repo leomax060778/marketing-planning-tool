@@ -1,19 +1,23 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OUTCOMES_BY_OUTCOMES_TYPE_ID" (
 		IN in_outcomes_type_id bigint,
 		IN in_hierarchy_level_id bigint,
-		OUT out_outcomes TABLE (OUTCOMES_TYPE_ID BIGINT, OUTCOMES_ID BIGINT, OUTCOMES_NAME NVARCHAR(127))
+		OUT out_outcomes TABLE (OUTCOMES_TYPE_ID BIGINT, OUTCOMES_ID BIGINT, OUTCOMES_NAME NVARCHAR(127), SHOW_WIZARD TINYINT)
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
+    va_kpi_benchmark = SELECT DISTINCT EXPECTED_OUTCOME_OPTION_ID FROM KPI_BENCHMARK WHERE ENABLED = 1 AND DELETED = 0;
+
 	out_outcomes =
 	select distinct
     eol.expected_outcome_id as OUTCOMES_TYPE_ID
     ,eoo.expected_outcome_option_id AS OUTCOMES_ID
     , eoo.NAME as OUTCOMES_NAME
+    , CASE WHEN KPI_BENCHMARK.EXPECTED_OUTCOME_OPTION_ID IS NULL THEN 0 ELSE 1 END AS SHOW_WIZARD
     from "PLANNING_TOOL"."EXPECTED_OUTCOME_LEVEL" eol
     inner join "PLANNING_TOOL"."EXPECTED_OUTCOME_OPTION" eoo on eoo.expected_outcome_option_id = eol.expected_outcome_option_id
+    left join :va_kpi_benchmark KPI_BENCHMARK on eoo.expected_outcome_option_id = KPI_BENCHMARK.EXPECTED_OUTCOME_OPTION_ID
     where eol.hierarchy_level_id = in_hierarchy_level_id
     and eol.expected_outcome_id = in_outcomes_type_id
     and eol.enabled = 1 and eol.deleted = 0

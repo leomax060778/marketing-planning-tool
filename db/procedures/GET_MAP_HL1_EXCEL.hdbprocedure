@@ -1,0 +1,34 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_MAP_HL1_EXCEL" (
+
+ OUT OUT_RESULT TABLE (UPLOAD_MAP_ID bigint ,
+                       	TYPE TINYINT,
+                       	COLUMN_NAME NVARCHAR(255),
+                       	CSV_COLUMN_NAME NVARCHAR(255),
+                       	DATA_TYPE NVARCHAR(25),
+                       	FOREIGN_TABLE_NAME NVARCHAR(255),
+                       	FOREIGN_COLUMN_REFERENCE NVARCHAR(255),
+                       	FOREIGN_COLUMN_FILTER NVARCHAR(255),
+                       	OTHER_CONDITION NVARCHAR(255))
+) 
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER 
+ DEFAULT SCHEMA "PLANNING_TOOL"
+ READS SQL DATA AS
+BEGIN
+
+ OUT_RESULT =
+ 
+ SELECT UPLOAD_MAP_ID  , TYPE ,
+                               	COLUMN_NAME ,
+                               	CSV_COLUMN_NAME ,
+                               	DATA_TYPE ,
+                               	FOREIGN_TABLE_NAME ,
+                               	FOREIGN_COLUMN_REFERENCE,
+                               	FOREIGN_COLUMN_FILTER,
+                               	OTHER_CONDITION
+ FROM UPLOAD_MAP
+ WHERE deleted = 0
+   AND enabled = 1
+   AND DATA_TYPE = 'HL1';
+
+END;

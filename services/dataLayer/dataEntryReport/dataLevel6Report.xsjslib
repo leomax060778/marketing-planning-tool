@@ -9,6 +9,7 @@ var GET_ALL_HL6_DE_REPORT = "GET_HL6_DE_REPORT";
 var spGetL6ChangedFieldsByHl6Id = "GET_HL6_CHANGED_FIELDS_BY_HL6_ID";
 var spGetL6ChangedFieldsByHl6IdByField = "GET_HL6_CHANGED_FIELDS_BY_HL6_ID_BY_FIELD";
 var spDelL6ChangedFieldsByHl6Id = "DEL_HL6_CRM_BINDING";
+var GET_HL6_FOR_PROCESSING_REPORT = "GET_HL6_FOR_PROCESSING_REPORT";
 
 /*********** END LIST OF PROCEDURES ***************/
 
@@ -21,6 +22,17 @@ function getAllLevel6Report(userId) {
 		spResult.push(list[key]);
 	});
 	return spResult;
+}
+
+function getL6ForProcessingReportByHl6Id(id){
+	if(id){
+		var result = {};
+		var rdo = db.executeProcedureManual(GET_HL6_FOR_PROCESSING_REPORT,{'in_hl6_id':id});
+		result.hl6 = db.extractArray(rdo.out_result)[0];
+		result.marketing_activity_id = db.extractArray(rdo.out_marketing_activity_id)[0];
+		return result;
+	}
+	return null;
 }
 
 function getL6ChangedFieldsByHl6Id(id){

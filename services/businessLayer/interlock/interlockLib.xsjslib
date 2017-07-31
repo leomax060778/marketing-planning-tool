@@ -163,19 +163,46 @@ function getAllOrganizationType(){
 function getGlobalTeam(hl3Id, userId){
 	var result = {};
 	var hl3 = businessLavel3.getLevel3ById(hl3Id, userId);
-	
+	var map = getContactDataMap();
 	if(hl3){
 		var objLevel2 = {};
 		objLevel2.IN_HL2_ID = hl3.HL2_ID;
 		var hl2 = businessLavel2.getLevel2ById(objLevel2);
 		if(hl2){
-			var globals = businessLavel2.getAllCentralTeam(hl3.HL2_ID);
-			result["Central teams"] = getContactData(globals,CONTACT_TYPE.CENTRAL);
-			result['Regions'] = getContactData(blRegion.getAllRegions(),CONTACT_TYPE.REGIONAL);	
-			result['Market Unit'] = getContactData(blSubRegion.getAllSubRegions(),CONTACT_TYPE.REGIONAL);
+			var globalTeams = businessLavel2.getAllCentralTeam(hl3.HL2_ID);
+			var regions = blRegion.getAllRegions();
+			var subregions = blSubRegion.getAllSubRegions();
+			result["Central teams"] = getContactData(globalTeams,CONTACT_TYPE.CENTRAL, map);
+			result['Regions'] = getContactData(regions,CONTACT_TYPE.REGIONAL, map);
+			result['Market Unit'] = getContactData(subregions,CONTACT_TYPE.REGIONAL, map);
 		}
 	}
 	return result;
+}
+
+function getContactData(data,contactType, map){
+    data = JSON.parse(JSON.stringify(data));
+    data.forEach(function(object){
+        var id = object.REGION_ID || object.HL2_ID;
+        object.contactData = map[contactType] && map[contactType][id] ? map[contactType][id] : [];
+    });
+    return data;
+}
+
+function getContactDataMap(){
+    var spResult = dataInterlock.getInterlockCentralRegionContacts();
+    var map = {};
+    for(var i = 0; i<spResult.length; i++){
+    	var contactData = spResult[i];
+    	if(!map[contactData.CONTACT_TYPE])
+            map[contactData.CONTACT_TYPE] = {};
+
+    	if(!map[contactData.CONTACT_TYPE][contactData.CONTACT_TYPE_ID])
+    		map[contactData.CONTACT_TYPE][contactData.CONTACT_TYPE_ID] = [];
+
+        map[contactData.CONTACT_TYPE][contactData.CONTACT_TYPE_ID].push(contactData.EMAIL);
+	}
+	return map;
 }
 
 
@@ -230,25 +257,6 @@ function notifyInterlockResponse(TO,token){
 	} ], "Marketing Planning Tool - Interlock Process", body);
 
 	mail.sendMail(mailObject,true);
-}
-
-function getContactData(data,contactType){
-	var result = [];
-	data.forEach(function(object){
-		var resultObject = {};
-		Object.keys(object).forEach(function(key){
-			resultObject[key] = object[key];
-		});
-		var id = object.REGION_ID || object.HL2_ID;
-		var contactData = [];
-		dataInterlock.getInterlockCentralRegionContacts(contactType, id).forEach(function(contact){
-			contactData.push(contact.EMAIL);
-		});
-		var contactDataString = contactData;
-		resultObject.contactData = contactDataString;
-		result.push(resultObject);
-	});
-	return result;
 }
 
 function getMessagesByInterlockRequest(interlockRequestId){

@@ -1,0 +1,50 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_REQUEST_CATEGORY_OPTION_BY_HL5_ID" (
+	IN in_hl_id bigint,
+	IN in_hierarchy_level_id BIGINT,
+	OUT out_result TABLE (
+	    CATEGORY_NAME NVARCHAR(255)
+	    , SERVICE_REQUEST_CATEGORY_ID BIGINT
+	    , OPTION_NAME NVARCHAR(255)
+	    , SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID BIGINT
+	    , IS_CHECKED TINYINT
+        )
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+    va_hl5_reuqest_category_option = SELECT SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID
+                                  , 1 AS IS_CHECKED
+                                  FROM HL5_REQUEST_CATEGORY_OPTION
+                                  WHERE HL5_ID = in_hl_id;
+
+    va_hl5_category_option = (SELECT SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID
+                                     , IS_CHECKED
+                                     FROM :va_hl5_reuqest_category_option)
+                          UNION ALL
+                            (SELECT SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID
+                                , 0 AS IS_CHECKED
+                         FROM SERVICE_REQUEST_CATEGORY_OPTION_LEVEL
+                         WHERE ENABLED = 1 AND DELETED = 0
+                         AND HIERARCHY_LEVEL_ID = in_hierarchy_level_id
+                         AND SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID NOT IN (
+                            SELECT SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID
+                            FROM :va_hl5_reuqest_category_option
+                         ));
+
+
+    out_result = SELECT SRC.NAME AS CATEGORY_NAME
+                         , SRCOL.SERVICE_REQUEST_CATEGORY_ID
+                         , SRO.NAME AS OPTION_NAME
+                         , HL5_CO.SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID
+                         , HL5_CO.IS_CHECKED
+                FROM :va_hl5_category_option HL5_CO
+                INNER JOIN SERVICE_REQUEST_CATEGORY_OPTION_LEVEL SRCOL
+                    ON SRCOL.SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID = HL5_CO.SERVICE_REQUEST_CATEGORY_OPTION_LEVEL_ID
+                INNER JOIN SERVICE_REQUEST_CATEGORY SRC
+                    ON SRCOL.SERVICE_REQUEST_CATEGORY_ID = SRC.SERVICE_REQUEST_CATEGORY_ID
+                INNER JOIN SERVICE_REQUEST_OPTION SRO
+                    ON SRCOL.SERVICE_REQUEST_OPTION_ID = SRO.SERVICE_REQUEST_OPTION_ID
+                ORDER BY SRC.NAME, SRO.NAME;
+END;

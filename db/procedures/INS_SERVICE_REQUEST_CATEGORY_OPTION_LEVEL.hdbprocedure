@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_SERVICE_REQUEST_CATEGORY_OPTION_LEVEL" (
+	IN in_category_id BIGINT,
+	IN in_option_id BIGINT,
+	IN in_level_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	AS
+BEGIN
+		INSERT INTO "PLANNING_TOOL"."SERVICE_REQUEST_CATEGORY_OPTION_LEVEL"(service_request_category_id, service_request_option_id, hierarchy_level_id,created_user_id)
+		VALUES(in_category_id, in_option_id, in_level_id, in_user_id);
+
+		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM "PLANNING_TOOL"."SERVICE_REQUEST_CATEGORY_OPTION_LEVEL";
+END;

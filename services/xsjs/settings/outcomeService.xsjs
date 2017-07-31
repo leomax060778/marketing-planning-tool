@@ -14,8 +14,14 @@ function processRequest(){
 	
 };
 
-function handlePost(reqBody, userId) {	
-	var result = outcomesLib.insertOutcomes(reqBody, userId);
+function handlePost(reqBody, userId) {
+	var method = $.request.parameters.get("method");
+	if(method == 'GET_KPI_VOLUME_VALUE'){
+        result = outcomesLib.getKpiVolumeValue(reqBody.CAMPAIGN_TYPE_ID,reqBody.CAMPAIGN_SUBTYPE_ID, reqBody.KPI_OPTION_ID, reqBody.ANSWERS);
+    } else {
+        var result = outcomesLib.insertOutcomes(reqBody, userId);
+	}
+
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 }
 
@@ -28,7 +34,9 @@ function handleGet(params, userId) {
 		result = outcomesLib.getAllOutcomes(hl);
 	} else if(in_outcome_type_id){
 		result = outcomesLib.getOutcomesByOtId(in_outcome_type_id);
-	}; 			
+	} else if(method == 'GET_WIZARD_QUESTIONS'){
+        result = outcomesLib.getWizardQuestions();
+	};
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 };
 

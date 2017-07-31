@@ -2,25 +2,106 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_SALES_BY_ID"
 ( 
 in in_hl6_id  bigint
 ,OUT out_result TABLE (
-hl6_sales_id bigint,
-organization_id bigint,
-amount decimal(19, 6),
+hl6_sales_id INTEGER,
+organization_id INTEGER,
 organization_type tinyint,
-description nvarchar(255)
+description nvarchar(255),
+organization_name nvarchar(255),
+currency_id INTEGER,
+currency_value decimal(19, 6),
+amount decimal(19, 6)
 )
 )
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-out_result =
-	select
-		hl6_sales_id,
-	    organization_id,
-	    amount,
-	    organization_type,
-	    description
+
+sub_out_result =
+	(select
+		hl6_sales.hl6_sales_id,
+	    hl6_sales.organization_id,
+	    hl6_sales.amount,
+	    hl6_sales.organization_type,
+	    hl6_sales.description,
+	    hl6_sales.currency_id,
+	    region.region_name as organization_name
 	from hl6_sales
-	where hl6_sales_id = in_hl6_id
-	and enabled = 1 and deleted = 0;
+	inner join region on region.region_id = hl6_sales.organization_id
+	where hl6_id = in_hl6_id
+	and hl6_sales.enabled = 1 and hl6_sales.deleted = 0)
+
+	union all
+
+	(select
+    		hl6_sales.hl6_sales_id,
+    	    hl6_sales.organization_id,
+    	    hl6_sales.amount,
+    	    hl6_sales.organization_type,
+    	    hl6_sales.description,
+    	    hl6_sales.currency_id,
+    	    hl2.organization_acronym as organization_name
+    	from hl6_sales
+        inner join hl2 on hl2.hl2_id = hl6_sales.organization_id
+    	where hl6_id = in_hl6_id
+    	and hl6_sales.enabled = 1 and hl6_sales.deleted = 0)
+
+    	UNION ALL
+
+    	(select
+             		hl6_sales.hl6_sales_id,
+             	    hl6_sales.organization_id,
+             	    hl6_sales.amount,
+             	    hl6_sales.organization_type,
+             	    hl6_sales.description,
+             	    hl6_sales.currency_id,
+             	    null as organization_name
+             	from hl6_sales
+             	where hl6_id = in_hl6_id and hl6_sales.organization_type = 3
+             	and hl6_sales.enabled = 1 and hl6_sales.deleted = 0);
+
+va_out_result = select
+                T.HL6_SALES_ID,
+                T.ORGANIZATION_ID,
+                T.ORGANIZATION_TYPE,
+                T.DESCRIPTION,
+                T.ORGANIZATION_NAME,
+                T.CURRENCY_ID,
+                CURRENCY.CURRENCY_VALUE,
+                COALESCE(T3.AMOUNT, T.AMOUNT, 0) AS AMOUNT
+            from :sub_out_result T
+            INNER JOIN CURRENCY ON CURRENCY.EURO_CONVERSION_ID = T.CURRENCY_ID
+             LEFT JOIN HL6_SALE_BUDGET_SPEND_REQUEST T2 ON T.HL6_SALES_ID = T2.HL6_SALES_ID
+              LEFT JOIN BUDGET_SPEND_REQUEST T3 ON T2.BUDGET_SPEND_REQUEST_ID = T3.BUDGET_SPEND_REQUEST_ID
+              and (T3.BUDGET_SPEND_REQUEST_STATUS_ID = 1 OR T3.BUDGET_SPEND_REQUEST_STATUS_ID = 2);
+
+out_result =  select
+                    T.HL6_SALES_ID,
+                    T.ORGANIZATION_ID,
+                    T.ORGANIZATION_TYPE,
+                    T.DESCRIPTION,
+                    T.ORGANIZATION_NAME,
+                    T.CURRENCY_ID,
+                    T.CURRENCY_VALUE,
+                    SUM(T.AMOUNT) * T.CURRENCY_VALUE AS AMOUNT
+                from :va_out_result T
+                  GROUP BY T.HL6_SALES_ID,
+                            T.CURRENCY_ID,
+                            T.CURRENCY_VALUE,
+                           T.ORGANIZATION_ID,
+                           T.ORGANIZATION_TYPE,
+                           T.DESCRIPTION,
+                           T.ORGANIZATION_NAME;
+
+--out_result =
+--	select
+--		hl6_sales_id,
+--	    organization_id,
+--	    amount,
+--	    organization_type,
+--	    description
+--	from hl6_sales
+--	where hl6_sales_id = in_hl6_id
+--	and enabled = 1 and deleted = 0;
+
 END;

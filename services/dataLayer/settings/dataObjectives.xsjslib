@@ -12,10 +12,18 @@ var GET_OBJECTIVE_BY_ID = "GET_OBJECTIVE_BY_ID";
 var DEL_OBJECTIVE = "DEL_OBJECTIVE";
 var GET_OBJECTIVE_BY_NAME = "GET_OBJECTIVE_BY_NAME";
 var GET_COUNT_OBJECTIVES_IN_USE_BY_ID = "GET_COUNT_OBJECTIVES_IN_USE_BY_ID";
+var GET_ANSWER_FOR_ALL_OBJECTIVES = "GET_ANSWER_FOR_ALL_OBJECTIVES";
+
 
 function getAllObjectives(){
 	var parameters = {};	
 	var list = db.executeProcedureManual(GET_ALL_OBJECTIVES, parameters);
+	return db.extractArray(list.out_result);
+}
+
+function getAnswerForAllObjectives(){
+	var parameters = {};
+	var list = db.executeProcedureManual(GET_ANSWER_FOR_ALL_OBJECTIVES, parameters);
 	return db.extractArray(list.out_result);
 }
 

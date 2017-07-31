@@ -1,0 +1,26 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_PENDING_HL6_PARTNER_BY_PARTNER_ID"
+(
+in arrPartnerToDelete TABLE(
+      in_partner_id INTEGER
+    , in_user_id INTEGER
+    )
+    ,OUT out_result TABLE (
+          in_partner_id INTEGER
+        , in_user_id INTEGER
+        , in_budget_spend_request_id INTEGER
+    )
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+out_result =
+	select
+	hl6_partner.hl6_partner_id as in_partner_id,
+    t.in_user_id as in_user_id,
+    bsr.budget_spend_request_id as in_budget_spend_request_id
+	from hl6_partner
+	inner join :arrPartnerToDelete t on hl6_partner.hl6_partner_id = t.in_partner_id
+    inner join budget_spend_request bsr on bsr.budget_spend_request_id = hl6_partner.budget_spend_request_id
+    where bsr.budget_spend_request_status_id = 1;
+END;

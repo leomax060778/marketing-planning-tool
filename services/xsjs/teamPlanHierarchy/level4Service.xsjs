@@ -45,7 +45,12 @@ function handleGet(params, userId) {
         hl4.checkPermission(userId, null, in_hl4_id);
 		result = hl4.getHl4ById(in_hl4_id);
 	} else if (param_section && param_section == section){
-		result = hl4.getLevel4ForSearch(userId);
+        var budgetYearId = httpUtil.getUrlParameters().get("BUDGET_YEAR_ID") || null;
+        var regionId = httpUtil.getUrlParameters().get("REGION_ID") || null;
+        var subRegionId = httpUtil.getUrlParameters().get("SUBREGION_ID") || null;
+        var limit = httpUtil.getUrlParameters().get("LIMIT") || null;
+        var offset = httpUtil.getUrlParameters().get("OFFSET") || null;
+		result = hl4.getLevel4ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userId);
 	} else{
 		throw ErrorLib.getErrors().BadRequest("","level4Services/handleGet","invalid parameter name (can be: HL3_ID, HL4_ID or section)");
 	}
@@ -83,7 +88,7 @@ function handlePut(reqBody, userId){
 
 //Implementation of DELETE call -- Delete HL4
 function handleDelete(reqBody, userId){
-    businessLavel4.checkPermission(userId, null, reqBody.in_hl4_id);
+    hl4.checkPermission(userId, null, reqBody.in_hl4_id);
 	var result =  hl4.deleteHl4(reqBody, userId);
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
 };

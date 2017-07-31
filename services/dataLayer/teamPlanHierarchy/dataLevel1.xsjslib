@@ -16,6 +16,10 @@ var GET_HL1_ALLOCATED_BUDGET = "GET_HL1_ALLOCATED_BUDGET";
 var GET_HL1_FOR_SEARCH = "GET_HL1_FOR_SEARCH";
 //var GET_ALL_CENTRAL_TEAM = "GET_ALL_CENTRAL_TEAM"; //TODO: review in integration
 var GET_HL1_BY_FILTER = "GET_HL1_BY_FILTER";
+var INS_HL1_VERSION = "INS_HL1_VERSION";
+var GET_ALL_HL1_VERSION_BY_HL1_ID = "GET_ALL_HL1_VERSION_BY_HL1_ID";
+var GET_HL1_VERSION_BY_FILTER = "GET_HL1_VERSION_BY_FILTER";
+var GET_HL1_VERSION_BY_ID = "GET_HL1_VERSION_BY_ID";
 
 function insertLevel1(acronym, description, budgetYearId, regionId, subregionId, userId, budget, teamTypeId, implementExecutionLevel, crtRelated){
     var parameters = {};
@@ -33,7 +37,7 @@ function insertLevel1(acronym, description, budgetYearId, regionId, subregionId,
     return db.executeScalarManual(INS_HL1, parameters, "out_hl1_id");
 }
 
-function updateLevel1(hl1Id, acronym, description, budgetYearId, regionId, subregionId, userId, budget, teamTypeId, implementExecutionLevel, crtRelated){
+function updateLevel1(hl1Id, acronym, description, budgetYearId, regionId, subregionId, userId, budget, teamTypeId, implementExecutionLevel, crtRelated, version){
     var parameters = {};
     parameters.in_hl1_id = hl1Id;
     parameters.in_acronym = acronym;
@@ -46,6 +50,7 @@ function updateLevel1(hl1Id, acronym, description, budgetYearId, regionId, subre
     parameters.in_team_type_id = teamTypeId;
     parameters.in_implement_execution_level = implementExecutionLevel;
     parameters.in_crt_related = crtRelated;
+    parameters.in_version = version;
     return db.executeScalarManual(UPD_HL1, parameters, "out_result");
 }
 
@@ -116,10 +121,18 @@ function getHl1AllocatedBudget(hl1Id, hl2Id) {
     return null;
 }
 
-function getLevel1ForSearch(userSessionID, isSA){
-	var parameters = {in_user_id: userSessionID, in_isSA: isSA};
+function getLevel1ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userSessionID, isSA){
+	var parameters = {
+	    in_budget_year_id: budgetYearId
+        , in_region_id: regionId
+        , in_subRegion_id: subRegionId
+        , in_limit: limit
+        , in_offset: offset
+        , in_user_id: userSessionID
+        , in_isSA: isSA
+	};
     var result = db.executeProcedureManual(GET_HL1_FOR_SEARCH, parameters);
-    return db.extractArray(result.out_result);
+    return {result: db.extractArray(result.out_result), total_rows: result.total_rows};
 }
 
 function getAllCentralTeam(centralTeamId){
@@ -142,4 +155,57 @@ function getLevel1ByFilters(budgetYearId, regionId, subRegionId, userId, isSuper
     result.out_result = db.extractArray(list.out_result);
     result.out_total_budget = list.out_total_budget;
     return result;
+}
+
+function insertLevel1Version(hl1_id, version, acronym, description, budgetYearId, regionId, subregionId, userId, budget, teamTypeId, implementExecutionLevel, crtRelated){
+    var parameters = {};
+    var result = {};
+    parameters.in_hl1_id = hl1_id;
+    parameters.in_version = version;
+    parameters.in_acronym = acronym;
+    parameters.in_description = description;
+    parameters.in_budget = budget;
+    parameters.in_budget_year_id = budgetYearId;
+    parameters.in_region_id = regionId;
+    parameters.in_subregion_id = subregionId;
+    parameters.in_created_user_id = userId;
+    parameters.in_implement_execution_level = implementExecutionLevel;
+    parameters.in_crt_related = crtRelated;
+    parameters.in_team_type_id = teamTypeId;
+    return db.executeScalarManual(INS_HL1_VERSION, parameters, "out_result");
+}
+
+function getAllHl1VersionByHl1Id(hl1_id){
+    var parameters = {'in_hl1_id': hl1_id};
+    var result = db.executeProcedureManual(GET_ALL_HL1_VERSION_BY_HL1_ID,parameters);
+    return db.extractArray(result.out_result);
+}
+
+function getLevel1VersionForFilter(budgetYearId, regionId, subRegionId, userSessionID, isSA){
+    var parameters = {
+        in_budget_year_id: budgetYearId
+        , in_region_id: regionId
+        , in_subRegion_id: subRegionId
+        , in_user_id: userSessionID
+        , in_is_super_admin: isSA ?  1 : 0
+    };
+    var result = db.executeProcedureManual(GET_HL1_VERSION_BY_FILTER, parameters);
+    return { out_result: db.extractArray(result.out_result) };
+}
+
+function getLevel1VersionById(hl1Id, version){
+    if(hl1Id && version)
+    {
+        var parameters = {
+            'in_hl1_id': hl1Id
+            , 'in_version': version
+        };
+        var result = db.executeProcedureManual(GET_HL1_VERSION_BY_ID, parameters);
+        var list = db.extractArray(result.out_result);
+        if(list.length)
+            return list[0];
+        else
+            return {};
+    }
+    return {};
 }

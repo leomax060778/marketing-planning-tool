@@ -13,6 +13,7 @@ var id = "id";
 var setStatusInCRM = "SETINCRM";
 var changeStatus = "CHANGESTATUS";
 var sendInCrmNotificationMail = "SENDMAIL";
+var getHl5ByUserId = 'GET_HL5_BY_USER_ID';
 
 /******************************************/
 
@@ -36,7 +37,12 @@ function handleGet(params, userId) {
         hl5.checkPermission(userId, null, in_hl5_id);
 		result = hl5.getHl5ById(in_hl5_id);
 	} else if (param_section && param_section == section){
-		result = hl5.getLevel5ForSearch(userId);
+        budgetYearId = httpUtil.getUrlParameters().get("BUDGET_YEAR_ID") || null;
+        var regionId = httpUtil.getUrlParameters().get("REGION_ID") || null;
+        var subRegionId = httpUtil.getUrlParameters().get("SUBREGION_ID") || null;
+        var limit = httpUtil.getUrlParameters().get("LIMIT") || null;
+        var offset = httpUtil.getUrlParameters().get("OFFSET") || null;
+		result = hl5.getLevel5ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userId);
 	} else if (dataType && dataType == "DISTRIBUTION_CHANNEL"){
 		result = hl5.getAllDistributionChannel();
 	} else if (dataType && dataType == "MARKETING_PROGRAM"){
@@ -47,7 +53,9 @@ function handleGet(params, userId) {
 		result = hl5.getAllBusinessOwner();
 	} else if (dataType && dataType == "COST_CENTER"){
 		result = hl5.getCostCenterByHl4IdMarketingOrganizationId(in_hl4_id,in_sale_organization);
-	}else{
+	} else if(param_section && param_section == getHl5ByUserId){
+		result = hl5.getHl5ByUserId(userId);
+	} else{
 		throw ErrorLib.getErrors().BadRequest("","level5Service/handleGet","invalid parameter name (can be: HL4_ID, HL5_ID or section)");
 	}
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);
@@ -57,6 +65,7 @@ function handleGet(params, userId) {
 function handlePut(reqBody, userId){
 	var parameters = httpUtil.getUrlParameters();
     hl5.checkPermission(userId, null, parameters.get('HL5_ID') || reqBody.hl5.in_hl5_id);
+
 	if(parameters.length > 0){
 		var aCmd = parameters.get('method');
 		var hl5Id = parameters.get('HL5_ID');

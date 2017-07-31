@@ -132,26 +132,44 @@ function insEmployeeResponsible(data, costCenterId , userId, isUpload){
 }
 
 function insCostCenterTeams(costCenterId, costCenterTeams, userId, marketingOrganizationId, isUpload){
+    var teamIdsCollection = [];
 	if(!isUpload){
-		costCenterTeams.forEach(function(teamId){
-			if(existCostCentermarketingOrganizationTeams(marketingOrganizationId, teamId, costCenterId))
-				dataCostCenter.insCostCenterTeams(costCenterId, userId, teamId);
-		});
+        teamIdsCollection = costCenterTeams.map(function(elem){
+            return {in_team_id : elem}
+        });
 	} else {
-		if(existCostCentermarketingOrganizationTeams(marketingOrganizationId, costCenterTeams, costCenterId))
-			dataCostCenter.insCostCenterTeams(costCenterId, userId, costCenterTeams);
+        teamIdsCollection.push({in_team_id: costCenterTeams});
 	}
+
+	var teamIdsToInsert = existCostCentermarketingOrganizationTeams(marketingOrganizationId, teamIdsCollection, costCenterId);
+    var insCostCenterTeams = teamIdsToInsert.map(function(elem){
+        return {in_cost_center_id: costCenterId, in_hl3_id : elem, in_user_id: userId}
+    });
+
+	dataCostCenter.insCostCenterTeams(insCostCenterTeams);
 }
 
-function existCostCentermarketingOrganizationTeams(marketingOrganizationId, teamId, costCenterId){
-	var rdo = dataCostCenter.getCostCenterTeamByMarketingOrganizationIdTeamId(marketingOrganizationId, teamId);
+function existCostCentermarketingOrganizationTeams(marketingOrganizationId, teamIdsCollection, costCenterId){
+	var rdo = dataCostCenter.getCostCenterTeamByMarketingOrganizationIdTeamId(marketingOrganizationId, teamIdsCollection);
 	if(rdo && rdo.COST_CENTER_ID && rdo.COST_CENTER_ID != costCenterId){
 		throw ErrorLib.getErrors().CustomError("",
 			"costCenterServices/handlePost/insCostCenterTeams/existCostCenterTeams",
 			"The team " + rdo.PATH + " is already assigned to " + rdo.MARKETING_ORGANIZATION_NAME + " marketing organization on cost center " + rdo.COST_CENTER_DESCRIPTION);
 	}
 
-	return !dataCostCenter.getCostCenterTeamByCostCenterIdTeamId(costCenterId, teamId);
+	rdo = dataCostCenter.getCostCenterTeamByCostCenterIdTeamId(costCenterId, teamIdsCollection);
+	var teamIdsToInsert = [];
+
+	var aux = {};
+    rdo.forEach(function (elem) {
+    	aux[elem.HL3_ID] = true;
+    });
+
+    teamIdsCollection.forEach(function (elem) {
+        if(!aux[elem.in_team_id])teamIdsToInsert.push(elem.in_team_id);
+	});
+
+	return teamIdsToInsert;
 }
 
 function insCostCenterEmployeeResponsible(costCenterId, employeeResponsibleId, userId){
@@ -178,12 +196,16 @@ function updCostCenter(data, userId, isUpload){
 	var costCenterId = data.COST_CENTER_ID;
 
 	var costCenter = getCostCenterById(data.COST_CENTER_ID);
-	if(costCenterInUse(costCenterId).length && costCenter.SALE_ORGANIZATION_ID != data.SALE_ORGANIZATION_ID)
-		throw ErrorLib.getErrors().CustomError("",
-			"costCenterServices/handleUpdate/updCostCenter",
-			"Cannot change Cost Center Marketing Organization. Cost Center is in use.");
-
-	dataCostCenter.updCostCenter(data.COST_CENTER_ID, data.NAME, data.DESCRIPTION, userId, data.CODE, data.SALE_ORGANIZATION_ID);
+	var validation = costCenterInUse(costCenterId).length && costCenter.SALE_ORGANIZATION_ID != data.SALE_ORGANIZATION_ID;
+	if(validation){
+        if(!isUpload){
+            throw ErrorLib.getErrors().CustomError("",
+                "costCenterServices/handleUpdate/updCostCenter",
+                "Cannot change Cost Center Marketing Organization. Cost Center is in use.");
+		}
+	} else {
+        dataCostCenter.updCostCenter(data.COST_CENTER_ID, data.NAME, data.DESCRIPTION, userId, data.CODE, data.SALE_ORGANIZATION_ID);
+	}
 
 	if(!isUpload) {
 		var firstTime = true;
@@ -202,29 +224,31 @@ function updCostCenter(data, userId, isUpload){
 	return data;
 }
 
-function updCostCenterTeams(costCenterId, costCenterTeams, userId, saleOrganizationId, isUpload){
-	var costCenterById = getCostCenterById(costCenterId);
-	costCenterById.COST_CENTER_TEAMS.forEach(function(team){
-		if (!isUpload && costCenterTeams.indexOf(team.HL3_ID) == -1) {
-			var costCenterByTeam = costCenterInUseByTeamSaleOrganization(costCenterId, team.HL3_ID, costCenterById.SALE_ORGANIZATION_ID);
-			if(costCenterByTeam.length) {
-				var msg = "Cannot remove: \n\r";
+function updCostCenterTeams(costCenterId, costCenterTeams, userId, saleOrganizationId, isUpload) {
+    var costCenterById = getCostCenterById(costCenterId);
+    costCenterById.COST_CENTER_TEAMS.forEach(function (team) {
+        if (!isUpload && costCenterTeams.indexOf(team.HL3_ID) === -1) {
+            var costCenterByTeam = costCenterInUseByTeamSaleOrganization(costCenterId, team.HL3_ID, costCenterById.SALE_ORGANIZATION_ID);
+            if (costCenterByTeam.length) {
+                var msg = "Cannot remove: \n\r";
+                var paths = [];
 
-				costCenterByTeam.forEach(function(cc){
-					msg += cc.PATH + "\n\r";
-				});
+                costCenterByTeam.forEach(function (cc) {
+                    msg += "CRM-" + cc.PATH + "\n\r";
+                    paths.push(cc.PATH);
+                });
 
-				msg += "from Cost Center because it is in use.";
-				throw ErrorLib.getErrors().CustomError("",
-					"costCenterServices/handleUpdate/updCostCenterTeam",
-					msg);
-			} else {
-				dataCostCenter.delCostCenterTeamsByCostCenterIdTeamId(costCenterId, team.HL3_ID, userId);
-			}
-		}
-	});
+                msg += "from Cost Center because it is in use.";
+                throw ErrorLib.getErrors().CustomError(paths,
+                    "costCenterServices/handleUpdate/updCostCenterTeam",
+                    msg);
+            } else {
+                dataCostCenter.delCostCenterTeamsByCostCenterIdTeamId(costCenterId, team.HL3_ID, userId);
+            }
+        }
+    });
 
-	insCostCenterTeams(costCenterId, costCenterTeams, userId, saleOrganizationId, isUpload);
+    insCostCenterTeams(costCenterId, costCenterTeams, userId, saleOrganizationId, isUpload);
 }
 
 function updCostCenterEmployeeResponsible(costCenterId, costCenterEmployeeResponsible, userId, firsTime){
@@ -398,7 +422,8 @@ function uploadCostCenter(data, userId){
 			var organizationAcronym = pathParts[1];
 			var budgetYear = dbBudget.getBudgetYear(budgetYearAcronym);
 			var hl2 = dataHl2.getLevelByAcronymAndOrganizationAcronym(planAcronym,budgetYear.BUDGET_YEAR_ID,organizationAcronym);
-			var teamId = dataHl3.getLevel3ByAcronym({IN_ACRONYM: costCenter.in_team, IN_HL2_ID: hl2.HL2_ID}).HL3_ID;
+
+			var teamId = dataHl3.getLevel3ByAcronym({IN_ACRONYM: costCenter.in_team, IN_HL2_ID: hl2.HL2_ID, IN_HL1_ID: hl2.HL1_ID}).HL3_ID;
 			if (teamId) {
 				if (duplicatedCostCenter.indexOf(costCenter.in_code) !== -1) {
 					insCostCenterTeams(costCenterId, teamId, userId, costCenter.in_marketing_organization_id, isUpload);

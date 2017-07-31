@@ -6,6 +6,7 @@ var db = mapper.getdbHelper();
 //STORE PROCEDURE LIST NAME
 var GET_ALL_CAMPAIGN_SUB_TYPE = "GET_ALL_CAMPAIGN_SUB_TYPE";
 var GET_ALL_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID = "GET_ALL_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID";
+var GET_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID = "GET_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID";
 var GET_ALL_AVAILABLE_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID = "GET_ALL_AVAILABLE_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID";
 var GET_CAMPAIGN_SUB_TYPE_BY_ID = "GET_CAMPAIGN_SUB_TYPE_BY_ID";
 var GET_CAMPAIGN_SUB_TYPE_BY_NAME = "GET_CAMPAIGN_SUB_TYPE_BY_NAME";
@@ -13,6 +14,7 @@ var INS_CAMPAIGN_SUB_TYPE = "INS_CAMPAIGN_SUB_TYPE";
 var UPD_CAMPAIGN_SUB_TYPE = "UPD_CAMPAIGN_SUB_TYPE";
 var DEL_CAMPAIGN_SUB_TYPE = "DEL_CAMPAIGN_SUB_TYPE";
 var GET_COUNT_CAMPAIGN_SUB_TYPE_IN_USE_BY_ID = "GET_COUNT_CAMPAIGN_SUB_TYPE_IN_USE_BY_ID";
+var UPD_CAMPAIGN_TYPE_SUBTYPE_DATE_RULE = "UPD_CAMPAIGN_TYPE_SUBTYPE_DATE_RULE";
 
 function getAllCampaignSubType() {
     var parameters = {};
@@ -28,6 +30,12 @@ function getAllCampaignSuTypeByCampaignTypeId(idCampaignType, idObjective) {
 function getAllAvailableCampaignSubTypeByCampaignTypeId(idCampaignType, idObjective) {
     var parameters = {'in_campaign_type_id': idCampaignType, 'in_objective_id': idObjective};
     var data = db.executeProcedureManual(GET_ALL_AVAILABLE_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID, parameters);
+    return db.extractArray(data.out_result);
+}
+
+function getCampaignSuTypeByCampaignTypeId(idCampaignType) {
+    var parameters = {'in_campaign_type_id': idCampaignType};
+    var data = db.executeProcedureManual(GET_CAMPAIGN_SUB_TYPE_BY_CAMPAIGN_TYPE_ID, parameters);
     return db.extractArray(data.out_result);
 }
 
@@ -62,6 +70,18 @@ function updateCampaignSubType(campaignTypeId, name, userId) {
     parameters.IN_NAME = name;
     parameters.IN_MODIFIED_USER_ID = userId;
     return db.executeScalarManual(UPD_CAMPAIGN_SUB_TYPE, parameters, "out_result");
+}
+
+function updateDateRules( CAMPAIGN_TYPE_ID,    CAMPAIGN_SUBTYPE_ID,    VALIDATE_DATE_RULE,    ACTUAL_START_DATE_ROLLOVER_TEXT,    ACTUAL_END_DATE_ROLLOVER_TEXT,    userId){
+    var parameters = {
+        in_campaign_sub_type_id : CAMPAIGN_SUBTYPE_ID,
+        in_campaign_type_id : CAMPAIGN_TYPE_ID,
+        in_validate_date_rule : VALIDATE_DATE_RULE,
+        in_actual_start_date_rollover_text : ACTUAL_START_DATE_ROLLOVER_TEXT,
+        in_actual_end_date_rollover_text : ACTUAL_END_DATE_ROLLOVER_TEXT,
+        in_user_id : userId
+    };
+    return db.executeScalarManual(UPD_CAMPAIGN_TYPE_SUBTYPE_DATE_RULE, parameters, "out_result");
 }
 
 function deleteCampaignSubType(campaignTypeId, userId) {

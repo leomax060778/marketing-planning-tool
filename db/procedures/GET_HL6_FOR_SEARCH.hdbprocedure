@@ -1,59 +1,157 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_FOR_SEARCH"
 (
-		IN in_user_id bigint
+		  IN in_user_id bigint
 		, IN in_isSA tinyint
+		, IN in_budget_year_id BIGINT
+        , IN in_region_id BIGINT
+        , IN in_subregion_id BIGINT
+        , IN in_limit integer
+        , IN in_offset integer
 		, OUT out_result TABLE (
 			id bigint,
 			parent_id bigint,
-			BUDGET_YEAR BIGINT,
-			acronym NVARCHAR(25),
-			organization_acronym NVARCHAR(25), 
+			organization_acronym NVARCHAR(25),
 			region_name NVARCHAR(255),
 			subregion_name NVARCHAR(255),
 			path NVARCHAR(50)
 		)
+		, OUT totalRows integer
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-	out_result = SELECT DISTINCT HL6.hl6_id as id
+
+IF in_isSA = 1 THEN
+	VAR_OUT_RESULT = SELECT DISTINCT HL6.hl6_id as id
 		, HL6.hl5_id as parent_id
-		, BGY.BUDGET_YEAR
-		, HL1.acronym
-		, REPLACE(HL2.organization_acronym, 'N/A', '') AS organization_acronym
+		, HL2.organization_acronym
 		, REGION.region_name
 		, SUBREGION.subregion_name
-        ,
-		CONCAT(
-            CONCAT(
-                CONCAT(
-                    CONCAT(
-                        CONCAT(
-                            CONCAT(
-                                CONCAT(
-                                HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
-                            , '-'),
-                        HL3.ACRONYM)
-                    ,'-')
-                , HL4.ACRONYM),
-             HL5.ACRONYM)
-        , HL6.ACRONYM)
-		 AS path
+		, HL1.ACRONYM as hl1_acronym
+		, BGY.BUDGET_YEAR
+		, HL3.ACRONYM as hl3_acronym
+		, HL4.ACRONYM as hl4_acronym
+		, HL5.ACRONYM as hl5_acronym
+		, HL6.ACRONYM as hl6_acronym
+		, REGION.REGION_ID
+
 	FROM HL6 hl6
-	--
 	INNER JOIN HL5 hl5 ON hl5.hl5_id=hl6.hl5_id AND hl5.enabled=1 AND hl5.deleted=0
-	--
 	INNER JOIN HL4 hl4 ON hl4.hl4_id=hl5.hl4_id AND hl4.enabled=1 AND hl4.deleted=0
 	INNER JOIN HL3 ON HL4.hl3_id = HL3.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
-	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID
     INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
     INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id AND hl1.enabled=1 AND hl1.deleted=0
 	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
 	LEFT JOIN REGION ON HL1.region_id = REGION.region_id
 	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
 	WHERE hl6.deleted = 0 AND hl6.enabled = 1
-	AND (in_isSA = 1 OR HL3_USER.USER_ID = in_user_id)
-	  ORDER BY path, organization_acronym;
+	 AND (BGY.BUDGET_YEAR_ID = IN_BUDGET_YEAR_ID)
+     AND (SUBREGION.SUBREGION_ID = IN_SUBREGION_ID OR IN_SUBREGION_ID = 0)
+	ORDER BY
+    		  HL1.ACRONYM
+    		, BGY.BUDGET_YEAR
+    		, HL3.ACRONYM
+            , HL4.ACRONYM
+            , HL5.ACRONYM
+            , HL6.ACRONYM
+            , organization_acronym;
+ELSE
+    VAR_OUT_RESULT = SELECT DISTINCT HL6.hl6_id as id
+		, HL6.hl5_id as parent_id
+		, HL2.organization_acronym
+		, REGION.region_name
+		, SUBREGION.subregion_name
+		, HL1.ACRONYM as hl1_acronym
+		, BGY.BUDGET_YEAR
+		, HL3.ACRONYM as hl3_acronym
+		, HL4.ACRONYM as hl4_acronym
+		, HL5.ACRONYM as hl5_acronym
+		, HL6.ACRONYM as hl6_acronym
+		, REGION.REGION_ID
+
+	FROM HL6 hl6
+	INNER JOIN HL5 hl5 ON hl5.hl5_id=hl6.hl5_id AND hl5.enabled=1 AND hl5.deleted=0
+	INNER JOIN HL4 hl4 ON hl4.hl4_id=hl5.hl4_id AND hl4.enabled=1 AND hl4.deleted=0
+	INNER JOIN HL3 ON HL4.hl3_id = HL3.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
+	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID AND HL3_USER.USER_ID = in_user_id
+    INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
+    INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id AND hl1.enabled=1 AND hl1.deleted=0
+	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
+	LEFT JOIN REGION ON HL1.region_id = REGION.region_id
+	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
+	WHERE hl6.deleted = 0 AND hl6.enabled = 1
+	AND (BGY.BUDGET_YEAR_ID = IN_BUDGET_YEAR_ID)
+    AND (SUBREGION.SUBREGION_ID = IN_SUBREGION_ID OR IN_SUBREGION_ID = 0)
+	ORDER BY
+    		  HL1.ACRONYM
+    		, BGY.BUDGET_YEAR
+    		, HL3.ACRONYM
+            , HL4.ACRONYM
+            , HL5.ACRONYM
+            , HL6.ACRONYM
+            , organization_acronym;
+END IF;
+
+    -- this filter is necesary to filter GLOBALS, where region_id = 0
+    if in_region_id = -1 then
+        TEMP_OUT_RESULT = SELECT
+                          T.id
+                        , T.parent_id
+                        , T.organization_acronym
+                        , T.region_name
+                        , T.subregion_name
+                        , T.hl1_acronym
+                        , T.BUDGET_YEAR
+                        , T.hl3_acronym
+                        , T.hl4_acronym
+                        , T.hl5_acronym
+                        , T.hl6_acronym
+
+                        FROM :VAR_OUT_RESULT T
+                        WHERE T.REGION_ID = 0;
+    else
+        TEMP_OUT_RESULT = SELECT
+                          T.id
+                          , T.parent_id
+                          , T.organization_acronym
+                          , T.region_name
+                          , T.subregion_name
+                          , T.hl1_acronym
+                          , T.BUDGET_YEAR
+                          , T.hl3_acronym
+                          , T.hl4_acronym
+                          , T.hl5_acronym
+                          , T.hl6_acronym
+                        FROM :VAR_OUT_RESULT T
+                        WHERE (T.REGION_ID = IN_REGION_ID OR IN_REGION_ID = 0);
+     end if;
+
+    --totalRows is te total filtered registers
+     SELECT coalesce(COUNT(ID), 0) into totalRows FROM :TEMP_OUT_RESULT;
+
+if(in_limit = -1) then
+out_result =
+SELECT   id
+		, parent_id
+		, organization_acronym
+		, region_name
+		, subregion_name
+		, CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(hl1_acronym, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR), 3, 2)), '-')
+		    ,hl3_acronym),'-'), hl4_acronym), hl5_acronym),hl6_acronym) AS path
+		    from :TEMP_OUT_RESULT;
+else
+out_result =
+SELECT   id
+		, parent_id
+		, organization_acronym
+		, region_name
+		, subregion_name
+		, CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(hl1_acronym, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR), 3, 2)), '-')
+		    ,hl3_acronym),'-'), hl4_acronym), hl5_acronym),hl6_acronym) AS path
+        from :TEMP_OUT_RESULT
+        LIMIT :in_limit OFFSET :in_offset;
+end if;
+
 END;

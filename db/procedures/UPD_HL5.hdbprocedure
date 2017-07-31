@@ -41,6 +41,9 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5" (
     ,in in_event_owner nvarchar(255)
     ,in in_number_of_participants nvarchar(255)
     ,in in_priority_id bigint
+    ,IN in_co_funded tinyint
+    ,IN in_allow_budget_zero tinyint
+    ,IN in_is_power_user tinyint
 	,OUT out_result int
 )
    LANGUAGE SQLSCRIPT
@@ -87,7 +90,10 @@ BEGIN
     region = in_region,
     event_owner = in_event_owner,
     number_of_participants = in_number_of_participants,
-    priority_id = in_priority_id
+    priority_id = in_priority_id,
+    co_funded = in_co_funded,
+    allow_budget_zero = in_allow_budget_zero,
+    is_power_user = in_is_power_user
 
     where hl5_id = in_hl5_id;
 

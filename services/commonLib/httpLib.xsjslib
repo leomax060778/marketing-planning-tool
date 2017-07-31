@@ -8,6 +8,7 @@ var permissions = mapper.getPermission();
 var config = mapper.getDataConfig();
 var db = mapper.getdbHelper();
 var mail = mapper.getMail();
+var tracer = mapper.getTracer();
 /******************************************/
 
 //constants
@@ -36,7 +37,16 @@ function getUrlParameters(){
 	return $.request.parameters;
 }
 
-
+function getUrlParameterByName(name){
+	var params = getUrlParameters();
+	var result = null;
+	Object.keys(params).forEach(function(key){
+		if(params[key].name == name){
+			result =  params[key].value;
+		}
+	});
+	return result;
+}
  
    
  //This function set the Response with a error. value = error --> ErrorLib.Errors.SomeError("message","datails")
@@ -46,11 +56,12 @@ function handleErrorResponse(value){
 		error.stack =value.stack;
 		error.details = value.details;
 		error.data = value.data;
+        error.message = value.message;
 		$.response.contentType = "application/json";
 		$.response.status = error.code;
 		$.response.setBody(JSON.stringify(error));
 	}else{
-		handleErrorResponse(ErrorLib.getErrors().InternalServerError("","",value+""));	//value + "" is a workaround!!!
+		handleErrorResponse(ErrorLib.getErrors().InternalServerError("",value.stack,value+""));	//value + "" is a workaround!!!
 	}	
 }
 
@@ -62,33 +73,34 @@ function notImplementedMethod(){
 //This function choose method, between Get, Put, Post or Delete. Catch all error throwed across the entired app and validate the user per XS call.
 function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalidate, ResourceID, WithOutPermission) {
 	try {
-		
+		$.request.TRANSACTION = '' + new Date().getTime() + ((Math.random().toFixed(5) * 100000) + "").substring(0,5);
+		tracer.trace('httplib','processRequest',{ResourceID:ResourceID},0,'LIB_ENTER');
 		/**********here  - Validate User() -----***/
 		var userSessionID = null;
-		
+
 		if(!Notvalidate){
 			userSessionID = validateUser(getHeaderByName("x-csrf-token"));
-	
+
 			if(!userSessionID)
-				throw ErrorLib.getErrors().Unauthorized(getHeaderByName("x-csrf-token"));		
-			
-		}		
+				throw ErrorLib.getErrors().Unauthorized(getHeaderByName("x-csrf-token"));
+
+		}
 		/**************************************************/
-		
+
 		var reqBody = $.request.body ? JSON.parse($.request.body.asString()) : undefined;
-		
-		
+
+
 		    switch ($.request.method) {
 		        case $.net.http.GET:{
 		        	//Check Read Permission
 		        	if(!WithOutPermission){
 			        	permissions.isAuthorized(userSessionID,
 	        			config.getPermissionIdByName(config.ReadPermission()),
-	        			ResourceID);	
+	        			ResourceID);
 		        	}
 		        	getMethod(getUrlParameters(),userSessionID);
 		            break;
-		        }		        	
+		        }
 		        case $.net.http.PUT:{
 		        	if(!WithOutPermission){
 		        	permissions.isAuthorized(userSessionID,
@@ -97,7 +109,7 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 		        	}
 		        	putMethod(reqBody,userSessionID);
 		            break;
-		        }		        	
+		        }
 	            case $.net.http.POST:{
 	            	if(!WithOutPermission){
 		        	permissions.isAuthorized(userSessionID,
@@ -106,7 +118,7 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 	            	}
 	            	postMethod(reqBody,userSessionID);
 		            break;
-	            }	            	
+	            }
 		        case $.net.http.DEL:{
 		        	if(!WithOutPermission){
 		        	permissions.isAuthorized(userSessionID,
@@ -115,16 +127,17 @@ function processRequest(getMethod, postMethod, putMethod, deleteMethod, Notvalid
 		        	}
 		        	deleteMethod(reqBody,userSessionID);
 		            break;
-		        }		        	
+		        }
 		        default:
 		        	notImplementedMethod();
 			    	break;
-		    }	    
-
+		    }
+		tracer.trace('httplib','processRequest',{ResourceID:ResourceID},0,'LIB_LEAVE');
 		db.commit(); // On this point the transaction finalized successfully.
 	} catch (e) {
+
 		db.rollback();//if exist an error, on this point the transaction should be rolled back.
-		handleErrorResponse(e);	
+		handleErrorResponse(e);
 	}finally {
 		db.closeConnection(); //In any case, the connection should be closed.
 	}

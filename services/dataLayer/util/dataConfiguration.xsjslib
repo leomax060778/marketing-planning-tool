@@ -36,6 +36,7 @@ function dereport() { return "dereport"}
 function report() { return "report"}
 function search() { return "search"}
 function userAccess() { return "User access"}
+function budgetSpendRequest() { return "SpendBudgetRequests" }
 /**************************/
 
 var spGetPermissionByName = "GET_PERMISSION_BY_NAME";
@@ -62,7 +63,7 @@ function DeletePermission(){ return "Delete"}
 
 
 function getConfigurationByName(key){
-	var result = db.executeProcedure(spGET_CONFIGURATION_BY_NAME,{'IN_KEY' : key});
+	var result = db.executeProcedure(spGET_CONFIGURATION_BY_NAME,{'IN_KEY' : key}, true);
 	return db.extractArray(result.out_result);
 }
 
@@ -87,6 +88,10 @@ var OriginMessageInterlock = {
 	requester : 1,
 	moneyLender : 2
 };
+
+function getDebugMode(){
+	return getConfigurationByName("DebugMode")[0].VALUE;
+}
 
 function getAppUrl(){
 	return getConfigurationByName("AppUrl")[0].VALUE;

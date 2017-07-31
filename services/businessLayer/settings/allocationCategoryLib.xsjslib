@@ -4,6 +4,7 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var ErrorLib = mapper.getErrors();
 var dbCategory = mapper.getDataCategory();
 var dbCategoryOption = mapper.getDataOption();
+var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
 /*************************************************/
 
 function getAllocationCategoryByName(name){
@@ -56,9 +57,25 @@ function updateAllocationCategory(data, userId) {
 }
 
 
-function deleteAllocationCategory(categoryId, userId){
-	return dbCategory.deleteAllocationCategory(categoryId, userId);
+function deleteAllocationCategory(categoryId, userId, confirm){
+    if (!categoryId)
+        throw ErrorLib.getErrors().CustomError("",
+            "AllocationCategoryService/handleDelete/deleteAllocationCategory",
+            "Category ID is not found");
 
+	if(confirm){
+        dataCategoryOptionLevel.deleteAllocationCategoryOptionLevelByCategory(categoryId, userId);
+        return dbCategory.deleteAllocationCategory(categoryId, userId);
+	}
+
+    var countRegisters = dataCategoryOptionLevel.checkInUseAllocationCategoryById(categoryId);
+	if (countRegisters) {
+        throw ErrorLib.getErrors().ConfirmDelete("",
+            "AllocationCategoryService/handleDelete/checkInUseAllocationCategoryById",
+            countRegisters);
+    } else {
+        return dbCategory.deleteAllocationCategory(categoryId, userId);
+    }
 }
 
 function getOptionByLevelByCategory(hierarchy_level_id, allocation_category_id){

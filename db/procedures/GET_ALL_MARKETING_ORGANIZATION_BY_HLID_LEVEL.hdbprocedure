@@ -1,0 +1,41 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_MARKETING_ORGANIZATION_BY_HLID_LEVEL" (
+      in in_level bigint
+    , in in_hl_id bigint
+	, OUT out_result TABLE (SALES_ORGANIZATION_ID BIGINT,
+						  NAME NVARCHAR(255)
+						)
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+if (in_level = 2) then
+out_result =
+select
+	distinct so.SALES_ORGANIZATION_ID
+	,so.NAME
+	from SALE_ORGANIZATION so
+	inner join COST_CENTER cc on so.SALES_ORGANIZATION_ID = cc.SALE_ORGANIZATION_ID
+	inner join COST_CENTER_TEAMS cct on cct.COST_CENTER_ID = cc.COST_CENTER_ID
+	inner join hl4 on hl4.hl3_id = cct.hl3_id
+	where so.ENABLED = 1 AND so.DELETED = 0
+	and hl4.hl4_id = in_hl_id
+	ORDER BY upper(so.NAME) ASC;
+else
+    out_result =
+    select
+        distinct so.SALES_ORGANIZATION_ID
+        ,so.NAME
+        from SALE_ORGANIZATION so
+        inner join COST_CENTER cc on so.SALES_ORGANIZATION_ID = cc.SALE_ORGANIZATION_ID
+        inner join COST_CENTER_TEAMS cct on cct.COST_CENTER_ID = cc.COST_CENTER_ID
+        inner join hl4 on hl4.hl3_id = cct.hl3_id
+        inner join hl5 on hl5.hl4_id = hl4.hl4_id
+        where so.ENABLED = 1 AND so.DELETED = 0
+        and hl5.hl5_id = in_hl_id
+        ORDER BY upper(so.NAME) ASC;
+    end if;
+
+END;

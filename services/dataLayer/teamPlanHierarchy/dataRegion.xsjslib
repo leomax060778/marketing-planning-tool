@@ -11,7 +11,7 @@ var INS_REGION = "INS_REGION";
 var UPD_REGION = "UPD_REGION";
 var REGION_CAN_DELETE = "REGION_CAN_DELETE";
 var DEL_REGION = "DEL_REGION";
-
+var GET_VALIDATE_REGION_AND_MARKET_UNIT = "GET_VALIDATE_REGION_AND_MARKET_UNIT";
 function getAllRegions(){
 	var parameters = {};	
 	var result = db.executeProcedureManual(GET_ALL_REGION, {});	
@@ -88,4 +88,11 @@ function canDeleteRegion(objRegion){
 	parameters.in_region_id = objRegion.IN_REGION_ID;
 	var result = db.executeScalar(REGION_CAN_DELETE,parameters,"out_result");
 	return !(result > 0);
+}
+
+function validateRegionAndMarketUnit(idRegion, idMarketUnit){
+	var parameters = {};
+	parameters.in_region_id = idRegion;
+	parameters.in_market_unit_id = idMarketUnit;
+	return db.executeScalar(GET_VALIDATE_REGION_AND_MARKET_UNIT,parameters,"out_result");
 }

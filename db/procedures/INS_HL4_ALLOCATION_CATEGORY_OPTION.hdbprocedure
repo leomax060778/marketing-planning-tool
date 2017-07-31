@@ -1,9 +1,11 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_ALLOCATION_CATEGORY_OPTION" (
-    IN in_category_option_level_id bigint,
-    IN in_id bigint,
-    IN in_amount DECIMAL(19, 6),
-    IN in_created_user_id bigint,
-    IN in_updated TINYINT,
+    IN categoryOption TABLE(
+        in_id bigint,
+        in_category_option_level_id bigint,
+        in_amount DECIMAL(19, 6),
+        in_created_user_id bigint,
+        in_updated TINYINT
+    ),
 
     OUT out_result_id bigint
 )
@@ -12,7 +14,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_ALLOCATION_CATE
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
 	INSERT INTO "PLANNING_TOOL"."HL4_CATEGORY_OPTION" (allocation_category_option_level_id,hl4_id,amount,created_user_id,updated)
-	VALUES (in_category_option_level_id,in_id,in_amount,in_created_user_id, in_updated);
+	(SELECT IN_CATEGORY_OPTION_LEVEL_ID,IN_ID,IN_AMOUNT,IN_CREATED_USER_ID, IN_UPDATED FROM :categoryOption);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result_id FROM "PLANNING_TOOL"."HL4_CATEGORY_OPTION";
 END;

@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_CRM_PARENT_PATH" (
+        IN in_level_id bigint,
+        IN in_id bigint,
+        OUT out_result BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+		DELETE FROM CRM_PARENT_PATH
+        WHERE LEVEL_ID = in_id AND HIERARCHY_LEVEL_ID = in_level_id;
+
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

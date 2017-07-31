@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_BUDGET_SPEND_REQUEST_MESSAGE" (
+		  IN arrMessage TABLE(
+              in_budget_spend_request_id bigint
+            , in_message NVARCHAR(3000)
+            , in_budget_spend_request_origin_id bigint
+            , in_user_id bigint)
+	        , OUT budget_spend_request_message_id BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	INSERT INTO BUDGET_SPEND_REQUEST_MESSAGE (budget_spend_request_id, message, budget_spend_request_origin_id, created_user_id)
+	(select in_budget_spend_request_id, in_message, in_budget_spend_request_origin_id, in_user_id from :arrMessage);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO budget_spend_request_message_id FROM "PLANNING_TOOL"."BUDGET_SPEND_REQUEST_MESSAGE";
+END;

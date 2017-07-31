@@ -6,6 +6,7 @@ var ErrorLib = mapper.getErrors();
 
 // List of stored procedures
 var GET_ALL_HL5_DE_REPORT = "GET_HL5_DE_REPORT";
+var GET_HL5_FOR_PROCESSING_REPORT = "GET_HL5_FOR_PROCESSING_REPORT";
 var spGetL5ChangedFieldsByHl5Id = "GET_HL5_CHANGED_FIELDS_BY_HL5_ID";
 var spGetL5ChangedFieldsByHl5IdByField = "GET_HL5_CHANGED_FIELDS_BY_HL5_ID_BY_FIELD";
 var spDelL5ChangedFieldsByHl5Id = "DEL_HL5_CRM_BINDING";
@@ -29,6 +30,17 @@ function getL5ChangedFieldsByHl5Id(id){
 		return db.extractArray(rdo.out_hl5_changed_fields);
 	}	
 	return null;
+}
+
+function getL5ForProcessingReportByHl5Id(id){
+    if(id){
+        var result = {};
+    	var rdo = db.executeProcedureManual(GET_HL5_FOR_PROCESSING_REPORT,{'in_hl5_id':id});
+        result.hl5 = db.extractArray(rdo.out_result)[0];
+        result.marketing_activity_id = db.extractArray(rdo.out_marketing_activity_id)[0];
+        return result;
+    }
+    return null;
 }
 
 function getL5ChangedFieldsByHl5IdByField(id, fieldName){
