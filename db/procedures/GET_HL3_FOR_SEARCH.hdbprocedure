@@ -14,7 +14,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FOR_SEARCH" (
 			region_name NVARCHAR(255),
 			subregion_name NVARCHAR(255),
 			path NVARCHAR(50)
-
+            , in_budget TINYINT
 		)
 	) 
 	LANGUAGE SQLSCRIPT
@@ -34,7 +34,7 @@ temp_out_result = SELECT DISTINCT HL3.hl3_id as id
         ,BGY.BUDGET_YEAR
         ,HL3.acronym as hl3_acronym
         ,HL1.region_id as REGION_ID
-
+        , HL3.IN_BUDGET
 	FROM HL3
 	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
 	INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id
@@ -60,7 +60,7 @@ ELSE
             ,BGY.BUDGET_YEAR
             ,HL3.acronym as hl3_acronym
             ,HL1.region_id as REGION_ID
-
+            , HL3.IN_BUDGET
     	FROM HL3
     	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID AND HL3_USER.USER_ID = in_user_id
     	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
@@ -91,6 +91,7 @@ if in_region_id = -1 then
                             , T.BUDGET_YEAR
                             , T.hl3_acronym
                             , T.REGION_ID
+                            , T.IN_BUDGET
                              from :temp_out_result T
                         where T.REGION_ID = 0;
         else
@@ -103,6 +104,7 @@ if in_region_id = -1 then
                               , T.BUDGET_YEAR
                               , T.hl3_acronym
                               , T.REGION_ID
+                              , T.IN_BUDGET
                                from :temp_out_result T
                         where (T.REGION_ID = in_region_id OR in_region_id = 0);
          end if;
@@ -115,6 +117,7 @@ SELECT  id
 		, region_name
 		, subregion_name
 		, CONCAT(CONCAT(CONCAT(hl1_acronym, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR), 3, 2)), '-'), hl3_acronym) AS path
+		, in_budget
 from :temp_out_result;
 
 SELECT COALESCE(COUNT(T.ID),0) INTO total_row FROM :my_results T;

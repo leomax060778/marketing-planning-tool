@@ -27,6 +27,8 @@ function handleGet(params, userId) {
     var param_section = httpUtil.getUrlParameters().get("section");
     var hl5_categories = httpUtil.getUrlParameters().get("HL5_CATEGORIES");
 	var hl5_expectedOutcomes = httpUtil.getUrlParameters().get("HL5_EXPECTED_OUTCOMES");
+    var method = httpUtil.getUrlParameters().get("METHOD");
+    var parentId = httpUtil.getUrlParameters().get("PARENT_ID");
     var result = {};
 
     if (in_hl5_id && in_hl6_id === "0") {
@@ -50,6 +52,8 @@ function handleGet(params, userId) {
         result = hl6.getHl6Categories(in_hl5_id);
 	}else if(hl5_expectedOutcomes && in_hl5_id && hl5_expectedOutcomes == expectedOutcomes) {
         result = hl6.getHl6ExpectedOutcomesOptions(in_hl5_id);
+    } else if (parentId && method && method == "GET_PARENT_REMAINING_BUDGET"){
+        result = hl6.getParentRemainingBudgetByParentId(parentId);
     } else {
         throw ErrorLib.getErrors().BadRequest("", "level6Services/handleGet", "invalid parameter name (can be: HL5_ID, HL6_ID or section)");
     }

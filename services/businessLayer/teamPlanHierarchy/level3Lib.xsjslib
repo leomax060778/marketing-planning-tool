@@ -122,6 +122,7 @@ function getLevel3ForSearch(userSessionID,budget_year_id,region_id,subregion_id,
 		aux.REGION_NAME = object.REGION_NAME;
 		aux.SUBREGION_NAME = object.SUBREGION_NAME;
 		aux.PATH = "CRM-" + object.PATH;
+		aux.IN_BUDGET= object.IN_BUDGET;
 		resultRefactor.push(aux);
 	}
 	return {result: resultRefactor, total_rows: query.total_rows};

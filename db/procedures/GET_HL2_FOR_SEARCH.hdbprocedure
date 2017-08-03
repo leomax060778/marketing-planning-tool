@@ -12,6 +12,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_FOR_SEARCH" (
             , budget_year integer
             , acronym nvarchar(25)
 			,organization_acronym nvarchar(25)
+			, in_budget TINYINT
 		)
 		, OUT totalRows integer
 	)
@@ -29,6 +30,7 @@ BEGIN
     	, HL1.ACRONYM
    		, HL2.ORGANIZATION_ACRONYM  AS ORGANIZATION_ACRONYM
    		, HL1.REGION_ID
+   		, HL2.IN_BUDGET
     	FROM HL2
     	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
     	INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
@@ -47,6 +49,7 @@ BEGIN
         , HL1.ACRONYM
         , HL2.ORGANIZATION_ACRONYM  AS ORGANIZATION_ACRONYM
         , HL1.REGION_ID
+        , HL2.IN_BUDGET
     	FROM HL2
     	INNER JOIN HL2_USER ON HL2.HL2_ID = HL2_USER.HL2_ID
     	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
@@ -69,6 +72,7 @@ BEGIN
                          , T.BUDGET_YEAR
                          , T.ACRONYM
                          , T.ORGANIZATION_ACRONYM
+                         , T.IN_BUDGET
                         FROM :VAR_OUT_RESULT T
                         WHERE T.REGION_ID = 0;
     else
@@ -78,6 +82,7 @@ BEGIN
                         , T.BUDGET_YEAR
                         , T.ACRONYM
                         , T.ORGANIZATION_ACRONYM
+                        , T.IN_BUDGET
                         FROM :VAR_OUT_RESULT T
                         WHERE (T.REGION_ID = IN_REGION_ID OR IN_REGION_ID = 0);
      end if;
@@ -87,11 +92,11 @@ BEGIN
 
 if(in_limit = -1) then
 out_result =
-    SELECT ID, PARENT_ID, BUDGET_YEAR, ACRONYM, ORGANIZATION_ACRONYM
+    SELECT ID, PARENT_ID, BUDGET_YEAR, ACRONYM, ORGANIZATION_ACRONYM, IN_BUDGET
     FROM :TEMP_OUT_RESULT;
 else
     out_result =
-    SELECT ID, PARENT_ID, BUDGET_YEAR, ACRONYM, ORGANIZATION_ACRONYM
+    SELECT ID, PARENT_ID, BUDGET_YEAR, ACRONYM, ORGANIZATION_ACRONYM, IN_BUDGET
     FROM :TEMP_OUT_RESULT
     LIMIT :in_limit OFFSET :in_offset;
 end if;

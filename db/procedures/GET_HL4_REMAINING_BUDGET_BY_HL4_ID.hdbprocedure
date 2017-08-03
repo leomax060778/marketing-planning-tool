@@ -1,0 +1,28 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_REMAINING_BUDGET_BY_HL4_ID" (
+        IN in_hl4_id BIGINT,
+        OUT out_result DECIMAL(19, 6)
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+	DECLARE hl4_budget DECIMAL(19, 6);
+	DECLARE hl4_budget_allocated DECIMAL(19, 6);
+	hl4_budget := 0;
+    hl4_budget_allocated := 0;
+
+	SELECT hl4.HL4_FNC_BUDGET_TOTAL_MKT
+	into hl4_budget
+	FROM hl4
+	where hl4.hl4_id = in_hl4_id;
+
+	SELECT COALESCE(SUM(HL5.BUDGET),0)
+	INTO hl4_budget_allocated
+	FROM HL4
+	INNER JOIN HL5 ON HL4.HL4_ID = HL5.HL4_ID
+	WHERE HL5.ENABLED = 1 AND HL5.DELETED = 0
+	AND HL4.HL4_ID = in_hl4_id;
+	
+	out_result := hl4_budget - COALESCE(hl4_budget_allocated,0);
+END;

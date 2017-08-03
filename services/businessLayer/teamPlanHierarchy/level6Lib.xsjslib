@@ -67,6 +67,7 @@ var L6_MSG_INITIATIVE_ACTUAL_START_DATE = "The Marketing Sub Tactic actual start
 var L6_MSG_INITIATIVE_ACTUAL_END_DATE = "The Marketing Sub Tactic actual end date cannot be found.";
 var L6_MSG_INITIATIVE_SALES_ORGANIZATION = "The Marketing Sub Tactic sales organization cannot be found.";
 var L6_MSG_INITIATIVE_INVALID_DATE_RANGE = "The Actual End Date must be greater than Actual Start Date";
+var L6_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE = "The Planned End Date must be greater than Planned Start Date";
 var L6_CAMPAIGN_FORECASTING_KPIS_DETAILS = "Campaign Forecasting / KPIS details amount value is not valid.";
 var L6_CAMPAIGN_FORECASTING_KPIS_DETAILS_EURO = "Campaign Forecasting / KPIS details euro value is not valid.";
 var L6_CAMPAIGN_FORECASTING_KPIS_NOT_VALID = "Campaign Forecasting / KPIS is not valid.";
@@ -1107,6 +1108,9 @@ function validateHl6(data, userId) {
 
     if (util.validateDateEndMayorStart((new Date(data.hl6.ACTUAL_START_DATE)), (new Date(data.hl6.ACTUAL_END_DATE))))
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_INVALID_DATE_RANGE);
+
+    if (util.validateDateEndMayorStart((new Date(data.hl6.PLANNED_START_DATE)), (new Date(data.hl6.PLANNED_END_DATE))))
+        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE);
 
     if (data.hl6_sale && data.hl6_sale.length) {
         data.hl6_sale.forEach(function (sale) {

@@ -15,6 +15,7 @@ var spGetHl5StatusByHl5Id = "GET_HL5_STATUS_BY_HL5_ID";
 var spGetHl5ForSearch = "GET_HL5_FOR_SEARCH";
 var spGetHl5TotalBudgetByHl4Id = "GET_ALL_HL5_TOTAL_BUDGET";
 var spGetHl5RemainingBudgetByHl4Id = "GET_ALL_HL5_REMAINING_BUDGET";
+var spGetHl5RemainingBudgetByHl5Id = "GET_HL5_REMAINING_BUDGET_BY_HL5_ID";
 var spExistsInCrm = "HL5_EXISTS_IN_CRM";
 var spGetAllDistributionChannel = "GET_ALL_DISTRIBUTION_CHANNEL";
 var spGetDistributionChannelById = "GET_DISTRIBUTION_CHANNEL_BY_ID";
@@ -139,6 +140,16 @@ function getHl5RemainingBudgetByHl4Id(hl4Id, total_budget) {
 		return rdo;
 	}
 	return null;
+}
+
+function getHl5RemainingBudgetByHl5Id(hl5Id) {
+    var params = { 'in_hl5_id': hl5Id};
+
+    if(hl5Id){
+        var rdo = db.executeDecimalManual(spGetHl5RemainingBudgetByHl5Id, params, 'out_result');
+        return rdo;
+    }
+    return null;
 }
 
 function getHl5ById(id){

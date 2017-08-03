@@ -163,6 +163,7 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
             data.hl6.push(object);
         }
     });
+    data.HL6_ID = hl6Id;
     return data;
 }
 
@@ -202,7 +203,7 @@ function getProcessingReportFields(){
         , "DISTRIBUTION_CHANNEL_ID": "Distribution Channel"
         , "DISTRIBUTION_CHANNEL_DESC": "Distribution Channel Desc"
         , "COST_CENTER_ID": "Cost Center"
-        , "EMPLOYEE_RESPONSIBLE_ID": "Employee Responsible"
+        , "EMPLOYEE_RESPONSIBLE_ID": "Person Responsible"
         , "BUSINESS_OWNER_ID": "Business Owner"
         , "ROUTE_TO_MARKET_ID": "Route to Market"
         , "BUDGET": "Budget"

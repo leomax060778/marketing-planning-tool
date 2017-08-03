@@ -21,6 +21,7 @@ var spGetAllHl4 = "GET_ALL_HL4";
 var spGetHl4CategoryOptionByHl4IdOptionId = "GET_HL4_CATEGORY_OPTION_BY_HL4_ID_OPTION_ID";
 var spGET_COUNT_HL5_BY_HL4_ID = "GET_COUNT_HL5_BY_HL4_ID";
 var GET_IMPLEMENT_EXECUTION_LEVEL_BY_HL4_ID = "GET_IMPLEMENT_EXECUTION_LEVEL_BY_HL4_ID";
+var spGetHl4RemainingBudgetByHl4Id = "GET_HL4_REMAINING_BUDGET_BY_HL4_ID";
 
 var spInsertHl4 = "INS_HL4";
 var spInsertHl4_Category = "INS_HL4_CATEGORY";
@@ -182,6 +183,16 @@ function getImplementExecutionLevel(hl4Id) {
 	};
     var rdo = db.executeScalarManual(GET_IMPLEMENT_EXECUTION_LEVEL_BY_HL4_ID, parameters, 'out_result');
     return rdo;
+}
+
+function getHl4RemainingBudgetByHl4Id(hl4Id) {
+    var params = { 'in_hl4_id': hl4Id};
+
+    if(hl4Id){
+        var rdo = db.executeDecimalManual(spGetHl4RemainingBudgetByHl4Id, params, 'out_result');
+        return rdo;
+    }
+    return null;
 }
 
 function insertHl4(parameters){

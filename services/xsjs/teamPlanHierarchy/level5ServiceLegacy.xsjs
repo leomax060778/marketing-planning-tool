@@ -28,6 +28,8 @@ function handleGet(params, userId) {
 	var in_sale_organization = httpUtil.getUrlParameters().get("SALE_ORGANIZATION_ID");
 	var budgetYearId = httpUtil.getUrlParameters().get("BUDGET_YEAR");
 	var currentHl5Id = httpUtil.getUrlParameters().get("CURRENT_HL5");
+	var method = httpUtil.getUrlParameters().get("METHOD");
+	var parentId = httpUtil.getUrlParameters().get("PARENT_ID");
 	var result = {};
 	if(in_hl4_id && !dataType){
         hl4.checkPermission(userId, null, in_hl4_id);
@@ -47,7 +49,9 @@ function handleGet(params, userId) {
 		result = hl5.getAllBusinessOwner();
 	} else if (dataType && dataType == "COST_CENTER"){
 		result = hl5.getCostCenterByHl4IdMarketingOrganizationId(in_hl4_id,in_sale_organization);
-	}else{
+	} else if (parentId && method && method == "GET_PARENT_REMAINING_BUDGET"){
+        result = hl5.getParentRemainingBudgetByParentId(parentId);
+    }else{
 		throw ErrorLib.getErrors().BadRequest("","level5Service/handleGet","invalid parameter name (can be: HL4_ID, HL5_ID or section)");
 	}
 	return httpUtil.handleResponse(result,httpUtil.OK,httpUtil.AppJson);

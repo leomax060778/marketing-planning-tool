@@ -16,6 +16,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_FOR_SEARCH" (
 			region_name NVARCHAR(255),
 			subregion_name NVARCHAR(255),
 			path NVARCHAR(50)
+			, in_budget TINYINT
 		)
 	) 
 	LANGUAGE SQLSCRIPT
@@ -42,6 +43,7 @@ BEGIN
         			,hl4.acronym)
         		 AS path
                         , HL1.REGION_ID
+                        , HL4.IN_BUDGET
         	FROM HL4 hl4
         	INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
         	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
@@ -73,6 +75,7 @@ BEGIN
         			,hl4.acronym)
         		 AS path
                         , HL1.REGION_ID
+                        , HL4.IN_BUDGET
         	FROM HL4 hl4
         	INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
         	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID
@@ -99,6 +102,7 @@ BEGIN
                                   ,T.SUBREGION_NAME
                                   ,T.PATH
                         , T.REGION_ID
+                        , T.IN_BUDGET
                              from :va_subresult T
                         where T.REGION_ID = 0;
         else
@@ -111,6 +115,7 @@ BEGIN
                            ,T.SUBREGION_NAME
                            ,T.PATH
                              , T.REGION_ID
+                             , T.IN_BUDGET
                           from :va_subresult T
                         where (T.REGION_ID = in_region_id OR in_region_id = 0);
         end if;
@@ -126,6 +131,7 @@ out_result = SELECT T.ID
                             ,T.REGION_NAME
                             ,T.SUBREGION_NAME
                             ,T.PATH
+                            , T.IN_BUDGET
                            from :va_subresult T;
 else                         
         out_result = SELECT T.ID
@@ -136,6 +142,7 @@ else
                             ,T.REGION_NAME
                             ,T.SUBREGION_NAME
                             ,T.PATH
+                            , T.IN_BUDGET
                            from :va_subresult T
                         LIMIT :in_limit
                         OFFSET :in_offset;

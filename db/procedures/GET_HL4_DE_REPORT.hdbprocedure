@@ -22,7 +22,7 @@ BEGIN
  out_result =       SELECT HL4.HL4_ID,
               		HL4.HL4_CRM_DESCRIPTION,
               		HL4.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET,
-               		TO_DATE(TO_CHAR(HL4.MODIFIED_DATE_TZ, 'MMDDYYYY'), 'MMDDYYYY') AS hl4_modified_date,
+					HL4.MODIFIED_DATE_TZ AS hl4_modified_date,
              		CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'),
              		HL3.ACRONYM),'-'), HL4.ACRONYM) AS hl4_path
              		, SD.DETAIL as STATUS_NAME

@@ -74,6 +74,7 @@ var L5_MSG_INITIATIVE_HAS_LEVEL_6 = "The selected 'Marketing Tactic' can not be 
 var L5_MSG_INITIATIVE_ACTUAL_START_DATE = "The 'Marketing Tactic' actual start date cannot be found.";
 var L5_MSG_INITIATIVE_ACTUAL_END_DATE = "The 'Marketing Tactic' actual end date cannot be found.";
 var L5_MSG_INITIATIVE_INVALID_DATE_RANGE = "The Actual End Date must be greater than Actual Start Date";
+var L5_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE = "The Planned End Date must be greater than Planned Start Date";
 var L5_MSG_COULDNT_CHANGE_STATUS = "Couldn´t change 'Marketing Tactic' status due to incomplete data. Please review Budget and Options information";
 var L5_MSG_COULDNT_CHANGE_STATUS_DUE_PENDING_BUDGET_SPEND_REQUEST = "Couldn´t change 'Marketing Tactic' status due to Pending Budget Spend requests. Please contact the Budget Approver";
 var L5_MSG_INITIATIVE_PROPERTIES_CANNOT_UPDATE = "Once Marketing Tactic is already in CRM, properties CRM ID, Cost Center and Markting Organization cannot be modified.";
@@ -1075,6 +1076,8 @@ function validateHl5(data, userId) {
     if (util.validateDateEndMayorStart((new Date(data.hl5.ACTUAL_START_DATE)), (new Date(data.hl5.ACTUAL_END_DATE))))
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L5_MSG_INITIATIVE_INVALID_DATE_RANGE);
 
+    if (util.validateDateEndMayorStart((new Date(data.hl5.PLANNED_START_DATE)), (new Date(data.hl5.PLANNED_END_DATE))))
+        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L5_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE);
 
     if (data.hl5.EURO_CONVERSION_ID < 0)
         throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", L5_MSG_INITIATIVE_CURRENCY);

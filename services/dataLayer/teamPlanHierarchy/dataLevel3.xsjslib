@@ -21,6 +21,7 @@ var GET_ALL_HL3_VERSION_BY_HL3_ID = "GET_ALL_HL3_VERSION_BY_HL3_ID";
 var INS_HL3_VERSION = "INS_HL3_VERSION";
 var GET_HL3_VERSION_BY_FILTER = "GET_HL3_VERSION_BY_FILTER";
 var GET_HL3_VERSION_BY_ID = "GET_HL3_VERSION_BY_ID";
+var spGetHl3RemainingBudgetByHl3Id = "GET_HL3_REMAINING_BUDGET_BY_HL3_ID";
 
 // Insert a new hl3
 function insertHl3(objHl3, userId) {
@@ -124,6 +125,16 @@ function getHl3AllocatedBudget(hl3Id, hl4Id) {
 		return rdo;
 	}
 	return null;
+}
+
+function getHl3RemainingBudgetByHl3Id(hl3Id) {
+    var params = { 'in_hl3_id': hl3Id};
+
+    if(hl3Id){
+        var rdo = db.executeDecimalManual(spGetHl3RemainingBudgetByHl3Id, params, 'out_result');
+        return rdo;
+    }
+    return null;
 }
 
 function getLevel3ForSearch(userSessionID, isSA, budget_id, region_id, subregion_id, offset, limit){

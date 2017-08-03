@@ -167,6 +167,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
             data.hl5.push(object);
         }
     });
+    data.HL5_ID = hl5Id;
     return data;
 }
 
@@ -205,7 +206,7 @@ function getProcessingReportFields() {
         , "DISTRIBUTION_CHANNEL_ID": "Distribution Channel"
         , "DISTRIBUTION_CHANNEL_DESC": "Distribution Channel Desc"
         , "COST_CENTER_ID": "Cost Center"
-        , "EMPLOYEE_RESPONSIBLE_ID": "Employee Responsible"
+        , "EMPLOYEE_RESPONSIBLE_ID": "Person Responsible"
         , "BUSINESS_OWNER_ID": "Business Owner"
         , "ROUTE_TO_MARKET_ID": "Route to Market"
         , "BUDGET": "Budget"

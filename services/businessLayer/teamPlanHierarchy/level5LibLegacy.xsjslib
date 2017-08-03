@@ -123,6 +123,10 @@ function getHl5ByHl4Id(id) {
     return response;
 }
 
+function getParentRemainingBudgetByParentId(hl4Id) {
+    return dataHl4.getHl4RemainingBudgetByHl4Id(hl4Id)
+}
+
 function getHl5ById(id) {
     if (!id)
         throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found", "hl5Services/handleGet/getHl5ById", L5_MSG_INITIATIVE_NOT_FOUND);
@@ -184,6 +188,7 @@ function getLevel5ForSearch(userSessionID) {
         aux.REGION_NAME = object.REGION_NAME;
         aux.SUBREGION_NAME = object.SUBREGION_NAME;
         aux.PATH = "CRM-" + object.PATH;
+        aux.IN_BUDGET= object.IN_BUDGET;
         resultRefactor.push(aux);
     });
     return resultRefactor;
@@ -782,6 +787,8 @@ function validateHl5(data, userId) {
     if (util.validateDateEndMayorStart((new Date(data.hl5.ACTUAL_START_DATE)), (new Date(data.hl5.ACTUAL_END_DATE))))
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L5_MSG_INITIATIVE_INVALID_DATE_RANGE);
 
+    if (util.validateDateEndMayorStart((new Date(data.hl5.PLANNED_START_DATE)), (new Date(data.hl5.PLANNED_END_DATE))))
+        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L5_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE);
 
     if (data.hl5.EURO_CONVERSION_ID < 0)
         throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", L5_MSG_INITIATIVE_CURRENCY);

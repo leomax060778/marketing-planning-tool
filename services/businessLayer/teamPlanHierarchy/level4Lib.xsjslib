@@ -127,6 +127,10 @@ function getHl4(id) {
     return responseObj;
 }
 
+function getParentRemainingBudgetByParentId(hl3Id) {
+    return dataHl3.getHl3RemainingBudgetByHl3Id(hl3Id)
+}
+
 function getImplementExecutionLevel(hl4Id) {
     if (!dataHl4.getImplementExecutionLevel(hl4Id))
         throw ErrorLib.getErrors().BadRequest("PROGRAMS/CAMPAIGNS does not implement execution level.", "hl4Services/handleGet/getHl5", L3_NOT_IMPLEMENT_EXECUTION_LEVEL);
@@ -188,7 +192,7 @@ function getLevel4ForSearch(budgetYearId, regionId, subRegionId, limit, offset, 
         aux.REGION_NAME = object.REGION_NAME;
         aux.SUBREGION_NAME = object.SUBREGION_NAME;
         aux.PATH = "CRM-" + object.PATH;
-
+        aux.IN_BUDGET= object.IN_BUDGET;
         resultRefactor.push(aux);
     });
     return {result: resultRefactor, total_rows: total_rows};
