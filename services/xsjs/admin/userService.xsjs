@@ -9,6 +9,7 @@ var config = mapper.getDataConfig();
 
 var getAll = "ALL";
 var getUserbyId = "USERBYID";
+var getUserApproversbyId = "USERAPPROVERSBYID";
 var updatePassword = "UPDPASS";
 var updateUser = "UPDUSER";
 var method = "method";
@@ -37,6 +38,10 @@ function handleGet(parameters, userId) {
                 break;
             case getUserbyId: // get one user by id
                 rdo = user.getUserById(parameters[1].value);
+                return httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
+                break;
+            case getUserApproversbyId: // get one user by id
+                rdo = user.getUserApproversByHL1Id(parameters[1].value);
                 return httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
                 break;
             case getUsersByHl1Id:
