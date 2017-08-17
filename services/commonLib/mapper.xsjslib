@@ -731,3 +731,8 @@ function getDataBudgetSourceReport(){
     $.import("xsplanningtool.services.dataLayer.reports","dataBudgetSourceReport");
     return $.xsplanningtool.services.dataLayer.reports.dataBudgetSourceReport;
 }
+
+function getDataMailTemplate(){
+    $.import("xsplanningtool.services.dataLayer.util","dataMailTemplate");
+    return $.xsplanningtool.services.dataLayer.util.dataMailTemplate;
+}

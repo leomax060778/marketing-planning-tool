@@ -41,7 +41,7 @@ function handlePost(reqBody, userId) {
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 function handlePut(reqBody, userId) {
-    var parameter = httpUtil.getUrlParameters()[0].name;
+    var parameter = httpUtil.getUrlParameters()[0] ? httpUtil.getUrlParameters()[0].name : '';
     if(parameter == UPD_CAMPAIGN_TYPE_SUBTYPE_DATE_RULE){
         var rdo = blCampaignSubType.updateDateRules(reqBody, userId);
         httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);

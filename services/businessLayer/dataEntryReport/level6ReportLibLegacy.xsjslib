@@ -16,6 +16,7 @@ var dbER = mapper.getDataEmployeeResponsible();
 var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
+
 /** ***********END INCLUDE LIBRARIES*************** */
 
 function getAllL6DEReport(userId) {
@@ -44,13 +45,15 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
     var hl6 = processingReportData.hl6;
     var hl5 = dataHl5.getHl5ById(hl6['HL5_ID']);
 
+    var eventFields = ["URL", "VENUE", "STREET", "CITY", "COUNTRY", "POSTAL_CODE", "REGION", "EVENT_OWNER", "NUMBER_OF_PARTICIPANTS"];
+
     var costCenter;
     var l6ReportFields = this.getProcessingReportFields();
 
     Object.keys(l6ReportFields).forEach(function (field) {
         if (field == "CATEGORY") {
             hl6Categories.forEach(function (hl6Category) {
-                if(hl6Category.IN_PROCESSING_REPORT){
+                if (hl6Category.IN_PROCESSING_REPORT) {
                     var object = {};
                     object.option = [];
                     object.display_name = hl6Category.CATEGORY_NAME;
@@ -67,100 +70,103 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                 }
             });
         } else {
+            if (field != "DISTRIBUTION_CHANNEL_ID") {
+                var object = {};
+                object.display_name = l6ReportFields[field];
+                var CRM_ACRONYM = "CRM";
+                //var path = dataPath.getPathByLevelParent(6, hl6['HL5_ID']);
+                var parentPath = CRM_ACRONYM + "-" + hl6.L1_ACRONYM + hl6.BUDGET_YEAR + "-" + hl6.L3_ACRONYM + "-" + hl6.L4_ACRONYM + hl6.L5_ACRONYM;
 
-            var object = {};
-            object.display_name = l6ReportFields[field];
-            var CRM_ACRONYM = "CRM";
-            //var path = dataPath.getPathByLevelParent(6, hl6['HL5_ID']);
-            var parentPath = CRM_ACRONYM + "-" + hl6.L1_ACRONYM + hl6.BUDGET_YEAR + "-" + hl6.L3_ACRONYM + "-" + hl6.L4_ACRONYM  + hl6.L5_ACRONYM;
+                switch (field) {
+                    case "ACRONYM":
+                        object.value = parentPath + hl6.ACRONYM;
+                        break;
+                    case "CAMPAIGN_TYPE_ID":
+                        object.value = hl6.CAMPAIGN_TYPE;
+                        break;
+                    case "CAMPAIGN_SUBTYPE_ID":
+                        object.value = hl6.CAMPAIGN_SUB_TYPE;
+                        break;
+                    case "CAMPAIGN_OBJECTIVE_ID":
+                        object.value = hl6.CAMPAIGN_OBJECTIVE;
+                        break;
+                    case "ROUTE_TO_MARKET_ID":
+                        object.value = hl6.ROUTE_TO_MARKET;
+                        break;
+                    case "COST_CENTER_ID":
+                        object.value = hl6.COST_CENTER_CODE;
+                        break;
+                    case "SALES_ORGANIZATION_ID":
+                        if (hl6.SALES_ORGANIZATION_ID) {
+                            var saleOrganization = dataMarketingOrganization.getMarketingOrganizationById(hl6.SALES_ORGANIZATION_ID)[0];
+                            object.value = saleOrganization.NAME;
+                        }
+                        //object.value = hl6.SALE_ORGANIZATION;
+                        break;
+                    case "MARKETING_ACTIVITY_ID":
+                        if (processingReportData.marketing_activity_id) {
+                            object.value = CRM_ACRONYM + '-'
+                                + processingReportData.marketing_activity_id.BUDGET_YEAR
+                                + processingReportData.marketing_activity_id.L1_ACRONYM
+                                + '-' + processingReportData.marketing_activity_id.L3_ACRONYM
+                                + '-' + processingReportData.marketing_activity_id.L4_ACRONYM
+                                + processingReportData.marketing_activity_id.L5_ACRONYM;
+                        }
+                        break;
+                    case "SHOW_ON_DG_CALENDAR":
+                        object.value = hl6.SHOW_ON_DG_CALENDAR ? "Yes" : "No";
+                        break;
+                    case "BUSINESS_OWNER_ID":
+                        object.value = hl6.BUSINESS_OWNER;
+                        break;
+                    case "EMPLOYEE_RESPONSIBLE_ID":
+                        object.value = hl6.EMPLOYEE_RESPONSIBLE;
+                        break;
+                    case "MARKETING_PROGRAM_ID":
+                        object.value = hl6.MARKETING_PROGRAM;
+                        break;
+                    case "MARKETING_PROGRAM_DESC":
+                        object.value = hl6.MARKETING_PROGRAM_DESCRIPTION;
+                        break;
+                    case "MARKETING_ACTIVITY_DESC":
+                        object.value = hl6.MARKETING_ACTIVITY;
+                        break;
+                    case "DISTRIBUTION_CHANNEL_DESC":
+                        object.value = hl6.DISTRIBUTION_CHANNEL;
+                        break;
+                    case "PLANNED_START_DATE":
+                        object.value = (new Date(hl6.PLANNED_START_DATE)).toLocaleDateString();
+                        break;
+                    case "PLANNED_END_DATE":
+                        object.value = (new Date(hl6.PLANNED_END_DATE)).toLocaleDateString();
+                        break;
+                    case "ACTUAL_START_DATE":
+                        object.value = (new Date(hl6.ACTUAL_START_DATE)).toLocaleDateString();
+                        break;
+                    case "ACTUAL_END_DATE":
+                        object.value = (new Date(hl6.ACTUAL_END_DATE)).toLocaleDateString();
+                        break;
+                    case "PARENT_PATH":
+                        object.value = parentPath;
+                        break;
+                    case "PRIORITY_ID":
+                        object.value = hl6.PRIORITY;
+                        break;
+                    default:
+                        object.value = hl6[field];
+                        break;
+                }
 
-            switch (field) {
-                case "ACRONYM":
-                    object.value = parentPath + hl6.ACRONYM;
-                    break;
-                case "CAMPAIGN_TYPE_ID":
-                    object.value = hl6.CAMPAIGN_TYPE;
-                    break;
-                case "CAMPAIGN_SUBTYPE_ID":
-                    object.value = hl6.CAMPAIGN_SUB_TYPE;
-                    break;
-                case "CAMPAIGN_OBJECTIVE_ID":
-                    object.value = hl6.CAMPAIGN_OBJECTIVE;
-                    break;
-                case "ROUTE_TO_MARKET_ID":
-                    object.value = hl6.ROUTE_TO_MARKET;
-                    break;
-                case "COST_CENTER_ID":
-                    object.value = hl6.COST_CENTER_CODE;
-                    break;
-                case "SALES_ORGANIZATION_ID":
-                    if(hl6.SALES_ORGANIZATION_ID) {
-                        var saleOrganization = dataMarketingOrganization.getMarketingOrganizationById(hl6.SALES_ORGANIZATION_ID)[0];
-                        object.value = saleOrganization.NAME;
-                    }
-                    //object.value = hl6.SALE_ORGANIZATION;
-                    break;
-                case "MARKETING_ACTIVITY_ID":
-                    if (processingReportData.marketing_activity_id) {
-                        object.value = CRM_ACRONYM + '-'
-                            + processingReportData.marketing_activity_id.BUDGET_YEAR
-                            + processingReportData.marketing_activity_id.L1_ACRONYM
-                            + '-' + processingReportData.marketing_activity_id.L3_ACRONYM
-                            + '-' + processingReportData.marketing_activity_id.L4_ACRONYM
-                            + processingReportData.marketing_activity_id.L5_ACRONYM;
-                    }
-                    break;
-                case "SHOW_ON_DG_CALENDAR":
-                    object.value = hl6.SHOW_ON_DG_CALENDAR ? "Yes" : "No";
-                    break;
-                case "BUSINESS_OWNER_ID":
-                    object.value = hl6.BUSINESS_OWNER;
-                    break;
-                case "EMPLOYEE_RESPONSIBLE_ID":
-                    object.value = hl6.EMPLOYEE_RESPONSIBLE;
-                    break;
-                case "MARKETING_PROGRAM_ID":
-                    object.value = hl6.MARKETING_PROGRAM;
-                    break;
-                case "MARKETING_PROGRAM_DESC":
-                    object.value = hl6.MARKETING_PROGRAM_DESCRIPTION;
-                    break;
-                case "MARKETING_ACTIVITY_DESC":
-                    object.value = hl6.MARKETING_ACTIVITY;
-                    break;
-                case "DISTRIBUTION_CHANNEL_DESC":
-                    object.value = hl6.DISTRIBUTION_CHANNEL;
-                    break;
-                case "PLANNED_START_DATE":
-                    object.value = (new Date(hl6.PLANNED_START_DATE)).toLocaleDateString();
-                    break;
-                case "PLANNED_END_DATE":
-                    object.value = (new Date(hl6.PLANNED_END_DATE)).toLocaleDateString();
-                    break;
-                case "ACTUAL_START_DATE":
-                    object.value = (new Date(hl6.ACTUAL_START_DATE)).toLocaleDateString();
-                    break;
-                case "ACTUAL_END_DATE":
-                    object.value = (new Date(hl6.ACTUAL_END_DATE)).toLocaleDateString();
-                    break;
-                case "PARENT_PATH":
-                    object.value = parentPath;
-                    break;
-                case "PRIORITY_ID":
-                    object.value = hl6.PRIORITY;
-                    break;
-                default:
-                    object.value = hl6[field];
-                    break;
+                var fieldToCheck = field == "DISTRIBUTION_CHANNEL_DESC" ? "DISTRIBUTION_CHANNEL_ID"
+                    : field == "MARKETING_PROGRAM_DESC" ? "MARKETING_PROGRAM_ID"
+                        : field == "MARKETING_ACTIVITY_DESC" ? "MARKETING_ACTIVITY_ID"
+                            : field;
+
+                object.changed = checkChangedField(changedFields, fieldToCheck);
+
+                if ((eventFields.indexOf(field) >= 0 && hl6[field].trim().length) || (eventFields.indexOf(field) < 0))
+                    data.hl6.push(object);
             }
-
-            var fieldToCheck = field == "DISTRIBUTION_CHANNEL_DESC" ? "DISTRIBUTION_CHANNEL_ID"
-                : field == "MARKETING_PROGRAM_DESC" ? "MARKETING_PROGRAM_ID"
-                : field == "MARKETING_ACTIVITY_DESC" ? "MARKETING_ACTIVITY_ID"
-                : field;
-
-            object.changed = checkChangedField(changedFields, fieldToCheck);
-            data.hl6.push(object);
         }
     });
     data.HL6_ID = hl6Id;
@@ -181,7 +187,7 @@ function checkChangedField(changedFields, field, value) {
     return hasChanged;
 }
 
-function getProcessingReportFields(){
+function getProcessingReportFields() {
     return {
         "ACRONYM": "ID"
         , "HL6_CRM_DESCRIPTION": "Description"

@@ -1,4 +1,4 @@
-CREATE PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_USERS_APPROVERS_BY_HL1_ID" (
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_USERS_APPROVERS_BY_HL1_ID" (
 	in in_hl1_id bigint,
 	OUT users_in TABLE(USER_ID bigint, USER_NAME nvarchar(255), FIRST_NAME nvarchar(255), LAST_NAME nvarchar(255), EMAIL nvarchar(255), PHONE nvarchar(255), ROLE_NAME nvarchar(255))
 

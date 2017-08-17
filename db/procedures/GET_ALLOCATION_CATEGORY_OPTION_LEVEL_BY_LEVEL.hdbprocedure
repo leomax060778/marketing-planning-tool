@@ -1,6 +1,6 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_CATEGORY_OPTION_LEVEL_BY_LEVEL" (
 	IN in_hierarchy_level_id bigint,
-	OUT out_option TABLE (
+	OUT out_result TABLE (
 	    option_id integer
 	    , category_id integer
 	    , category_option_level_id integer
@@ -10,7 +10,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_CATEGORY
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
-	out_option =
+	out_result =
     SELECT ACOL.allocation_option_id as option_id
     , ACOL.allocation_category_id as category_id
 	, ACOL.allocation_category_option_level_id as category_option_level_id
