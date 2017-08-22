@@ -665,6 +665,9 @@ function validateHl6(data, userId) {
     if (!Number(data.hl6.EURO_CONVERSION_ID))
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_CURRENCY);
 
+    if (!data.hl6.PRIORITY_ID || data.hl6.PRIORITY_ID < 0)
+        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl6", L6_PRIORITY_NOT_VALID);
+
     //if (!data.hl6.BUDGET_SPEND_Q1 && !data.hl6.BUDGET_SPEND_Q2 && !data.hl6.BUDGET_SPEND_Q3 && !data.hl6.BUDGET_SPEND_Q4)
     //    throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_BUDGET_SPEND);
 

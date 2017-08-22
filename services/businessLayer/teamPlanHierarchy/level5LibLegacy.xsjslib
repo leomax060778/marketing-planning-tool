@@ -75,6 +75,7 @@ var L5_MY_BUDGET_COMPLETE = "My Budget should be 100% complete.";
 var L5_COST_CENTER_NOT_VALID = "Cost Center cannot be empty.";
 var L5_RESPONSIBLE_NOT_VALID = "Employee Responsible cannot be empty.";
 var L5_PRIORITY_NOT_VALID = "Priority cannot be empty.";
+var L5_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE = "The Planned End Date must be greater than Planned Start Date";
 
 var HL5_STATUS = {
     IN_PROGRESS: 1,

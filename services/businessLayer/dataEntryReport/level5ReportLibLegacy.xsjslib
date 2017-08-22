@@ -77,6 +77,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
         } else {
             if (field !== "DISTRIBUTION_CHANNEL_ID") {
                 var object = {};
+                var sendFieldToProcessingReport = true;
                 object.display_name = l5ReportFields[field];
                 var CRM_ACRONYM = "CRM";
                 var parentPath = CRM_ACRONYM + "-" + hl5.L1_ACRONYM + hl5.BUDGET_YEAR + "-" + hl5.L3_ACRONYM + "-" + hl5.L4_ACRONYM;
@@ -109,6 +110,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
                         break;
                     //TODO:
                     case "MARKETING_ACTIVITY_ID":
+                        sendFieldToProcessingReport = false;
                         if (processingReportData.marketing_activity_id) {
                             object.value = CRM_ACRONYM + '-'
                                 + processingReportData.marketing_activity_id.BUDGET_YEAR
@@ -121,21 +123,26 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 
                     case "SHOW_ON_DG_CALENDAR":
                         object.value = hl5.SHOW_ON_DG_CALENDAR ? "Yes" : "No";
+                        sendFieldToProcessingReport = !!hl5.SHOW_ON_DG_CALENDAR;
                         break;
                     case "BUSINESS_OWNER_ID":
                         object.value = hl5.BUSINESS_OWNER;
+                        sendFieldToProcessingReport = !!hl5.BUSINESS_OWNER && !!hl5.BUSINESS_OWNER.length;
                         break;
                     case "EMPLOYEE_RESPONSIBLE_ID":
                         object.value = hl5.EMPLOYEE_RESPONSIBLE;
                         break;
                     case "MARKETING_PROGRAM_ID":
                         object.value = hl5.MARKETING_PROGRAM;
+                        sendFieldToProcessingReport = false;
                         break;
                     case "MARKETING_PROGRAM_DESC":
                         object.value = hl5.MARKETING_PROGRAM_DESCRIPTION;
+                        sendFieldToProcessingReport = !!hl5.MARKETING_PROGRAM_DESCRIPTION && !!hl5.MARKETING_PROGRAM_DESCRIPTION.length;
                         break;
                     case "MARKETING_ACTIVITY_DESC":
                         object.value = hl5.MARKETING_ACTIVITY;
+                        sendFieldToProcessingReport = !!hl5.MARKETING_ACTIVITY && !!hl5.MARKETING_ACTIVITY.length;
                         break;
                     case "DISTRIBUTION_CHANNEL_DESC":
                         object.value = hl5.DISTRIBUTION_CHANNEL;
@@ -169,7 +176,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
 
                 object.changed = checkChangedField(changedFields, fieldToCheck);
 
-                if ((eventFields.indexOf(field) >= 0 && hl5[field].trim().length) || (eventFields.indexOf(field) < 0))
+                if (sendFieldToProcessingReport && ((eventFields.indexOf(field) >= 0 && hl5[field].trim().length) || (eventFields.indexOf(field) < 0)))
                     data.hl5.push(object);
             }
         }
@@ -192,6 +199,45 @@ function checkChangedField(changedFields, field, value) {
 }
 
 function getProcessingReportFields() {
+    /*return {
+        "ACRONYM": "ID"
+        , "HL5_CRM_DESCRIPTION": "Description"
+        , "CAMPAIGN_OBJECTIVE_ID": "Objective"
+        , "CAMPAIGN_TYPE_ID": "Type"
+        , "CAMPAIGN_SUBTYPE_ID": "Sub-Type"
+        , "PLANNED_START_DATE": "Planned Start"
+        , "PLANNED_END_DATE": "Planned End"
+        , "ACTUAL_START_DATE": "Actual Start"
+        , "ACTUAL_END_DATE": "Actual End"
+        , "SALES_ORGANIZATION_ID": "Marketing Organization"
+        , "DISTRIBUTION_CHANNEL_DESC": "Distribution Channel Desc"
+        , "COST_CENTER_ID": "Cost Center"
+        , "EMPLOYEE_RESPONSIBLE_ID": "Person Responsible"
+        , "ROUTE_TO_MARKET_ID": "Route to Market"
+        , "BUDGET": "Budget"
+        , "PARENT_PATH": "Parent"
+        , "PRIORITY_ID": "Priority"
+        , "CATEGORY": ""
+
+        // ----------- Optional fields -----------
+        , "MARKETING_PROGRAM_ID": "Marketing Program ID"
+        , "MARKETING_PROGRAM_DESC": "Marketing Program Desc"
+        , "MARKETING_ACTIVITY_ID": "Marketing Activity ID"
+        , "MARKETING_ACTIVITY_DESC": "Marketing Activity Desc"
+        , "SHOW_ON_DG_CALENDAR": "Show on calendar"
+        , "DISTRIBUTION_CHANNEL_ID": "Distribution Channel"
+        , "BUSINESS_OWNER_ID": "Business Owner"
+        , "URL": "Event URL"
+        , "VENUE": "Venue"
+        , "STREET": "Street"
+        , "CITY": "City"
+        , "COUNTRY": "Country"
+        , "POSTAL_CODE": "Postal Code"
+        , "REGION": "Region"
+        , "EVENT_OWNER": "Event Owner"
+        , "NUMBER_OF_PARTICIPANTS": "Number Of Participants"
+    };*/
+
     return {
         "ACRONYM": "ID"
         , "HL5_CRM_DESCRIPTION": "Description"
@@ -213,7 +259,7 @@ function getProcessingReportFields() {
         , "DISTRIBUTION_CHANNEL_ID": "Distribution Channel"
         , "DISTRIBUTION_CHANNEL_DESC": "Distribution Channel Desc"
         , "COST_CENTER_ID": "Cost Center"
-        , "EMPLOYEE_RESPONSIBLE_ID": "Person Responsible"
+        , "EMPLOYEE_RESPONSIBLE_ID": "Cost Center(resp. person)"
         , "BUSINESS_OWNER_ID": "Business Owner"
         , "ROUTE_TO_MARKET_ID": "Route to Market"
         , "BUDGET": "Budget"

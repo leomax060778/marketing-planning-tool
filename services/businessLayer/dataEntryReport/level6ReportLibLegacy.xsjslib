@@ -72,6 +72,7 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
         } else {
             if (field != "DISTRIBUTION_CHANNEL_ID") {
                 var object = {};
+                var sendFieldToProcessingReport = true;
                 object.display_name = l6ReportFields[field];
                 var CRM_ACRONYM = "CRM";
                 //var path = dataPath.getPathByLevelParent(6, hl6['HL5_ID']);
@@ -104,6 +105,7 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                         //object.value = hl6.SALE_ORGANIZATION;
                         break;
                     case "MARKETING_ACTIVITY_ID":
+                        sendFieldToProcessingReport = false;
                         if (processingReportData.marketing_activity_id) {
                             object.value = CRM_ACRONYM + '-'
                                 + processingReportData.marketing_activity_id.BUDGET_YEAR
@@ -115,21 +117,26 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                         break;
                     case "SHOW_ON_DG_CALENDAR":
                         object.value = hl6.SHOW_ON_DG_CALENDAR ? "Yes" : "No";
+                        sendFieldToProcessingReport = !!hl6.SHOW_ON_DG_CALENDAR;
                         break;
                     case "BUSINESS_OWNER_ID":
                         object.value = hl6.BUSINESS_OWNER;
+                        sendFieldToProcessingReport = !!hl6.BUSINESS_OWNER && !!hl6.BUSINESS_OWNER.length;
                         break;
                     case "EMPLOYEE_RESPONSIBLE_ID":
                         object.value = hl6.EMPLOYEE_RESPONSIBLE;
                         break;
                     case "MARKETING_PROGRAM_ID":
                         object.value = hl6.MARKETING_PROGRAM;
+                        sendFieldToProcessingReport = false;
                         break;
                     case "MARKETING_PROGRAM_DESC":
                         object.value = hl6.MARKETING_PROGRAM_DESCRIPTION;
+                        sendFieldToProcessingReport = !!hl6.MARKETING_PROGRAM_DESCRIPTION && !!hl6.MARKETING_PROGRAM_DESCRIPTION.length;
                         break;
                     case "MARKETING_ACTIVITY_DESC":
                         object.value = hl6.MARKETING_ACTIVITY;
+                        sendFieldToProcessingReport =  !!hl6.MARKETING_ACTIVITY && !!hl6.MARKETING_ACTIVITY.length;
                         break;
                     case "DISTRIBUTION_CHANNEL_DESC":
                         object.value = hl6.DISTRIBUTION_CHANNEL;
@@ -164,7 +171,7 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
 
                 object.changed = checkChangedField(changedFields, fieldToCheck);
 
-                if ((eventFields.indexOf(field) >= 0 && hl6[field].trim().length) || (eventFields.indexOf(field) < 0))
+                if (sendFieldToProcessingReport && ((eventFields.indexOf(field) >= 0 && hl6[field].trim().length) || (eventFields.indexOf(field) < 0)))
                     data.hl6.push(object);
             }
         }
@@ -209,7 +216,7 @@ function getProcessingReportFields() {
         , "DISTRIBUTION_CHANNEL_ID": "Distribution Channel"
         , "DISTRIBUTION_CHANNEL_DESC": "Distribution Channel Desc"
         , "COST_CENTER_ID": "Cost Center"
-        , "EMPLOYEE_RESPONSIBLE_ID": "Person Responsible"
+        , "EMPLOYEE_RESPONSIBLE_ID": "Cost Center(resp. person)"
         , "BUSINESS_OWNER_ID": "Business Owner"
         , "ROUTE_TO_MARKET_ID": "Route to Market"
         , "BUDGET": "Budget"
