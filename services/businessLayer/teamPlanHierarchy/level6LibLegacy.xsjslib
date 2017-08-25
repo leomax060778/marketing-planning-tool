@@ -67,7 +67,8 @@ var L6_CAMPAIGN_FORECASTING_KPIS_DETAILS_EURO = "Campaign Forecasting / KPIS det
 var L6_CAMPAIGN_FORECASTING_KPIS_NOT_VALID = "Campaign Forecasting / KPIS is not valid.";
 var L6_MSG_RESULTS_CAMPAIGN = "The Marketing Sub Tactic, Results/Campaign Forecasting must be set.";
 var L6_MSG_RESULTS_CAMPAIGN_PERCENT = "The Marketing Sub Tactic, Results/Campaign Forecasting must be 100%.";
-var L6_MSG_COULDNT_CHAGE_STATUS = "Couldn´t change Sub tactic/Campaign status due to incomplete data. Please review Budget and Options information";
+var L6_MSG_COULDNT_CHANGE_STATUS = "Couldn´t change Sub tactic/Campaign status due to incomplete data. Please review Budget and Options information";
+var L6_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L5_STATUS = "You cannot send Marketing Sub Tactic/Campaign to Processing Report because Marketing Tactic is 'In Progress' status.";
 var L6_CAMPAIGN_FORECASTING_KPIS_COMMENT = "Please enter a comment to explain expected outcomes as you didn't select any KPI type.";
 var L6_MSG_INITIATIVE_PROPERTIES_CANNOT_UPDATE = "Once Marketing Sub Tactic is already in CRM, properties CRM ID, Cost Center and Markting Organization cannot be modified.";
 var L6_MY_BUDGET_COMPLETE = "My Budget should be 100% complete.";
@@ -107,6 +108,7 @@ function getHl6ByHl5Id(hl5Id) {
     var total_budget = 0;
     var remaining_budget = 0;
     var allHl6 = [];
+
     if (hl6List.length) {
         hl6List.forEach(function (hl6) {
             var aux = {};
@@ -128,8 +130,9 @@ function getHl6ByHl5Id(hl5Id) {
         });
 
         total_budget = dataHl6.getHl6TotalBudgetByHl5Id(hl5Id);
-        remaining_budget = dataHl6.getHl6RemainingBudgetByHl5Id(hl5Id, total_budget);
     }
+    
+    remaining_budget = dataHl6.getHl6RemainingBudgetByHl5Id(hl5Id, total_budget);
 
     return {
         "results": allHl6,
@@ -973,12 +976,15 @@ function setHl6Status(hl6_id, status_id, userId) {
 }
 
 function changeHl6StatusOnDemand(hl6_id, userId) {
-    //var myBudget = dataHl6.getHl6MyBudgetByHl6Id(hl6_id);
     var hl6 = dataHl6.getHl6ById(hl6_id);
-    //var isComplete = isMyBudgetComplete(myBudget);
+    var hl5 = dataHl5.getHl5ById(hl6.HL5_ID);
+    var hl5StatusList = level5Lib.getHl5StatusList();
+
+    if(hl5.HL5_STATUS_DETAIL_ID == hl5StatusList.IN_PROGRESS)
+        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePut/changeHl5Status", L6_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L5_STATUS);
 
     if (!hl6.EMPLOYEE_RESPONSIBLE_ID || !hl6.COST_CENTER_ID)
-        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePut/changeHl6Status", L6_MSG_COULDNT_CHAGE_STATUS);
+        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePut/changeHl6Status", L6_MSG_COULDNT_CHANGE_STATUS);
 
     var existInCrm = dataHl6.hl6ExistsInCrm(hl6_id);
 
@@ -995,7 +1001,11 @@ function resetHl6CategoryOptionUpdated(hl6Id, userId) {
 
 /* Set hl6 status to In CRM */
 function setHl6StatusInCRM(hl6_id, userId) {
-    return setHl6Status(hl6_id, HL6_STATUS.IN_CRM, userId);
+	var result = setHl6Status(hl6_id, HL6_STATUS.IN_CRM, userId);
+	if(result){
+		mail.sendInCRMMail(hl6_id, "hl6");
+	}
+    return result;
 }
 
 function crmFieldsHaveChanged(data, isComplete, userId) {

@@ -61,6 +61,43 @@ function getPathByLevelParent(hierarchyLevel, parentId) {
     return result;
 }
 
+//Get complete path of specific level and parent id of HL
+function getCleanPathByLevelParent(hierarchyLevel, parentId) {
+    var result = {};
+    var levelPath = "";
+
+    result.PATH_TPH = levelPath;
+    result.GRANDPARENT_ID = null;
+    result.HIERARCHY_TREE = [];
+
+    var path = dataPath.getPathByLevelParent(hierarchyLevel, parentId);
+        
+    if (path.length) {
+    	result.GRANDPARENT_ID = path[0].GRANDPARENT_ID;
+        result.HIERARCHY_TREE = [
+        {name: path[0].L1_ACRONYM + path[0].BUDGET_YEAR}
+            ];
+
+            if (path[0].L2_ACRONYM)
+                result.HIERARCHY_TREE.push({name: path[0].L2_ACRONYM});
+            if (path[0].L3_ACRONYM)
+                result.HIERARCHY_TREE.push({name: path[0].L3_ACRONYM});
+            if (path[0].L4_ACRONYM)
+                result.HIERARCHY_TREE.push({name: path[0].L4_ACRONYM});
+            if (path[0].L5_ACRONYM)
+                result.HIERARCHY_TREE.push({name: path[0].L5_ACRONYM});
+
+
+            result.PATH_TPH = ""
+                + path[0].L1_ACRONYM + path[0].BUDGET_YEAR
+                + (parseInt(hierarchyLevel) == 3 && path[0].L2_ACRONYM ? '-' + path[0].L2_ACRONYM : '')
+                + (path[0].L3_ACRONYM ? '-' + path[0].L3_ACRONYM : '')
+                + (path[0].L4_ACRONYM ? '-' + path[0].L4_ACRONYM : '')
+                + (path[0].L5_ACRONYM ? path[0].L5_ACRONYM : '');
+    }
+    return result;
+}
+
 // Get complete path of specific level and parent id of HL to CRM
 function getPathByLevelParentToCRM(levelId, parentId) {
     // with out path refactor
@@ -71,12 +108,22 @@ function getPathByLevelParentToCRM(levelId, parentId) {
     var isOrgAcronym = !pathOrgAcronym[0] ? false : true;
     // throw path[0].PATH_TPH ;
     if (isOrgAcronym) {
-
         result.PATH_TPH = CRM_ACRONYM + "-" + path[0].PATH_TPH;
     }
     else {
         result.PATH_TPH = CRM_ACRONYM;
     }
+    return result;
+}
+
+//Get complete path of specific level and parent id of HL to CRM
+function getFullPathByLevelParent(level, parentId) {
+    // with out path refactor
+    var result = {};
+    var path = getCleanPathByLevelParent(LEVEL[level], parentId);
+        
+    result.PATH_TPH = CRM_ACRONYM + "-" + path.PATH_TPH;
+
     return result;
 }
 

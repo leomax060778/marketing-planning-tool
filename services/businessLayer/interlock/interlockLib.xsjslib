@@ -11,6 +11,7 @@ var businessLavel2 = mapper.getLevel2();
 var blRegion = mapper.getRegion();
 var blSubRegion =  mapper.getSubRegion();
 var mail = mapper.getMail();
+var interlockMail = mapper.getInterlockMail();
 var config = mapper.getDataConfig();
 
 var userbl = mapper.getUser();
@@ -207,19 +208,21 @@ function getContactDataMap(){
 
 
 function notifyRequester(requesterEmail,interlockId, description, idLevel3, idLevel4){
-	var appUrl = config.getAppUrl();
-	var text1 = '<p>A request for more information has been submitted to your interlock request. </p>';
-	var text2 = '<p>Please follow the link: ';
-	var linkToAppUrlL4 = appUrl + '/#TeamPlanHierarchy/Level3/edit/'+idLevel3+'/'+idLevel4;
-	var idInterlockDescription = interlockId +' - '+description;
-	var text3 = linkToAppUrlL4+' and review messages history for	Interlock Request '+idInterlockDescription+'</p>';
-	var body = text1 + text2 + text3;
-	var mailObject = mail.getJson([ {
-		"address" : requesterEmail
-	} ], "Marketing Planning Tool -  The Interlock Request has been responded", body);
-
-	var rdo = mail.sendEventMail(mailObject);
-
+	var basicData = {};
+	 basicData.APPURL = config.getAppUrl();
+	 basicData.ENVIRONMENT = config.getMailEnvironment();
+	 
+	 var reqBody = {};
+	 reqBody.HL3_ID = idLevel3;
+	 reqBody.HL4_ID = idLevel4;
+	 reqBody.INTERLOCK_ID = interlockId;
+	 reqBody.DESCRIPTION = description
+	
+	var interlockMailObject = interlockMail.parseNotifyRequester(reqBody, basicData, "Colleague");
+	var mailObject = mail.getJson([{"address" : requesterEmail}], interlockMailObject.subject, interlockMailObject.body);
+	//var mailObject = mail.getJson([{"address" : "iberon@folderit.net"}], interlockMailObject.subject, interlockMailObject.body); //For testing only
+	
+	var rdo = mail.sendMail(mailObject,true);
 }
 
 function resendRequestEmail(interlockId, userId) {
@@ -235,27 +238,34 @@ function resendRequestEmail(interlockId, userId) {
 }
 
 function notifyInterlockEmail(TO,token){
-
-	 var appUrl = config.getAppUrl();
-	 var body = '<p> Dear Colleague </p>';
-	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p> <p> Thank you </p>';
-	 var mailObject = mail.getJson([ {
-	  "address" : TO
-	 } ], "Marketing Planning Tool - Interlock Process", body);
-
-	 mail.sendEventMail(mailObject);
+	 var basicData = {};
+	 basicData.APPURL = config.getAppUrl();
+	 basicData.ENVIRONMENT = config.getMailEnvironment();
+	 
+	 var reqBody = {};
+	 reqBody.TOKEN = token;
+	 
+	  var interlockMailObj = interlockMail.parseNotifyInterlock(reqBody, basicData, "Colleague");
+	 
+	  var mailObject = mail.getJson([{"address" : TO}], interlockMailObj.subject, interlockMailObj.body);
+	 //var mailObject = mail.getJson([{"address" : "iberon@folderit.net"}], interlockMailObj.subject, interlockMailObj.body); //For testing only
+	 
+	 mail.sendMail(mailObject, true); 
 }
 
 function notifyInterlockResponse(TO,token){
-	var appUrl = config.getAppUrl();
-	var body = '<p> Dear Colleague </p>';
-	body += '<p>An interlock request has been sent and needs your approval. Please follow the link: </p>';
-	body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p>';
-	var mailObject = mail.getJson([ {
-		"address" : TO
-	} ], "Marketing Planning Tool - Interlock Process", body);
-
+	var basicData = {};
+	basicData.APPURL = config.getAppUrl();
+	basicData.ENVIRONMENT = config.getMailEnvironment();
+	
+	var reqBody = {};
+	reqBody.TOKEN = token;
+	 
+	var interlockMailObj = interlockMail.parseNotifyInterlockResponse(reqBody, basicData, "Colleague");
+	
+	var mailObject = mail.getJson([{"address" : TO} ], interlockMailObj.subject, interlockMailObj.body);
+	//var mailObject = mail.getJson([{"address" : "iberon@folderit.net"}], interlockMailObj.subject, interlockMailObj.body); //For testing only
+	
 	mail.sendMail(mailObject,true);
 }
 

@@ -11,6 +11,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_BY_HL4_ID" (
             , ALLOCATED DECIMAL(19,2)
             , REMAINING DECIMAL(19,2)
              , IMPORTED tinyint
+             , HL5_CRM_DESCRIPTION NVARCHAR(255)
         )
 )
 LANGUAGE SQLSCRIPT
@@ -39,6 +40,7 @@ va_intermidate = SELECT
         ,CONCAT(CONCAT(userTable.FIRST_NAME, ' '),userTable.LAST_NAME) AS CREATED_BY
         ,hl5.BUDGET AS HL5_BUDGET
         ,HL5.IMPORTED as IMPORTED
+        ,HL5.HL5_CRM_DESCRIPTION
     FROM HL5 Hl5
     INNER JOIN HL4 hl4 ON hl4.hl4_id=hl5.hl4_id AND hl4.enabled=1 AND hl4.deleted=0
     INNER JOIN HL3 hl3 ON hl3.hl3_id=hl4.hl3_id AND hl3.enabled=1 AND hl3.deleted=0
@@ -61,7 +63,7 @@ aux_out_result = SELECT
 		, COALESCE(SUM(BSR.AMOUNT),0) AS ALLOCATED
 		, COALESCE((va_hl5.HL5_BUDGET - SUM(BSR.AMOUNT)), va_hl5.HL5_BUDGET) AS REMAINING
         ,va_hl5.IMPORTED
-
+,va_hl5.HL5_CRM_DESCRIPTION
     FROM :va_intermidate va_hl5
     LEFT JOIN HL6 hl6 ON hl6.HL5_ID = va_hl5.hl5_id AND hl6.enabled=1 AND hl6.deleted=0
     LEFT JOIN BUDGET_SPEND_REQUEST BSR ON BSR.HL_ID = HL6.HL6_ID AND HIERARCHY_LEVEL_ID = 3 AND BSR.BUDGET_SPEND_REQUEST_TYPE_ID = 1
@@ -74,7 +76,8 @@ aux_out_result = SELECT
     ,va_hl5.CREATED_BY
     ,va_hl5.HL5_BUDGET
     ,BSR.AMOUNT
-    ,va_hl5.IMPORTED;
+    ,va_hl5.IMPORTED
+    ,va_hl5.HL5_CRM_DESCRIPTION;
     
 out_result =
 select
@@ -89,6 +92,7 @@ select
 ,SUM(T.ALLOCATED) AS ALLOCATED
 ,SUM(T.REMAINING) AS REMAINING
 ,T.IMPORTED
+,T.HL5_CRM_DESCRIPTION
 from :aux_out_result T
 GROUP BY
 T.HL5_ID
@@ -97,6 +101,7 @@ T.HL5_ID
 ,T.CREATED_BY
 ,T.HL5_BUDGET
 ,T.IMPORTED
+,T.HL5_CRM_DESCRIPTION
 ORDER BY T.CRM_ID ASC;
 
 END;

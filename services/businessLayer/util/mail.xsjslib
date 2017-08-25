@@ -5,6 +5,16 @@ var ErrorLib = mapper.getErrors();
 //var dataMail = mapper.getDataMail();
 var config = mapper.getDataConfig();
 var dataMailTemplate = mapper.getDataMailTemplate();
+//For IN CRM mails
+var dataHl6 = mapper.getDataLevel6Legacy();
+var dataHl5 = mapper.getDataLevel5Legacy();
+var dataHl4 = mapper.getDataLevel4();
+var mailHL6 = mapper.getLevel6Mail();
+var mailHL5 = mapper.getLevel5Mail();
+var mailHL4 = mapper.getLevel4Mail();
+var pathLib = mapper.getPath();
+var userLib = mapper.getUser();
+//---
 /******************************************/
 /*
  * JSON EXAMPLE:
@@ -23,6 +33,7 @@ var typeText = "TEXT";
 var typeInline = "INLINE";
 var typeAttachment = "ATTACHMENT";
 var currentMailTemplateId = 1;
+var L6_COULDNT_SEND_EMAIL_IN_CRM = "The email could not be sended."
 
 function validateEmail(email) {
 	  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -233,6 +244,50 @@ function getDefaultTemplate(body){
 	
 	return newPart;	
 		 
+}
+
+function sendInCRMMail(hlId, hierarchyLevel){
+	var hlInformation = null;
+	var userData = null;
+	var mailObj = null;
+	var reqBody = {};
+	var env = config.getMailEnvironment();
+	
+	switch(hierarchyLevel){
+	case "hl4":
+		hlInformation = dataHl4.getHl4ById(hlId);
+		
+		userData = userLib.getUserById(hlInformation.CREATED_USER_ID);
+		reqBody.REQUESTER_NAME = userData[0].FIRST_NAME+" "+userData[0].LAST_NAME;
+		reqBody.PATH = pathLib.getFullPathByLevelParent(hierarchyLevel, Number(hlInformation.HL3_ID)).PATH_TPH + "-" + hlInformation.ACRONYM;
+		
+		mailObj = mailHL4.parseInCRM(reqBody, {"ENVIRONMENT": env}, reqBody.REQUESTER_NAME);
+		break;
+	case "hl5":
+		hlInformation = dataHl5.getHl5ById(hlId);
+		userData = userLib.getUserById(hlInformation.CREATED_USER_ID);
+		reqBody.REQUESTER_NAME = userData[0].FIRST_NAME+" "+userData[0].LAST_NAME;
+		reqBody.PATH = pathLib.getFullPathByLevelParent(hierarchyLevel, Number(hlInformation.HL4_ID)).PATH_TPH + hlInformation.ACRONYM;
+		
+		mailObj = mailHL5.parseInCRM(reqBody, {"ENVIRONMENT": env}, reqBody.REQUESTER_NAME);
+		break;
+	case "hl6":
+		hlInformation = dataHl6.getHl6ById(hlId);
+		userData = userLib.getUserById(hlInformation.CREATED_USER_ID);
+		reqBody.REQUESTER_NAME = userData[0].FIRST_NAME+" "+userData[0].LAST_NAME;
+		reqBody.PATH = pathLib.getFullPathByLevelParent(hierarchyLevel, Number(hlInformation.HL5_ID)).PATH_TPH + hlInformation.ACRONYM;
+		
+		mailObj = mailHL6.parseInCRM(reqBody, {"ENVIRONMENT": env}, reqBody.REQUESTER_NAME);
+		break;
+	}
+	if(hlInformation && userData && userData.length > 0 && mailObj){
+		var mailObject = getJson([{"address": userData[0].EMAIL}], mailObj.subject, mailObj.body);
+		//var mailObject = getJson([{"address": "iberon@folderit.net"}], mailObj.subject, mailObj.body);  //For testing only
+		
+		sendMail(mailObject,true);
+	} else{
+		 throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePut/sendInCRMMail", L6_COULDNT_SEND_EMAIL_IN_CRM);
+	}
 }
 
 function sendEventMail(reqBody){

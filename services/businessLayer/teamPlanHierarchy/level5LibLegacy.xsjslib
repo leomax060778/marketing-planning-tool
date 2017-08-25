@@ -69,7 +69,8 @@ var L5_MSG_INITIATIVE_HAS_LEVEL_6 = "The selected 'Marketing Tactic' can not be 
 var L5_MSG_INITIATIVE_ACTUAL_START_DATE = "The 'Marketing Tactic' actual start date cannot be found.";
 var L5_MSG_INITIATIVE_ACTUAL_END_DATE = "The 'Marketing Tactic' actual end date cannot be found.";
 var L5_MSG_INITIATIVE_INVALID_DATE_RANGE = "The Actual End Date must be greater than Actual Start Date";
-var L5_MSG_COULDNT_CHAGE_STATUS = "Couldn´t change 'Marketing Tactic' status due to incomplete data. Please review Budget and Options information";
+var L5_MSG_COULDNT_CHANGE_STATUS = "Couldn´t change 'Marketing Tactic' status due to incomplete data. Please review Budget and Options information";
+var L5_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L4_STATUS = "You cannot send Marketing Tactic to Processing Report because Priority is 'In Progress' status.";
 var L5_MSG_INITIATIVE_PROPERTIES_CANNOT_UPDATE = "Once Marketing Tactic is already in CRM, properties CRM ID, Cost Center and Markting Organization cannot be modified.";
 var L5_MY_BUDGET_COMPLETE = "My Budget should be 100% complete.";
 var L5_COST_CENTER_NOT_VALID = "Cost Center cannot be empty.";
@@ -117,8 +118,9 @@ function getHl5ByHl4Id(id) {
         });
 
         hl5TotalBudget = dataHl5.getHl5TotalBudgetByHl4Id(id);
-        hl5BudgetRemaining = dataHl5.getHl5RemainingBudgetByHl4Id(id, hl5TotalBudget);
+
     }
+    hl5BudgetRemaining = dataHl5.getHl5RemainingBudgetByHl4Id(id, hl5TotalBudget);
 
     var response = {"results": allHl5, "total_budget": hl5TotalBudget, "remaining_budget": hl5BudgetRemaining};
     return response;
@@ -1105,15 +1107,25 @@ function resetHl5CategoryOptionUpdated(hl5Id, userId) {
 
 /* Set HL5 status to In CRM */
 function setHl5StatusInCRM(hl5_id, userId) {
-
-    return setHl5Status(hl5_id, HL5_STATUS.IN_CRM, userId);
+    var result = setHl5Status(hl5_id, HL5_STATUS.IN_CRM, userId);
+	if(result){
+		mail.sendInCRMMail(hl5_id, "hl5");
+	}
+    return result;
 }
 
 function changeHl5StatusOnDemand(hl5_id, userId) {
+    var hl5 = dataHl5.getHl5ById(hl5_id);
+    var hl4 = dataHl4.getHl4ById(hl5.HL4_ID);
+    var hl4StatusList = level4Lib.getHl4StatusList();
+
+    if(hl4.HL4_STATUS_DETAIL_ID == hl4StatusList.IN_PROGRESS)
+        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePut/changeHl5Status", L5_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L4_STATUS);
+
     var hl5_category = getHl5CategoryOption(hl5_id);
     var myBudget = dataHl5.getHl5MyBudgetByHl5Id(hl5_id);
 
-    var hl5 = dataHl5.getHl5ById(hl5_id);
+
 
     var isComplete = isMyBudgetComplete(myBudget) && isCategoryOptionComplete({
             hl5_category: hl5_category,
@@ -1122,7 +1134,7 @@ function changeHl5StatusOnDemand(hl5_id, userId) {
 
 
     if (!isComplete || !hl5.EMPLOYEE_RESPONSIBLE_ID || !hl5.COST_CENTER_ID)
-        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePut/changeHl5Status", L5_MSG_COULDNT_CHAGE_STATUS);
+        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePut/changeHl5Status", L5_MSG_COULDNT_CHANGE_STATUS);
 
     var existInCrm = dataHl5.hl5ExistsInCrm(hl5_id);
 
@@ -1569,4 +1581,8 @@ function checkPermission(userSessionID, method, hl5Id) {
             throw ErrorLib.getErrors().CustomError("", "level3/handlePermission", "User hasn´t permission for this resource.");
         }
     }
+}
+
+function getHl5StatusList(){
+    return HL5_STATUS;
 }

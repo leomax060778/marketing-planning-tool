@@ -15,6 +15,7 @@ var dataHl3User = mapper.getDataLevel3User();
 var dataHl1 = mapper.getDataLevel1();
 var dataHl2 = mapper.getDataLevel2();
 var dataHl3 = mapper.getDataLevel3();
+var userMail = mapper.getUserMail();
 /** ********************************************** */
 
 var DATA_NOT_FOUND = "Data is missing.";
@@ -518,13 +519,21 @@ function validateUser(user) {
 }
 
 function notifyInsertByEmail(TO, username, password) {
-    var appUrl = config.getLoginUrl();
-    var siteAdminAccount = config.getSiteAdminAccount();
-
-    var body = ' <p> Dear Colleague </p>  <p>You have been granted user rights to the Marketing Planning Tool. Your login information is as follows:</p>  <p>User ID: <span>' + username + '</span></p>  <p>Password: <span>' + password + '</span></p> <p>You may change your password after you logon to the Marketing Plan Tool. To logon to the Marketing Planning Tool use the following link ' + appUrl + '.</p> <p>If you have any questions please contact the Site Administrator ' + siteAdminAccount + '.</p> <p> Thank you</p>';
+    var basicData = {};
+    var reqBody = {};
+    
+    basicData.ENVIRONMENT = config.getMailEnvironment();
+    basicData.APP_URL = config.getLoginUrl();
+    basicData.SITE_ADMIN_ACCOUNT = config.getSiteAdminAccount();
+    
+    reqBody.USERNAME = username;
+    reqBody.PASSWORD = password;
+    
+    var userMailObj = userMail.parseNotifyCreateUser(reqBody, basicData, "Colleague");
+    
     var mailObject = mail.getJson([{
         "address": TO
-    }], "Marketing Planning Tool - Account Created", body);
+    }], userMailObj.subject, userMailObj.body);
 
     mail.sendMail(mailObject, true);
 }

@@ -110,7 +110,6 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
                         break;
                     //TODO:
                     case "MARKETING_ACTIVITY_ID":
-                        sendFieldToProcessingReport = false;
                         if (processingReportData.marketing_activity_id) {
                             object.value = CRM_ACRONYM + '-'
                                 + processingReportData.marketing_activity_id.BUDGET_YEAR
@@ -118,6 +117,8 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
                                 + '-' + processingReportData.marketing_activity_id.L3_ACRONYM
                                 + '-' + processingReportData.marketing_activity_id.L4_ACRONYM
                                 + processingReportData.marketing_activity_id.L5_ACRONYM;
+                        } else {
+                            sendFieldToProcessingReport = false;
                         }
                         break;
 
@@ -134,7 +135,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
                         break;
                     case "MARKETING_PROGRAM_ID":
                         object.value = hl5.MARKETING_PROGRAM;
-                        sendFieldToProcessingReport = false;
+                        sendFieldToProcessingReport =  !!hl5.MARKETING_PROGRAM && !!hl5.MARKETING_PROGRAM.length;
                         break;
                     case "MARKETING_PROGRAM_DESC":
                         object.value = hl5.MARKETING_PROGRAM_DESCRIPTION;

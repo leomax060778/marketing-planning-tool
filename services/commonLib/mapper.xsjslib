@@ -54,13 +54,30 @@ function getLevel4(){
     $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","level4Lib");
     return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.level4Lib;
 }
+
+function getLevel4Mail(){
+    $.import("xsplanningtool.services.mails","level4MailLib");
+    return $.xsplanningtool.services.mails.level4MailLib;
+}
+
 function getLevel5(){
     $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","level5Lib");
     return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.level5Lib;
 }
+
+function getLevel5Mail(){
+    $.import("xsplanningtool.services.mails","level5MailLib");
+    return $.xsplanningtool.services.mails.level5MailLib;
+}
+
 function getLevel6(){
     $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","level6Lib");
     return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.level6Lib;
+}
+
+function getLevel6Mail(){
+    $.import("xsplanningtool.services.mails","level6MailLib");
+    return $.xsplanningtool.services.mails.level6MailLib;
 }
 
 function getCampaignTypeLib(){
@@ -106,6 +123,11 @@ function getUser(){
     return $.xsplanningtool.services.businessLayer.admin.userLib;
 }
 
+function getUserMail(){
+	$.import("xsplanningtool.services.mails","userMailLib");
+    return $.xsplanningtool.services.mails.userMailLib;
+}
+
 function getRegion(){
     $.import("xsplanningtool.services.businessLayer.teamPlanHierarchy","regionLib");
     return $.xsplanningtool.services.businessLayer.teamPlanHierarchy.regionLib;
@@ -144,6 +166,11 @@ function getUserRole(){
 function getInterlock(){
     $.import("xsplanningtool.services.businessLayer.interlock","interlockLib");
     return $.xsplanningtool.services.businessLayer.interlock.interlockLib;
+}
+
+function getInterlockMail(){
+	$.import("xsplanningtool.services.mails","interlockMailLib");
+    return $.xsplanningtool.services.mails.interlockMailLib;
 }
 
 function getPartner(){

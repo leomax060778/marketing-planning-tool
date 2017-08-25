@@ -153,4 +153,17 @@ function getHash() {
 	}
 }
 
+/********************** ENVIRONMENT ***********************/
+
+function getEnvironment(){
+	var environment = getConfigurationByName("Environment");
+	return environment[0].VALUE;
+}
+
+function getMailEnvironment() {
+	var environment = getEnvironment();
+	environment = (environment !== "Production")? '('+environment+')' : "";
+	return environment;
+}
+
 

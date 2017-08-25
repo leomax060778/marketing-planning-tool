@@ -105,7 +105,6 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                         //object.value = hl6.SALE_ORGANIZATION;
                         break;
                     case "MARKETING_ACTIVITY_ID":
-                        sendFieldToProcessingReport = false;
                         if (processingReportData.marketing_activity_id) {
                             object.value = CRM_ACRONYM + '-'
                                 + processingReportData.marketing_activity_id.BUDGET_YEAR
@@ -113,6 +112,8 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                                 + '-' + processingReportData.marketing_activity_id.L3_ACRONYM
                                 + '-' + processingReportData.marketing_activity_id.L4_ACRONYM
                                 + processingReportData.marketing_activity_id.L5_ACRONYM;
+                        } else {
+                            sendFieldToProcessingReport = false;
                         }
                         break;
                     case "SHOW_ON_DG_CALENDAR":
@@ -128,7 +129,7 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                         break;
                     case "MARKETING_PROGRAM_ID":
                         object.value = hl6.MARKETING_PROGRAM;
-                        sendFieldToProcessingReport = false;
+                        sendFieldToProcessingReport =  !!hl6.MARKETING_PROGRAM && !!hl6.MARKETING_PROGRAM.length;
                         break;
                     case "MARKETING_PROGRAM_DESC":
                         object.value = hl6.MARKETING_PROGRAM_DESCRIPTION;

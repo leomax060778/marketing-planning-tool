@@ -8,6 +8,7 @@ var userLib = mapper.getUser();
 var userRoleLib = mapper.getUserRole();
 var rolePermissionLib = mapper.getRolePermission();
 var mail = mapper.getMail();
+var userMail = mapper.getUserMail();
 var config = mapper.getDataConfig();
 /** ************************************************/
 
@@ -171,10 +172,20 @@ function deleteUserToken(userId){
 
 function notifyInsertByEmail(TO,username,token){
 	var appUrl = config.getAppUrl();
-	var body = ' <p> Dear Colleague </p>  <p>Here is your username and token for your Marketing Planning Tool password recovery</p>  <p>Username: <span>'+username+'</span></p>  <p>Token: <span>'+token+'</span></p>  <p>To accept your new Password for Marketing Planning Tool, visit the homepage ('+appUrl+') and enter your token in the login area.</p>';
+	var basicData = {};
+	var reqBody = {};
+	
+	basicData.APP_URL = config.getAppUrl();
+	basicData.ENVIRONMENT = config.getMailEnvironment();
+	
+	reqBody.TOKEN = token;
+	reqBody.USERNAME = username;
+	
+	var userMailObj = userMail.parseNotifyPasswordRecovery(reqBody, basicData, "Colleague");
+
 	var mailObject = mail.getJson([ {
 		"address" : TO
-	} ], "Marketing Planning Tool - Password recovery", body);
+	} ], userMailObj.subject, userMailObj.body);
 	
 	mail.sendMail(mailObject,true);
 }

@@ -23,6 +23,7 @@ var expectedOutcomesLib = mapper.getExpectedOutcomes();
 var level4DER = mapper.getLevel4DEReport();
 var dataL4DER = mapper.getDataLevel4Report();
 var level5Lib = mapper.getLevel5();
+var mailHL4 = mapper.getLevel4Mail();
 var db = mapper.getdbHelper();
 var dbUserRole = mapper.getDataUserRole();
 var dbUser = mapper.getDataUser();
@@ -1301,7 +1302,11 @@ function resetHl4CategoryOptionUpdated(hl4Id, userId) {
 
 /* Set HL4 status to In CRM */
 function setHl4StatusInCRM(hl4_id, userId) {
-    return setHl4Status(hl4_id, HL4_STATUS.IN_CRM, userId);
+    var result = setHl4Status(hl4_id, HL4_STATUS.IN_CRM, userId);
+	if(result){
+		mail.sendInCRMMail(hl4_id, "hl4");
+	}
+    return result;
 }
 
 function changeHl4StatusOnDemand(hl4_id, userId) {
@@ -1518,19 +1523,26 @@ function parseObject(data) {
 }
 //event is "Created" or "Updated"
 function notifyChangeByEmail(data, userId, event) {
-
+	var reqBody = {};
     var Hl3Id = data.hl4.in_hl3_id;
     var HL3 = level3BL.getLevel3ById(Hl3Id);
     var ownerId = HL3.CREATED_USER_ID;
     var Owner = userBL.getUserById(ownerId);
     var user = userBL.getUserById(userId);
-    var path = pathBL.getPathByLevelParentToCRM('hl4', Hl3Id);
-
-    var body = ' <p> Dear Colleague </p>  <p>The User : ' + userBL.getUserById(userId).USER_NAME + ' has set the Initiative/Campaign ' + path + ' for you.</p>  <p>Click on the ' + config.getAppUrl() + ' to review</p>';
-    var mailObject = mail.getJson([{
-        "address": Owner[0].EMAIL
-    }], "Marketing Planning Tool - Level 4 " + event, body);
-
+    
+    reqBody.EVENT = event;
+    reqBody.PATH = pathBL.getPathByLevelParentToCRM('hl4', Hl3Id);
+    reqBody.USER_NAME = userBL.getUserById(userId).USER_NAME;
+    
+    var basicData = {};
+	basicData.APP_URL = config.getAppUrl();
+	basicData.ENVIRONMENT = config.getMailEnvironment();
+    
+    var level4MailObj = mailHL4.parseNotifyChangeByEmail(reqBody, basicData, "Colleague");
+    
+    var mailObject = mail.getJson([{"address": Owner[0].EMAIL}], level4MailObj.subject, level4MailObj.body);
+    //var mailObject = mail.getJson([{"address": "iberon@folderit.net"}], level4MailObj.subject, level4MailObj.body);
+    
     var rdo = mail.sendMail(mailObject, true);
 
 
@@ -1538,35 +1550,28 @@ function notifyChangeByEmail(data, userId, event) {
 
 function sendProcessingReportEmail(hl4Id) {
     var objHl3 = {};
-    var appUrl = config.getAppUrl();
+    var basicData = {};
+    var reqBody = {};
 
     var hl4 = dataHl4.getHl4ById(hl4Id);
     objHl3.IN_HL3_ID = hl4.HL3_ID;
     var hl3 = dataHl3.getLevel3ById(objHl3);
     var hl3OwnerEmail = getUserById(hl3.CREATED_USER_ID).EMAIL;
+    
+    basicData.APP_URL = config.getAppUrl();
+    basicData.ENVIRONMENT = config.getMailEnvironment();
+    
+    reqBody.HL3_ID = hl4.HL3_ID;
+    reqBody.HL4_ID = hl4Id;
 
-    var body = '<p> Dear Colleague </p>';
-    body += '<p>An initiative has been created in CRM.</p><br>';
-    body += '<p>' + appUrl + '/TeamPlanHierarchy/Level3/edit/' + hl4.HL3_ID + '/' + hl4Id + '</p>';
-
-
-    var mailObject = mail.getJson([{
-        "address": hl3OwnerEmail
-    }], "Marketing Planning Tool - Interlock Process", body);
-
+    var prMailObj = mailHL4.parseProcessingReportEmail(reqBody, basicData, "Colleague");
+    var mailObject = mail.getJson([{"address": hl3OwnerEmail}], prMailObj.subject, prMailObj.body);
+    
     mail.sendMail(mailObject, true);
 }
 
 function notifyInterlockEmail(TO, token) {
-    var appUrl = config.getAppUrl();
-    var body = '<p> Dear Colleague </p>';
-    body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-    body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p>';
-    var mailObject = mail.getJson([{
-        "address": TO
-    }], "Marketing Planning Tool - Interlock Process", body);
-
-    mail.sendMail(mailObject, true);
+	interlockLib.notifyInterlockEmail(TO, token);
 }
 
 function checkPermission(userSessionID, method, hl4Id) {
@@ -1580,4 +1585,8 @@ function checkPermission(userSessionID, method, hl4Id) {
             throw ErrorLib.getErrors().CustomError("", "level3/handlePermission", "User hasn´t permission for this resource.");
         }
     }
+}
+
+function getHl4StatusList(){
+    return HL4_STATUS;
 }
