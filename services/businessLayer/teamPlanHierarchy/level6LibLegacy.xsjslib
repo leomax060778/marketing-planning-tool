@@ -108,7 +108,6 @@ function getHl6ByHl5Id(hl5Id) {
     var total_budget = 0;
     var remaining_budget = 0;
     var allHl6 = [];
-
     if (hl6List.length) {
         hl6List.forEach(function (hl6) {
             var aux = {};
@@ -131,9 +130,7 @@ function getHl6ByHl5Id(hl5Id) {
 
         total_budget = dataHl6.getHl6TotalBudgetByHl5Id(hl5Id);
     }
-    
     remaining_budget = dataHl6.getHl6RemainingBudgetByHl5Id(hl5Id, total_budget);
-
     return {
         "results": allHl6,
         "total_budget": total_budget,
@@ -647,11 +644,11 @@ function validateHl6(data, userId) {
     if (!data.hl6.ACTUAL_END_DATE)
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_ACTUAL_END_DATE);
 
-    if (util.validateDateEndMayorStart((new Date(data.hl6.ACTUAL_START_DATE)), (new Date(data.hl6.ACTUAL_END_DATE))))
-        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_INVALID_DATE_RANGE);
-
     if (util.validateDateEndMayorStart((new Date(data.hl6.PLANNED_START_DATE)), (new Date(data.hl6.PLANNED_END_DATE))))
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_INVALID_PLANNED_DATE_RANGE);
+
+    if (util.validateDateEndMayorStart((new Date(data.hl6.ACTUAL_START_DATE)), (new Date(data.hl6.ACTUAL_END_DATE))))
+        throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_INVALID_DATE_RANGE);
 
     if (!data.hl6.SALES_ORGANIZATION_ID || !Number(data.hl6.SALES_ORGANIZATION_ID) || !dataMO.getMarketingOrganizationById(data.hl6.SALES_ORGANIZATION_ID))
         throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_SALES_ORGANIZATION);

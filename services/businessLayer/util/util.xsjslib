@@ -101,7 +101,7 @@ function extractObject(object) {
 
 function validateDateEndMayorStart(dateStart,dateEnd)
 {
-	if(dateStart>dateEnd)
+	if(dateEnd < dateStart)
 	{
 		return true;
 	}
