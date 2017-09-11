@@ -5,17 +5,12 @@ var dataDetailedReport = mapper.getDataDetailedReport();
 var ErrorLib = mapper.getErrors();
 /*************************************************/
 
-function getDetailedReport(){
-	var detailedReport = dataDetailedReport.getDetailedReport();
+function getL4DetailedReport(){
+	var detailedReport = dataDetailedReport.getL4DetailedReport();
 	return detailedReport;	
 }
 
-function getDetailedReportWithDetails(){
-	var detailedReport = dataDetailedReport.getDetailedReportWithDetails();
-	return detailedReport;	
-}
-
-function getDetailedReportWithCommentCampaignForecastingKpis(){
-	var detailedReport = dataDetailedReport.getDetailedReportWithCommentCampaignForecastingKpis();
+function getL5DetailedReport(){
+	var detailedReport = dataDetailedReport.getL5DetailedReport();
 	return detailedReport;	
 }

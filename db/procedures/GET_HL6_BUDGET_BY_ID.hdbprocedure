@@ -1,0 +1,23 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BUDGET_BY_ID" ( 
+in in_hl6_id  bigint
+,OUT out_result TABLE (
+hl6_budget_id bigint,
+organization_id bigint,
+percentage decimal(19, 6),
+organization_type tinyint
+)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+out_result =
+	select
+		hl6_budget_id,
+	    organization_id,
+	    percentage,
+	    organization_type
+	from hl6_budget
+	where hl6_id = in_hl6_id
+	and enabled = 1 and deleted = 0;
+END;

@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CAMPAIGN_TYPE_SUBTYPE_DATE_RULE" (
+	IN in_campaign_sub_type_id bigint,
+	IN in_campaign_type_id bigint,
+	IN in_validate_date_rule tinyint,
+	IN in_actual_start_date_rollover_text nvarchar(1000),
+	IN in_actual_end_date_rollover_text nvarchar(1000),
+	IN in_user_id bigint,
+	OUT out_result INTEGER
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		UPDATE OBJECTIVE_CAMPAIGN_TYPE_SUBTYPE rp SET
+			rp.VALIDATE_DATE_RULE = in_validate_date_rule,
+			rp.ACTUAL_START_DATE_ROLLOVER_TEXT = in_actual_start_date_rollover_text,
+			rp.ACTUAL_END_DATE_ROLLOVER_TEXT = in_actual_end_date_rollover_text,
+            rp.modified_date_tz = CURRENT_TIMESTAMP,
+            rp.modified_user_id = in_user_id
+       WHERE rp.campaign_sub_type_id = in_campaign_SUB_type_id AND
+                                            rp.campaign_type_id = in_campaign_type_id ;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

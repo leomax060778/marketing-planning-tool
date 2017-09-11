@@ -3,32 +3,17 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_SALE_BY_ID" (
         OUT out_sale_region TABLE(
 		        id BIGINT,
 		        region_name NVARCHAR(255),
-		        amount decimal(19,2)
-		),
-		OUT out_sale_subregion TABLE(
-		        id BIGINT,
-		        subregion_name NVARCHAR(255),
-		        amount decimal(19,2)
+		        amount decimal(19, 6)
 		),
 		OUT out_sale_global_team TABLE(
 		        id BIGINT,
 		        global_team_name NVARCHAR(100),
-		        amount decimal(19,2)
-		),
-		OUT out_sale_other_region TABLE(
-		        id BIGINT,
-		        DESCRIPTION NVARCHAR(255),
-		        amount decimal(19,2)
-		),
-		OUT out_sale_other_subregion TABLE(
-		        id BIGINT,
-		        DESCRIPTION NVARCHAR(255),
-		        amount decimal(19,2)
+		        amount decimal(19, 6)
 		),
 		OUT out_sale_other TABLE(
 		        id BIGINT,
 		        DESCRIPTION NVARCHAR(255),
-		        amount decimal(19,2)
+		        amount decimal(19, 6)
 		)
 )
 LANGUAGE SQLSCRIPT
@@ -42,33 +27,14 @@ BEGIN
 			ON HL4_sale_REGION.region_id = region.region_id
 			where HL4_sale_REGION.deleted = 0 and HL4_sale_REGION.enabled = 1 
 			and HL4_sale_REGION.hl4_id = in_hl4_id;
-	
-	out_sale_subregion = SELECT subregion.subregion_id as id,
-	        subregion.subregion_name, HL4_sale_SUBREGION.amount
-			from HL4_sale_SUBREGION INNER JOIN SUBREGION subregion
-			ON HL4_sale_SUBREGION.subregion_id = subregion.subregion_id
-			where HL4_sale_SUBREGION.deleted = 0 and HL4_sale_SUBREGION.enabled = 1 
-			and HL4_sale_SUBREGION.hl4_id = in_hl4_id;
-	
+
 	out_sale_global_team = SELECT hl2.hl2_id as id,
-	        hl2.acronym as global_team_name, HL4_sale_ROUTE.amount
+	        hl2.organization_acronym as global_team_name, HL4_sale_ROUTE.amount
 			from HL4_sale_ROUTE INNER JOIN HL2 hl2
 			ON HL4_SALE_ROUTE.route_id = hl2.hl2_id
 			where HL4_sale_ROUTE.deleted = 0 and HL4_sale_ROUTE.enabled = 1
 			and HL4_sale_ROUTE.hl4_id = in_hl4_id;
-	
-	out_sale_other_region = SELECT HL4_SALE_OTHER_REGION.HL4_SALE_OTHER_REGION_ID as id,
-	        HL4_SALE_OTHER_REGION.DESCRIPTION, HL4_SALE_OTHER_REGION.amount
-			FROM HL4_SALE_OTHER_REGION
-			where HL4_SALE_OTHER_REGION.deleted = 0 and HL4_SALE_OTHER_REGION.enabled = 1 
-			and HL4_SALE_OTHER_REGION.hl4_id = in_hl4_id;
-	
-	out_sale_other_subregion = SELECT HL4_SALE_OTHER_SUBREGION.HL4_SALE_OTHER_SUBREGION_ID as id,
-	        HL4_SALE_OTHER_SUBREGION.DESCRIPTION, HL4_SALE_OTHER_SUBREGION.amount
-			from HL4_SALE_OTHER_SUBREGION
-			where HL4_SALE_OTHER_SUBREGION.deleted = 0 and HL4_SALE_OTHER_SUBREGION.enabled = 1 
-			and HL4_SALE_OTHER_SUBREGION.hl4_id = in_hl4_id;
-	
+
 	out_sale_other = SELECT HL4_SALE_OTHER.HL4_SALE_OTHER_ID as id,
 	        HL4_SALE_OTHER.DESCRIPTION, HL4_SALE_OTHER.amount
 			from HL4_SALE_OTHER

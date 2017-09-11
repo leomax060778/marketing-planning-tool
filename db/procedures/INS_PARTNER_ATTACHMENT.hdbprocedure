@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_PARTNER_ATTACHMENT" (
+ IN in_attachment_id bigint,
+ IN in_budget_spend_request_id bigint,
+ IN in_hierarchy_level_id bigint,
+ IN in_created_user_id bigint,
+ OUT out_result bigint
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+   INSERT INTO "PLANNING_TOOL"."PARTNER_ATTACHMENT" (	attachment_id, 
+   														budget_spend_request_id,
+   														hierarchy_level_id,
+		   												created_user_id
+   													)
+    VALUES(	in_attachment_id, 
+    		in_budget_spend_request_id,
+    		in_hierarchy_level_id,
+    		in_created_user_id
+    		);
+   
+   SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM "PLANNING_TOOL"."PARTNER_ATTACHMENT";
+END;

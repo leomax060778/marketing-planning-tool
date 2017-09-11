@@ -1,0 +1,39 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_PARTNER_BY_ID"
+( 
+in in_hl6_partner_id bigint
+,OUT out_result TABLE (
+hl6_partner_id bigint,
+partner_name nvarchar(255),
+partner_type_id bigint,
+hl6_id bigint,
+region_id bigint,
+value decimal(19, 6),
+created_date_tz timestamp,
+modified_date_tz timestamp,
+created_user_id bigint,
+modified_user_id bigint,
+enabled tinyint,
+deleted tinyint
+)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+	
+BEGIN
+	out_result = select
+		hl6_partner_id,
+	    partner_name,
+	    partner_type_id,
+	    hl6_id,
+	    region_id,
+	    value,
+	    created_date_tz,
+	    modified_date_tz,
+	    created_user_id,
+	    modified_user_id,
+	    enabled,
+	    deleted
+	from hl6_partner
+	where hl6_partner_id = in_hl6_partner_id and enabled = 1 and deleted = 0;
+END;

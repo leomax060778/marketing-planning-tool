@@ -1,0 +1,51 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_EXPECTED_OUTCOME_LEVEL" (
+	in in_expected_outcome_id bigint,
+	in in_hl_id integer,
+	in in_user_id bigint,
+	out out_result bigint)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    DECLARE levelName nvarchar(255);
+    levelName := '';
+
+    select description into levelName from hierarchy_level where hierarchy_level_id = in_hl_id;
+
+    IF levelName = 'HL4' THEN
+
+        UPDATE EXPECTED_OUTCOME_LEVEL
+        SET DELETED = 1
+        , ENABLED = 0
+        , modified_user_id = in_user_id
+        , modified_date_tz = CURRENT_TIMESTAMP
+        WHERE EXPECTED_OUTCOME_LEVEL_ID not in (SELECT OUTCOMES_ID from HL4_EXPECTED_OUTCOMES_DETAIL WHERE DELETED = 0 AND ENABLED = 1)
+        AND EXPECTED_OUTCOME_ID = in_expected_outcome_id
+        AND HIERARCHY_LEVEL_ID = in_hl_id;
+
+    ELSEIF levelName = 'HL5' THEN
+        UPDATE EXPECTED_OUTCOME_LEVEL
+            SET DELETED = 1
+            , ENABLED = 0
+            , modified_user_id = in_user_id
+            , modified_date_tz = CURRENT_TIMESTAMP
+            WHERE EXPECTED_OUTCOME_LEVEL_ID not in (SELECT OUTCOMES_ID from HL5_EXPECTED_OUTCOMES_DETAIL WHERE DELETED = 0 AND ENABLED = 1)
+            AND EXPECTED_OUTCOME_ID = in_expected_outcome_id
+            AND HIERARCHY_LEVEL_ID = in_hl_id;
+
+    ELSEIF levelName = 'HL6' THEN
+        UPDATE EXPECTED_OUTCOME_LEVEL
+            SET DELETED = 1
+            , ENABLED = 0
+            , modified_user_id = in_user_id
+            , modified_date_tz = CURRENT_TIMESTAMP
+            WHERE EXPECTED_OUTCOME_LEVEL_ID not in (SELECT OUTCOMES_ID from HL6_EXPECTED_OUTCOMES_DETAIL WHERE DELETED = 0 AND ENABLED = 1)
+            AND EXPECTED_OUTCOME_ID = in_expected_outcome_id
+            AND HIERARCHY_LEVEL_ID = in_hl_id;
+
+    END IF;
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

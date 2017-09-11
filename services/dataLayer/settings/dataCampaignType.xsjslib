@@ -11,6 +11,7 @@ var GET_CAMPAIGN_TYPE_BY_NAME = "GET_CAMPAIGN_TYPE_BY_NAME";
 var INS_CAMPAIGN_TYPE = "INS_CAMPAIGN_TYPE";
 var UPD_CAMPAIGN_TYPE = "UPD_CAMPAIGN_TYPE";
 var DEL_CAMPAIGN_TYPE = "DEL_CAMPAIGN_TYPE";
+var GET_COUNT_CAMPAIGN_TYPE_IN_USE_BY_ID = "GET_COUNT_CAMPAIGN_TYPE_IN_USE_BY_ID";
 
 function getAllCampaignType() {
     var parameters = {};
@@ -38,10 +39,11 @@ function getCampaignTypeByObjectiveId(objectiveId) {
         return null;
 }
 
-function insertCampaignType(name, userId) {
+function insertCampaignType(name, additionalFields, userId) {
     var parameters = {};
     parameters.IN_NAME = name;
     parameters.IN_CREATED_USER_ID = userId;
+    parameters.IN_SHOW_ADDITIONAL_FIELDS = additionalFields;
     return db.executeScalarManual(INS_CAMPAIGN_TYPE, parameters, "out_result");
 }
 
@@ -53,11 +55,12 @@ function getCampaignTypeByName(name) {
         return result[0];
     return null;
 }
-function updateCampaignType(campaignTypeId, name, userId) {
+function updateCampaignType(campaignTypeId, name, additionalFields, userId) {
     var parameters = {};
     parameters.IN_CAMPAIGN_TYPE_ID = campaignTypeId;
     parameters.IN_NAME = name;
     parameters.IN_MODIFIED_USER_ID = userId;
+    parameters.IN_SHOW_ADDITIONAL_FIELDS = additionalFields;
     return db.executeScalarManual(UPD_CAMPAIGN_TYPE, parameters, "out_result");
 }
 
@@ -66,4 +69,11 @@ function deleteCampaignType(campaignTypeId, userId) {
     parameters.IN_CAMPAIGN_TYPE_ID = campaignTypeId;
     parameters.IN_MODIFIED_USER_ID = userId;
     return db.executeScalarManual(DEL_CAMPAIGN_TYPE, parameters, "out_result");
+}
+
+function checkInUseCampaignTypeById(campaignTypeId){
+    var parameters = {
+        in_campaign_type_id: campaignTypeId
+    };
+    return db.executeScalarManual(GET_COUNT_CAMPAIGN_TYPE_IN_USE_BY_ID, parameters, "out_result");
 }

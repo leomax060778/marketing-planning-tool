@@ -1,0 +1,137 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::CV_INTERLOCK_REPORT_DATA" ( ) 
+LANGUAGE SQLSCRIPT SQL SECURITY DEFINER AS
+
+ /********* Begin Procedure Script ************/ 
+BEGIN 
+	
+	DROP TABLE "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA"  ;
+	
+     CREATE COLUMN TABLE "PLANNING_TOOL"."CV_INTERLOCK_REPORT_DATA" AS 
+     (
+     	SELECT
+	       var_h2.ORGANIZATION_TYPE_NAME
+	        , var_h2.INTERLOCK_ENTITY_NAME
+	        , var_h2.RECIEVER_ORGANIZATION
+	        , var_h2.RECEIVER_REGION
+	        , var_h2.REQUESTER_ORGANIZATION
+	        , var_h2.REQUESTER_REGION
+	        , var_h2.RECIEVER_CONTACT_DATA
+	        , var_h2.REQUESTED_RESOURCE
+	        , var_h2.REQUESTED_BUDGET
+	        , var_h2.STATUS_DETAIL
+	        , var_h2.REQUESTOR_USER
+	        , var_h2.CREATED_DATE
+	        , var_h2.STATUS_CHAGE_DATE
+	        , var_h2.REQUESTOR_L4
+	        , var_h2.L1_ID
+	        , var_h2.L1_DESCRIPTION
+	        , var_h2.L2_ID
+	        , var_h2.L2_DESCRIPTION
+	        , var_h2.L3_ID
+	        , var_h2.L3_DESCRIPTION
+	        , var_h2.L4_ID
+	        , var_h2.L4_DESCRIPTION
+	        , var_h2.BUSINESS_VALUE
+	        , var_h2.INITIATIVE_DETAILS
+	        , var_h2.L4_BUDGET
+	        , var_h2.L4_BUD_PROP
+	        , var_h2.KPI_TYPE
+	        , var_h2.KPI_DESC
+	        , var_h2.KPI_EURO_VALUE
+	        , var_h2.KPI_EURO_VALUE_PROP
+	        , var_h2.kPI_AMOUNT_VOLUME
+	        , var_h2.KPI_AMOUNT_VOLUME_PROP
+	        , var_h2.COMMENTS
+	        , var_h2.REQUESTED_BUDGET_PRO
+	        , var_h2.COUNT_L4_BY_INTERLOCK_PROP
+	        , var_h2.REQUESTS_PROP
+	        
+	        , var_h2.COUNT_INTERLOCKS
+	        , var_h2.COUNT_APPROVED_INTERLOCKS
+	        , var_h2.COUNT_NO_RESPONSE_INTERLOCKS
+	        , var_h2.COUNT_REJECTED_INTERLOCKS
+	        , var_h2.COUNT_REQUEST_INFO_INTERLOCKS
+	        
+	       	, (var_h2.COUNT_INTERLOCKS / var_h1.TOTAL_INTERLOCKS ) AS COUNT_INICIATIVE_PROP
+		
+			, (var_h2.L4_BUD_PROP * (var_h2.COUNT_INTERLOCKS / var_h1.TOTAL_INTERLOCKS )) as L4_BUD_PROP_INIC 
+			, var_h2.HL1_ID
+	        , var_h2.HL2_ID
+	        , var_h2.HL3_ID
+		
+		from 
+		(
+			SELECT 
+			  ORGANIZATION_TYPE_NAME
+		        , INTERLOCK_ENTITY_NAME
+		        , ORGANIZATION_ACRONYM as RECIEVER_ORGANIZATION
+		        , RECEIVER_REGION
+				, REQUESTER_ORGANIZATION
+				, REQUESTER_REGION
+		        , CONTACT_DATA AS RECIEVER_CONTACT_DATA
+		        , REQUESTED_RESOURCE
+		        , IFNULL(REQUESTED_BUDGET,0) AS REQUESTED_BUDGET
+		        , STATUS_DETAIL
+		        , REQUESTER AS REQUESTOR_USER
+		        , CREATED_DATE
+		        , STATUS_CHAGE_DATE
+		        , PATH AS REQUESTOR_L4
+		        , L1_ID
+		        , L1_DESCRIPTION
+		        , L2_ID
+		        , L2_DESCRIPTION
+		        , L3_ID
+		        , L3_DESCRIPTION
+		        , L4_ID
+		        , L4_DESCRIPTION
+		        , BUSINESS_VALUE
+		        , INITIATIVE_DETAILS
+		        , IFNULL(L4_BUDGET,0) AS L4_BUDGET
+		        , IFNULL(L4_BUD_PROP,0) AS L4_BUD_PROP
+		        , KPI_TYPE
+		        , KPI_DESC
+		        , IFNULL(KPI_EURO_VALUE,0) AS KPI_EURO_VALUE
+		        , IFNULL(KPI_EURO_VALUE_PROP,0) AS KPI_EURO_VALUE_PROP
+		        , IFNULL(KPI_AMOUNT_VOLUME,0) AS KPI_AMOUNT_VOLUME
+		        , IFNULL(KPI_AMOUNT_VOLUME_PROP,0) AS KPI_AMOUNT_VOLUME_PROP
+		        , COMMENTS
+		        , IFNULL(REQUESTED_BUDGET_PRO,0) AS REQUESTED_BUDGET_PRO
+		        , IFNULL(COUNT_L4_BY_INTERLOCK_PROP,0)AS COUNT_L4_BY_INTERLOCK_PROP
+		        , IFNULL(REQUESTS_PROP,0)AS REQUESTS_PROP
+		        
+		        , case when ORGANIZATION_ACRONYM is not null then 1 else 0 END COUNT_INTERLOCKS
+		        , case when STATUS_DETAIL = 'Approved' then 1 else 0 END COUNT_APPROVED_INTERLOCKS
+		        , case when STATUS_DETAIL = 'No Response' then 1 else 0 END COUNT_NO_RESPONSE_INTERLOCKS
+		        , case when STATUS_DETAIL = 'Rejected' then 1 else 0 END COUNT_REJECTED_INTERLOCKS
+		        , case when STATUS_DETAIL = 'Request Info' then 1 else 0 END COUNT_REQUEST_INFO_INTERLOCKS
+		        , HL1_ID
+		        , HL2_ID
+		        , HL3_ID
+		        	
+			FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_INTERLOCK_PROCESS_REPORT"
+		)
+		AS var_h2 
+		
+		LEFT JOIN		
+		(
+			SELECT
+			      REQUESTOR_L4
+			      , SUM(COUNT_INTERLOCKS) AS TOTAL_INTERLOCKS		        	
+			FROM
+			(
+				SELECT 
+			        PATH AS REQUESTOR_L4
+			        , case when ORGANIZATION_ACRONYM is not null then 1 else 0 END COUNT_INTERLOCKS
+			        	
+				FROM "_SYS_BIC"."xsplanningtool.db.data.views/CV_INTERLOCK_PROCESS_REPORT"
+			)
+			
+			WHERE REQUESTOR_L4 IS NOT NULL
+			
+			GROUP BY
+					REQUESTOR_L4
+		) AS var_h1
+			ON var_h1.REQUESTOR_L4 = var_h2.REQUESTOR_L4
+	) ;
+     
+END /********* End Procedure Script ************/

@@ -1,0 +1,57 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COST_CENTER_BY_TEAM_ID" (
+    IN in_cost_center_id BIGINT
+    ,IN in_team_id BIGINT
+    , IN in_sale_organization_id bigint
+    ,OUT out_result TABLE(
+    SALES_ORGANIZATION_ID bigint,
+    	COST_CENTER_ID BIGINT,
+                HL3_ID BIGINT,
+                PATH NVARCHAR(255)
+    ))
+    	LANGUAGE SQLSCRIPT
+    	SQL SECURITY INVOKER
+    	DEFAULT SCHEMA "PLANNING_TOOL"
+    	READS SQL DATA AS
+    BEGIN
+     out_result =
+
+    	(SELECT
+    	        HL5.SALES_ORGANIZATION_ID,
+            	HL5.COST_CENTER_ID,
+                COST_CENTER_TEAMS.HL3_ID,
+                CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(HL1.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)),'-'),hl2.ORGANIZATION_ACRONYM),'-'),HL3.ACRONYM) AS PATH
+             FROM COST_CENTER_TEAMS
+             INNER JOIN HL3 on HL3.HL3_ID = COST_CENTER_TEAMS.HL3_ID
+             INNER JOIN HL2 on HL2.HL2_ID = HL3.HL2_ID
+             INNER JOIN HL1 on HL1.HL1_ID = HL2.HL1_ID
+             INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+             inner join hl4 on hl4.hl3_id = hl3.hl3_id
+            inner join hl5 on hl5.hl4_id = hl4.hl4_id
+            WHERE HL5.ENABLED = 1
+                         AND HL5.DELETED = 0
+                         AND HL5.COST_CENTER_ID = in_cost_center_id
+                         AND HL5.SALES_ORGANIZATION_ID = in_sale_organization_id
+                         and HL3.HL3_ID = in_team_id)
+
+            UNION
+
+            (SELECT
+                HL6.SALES_ORGANIZATION_ID,
+                        	HL6.COST_CENTER_ID,
+                            COST_CENTER_TEAMS.HL3_ID,
+                            CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(HL1.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)),'-'),hl2.ORGANIZATION_ACRONYM),'-'),HL3.ACRONYM) AS PATH
+                         FROM COST_CENTER_TEAMS
+                         INNER JOIN HL3 on HL3.HL3_ID = COST_CENTER_TEAMS.HL3_ID
+                         INNER JOIN HL2 on HL2.HL2_ID = HL3.HL2_ID
+                         INNER JOIN HL1 on HL1.HL1_ID = HL2.HL1_ID
+                         INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                         inner join hl4 on hl4.hl3_id = hl3.hl3_id
+                        inner join hl5 on hl5.hl4_id = hl4.hl4_id
+                        inner join hl6 on hl6.hl5_id = hl5.hl5_id
+
+             WHERE HL6.ENABLED = 1
+             AND HL6.DELETED = 0
+             AND HL6.COST_CENTER_ID = in_cost_center_id
+             AND HL6.SALES_ORGANIZATION_ID = in_sale_organization_id
+             and HL3.HL3_ID = in_team_id);
+    END;

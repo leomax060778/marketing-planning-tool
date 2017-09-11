@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_BUDGET_SPEND_REQUEST" (
+		  IN in_hl_id bigint
+        , IN in_hierarchy_level_id bigint
+        , IN in_description NVARCHAR(255)
+        , IN in_amount DECIMAL(19,6)
+        , IN in_budget_spend_request_status_id bigint
+        , IN in_budget_spend_request_type_id bigint
+        , IN in_user_id bigint
+        , OUT budget_spend_request_id BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	INSERT INTO BUDGET_SPEND_REQUEST (hl_id,hierarchy_level_id,description,amount,budget_spend_request_status_id, budget_spend_request_type_id,created_user_id)
+	VALUES (in_hl_id, in_hierarchy_level_id, in_description, in_amount, in_budget_spend_request_status_id, in_budget_spend_request_type_id, in_user_id);
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO budget_spend_request_id FROM "PLANNING_TOOL"."BUDGET_SPEND_REQUEST";
+END;

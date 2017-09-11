@@ -10,6 +10,7 @@ var spUpdateSubregion = "UPD_SUBREGION";
 var spDeleteSubregion = "DEL_SUBREGION";
 var spDeleteSubregionsByRegion = "DEL_SUBREGIONS_BY_REGION_ID";
 var spGetAllSubRegion = "GET_ALL_SUBREGION";
+var spGetCountHL1BySubregionId =  "GET_COUNT_HL1_BY_SUBREGIONID";
 
 /*****************END STORED PROCEDURES*******************/
 
@@ -68,3 +69,10 @@ function delSubregionsByRegion(region, modUser) {
 
 	return db.executeScalarManual(spDeleteSubregionsByRegion, param, "out_result");
 }
+
+function getCountHL1BySubRegionId(subRegionId) {
+	var param = {};
+	param.in_subregion_id = subRegionId;
+	return db.executeScalarManual(spGetCountHL1BySubregionId, param, "out_result");
+}
+

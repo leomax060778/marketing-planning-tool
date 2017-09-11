@@ -9,13 +9,13 @@
     <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
       <descriptions/>
       <viewAttributes>
-        <viewAttribute id="ROW_INDEX" datatype="INTEGER"/>
+        <viewAttribute datatype="INTEGER" id="ROW_INDEX"/>
         <viewAttribute datatype="NVARCHAR" id="TEAM_TYPE_NAME" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="L1_ACRONYM" length="25"/>
         <viewAttribute datatype="NVARCHAR" id="L1_DESCRIPTION" length="255"/>
         <viewAttribute datatype="INTEGER" id="BUDGET_YEAR"/>
-        <viewAttribute id="L1_BUDGET" datatype="DECIMAL" length="28" scale="10"/>
-        <viewAttribute id="COUNT_L1" datatype="INTEGER"/>
+        <viewAttribute datatype="DECIMAL" id="L1_BUDGET" length="28" scale="10"/>
+        <viewAttribute datatype="INTEGER" id="COUNT_L1"/>
         <viewAttribute datatype="NVARCHAR" id="REGION_NAME" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="SUBREGION_NAME" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="L2_ACRONYM" length="25"/>
@@ -24,93 +24,83 @@
         <viewAttribute datatype="NVARCHAR" id="L3_ACRONYM" length="25"/>
         <viewAttribute datatype="NVARCHAR" id="L3_DESCRIPTION" length="100"/>
         <viewAttribute datatype="DECIMAL" id="L3_BUDGET" length="19" scale="10"/>
-        <viewAttribute id="L4_ID" datatype="BIGINT"/>
-        <viewAttribute id="L4_ACRONYM" datatype="NVARCHAR" length="255"/>
-        <viewAttribute id="L4_CRM_DESCRIPTION" datatype="NVARCHAR" length="255"/>
-        <viewAttribute id="L4_STATUS_DETAIL" datatype="NVARCHAR" length="255"/>
-        <viewAttribute id="COUNT_L4" datatype="INTEGER"/>
+        <viewAttribute datatype="BIGINT" id="L4_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="L4_ACRONYM" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="L4_CRM_DESCRIPTION" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="L4_STATUS_DETAIL" length="255"/>
+        <viewAttribute datatype="INTEGER" id="COUNT_L4"/>
         <viewAttribute datatype="DECIMAL" id="BUDGET_Q1" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="BUDGET_Q2" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="BUDGET_Q3" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="BUDGET_Q4" length="19" scale="10"/>
-        <viewAttribute id="L4_BUDGET" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="BUDGET_SPEND_Q1" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="BUDGET_SPEND_Q2" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="BUDGET_SPEND_Q3" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="BUDGET_SPEND_Q4" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_SPEND_Q1" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_SPEND_Q2" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_SPEND_Q3" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="BUDGET_SPEND_Q4" length="19" scale="10"/>
         <viewAttribute datatype="NVARCHAR" id="CATEGORY_NAME" length="60"/>
         <viewAttribute datatype="NVARCHAR" id="OPTION_NAME" length="255"/>
         <viewAttribute datatype="DECIMAL" id="OPTION_AMOUNT" length="19" scale="10"/>
         <viewAttribute datatype="NVARCHAR" id="BUDGET_TYPE" length="255"/>
         <viewAttribute datatype="DECIMAL" id="BUDGET_PERCENTAGE" length="19" scale="10"/>
-        <viewAttribute id="CAMPAIGN_TYPE" datatype="NVARCHAR" length="127"/>
-        <viewAttribute id="CAMPAIGN_NAME" datatype="NVARCHAR" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="CAMPAIGN_TYPE" length="127"/>
+        <viewAttribute datatype="NVARCHAR" id="CAMPAIGN_NAME" length="255"/>
         <viewAttribute datatype="DECIMAL" id="KPI_EURO_VALUE" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="KPI_AMOUNT_VOLUME" length="19" scale="10"/>
-        <viewAttribute id="COUNT_KPI_BY_L4" datatype="INTEGER"/>
+        <viewAttribute datatype="INTEGER" id="COUNT_KPI_BY_L4"/>
         <viewAttribute datatype="DECIMAL" id="TOTAL_MY_BUDGET" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="TOTAL_SALE" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="TOTAL_PARTNER" length="19" scale="10"/>
         <viewAttribute datatype="DECIMAL" id="TOTAL_BUDGET" length="19" scale="10"/>
-      
-        <viewAttribute id="ROW_COUNTER" datatype="INTEGER"/>
-      
-        <viewAttribute id="L1_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L1_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L2_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L3_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q1" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q2" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q3" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="L4_BUDGET_REGION_OPTION_Q4" datatype="DECIMAL" length="19" scale="10"/>
-      
-        <viewAttribute id="COUNT_L4_PROP" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute datatype="INTEGER" id="ROW_COUNTER"/>
+        <viewAttribute datatype="DECIMAL" id="L1_BUDGET_REGION_OPTION" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L2_BUDGET_REGION_OPTION" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L3_BUDGET_REGION_OPTION" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET_REGION_OPTION" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L1_BUDGET_REGION_OPTION_Q1" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L1_BUDGET_REGION_OPTION_Q2" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L1_BUDGET_REGION_OPTION_Q3" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L1_BUDGET_REGION_OPTION_Q4" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L2_BUDGET_REGION_OPTION_Q1" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L2_BUDGET_REGION_OPTION_Q2" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L2_BUDGET_REGION_OPTION_Q3" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L2_BUDGET_REGION_OPTION_Q4" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L3_BUDGET_REGION_OPTION_Q1" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L3_BUDGET_REGION_OPTION_Q2" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L3_BUDGET_REGION_OPTION_Q3" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L3_BUDGET_REGION_OPTION_Q4" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET_REGION_OPTION_Q1" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET_REGION_OPTION_Q2" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET_REGION_OPTION_Q3" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET_REGION_OPTION_Q4" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="COUNT_L4_PROP" length="19" scale="10"/>
       </viewAttributes>
       <calculatedViewAttributes/>
       <definition>/********* Begin Procedure Script ************/ 
  BEGIN
 	
- 	va_hl2 = SELECT hl2.HL2_ID, teamType.NAME AS TEAM_TYPE_NAME, hl2.ACRONYM AS L1_ACRONYM, hl2.DESCRIPTION AS L1_DESCRIPTION, budgetYear.BUDGET_YEAR, IFNULL(region.REGION_NAME,'WW') AS REGION_NAME,
-				IFNULL(subregion.SUBREGION_NAME,'REGIONAL') AS SUBREGION_NAME,hl2.BUDGET_YEAR_ID,
-				hl2.HL2_BUDGET_TOTAL AS L2_BUDGET, hl2.ORGANIZATION_ACRONYM AS L2_ACRONYM, hl2.ORGANIZATION_NAME AS L2_NAME
+ 	va_hl2 = SELECT hl2.HL2_ID, hl1.HL1_ID, teamType.NAME AS TEAM_TYPE_NAME, hl1.ACRONYM AS L1_ACRONYM, hl1.DESCRIPTION AS L1_DESCRIPTION, budgetYear.BUDGET_YEAR, IFNULL(region.REGION_NAME,'WW') AS REGION_NAME,
+				IFNULL(subregion.SUBREGION_NAME,'REGIONAL') AS SUBREGION_NAME,hl1.BUDGET_YEAR_ID,
+				hl2.HL2_BUDGET_TOTAL AS L2_BUDGET, hl2.ORGANIZATION_ACRONYM AS L2_ACRONYM, hl2.ORGANIZATION_NAME AS L2_NAME, hl1.BUDGET as L1_BUDGET
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
-			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; budgetYear ON budgetYear.BUDGET_YEAR_ID = hl2.BUDGET_YEAR_ID
-			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_TEAM_TYPE&quot; teamType ON teamType.TEAM_TYPE_ID = hl2.TEAM_TYPE_ID
-			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; region ON region.REGION_ID = hl2.REGION_ID
-			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; subregion ON subregion.REGION_ID = hl2.SUBREGION_ID
+			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl2.HL1_ID = hl1.HL1_ID AND HL1.ENABLED = 1 AND HL1.DELETED = 0
+			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; budgetYear ON budgetYear.BUDGET_YEAR_ID = hl1.BUDGET_YEAR_ID
+			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_TEAM_TYPE&quot; teamType ON teamType.TEAM_TYPE_ID = hl1.TEAM_TYPE_ID
+			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; region ON region.REGION_ID = hl1.REGION_ID
+			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; subregion ON subregion.REGION_ID = hl1.SUBREGION_ID
 			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0;
 
-	va_count_plan = SELECT hl2.ACRONYM, hl2.BUDGET_YEAR_ID, count (hl2.ORGANIZATION_ACRONYM) AS COUNT_L1
+	va_count_plan = SELECT hl1.HL1_ID, hl1.ACRONYM, hl1.BUDGET_YEAR_ID, count (hl2.ORGANIZATION_ACRONYM) AS COUNT_L1
 					FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
+			 		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl2.HL1_ID = hl1.HL1_ID
 					WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0
-					GROUP BY hl2.ACRONYM,
-					hl2.BUDGET_YEAR_ID; 
-				
-	--SUM BUDGET PER PLAN
-	va_plan_budget = SELECT hl2.ACRONYM AS HL2_ACRONYM, hl2.BUDGET_YEAR_ID, SUM(hl2.HL2_BUDGET_TOTAL) AS L1_BUDGET
-			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
-			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; budgetYear ON budgetYear.BUDGET_YEAR_ID = hl2.BUDGET_YEAR_ID
-			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0
-			 	GROUP BY hl2.ACRONYM,
-			 	hl2.BUDGET_YEAR_ID;
-			 	
+					GROUP BY hl1.HL1_ID, hl1.ACRONYM,
+					hl1.BUDGET_YEAR_ID; 		 	
 			 	
  	va_hl3 = SELECT hl3.HL3_ID, hl3.HL2_ID, hl3Fnc.HL3_FNC_BUDGET_TOTAL AS L3_BUDGET, 
  				hl3.ACRONYM AS L3_ACRONYM, hl3.HL3_DESCRIPTION AS L3_DESCRIPTION
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3
-			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3_FNC&quot; hl3Fnc ON hl3Fnc.HL3_ID = hl3.HL3_ID
+			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3Fnc ON hl3Fnc.HL3_ID = hl3.HL3_ID
 			 	WHERE hl3.ENABLED = 1 AND hl3.DELETED = 0;
 			 	
 	va_hl4 = SELECT hl4.HL4_ID, hl4.HL3_ID,	hl4.ACRONYM AS L4_ACRONYM, hl4.HL4_CRM_DESCRIPTION AS L4_CRM_DESCRIPTION, 
@@ -125,7 +115,7 @@
 				(hl4Fnc.HL4_FNC_BUDGET_TOTAL_MKT * hl4Fnc.HL4_FNC_BUDGET_SPEND_Q2 / 100) AS BUDGET_SPEND_Q2,
 				(hl4Fnc.HL4_FNC_BUDGET_TOTAL_MKT * hl4Fnc.HL4_FNC_BUDGET_SPEND_Q3 / 100) AS BUDGET_SPEND_Q3,
 				(hl4Fnc.HL4_FNC_BUDGET_TOTAL_MKT * hl4Fnc.HL4_FNC_BUDGET_SPEND_Q4 / 100) AS BUDGET_SPEND_Q4
-				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; hl4Fnc
+				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; hl4Fnc
 			 	WHERE hl4Fnc.ENABLED = 1 AND hl4Fnc.DELETED = 0;
 			 	
  	va_hl4BudgetDistribution = (SELECT hl4BudgetRegion.HL4_ID, hl4BudgetRegion.PERCENTAGE AS BUDGET_PERCENTAGE, region.REGION_NAME AS BUDGET_TYPE
@@ -135,18 +125,18 @@
 			 	
 			 	UNION ALL
 			 	
- 				(SELECT hl4BudgetRoute.HL4_ID, hl4BudgetRoute.PERCENTAGE AS BUDGET_PERCENTAGE, hl3.L3_ACRONYM AS BUDGET_TYPE
+ 				(SELECT hl4BudgetRoute.HL4_ID, hl4BudgetRoute.PERCENTAGE AS BUDGET_PERCENTAGE, hl2.L2_ACRONYM AS BUDGET_TYPE
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_ROUTE&quot; hl4BudgetRoute
-			 	INNER JOIN :va_hl3 hl3 ON hl3.HL3_ID = hl4BudgetRoute.ROUTE_ID
+			 	INNER JOIN :va_hl2 hl2 ON hl2.HL2_ID = hl4BudgetRoute.ROUTE_ID
 			 	WHERE hl4BudgetRoute.ENABLED = 1 AND hl4BudgetRoute.DELETED = 0 AND hl4BudgetRoute.PERCENTAGE != 0);
 			 	
-	va_hl4CategoryOption = SELECT hl4Category.HL4_ID, category.NAME AS CATEGORY_NAME, hl4CategoryOption.AMOUNT AS OPTION_AMOUNT, options.NAME AS OPTION_NAME
+	va_hl4CategoryOption = SELECT hl4CategoryOption.HL4_ID, category.NAME AS CATEGORY_NAME, hl4CategoryOption.AMOUNT AS OPTION_AMOUNT, options.NAME AS OPTION_NAME
 				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_CATEGORY_OPTION&quot; hl4CategoryOption
-				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_OPTION&quot; options ON options.OPTION_ID = hl4CategoryOption.OPTION_ID
-				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_CATEGORY&quot; hl4Category ON hl4CategoryOption.HL4_CATEGORY_ID = hl4Category.HL4_CATEGORY_ID
-				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_CATEGORY&quot; category ON category.CATEGORY_ID = hl4Category.CATEGORY_ID
-			 	WHERE hl4CategoryOption.ENABLED = 1 AND hl4CategoryOption.DELETED = 0 AND hl4CategoryOption.AMOUNT != 0
-			 	AND hl4Category.ENABLED = 1 AND hl4Category.DELETED = 0;
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY_OPTION_LEVEL&quot; ACOL 
+					ON hl4CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_OPTION&quot; options ON options.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY&quot; category ON category.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
+			 	WHERE hl4CategoryOption.ENABLED = 1 AND hl4CategoryOption.DELETED = 0 AND hl4CategoryOption.AMOUNT != 0;
 	
 	va_CountHl4CategoryOption = SELECT hl4CategoryOption.HL4_ID, COUNT(hl4CategoryOption.HL4_ID) AS COUNT_L4_CATEGORY_OPTION
  									FROM :va_hl4CategoryOption hl4CategoryOption
@@ -169,7 +159,7 @@
  					LEFT JOIN :va_CountExpectedOutcomesByHl4 countExpectedOutcomesByHl4 ON countExpectedOutcomesByHl4.HL4_ID = countHl4CategoryOption.HL4_ID;
  	
  	va_l4BudgetRegionOption = Select hl4Fnc.HL4_ID, 
- 									SUM(hl4Fnc.L4_BUDGET * hl4BudgetDistribution.BUDGET_PERCENTAGE * hl4CategoryOption.OPTION_AMOUNT /(10000 * countExpectedOutcomesByHl4.COUNT_KPI_BY_L4)) AS L4_BUDGET_REGION_OPTION
+ 									SUM(hl4Fnc.L4_BUDGET * hl4BudgetDistribution.BUDGET_PERCENTAGE * hl4CategoryOption.OPTION_AMOUNT /(100000000 * countExpectedOutcomesByHl4.COUNT_KPI_BY_L4)) AS L4_BUDGET_REGION_OPTION
  									FROM :va_hl4Fnc hl4Fnc		 
  									INNER JOIN :va_hl4BudgetDistribution hl4BudgetDistribution ON hl4Fnc.HL4_ID = hl4BudgetDistribution.HL4_ID					
  									INNER JOIN :va_hl4CategoryOption hl4CategoryOption ON hl4Fnc.HL4_ID = hl4CategoryOption.HL4_ID
@@ -180,12 +170,21 @@
 	va_hl4ExpectedOutcomesDetail = SELECT
 				hl4ExpectedOutcomesDetail.EURO_VALUE AS KPI_EURO_VALUE,
 				hl4ExpectedOutcomesDetail.AMOUNT_VALUE AS KPI_AMOUNT_VOLUME,
-				hl4ExpectedOutcomes.HL4_ID, outcomes.OUTCOMES_NAME AS CAMPAIGN_NAME, outcomesType.OUTCOMES_TYPE_NAME AS CAMPAIGN_TYPE
+				hl4ExpectedOutcomes.HL4_ID, 
+				EOO.NAME AS CAMPAIGN_NAME, 
+				EO.NAME AS CAMPAIGN_TYPE
  				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_EXPECTED_OUTCOMES_DETAIL&quot; hl4ExpectedOutcomesDetail
  				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_EXPECTED_OUTCOMES&quot; hl4ExpectedOutcomes 
  				ON hl4ExpectedOutcomesDetail.HL4_EXPECTED_OUTCOMES_ID = hl4ExpectedOutcomes.HL4_EXPECTED_OUTCOMES_ID
- 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_OUTCOMES&quot; outcomes ON outcomes.OUTCOMES_ID = hl4ExpectedOutcomesDetail.OUTCOMES_ID
- 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_OUTCOMES_TYPE&quot; outcomesType ON outcomes.OUTCOMES_TYPE_ID = outcomesType.OUTCOMES_TYPE_ID 
+ 				
+ 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_EXPECTED_OUTCOME_LEVEL&quot; EOL 
+ 				ON EOL.EXPECTED_OUTCOME_LEVEL_ID = hl4ExpectedOutcomesDetail.OUTCOMES_ID
+ 				
+ 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_EXPECTED_OUTCOME_OPTION&quot; EOO 
+ 				ON EOL.EXPECTED_OUTCOME_OPTION_ID = EOO.EXPECTED_OUTCOME_OPTION_ID
+ 				
+ 				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_EXPECTED_OUTCOMES&quot; EO 
+ 				ON EOL.EXPECTED_OUTCOME_ID = EO.EXPECTED_OUTCOME_ID
  				WHERE hl4ExpectedOutcomesDetail.ENABLED = 1 AND hl4ExpectedOutcomesDetail.DELETED = 0 AND hl4ExpectedOutcomesDetail.EURO_VALUE != 0;
 
  	va_my_budget = select hl4BudgetDistribution.HL4_ID, SUM(hl4BudgetDistribution.BUDGET_PERCENTAGE) AS TOTAL_MY_BUDGET
@@ -210,18 +209,17 @@
  		
  	 va_plain_data = 
  	 SELECT
- 	    --row_number() over (order by ROW_COUNTER) as ROW_INDEX,
  	 	hl2.TEAM_TYPE_NAME,
 	    hl2.L1_ACRONYM,
 		hl2.L1_DESCRIPTION,
 		hl2.BUDGET_YEAR,
-		planBudget.L1_BUDGET, -- Sum Plan budget (l2_budget)
-		count(hl2.L1_ACRONYM) AS COUNT_L1, --countPlan.COUNT_L1, -- arreglar
+		hl2.L1_BUDGET,
+		count(hl2.L1_ACRONYM) AS COUNT_L1,
 		hl2.REGION_NAME,
 		hl2.SUBREGION_NAME,
 		hl2.L2_ACRONYM,
 		hl2.L2_NAME,
-		hl2.L2_BUDGET, -- Plan budget
+		hl2.L2_BUDGET,
 		hl3.L3_ACRONYM,
 		hl3.L3_DESCRIPTION,
 		hl3.L3_BUDGET,
@@ -243,20 +241,19 @@
 		hl4CategoryOption.OPTION_NAME,
 		hl4CategoryOption.OPTION_AMOUNT,
 		hl4BudgetDistribution.BUDGET_TYPE,
-		hl4BudgetDistribution.BUDGET_PERCENTAGE,
+		hl4BudgetDistribution.BUDGET_PERCENTAGE / 10000 as BUDGET_PERCENTAGE,
 		hl4ExpectedOutcomesDetail.CAMPAIGN_TYPE,
 		hl4ExpectedOutcomesDetail.CAMPAIGN_NAME,
 		hl4ExpectedOutcomesDetail.KPI_EURO_VALUE,
 		hl4ExpectedOutcomesDetail.KPI_AMOUNT_VOLUME,
 		IFNULL(countExpectedOutcomesByHl4.COUNT_KPI_BY_L4,0) AS COUNT_KPI_BY_L4,
-		myBudget.TOTAL_MY_BUDGET,
-		sale.TOTAL_SALE,
-		partner.TOTAL_PARTNER,
-		(myBudget.TOTAL_MY_BUDGET + sale.TOTAL_SALE + partner.TOTAL_PARTNER) AS TOTAL_BUDGET,
+		myBudget.TOTAL_MY_BUDGET / 100000 as TOTAL_MY_BUDGET,
+		sale.TOTAL_SALE / 100000 as TOTAL_SALE,
+		partner.TOTAL_PARTNER / 100000 as TOTAL_PARTNER,
+		(myBudget.TOTAL_MY_BUDGET + sale.TOTAL_SALE + partner.TOTAL_PARTNER)  / 100000 AS TOTAL_BUDGET,
 		1 as ROW_COUNTER
  	 FROM
 		:va_hl2 hl2
-		INNER JOIN :va_plan_budget planBudget ON hl2.L1_ACRONYM = planBudget.HL2_ACRONYM AND hl2.BUDGET_YEAR_ID = planBudget.BUDGET_YEAR_ID
 		INNER JOIN :va_count_plan countPlan ON hl2.L1_ACRONYM = countPlan.ACRONYM AND hl2.BUDGET_YEAR_ID = countPlan.BUDGET_YEAR_ID
 		LEFT JOIN :va_hl3 hl3 ON hl3.HL2_ID = hl2.HL2_ID
 		LEFT JOIN :va_hl4 hl4 ON hl4.HL3_ID = hl3.HL3_ID
@@ -273,12 +270,12 @@
         hl2.L1_ACRONYM,
         hl2.L1_DESCRIPTION,
         hl2.BUDGET_YEAR,
-        planBudget.L1_BUDGET, -- Sum Plan budget (l2_budget)
+        hl2.L1_BUDGET,
         hl2.REGION_NAME,
         hl2.SUBREGION_NAME,
         hl2.L2_ACRONYM,
         hl2.L2_NAME,
-        hl2.L2_BUDGET, -- Plan budget
+        hl2.L2_BUDGET,
         hl3.L3_ACRONYM,
         hl3.L3_DESCRIPTION,
         hl3.L3_BUDGET,
@@ -330,7 +327,7 @@ va_sub_out_result =
         L4_ID,
         L4_ACRONYM,
         L4_CRM_DESCRIPTION,
-        L4_STATUS_DETAIL,
+        L4_STATUS_DETAIL AS L4_STATUS_DETAIL,
         COUNT_L4,
         BUDGET_Q1,
         BUDGET_Q2,
@@ -515,12 +512,15 @@ END /********* End Procedure Script ************/</definition>
         <keyMapping columnObjectName="Script_View" columnName="L3_DESCRIPTION"/>
       </attribute>
       <attribute id="L4_ACRONYM" order="17">
+        <descriptions/>
         <keyMapping columnObjectName="Script_View" columnName="L4_ACRONYM"/>
       </attribute>
       <attribute id="L4_CRM_DESCRIPTION" order="18">
+        <descriptions/>
         <keyMapping columnObjectName="Script_View" columnName="L4_CRM_DESCRIPTION"/>
       </attribute>
       <attribute id="L4_STATUS_DETAIL" order="19">
+        <descriptions/>
         <keyMapping columnObjectName="Script_View" columnName="L4_STATUS_DETAIL"/>
       </attribute>
       <attribute id="CATEGORY_NAME" order="30">
@@ -536,9 +536,11 @@ END /********* End Procedure Script ************/</definition>
         <keyMapping columnObjectName="Script_View" columnName="BUDGET_TYPE"/>
       </attribute>
       <attribute id="CAMPAIGN_TYPE" order="35">
+        <descriptions/>
         <keyMapping columnObjectName="Script_View" columnName="CAMPAIGN_TYPE"/>
       </attribute>
       <attribute id="CAMPAIGN_NAME" order="36">
+        <descriptions/>
         <keyMapping columnObjectName="Script_View" columnName="CAMPAIGN_NAME"/>
       </attribute>
     </attributes>
@@ -552,6 +554,7 @@ END /********* End Procedure Script ************/</definition>
     </privateDataFoundation>
     <baseMeasures>
       <measure id="ROW_INDEX" order="1" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="ROW_INDEX"/>
       </measure>
       <measure id="BUDGET_YEAR" order="5" aggregationType="sum" measureType="simple">
@@ -559,9 +562,11 @@ END /********* End Procedure Script ************/</definition>
         <measureMapping columnObjectName="Script_View" columnName="BUDGET_YEAR"/>
       </measure>
       <measure id="L1_BUDGET" order="6" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L1_BUDGET"/>
       </measure>
       <measure id="COUNT_L1" order="7" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="COUNT_L1"/>
       </measure>
       <measure id="L2_BUDGET" order="12" aggregationType="sum" measureType="simple">
@@ -577,6 +582,7 @@ END /********* End Procedure Script ************/</definition>
         <measureMapping columnObjectName="Script_View" columnName="L4_ID"/>
       </measure>
       <measure id="COUNT_L4" order="20" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="COUNT_L4"/>
       </measure>
       <measure id="BUDGET_Q1" order="21" aggregationType="sum" measureType="simple">
@@ -596,6 +602,7 @@ END /********* End Procedure Script ************/</definition>
         <measureMapping columnObjectName="Script_View" columnName="BUDGET_Q4"/>
       </measure>
       <measure id="L4_BUDGET" order="25" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET"/>
       </measure>
       <measure id="BUDGET_SPEND_Q1" order="26" aggregationType="sum" measureType="simple">
@@ -631,6 +638,7 @@ END /********* End Procedure Script ************/</definition>
         <measureMapping columnObjectName="Script_View" columnName="KPI_AMOUNT_VOLUME"/>
       </measure>
       <measure id="COUNT_KPI_BY_L4" order="39" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="COUNT_KPI_BY_L4"/>
       </measure>
       <measure id="TOTAL_MY_BUDGET" order="40" aggregationType="sum" measureType="simple">
@@ -649,80 +657,93 @@ END /********* End Procedure Script ************/</definition>
         <descriptions defaultDescription="HL2_BUDGET_TOTAL"/>
         <measureMapping columnObjectName="Script_View" columnName="TOTAL_BUDGET"/>
       </measure>
-    
       <measure id="ROW_COUNTER" order="44" aggregationType="sum" measureType="simple">
-    
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="ROW_COUNTER"/>
-    
       </measure>
-    
       <measure id="L1_BUDGET_REGION_OPTION" order="45" aggregationType="sum" measureType="simple">
-    
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L1_BUDGET_REGION_OPTION"/>
-    
       </measure>
       <measure id="L2_BUDGET_REGION_OPTION" order="46" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L2_BUDGET_REGION_OPTION"/>
       </measure>
       <measure id="L3_BUDGET_REGION_OPTION" order="47" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L3_BUDGET_REGION_OPTION"/>
       </measure>
       <measure id="L4_BUDGET_REGION_OPTION" order="48" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET_REGION_OPTION"/>
       </measure>
       <measure id="L1_BUDGET_REGION_OPTION_Q1" order="49" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L1_BUDGET_REGION_OPTION_Q1"/>
       </measure>
       <measure id="L1_BUDGET_REGION_OPTION_Q2" order="50" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L1_BUDGET_REGION_OPTION_Q2"/>
       </measure>
       <measure id="L1_BUDGET_REGION_OPTION_Q3" order="51" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L1_BUDGET_REGION_OPTION_Q3"/>
       </measure>
       <measure id="L1_BUDGET_REGION_OPTION_Q4" order="52" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L1_BUDGET_REGION_OPTION_Q4"/>
       </measure>
       <measure id="L2_BUDGET_REGION_OPTION_Q1" order="53" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L2_BUDGET_REGION_OPTION_Q1"/>
       </measure>
       <measure id="L2_BUDGET_REGION_OPTION_Q2" order="54" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L2_BUDGET_REGION_OPTION_Q2"/>
       </measure>
       <measure id="L2_BUDGET_REGION_OPTION_Q3" order="55" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L2_BUDGET_REGION_OPTION_Q3"/>
       </measure>
       <measure id="L2_BUDGET_REGION_OPTION_Q4" order="56" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L2_BUDGET_REGION_OPTION_Q4"/>
       </measure>
       <measure id="L3_BUDGET_REGION_OPTION_Q1" order="57" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L3_BUDGET_REGION_OPTION_Q1"/>
       </measure>
       <measure id="L3_BUDGET_REGION_OPTION_Q2" order="58" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L3_BUDGET_REGION_OPTION_Q2"/>
       </measure>
       <measure id="L3_BUDGET_REGION_OPTION_Q3" order="59" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L3_BUDGET_REGION_OPTION_Q3"/>
       </measure>
       <measure id="L3_BUDGET_REGION_OPTION_Q4" order="60" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L3_BUDGET_REGION_OPTION_Q4"/>
       </measure>
       <measure id="L4_BUDGET_REGION_OPTION_Q1" order="61" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET_REGION_OPTION_Q1"/>
       </measure>
       <measure id="L4_BUDGET_REGION_OPTION_Q2" order="62" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET_REGION_OPTION_Q2"/>
       </measure>
       <measure id="L4_BUDGET_REGION_OPTION_Q3" order="63" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET_REGION_OPTION_Q3"/>
       </measure>
       <measure id="L4_BUDGET_REGION_OPTION_Q4" order="64" aggregationType="sum" measureType="simple">
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="L4_BUDGET_REGION_OPTION_Q4"/>
       </measure>
-    
       <measure id="COUNT_L4_PROP" order="65" aggregationType="sum" measureType="simple">
-    
+        <descriptions/>
         <measureMapping columnObjectName="Script_View" columnName="COUNT_L4_PROP"/>
-    
       </measure>
     </baseMeasures>
     <calculatedMeasures/>

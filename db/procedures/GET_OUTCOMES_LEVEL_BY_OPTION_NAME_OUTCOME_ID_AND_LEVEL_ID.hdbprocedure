@@ -1,0 +1,35 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OUTCOMES_LEVEL_BY_OPTION_NAME_OUTCOME_ID_AND_LEVEL_ID"
+(
+        in in_option_name nvarchar(255),
+        in in_outcome_id bigint,
+        in in_hierarchy_level_name nvarchar(255),
+        out out_result table(
+              expected_outcome_level_id bigint
+            , expected_outcome_option_id bigint
+            , expected_outcome_id bigint
+        )
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+
+out_result =
+
+ select
+     distinct eol.expected_outcome_level_id
+    , eol.expected_outcome_option_id
+    , eol.expected_outcome_id
+    from expected_outcome_level eol
+    inner join expected_outcome_option eoo on eoo.expected_outcome_option_id = eol.expected_outcome_option_id
+    inner join expected_outcome eo on eo.expected_outcome_id = eol.expected_outcome_id
+    inner join hierarchy_level hl on hl.hierarchy_level_id = eol.hierarchy_level_id
+    where upper(hl.description) = upper(in_hierarchy_level_name)
+    and upper(eoo.name) = upper(in_option_name)
+    and eol.expected_outcome_id = in_outcome_id
+    and eoo.deleted = 0 and eoo.enabled = 1
+    and eo.deleted = 0 and eo.enabled = 1
+    and eol.deleted = 0 and eol.enabled = 1;
+
+END;

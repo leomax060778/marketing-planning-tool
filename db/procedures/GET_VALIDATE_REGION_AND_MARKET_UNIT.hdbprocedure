@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_VALIDATE_REGION_AND_MARKET_UNIT" (
+	IN in_region_id BIGINT,
+	IN in_market_unit_id BIGINT,
+	OUT out_result BIGINT
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+    select count(r.region_id) INTO out_result
+    from REGION r
+    inner join SUBREGION sr on sr.region_id = r.region_id
+    where r.region_id = in_region_id
+    and sr.subregion_id = in_market_unit_id
+    and r.enabled = 1 and r.deleted = 0
+    and sr.enabled = 1 and sr.deleted = 0;
+
+END;

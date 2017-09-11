@@ -24,7 +24,7 @@ function handlePost(reqBody, userId){
 	var typeMethod = reqBody.method;
 	var username = reqBody.username;
 	var password = reqBody.password;
-	var currentPassword = reqBody.currentPassword
+	var currentPassword = reqBody.currentPassword;
 	var token = reqBody.token;
 	if(typeMethod && typeMethod === confirmToken){
 		return httpUtil.handleResponse(loginLib.confirmToken(token,userId),httpUtil.OK,httpUtil.AppJson);

@@ -1,0 +1,15 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CRM_PARENT_PATH_BY_ID_LEVEL_ID" (
+        IN in_level_id bigint,
+        IN in_id bigint,
+        OUT out_result TABLE (PARENT_PATH NVARCHAR(255))
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+		out_result = SELECT PARENT_PATH FROM CRM_PARENT_PATH
+        WHERE LEVEL_ID = in_id AND HIERARCHY_LEVEL_ID = in_level_id;
+
+END;

@@ -1,0 +1,58 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL1" (
+	OUT out_result TABLE (
+		hl1_id bigint
+		, acronym nvarchar(25)
+		, description nvarchar(255)
+		, budget_year_id integer
+		, region_id bigint
+		, subregion_id bigint
+		, created_date_tz timestamp
+		, modified_date_tz timestamp
+		, created_user_id bigint
+		, modified_user_id bigint
+		, enabled tinyint
+		, deleted tinyint
+		, region_name nvarchar(255)
+		, subregion_name nvarchar(255)
+		, budget_year integer
+		, budget decimal(19, 6)
+        , team_type_id bigint
+        , implement_execution_level tinyint
+        , crt_related tinyint
+		)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	out_result =
+	SELECT
+		hl1.hl1_id
+		, hl1.acronym
+		, hl1.description
+		, hl1.budget_year_id
+		, hl1.region_id
+		, hl1.subregion_id
+		, hl1.created_date_tz
+		, hl1.modified_date_tz
+		, hl1.created_user_id
+		, hl1.modified_user_id
+		, hl1.enabled
+		, hl1.deleted
+		, r.region_name
+		, sr.subregion_name
+		, buy.budget_year
+		, hl1.budget
+        , hl1.team_type_id
+        , hl1.implement_execution_level
+        , hl1.crt_related
+	from hl1
+	left join region r on r.region_id = hl1.region_id
+	left join subregion sr on sr.subregion_id = hl1.subregion_id
+	left join budget_year buy on buy.budget_year_id = hl1.budget_year_id
+	where hl1.deleted = 0
+	and hl1.enabled = 1
+	order by hl1.acronym asc;
+END;

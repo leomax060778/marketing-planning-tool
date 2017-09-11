@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL5_REQUEST_CATEGORY_OPTION"
+(
+	in in_hl5_id bigint,
+	in in_user_id bigint,
+	out out_result bigint
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+    UPDATE HL5_REQUEST_CATEGORY_OPTION
+	SET
+	deleted = 1,
+	enabled = 0,
+	modified_user_id = in_user_id,
+	modified_date_tz = CURRENT_TIMESTAMP
+	where hl5_id = in_hl5_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

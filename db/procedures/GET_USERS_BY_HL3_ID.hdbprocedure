@@ -1,5 +1,5 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_USERS_BY_HL3_ID" ( 
-	in in_hl3_id bigint,
+	in in_hl3_id bigint, in in_hl2_id bigint,
 	OUT users_in TABLE(USER_ID bigint, USER_NAME nvarchar(255), FIRST_NAME nvarchar(255), LAST_NAME nvarchar(255), EMAIL nvarchar(255), PHONE nvarchar(255), ROLE_NAME nvarchar(255)),
 	OUT users_out TABLE(USER_ID bigint, USER_NAME nvarchar(255), FIRST_NAME nvarchar(255), LAST_NAME nvarchar(255), EMAIL nvarchar(255), PHONE nvarchar(255), ROLE_NAME nvarchar(255))
 )
@@ -15,7 +15,6 @@ BEGIN
 
 --USERS IN RELATION HL3		
 users_in = select distinct u.user_id, u.USER_NAME, u.FIRST_NAME, u.LAST_NAME, u.EMAIL, u.PHONE, role.NAME as ROLE_NAME
---, hl3User.hl3_id
 from user u
 inner join HL3_USER hl3User on hl3User.user_id=u.user_id
 inner join USER_ROLE userRole on userRole.user_id = u.USER_ID
@@ -26,15 +25,16 @@ and u.deleted = 0 and u.enabled = 1
 
 --USERS WITHOUT RELATION IN HL3
 users_out = select distinct u.user_id, u.USER_NAME, u.FIRST_NAME, u.LAST_NAME, u.EMAIL, u.PHONE, role.NAME as ROLE_NAME
-from user u
-inner join USER_ROLE userRole on userRole.user_id = u.USER_ID
-inner join ROLE role on role.role_id = userRole.role_id
-where u.user_id not in (
-select distinct u.user_id
-from user u
-inner join HL3_USER hl3User on hl3User.user_id=u.user_id
-where hl3User.hl3_id = in_hl3_id 
-) 
+            from HL2_USER L2
+            inner join user u on L2.user_id = u.user_id
+            inner join USER_ROLE userRole on userRole.user_id = u.USER_ID
+            inner join ROLE role on role.role_id = userRole.role_id
+            where L2.hl2_id = in_hl2_id and L2.user_id not in (
+            select distinct u.user_id
+            from user u
+            inner join HL3_USER hl3User on hl3User.user_id=u.user_id
+            where hl3User.hl3_id = in_hl3_id
+            )
 and u.deleted = 0 and u.enabled = 1;
 		
 		

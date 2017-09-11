@@ -1,12 +1,21 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_PARTNER"
 (
-	in in_partner_name nvarchar(512),
-	in in_partner_type_id bigint,
-	in in_hl6_id bigint,
-	in in_region_id bigint,
-	in in_value decimal(19,2),
-	in in_created_user_id bigint,
-	out out_hl6_partner_id bigint
+	in partnerData TABLE (
+    		 in_hl6_id bigint,
+    		 in_partner_name nvarchar(512),
+    		 in_partner_type_id bigint,
+    		 in_region_id bigint,
+    		 in_value decimal,
+    		 in_created_user_id bigint,
+    		 in_budget_spend_request bigint,
+    		 in_currency_id bigint,
+    		 in_intel_project_id NVARCHAR(255),
+             in_claim_id NVARCHAR(255),
+             in_comments nvarchar(3000),
+             in_company_name NVARCHAR(255),
+             in_company_address NVARCHAR(255),
+             in_invoice_number NVARCHAR(255))
+    		, OUT out_hl6_partner_id bigint
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -15,21 +24,38 @@ BEGIN
 
 	INSERT INTO HL6_PARTNER
 	(
-	partner_name,
-	partner_type_id,
-	hl6_id,
-	region_id,
-	value,
-	created_user_id
+	        hl6_id,
+    		partner_name,
+    		partner_type_id,
+    		region_id,
+    		value,
+    		created_user_id,
+    		budget_spend_request_id,
+    		currency_id,
+    		intel_project_id,
+    		claim_id,
+    		comments,
+    		company_name,
+    		company_address,
+    		invoice_number
 	)
-	VALUES (
-	in_partner_name,
-	in_partner_type_id,
-	in_hl6_id,
-	in_region_id,
-	in_value,
-	in_created_user_id
-	);
+	( select
+    		in_hl6_id,
+    		in_partner_name,
+    		in_partner_type_id,
+    		in_region_id,
+    		in_value,
+    		in_created_user_id,
+            in_budget_spend_request,
+            in_currency_id,
+    		in_intel_project_id,
+            in_claim_id,
+            in_comments,
+            in_company_name,
+            in_company_address,
+            in_invoice_number
+    		from :partnerData
+    		);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_partner_id FROM "PLANNING_TOOL"."HL6_PARTNER";
 END;

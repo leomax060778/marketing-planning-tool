@@ -49,8 +49,12 @@ var spUpdContactData = "UPD_HASH_CONTACT_DATA";
 /******************************************************/
 
 /********** GET **********/
-function getInterlockReport() {
-	var result = db.extractArray(db.executeProcedure(spGetInterlockReport, {}).out_result);
+function getInterlockReport(isSA, userId) {
+	var parameters = {
+		in_user_id: userId,
+		in_isSA: isSA
+	};
+	var result = db.extractArray(db.executeProcedureManual(spGetInterlockReport, parameters).out_result);
 	return result;
 }
 
@@ -143,14 +147,14 @@ function insertInterlockContactData(interlockId, listContactData, user_id){
 }
 
 
-function insertInterlockMessage(interlockId, message, userId, origin){
+function insertInterlockMessage(interlockId, message, userId, senderId, origin){
 
 
 	return db.executeProcedureManual(spInsertInterlockRequestMessage,{
 		"IN_INTERLOCK_REQUEST_ID" : interlockId,
 		"IN_MESSAGE" : message,
 		"IN_CREATED_USER_ID": userId,
-		"IN_SENDER_ID" : userId,
+		"IN_SENDER_ID" : senderId,
 		"IN_INTERLOCK_REQUEST_ORIGIN_ID" : origin
 	});
 }
@@ -219,8 +223,8 @@ function deleteInterlockSubregionByIlId(id, userId){
 /*Interlock contact data region / central teams*/
 function getInterlockCentralRegionContacts(in_contact_type, in_contact_type_id){
     var params = {};
-    params.in_contact_type = in_contact_type;
-    params.in_contact_type_id = in_contact_type_id;
+    // params.in_contact_type = in_contact_type;
+    // params.in_contact_type_id = in_contact_type_id;
     var rdo = db.executeProcedure(spGetInterlockContactRegionCentralTeam, params);
     return db.extractArray(rdo.out_result);
 }

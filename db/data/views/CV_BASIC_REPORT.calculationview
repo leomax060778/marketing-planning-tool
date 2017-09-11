@@ -10,15 +10,15 @@
       <descriptions/>
       <viewAttributes>
         <viewAttribute datatype="BIGINT" id="BUDGET_YEAR_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="ORGANIZATION_ACRONYM" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="BUDGET_YEAR" length="255"/>
         <viewAttribute datatype="BIGINT" id="PLAN_ID"/>
         <viewAttribute datatype="NVARCHAR" id="PLAN" length="255"/>
-        <viewAttribute datatype="DECIMAL" id="BUDGET_TOTAL" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="REMAINING" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="ALLOCATED" length="19" scale="2"/>
-        <viewAttribute datatype="NVARCHAR" id="BG_REGION_NAME" length="55"/>
-        <viewAttribute datatype="DECIMAL" id="VALUE" length="19" scale="2"/>
-        <viewAttribute datatype="DECIMAL" id="PERCENTAGE" length="19" scale="2"/>
+        <viewAttribute datatype="DECIMAL" id="HL2_BUDGET_TOTAL" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="REMAINING" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="ALLOCATED" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="PERCENTAGE" length="19" scale="10"/>
+        <viewAttribute datatype="NVARCHAR" id="BUDGET_REGION_NAME" length="55"/>
         <viewAttribute datatype="BIGINT" id="REGION_ID"/>
       </viewAttributes>
       <calculatedViewAttributes/>
@@ -26,72 +26,91 @@
  
  /********* Begin Procedure Script ************/ 
  BEGIN 
- 	 var_out = 
- SELECT 
-  T1.BUDGET_YEAR_ID
-, T1.BUDGET_YEAR
-, T1.PLAN_ID
-, T1.PLAN
-, SUM(T1.BUDGET_TOTAL) AS BUDGET_TOTAL
-, SUM(T1.REMAINING) AS REMAINING
-, SUM(T1.ALLOCATED) AS ALLOCATED
-, T1.BG_REGION_NAME AS BG_REGION_NAME
-, SUM(VALUE) AS VALUE
-, (SUM(VALUE)*100)/SUM(T1.ALLOCATED) AS PERCENTAGE
-, T1.REGION_ID
-FROM 
-(
-	 SELECT 
-	  T.BUDGET_YEAR_ID
-	, T.BUDGET_YEAR
-	, T.HL2_ID AS PLAN_ID
-	, T.PLAN
-	, T.BUDGET_TOTAL
-	, T.BUDGET_TOTAL - SUM(T.BUDGET_K_EUR) AS REMAINING
-	, SUM(T.BUDGET_K_EUR) AS ALLOCATED
-	, SUM(T.VALOR) AS VALUE
-	, T.BG_REGION_NAME
-	, T.REGION_ID
-	FROM
-	(SELECT 
+    var_hl4_distribution =  SELECT T1.BUDGET_REGION_NAME
+            , Round(T1.BUDGET_DISTRIBUTION * 100 / T2.HL4_BUDGET, 2) AS HL2_BUDGET_DISTRIBUTION
+            , T1.HL2_ID
+            , T1.REGION_ID
+            FROM
+
+            (SELECT
+					R.REGION_NAME AS BUDGET_REGION_NAME
+                    , SUM(IFNULL((HL4.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100, 0)) AS BUDGET_DISTRIBUTION
+                    , HL2.HL2_ID
+                    , R.REGION_ID
+            from &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 
+            LEFT join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL2_ID = HL2.HL2_ID
+            LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4 ON HL3.HL3_ID = HL4.HL3_ID AND HL4.DELETED = 0 AND HL4.ENABLED = 1
+            LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4_BR ON HL4_BR.HL4_ID = HL4.HL4_ID AND HL4_BR.ENABLED = 1 AND HL4_BR.DELETED = 0
+            left join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON R.REGION_ID = HL4_BR.REGION_ID
+            
+            WHERE HL2.ENABLED = 1 AND HL2.DELETED = 0 
+            
+            GROUP BY HL2.HL2_ID, R.REGION_NAME, R.REGION_ID
+            order by R.REGION_NAME) T1
+            
+            LEFT JOIN
+
+            (SELECT 
+        	 CASE WHEN SUM(IFNULL(HL4.HL4_FNC_BUDGET_TOTAL_MKT,0)) = 0 THEN 1 ELSE SUM(IFNULL(HL4.HL4_FNC_BUDGET_TOTAL_MKT,0)) END AS HL4_BUDGET
+        	, HL2.HL2_ID
+        	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4
+        	inner join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL3_ID = HL4.HL3_ID
+        	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 ON HL3.HL2_ID = HL2.HL2_ID
+        	WHERE HL4.DELETED = 0 AND HL4.ENABLED = 1 AND HL2.ENABLED = 1 AND HL2.DELETED = 0
+        	GROUP BY HL2.HL2_ID
+        	ORDER BY HL2.HL2_ID) T2 ON T1.HL2_ID = T2.HL2_ID
+        ORDER BY T1.HL2_ID;
+            
+            
+	
+	var_hl2_allocated_budget = SELECT 
+	  HL3.HL2_ID
+	, SUM(IFNULL(HL3.HL3_FNC_BUDGET_TOTAL, 0)) AS HL2_BUDGET_ALLOCATED
+    FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3
+	WHERE HL3.ENABLED = 1 AND HL3.DELETED = 0
+	GROUP BY HL3.HL2_ID;
+	
+	var_hl4_budget_by_hl2 = SELECT 
+	 SUM(HL4.HL4_FNC_BUDGET_TOTAL_MKT) AS HL4_BUDGET
+	, HL2.HL2_ID
+	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4
+	inner join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL3_ID = HL4.HL3_ID
+	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 ON HL3.HL2_ID = HL2.HL2_ID
+	WHERE HL4.DELETED = 0 AND HL4.ENABLED = 1
+	GROUP BY HL2.HL2_ID;
+	
+	var_hl2 = SELECT 
 	  HL2.HL2_ID
-	, HL2.ACRONYM AS PLAN
+	, HL1.ACRONYM AS PLAN
+	, HL2.ORGANIZATION_ACRONYM
 	, BUY.BUDGET_YEAR_ID
 	, BUY.BUDGET_YEAR
-	--, HL3_FNC.HL3_FNC_BUDGET_TOTAL AS BUDGET_TOTAL
-	, HL3.HL3_FNC_BUDGET_TOTAL AS BUDGET_TOTAL
-	--, HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
-	, HL4.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET_K_EUR
-	, R.REGION_NAME AS BG_REGION_NAME
-	, HL4_BR.REGION_ID AS BR_REGION_ID
-	, HL4_BR.percentage AS PERCENTAGE
-	--, (HL4_FNC.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100 AS valor
-	, (HL4.HL4_FNC_BUDGET_TOTAL_MKT * HL4_BR.percentage)/100 AS valor
 	, REG.REGION_ID
-	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 
-    LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; REG ON REG.REGION_ID = HL2.REGION_ID 
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BUY ON BUY.BUDGET_YEAR_ID = HL2.BUDGET_YEAR_ID
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; HL3 ON HL3.HL2_ID = HL2.HL2_ID 
-	--LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3_FNC&quot; HL3_FNC ON HL3_FNC.HL3_ID = HL3.HL3_ID
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; HL4 ON HL4.HL3_ID = HL3.HL3_ID
-	--LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_FNC&quot; HL4_FNC ON HL4.HL4_ID = HL4_FNC.HL4_ID
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_BUDGET_REGION&quot; HL4_BR ON HL4_BR.HL4_ID = HL4.HL4_ID
-	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; R ON R.REGION_ID = HL4_BR.REGION_ID
-	WHERE 
-	-- HL2.TEAM_TYPE_ID = 1 -- ALL PLAN ARE REGIONAL	AND 
-	HL4_BR.DELETED = 0 AND HL4_BR.ENABLED = 1
-	) T 
-	GROUP BY 
-	    T.HL2_ID
-	  , T.BUDGET_YEAR_ID
-	  , T.BR_REGION_ID
-	  , T.BUDGET_TOTAL
-	  , T.PLAN
-	  , T.BG_REGION_NAME
-	  , T.BUDGET_YEAR
-	  , T.REGION_ID
-) T1
-GROUP BY PLAN_ID, BG_REGION_NAME, PLAN, BUDGET_YEAR, BUDGET_YEAR_ID, REGION_ID;
+	, HL2.HL2_BUDGET_TOTAL
+	FROM
+    &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; HL1
+	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BUY ON BUY.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
+	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; HL2 ON HL2.HL1_ID = HL1.HL1_ID
+    LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; REG ON REG.REGION_ID = HL1.REGION_ID
+	WHERE HL2.DELETED = 0 AND HL2.ENABLED = 1;
+	
+	var_out = SELECT 
+	 hl2.BUDGET_YEAR_ID
+	 , hl2.ORGANIZATION_ACRONYM
+	 , hl2.BUDGET_YEAR
+	, hl2.HL2_ID AS PLAN_ID
+	, hl2.PLAN
+	, hl2.HL2_BUDGET_TOTAL
+	, hl2.HL2_BUDGET_TOTAL - hl2_allocated_budget.HL2_BUDGET_ALLOCATED AS REMAINING
+	, COALESCE(hl2_allocated_budget.HL2_BUDGET_ALLOCATED,0) AS ALLOCATED
+	, COALESCE(hl4_distribution.HL2_BUDGET_DISTRIBUTION, 0) AS PERCENTAGE
+	, hl4_distribution.BUDGET_REGION_NAME
+	, COALESCE(hl4_distribution.REGION_ID, 0) AS REGION_ID
+	
+	FROM :var_hl2 hl2
+	LEFT JOIN :var_hl2_allocated_budget hl2_allocated_budget ON hl2_allocated_budget.HL2_ID = hl2.HL2_ID
+	LEFT JOIN :var_hl4_distribution hl4_distribution ON hl4_distribution.HL2_ID = hl2.HL2_ID
+	LEFT JOIN :var_hl4_budget_by_hl2 hl4_budget_by_hl2 ON hl4_budget_by_hl2.HL2_ID = hl2.HL2_ID;
 END /********* End Procedure Script ************/
 </definition>
     </calculationView>
@@ -103,33 +122,33 @@ END /********* End Procedure Script ************/
         <descriptions defaultDescription="BUDGET_YEAR_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR_ID"/>
       </attribute>
-      <attribute id="BUDGET_YEAR" order="2">
+      <attribute id="ORGANIZATION_ACRONYM" order="2">
+        <descriptions defaultDescription="BUDGET_YEAR_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="ORGANIZATION_ACRONYM"/>
+      </attribute>
+      <attribute id="BUDGET_YEAR" order="3">
         <descriptions defaultDescription="BUDGET_YEAR"/>
         <keyMapping columnObjectName="Script_View" columnName="BUDGET_YEAR"/>
       </attribute>
-      <attribute id="PLAN_ID" order="3">
+      <attribute id="PLAN_ID" order="4">
         <descriptions defaultDescription="PLAN_ID"/>
         <keyMapping columnObjectName="Script_View" columnName="PLAN_ID"/>
       </attribute>
-      <attribute id="PLAN" order="4">
+      <attribute id="PLAN" order="5">
         <descriptions defaultDescription="PLAN"/>
         <keyMapping columnObjectName="Script_View" columnName="PLAN"/>
       </attribute>
-      <attribute id="BUDGET_TOTAL" order="5">
+      <attribute id="HL2_BUDGET_TOTAL" order="6">
         <descriptions defaultDescription="BUDGET_TOTAL"/>
-        <keyMapping columnObjectName="Script_View" columnName="BUDGET_TOTAL"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL2_BUDGET_TOTAL"/>
       </attribute>
-      <attribute id="REMAINING" order="6">
+      <attribute id="REMAINING" order="7">
         <descriptions defaultDescription="REMAINING"/>
         <keyMapping columnObjectName="Script_View" columnName="REMAINING"/>
       </attribute>
-      <attribute id="BG_REGION_NAME" order="8">
+      <attribute id="BUDGET_REGION_NAME" order="10">
         <descriptions defaultDescription="BG_REGION_NAME"/>
-        <keyMapping columnObjectName="Script_View" columnName="BG_REGION_NAME"/>
-      </attribute>
-      <attribute id="PERCENTAGE" order="10">
-        <descriptions defaultDescription="PERCENTAGE"/>
-        <keyMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUDGET_REGION_NAME"/>
       </attribute>
       <attribute id="REGION_ID" order="11">
         <descriptions defaultDescription="REGION_ID"/>
@@ -145,13 +164,13 @@ END /********* End Procedure Script ************/
       </layout>
     </privateDataFoundation>
     <baseMeasures>
-      <measure id="ALLOCATED" order="7" aggregationType="sum" measureType="simple">
+      <measure id="ALLOCATED" order="8" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="ALLOCATED"/>
         <measureMapping columnObjectName="Script_View" columnName="ALLOCATED"/>
       </measure>
-      <measure id="VALUE" order="9" aggregationType="sum" measureType="simple">
+      <measure id="PERCENTAGE" order="9" aggregationType="sum" measureType="simple">
         <descriptions defaultDescription="VALUE"/>
-        <measureMapping columnObjectName="Script_View" columnName="VALUE"/>
+        <measureMapping columnObjectName="Script_View" columnName="PERCENTAGE"/>
       </measure>
     </baseMeasures>
     <calculatedMeasures/>

@@ -1,0 +1,95 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_VERSION_BY_FILTER" (
+	 IN in_hl1_id BIGINT
+	,IN in_user_id BIGINT
+	,IN in_is_super_admin tinyint
+	,OUT out_result TABLE (
+		  hl2_id bigint
+		, acronym nvarchar(25)
+		, description nvarchar(255)
+        , budget decimal(19, 2)
+        , region_id bigint
+        , subregion_id bigint
+        , version integer
+        , created_date_tz timestamp
+        , created_user_id bigint
+		, hl1_id bigint
+		, organization_acronym nvarchar(255)
+		, organization_name nvarchar(255)
+		, region_name nvarchar(255)
+        , subregion_name nvarchar(255)
+		)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+aux_hl2 =
+select
+coalesce(hl2_version.hl2_id,hl2.hl2_id) as hl2_id
+, coalesce(upper(hl2_version.acronym), upper(hl2.acronym)) as acronym
+, coalesce(hl2_version.description, hl2.description) as description
+, coalesce(hl2_version.hl2_budget_total, hl2.hl2_budget_total) as budget
+, coalesce(hl2_version.region_id, hl2.region_id) as region_id
+, coalesce(hl2_version.subregion_id, hl2.subregion_id) as subregion_id
+, coalesce(hl2_version.version, hl2.version) as version
+, coalesce(hl2_version.created_date_tz, hl2.created_date_tz) as created_date_tz
+, coalesce(hl2_version.created_user_id, hl2.created_user_id) as created_user_id
+, coalesce(hl2_version.hl1_id,hl2.hl1_id) as hl1_id
+, coalesce(hl2_version.organization_acronym, hl2.organization_acronym)  as organization_acronym
+, coalesce(hl2_version.organization_name, hl2.organization_name)  as organization_name
+from hl2
+left join hl2_version on hl2.hl2_id = hl2_version.hl2_id and hl2.deleted = 0 and hl2.enabled = 1
+where (hl2.version = 1 or hl2_version.version = 1) and hl2.hl1_id = in_hl1_id and hl2.deleted = 0 and hl2.enabled = 1;
+
+    if in_is_super_Admin = 1 then
+    VAR_OUT_RESULT =
+        select
+          hl2.hl2_id
+        , hl2.acronym
+        , hl2.description
+        , hl2.budget
+        , hl2.region_id
+        , hl2.subregion_id
+        , hl2.version
+        , hl2.created_date_tz
+        , hl2.created_user_id
+        , hl2.hl1_id
+        , hl2.organization_acronym  as organization_acronym
+        , hl2.organization_name  as organization_name
+        , r.region_name
+        , sr.subregion_name
+        from :aux_hl2 hl2
+        left join region r on r.region_id = hl2.region_id
+        left join subregion sr on sr.subregion_id = hl2.subregion_id
+        order by hl2.acronym, hl2.organization_acronym;
+
+    else
+    VAR_OUT_RESULT =
+        select
+          hl2.hl2_id
+        , hl2.acronym
+        , hl2.description
+        , hl2.budget
+        , hl2.region_id
+        , hl2.subregion_id
+        , hl2.version
+        , hl2.created_date_tz
+        , hl2.created_user_id
+        , hl2.hl1_id
+        , hl2.organization_acronym  as organization_acronym
+        , hl2.organization_name  as organization_name
+        , r.region_name
+        , sr.subregion_name
+        from :aux_hl2 hl2
+    	inner join hl2_user on hl2.hl2_id = hl2_user.hl2_id
+    	left join region r on r.region_id = hl2.region_id
+        left join subregion sr on sr.subregion_id = hl2.subregion_id
+    	where hl2_user.user_id = in_user_id
+    	order by hl2.acronym, hl2.organization_acronym;
+    end if;
+
+     out_result = select * from :VAR_OUT_RESULT;
+END;
+

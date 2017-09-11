@@ -1,0 +1,14 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_DICTIONARY_L5_L6_BY_USER_ID" (
+	in in_user_id bigint,
+	out out_result integer
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    delete from UPLOAD_DICTIONARY
+     WHERE created_user_id = in_user_id;
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

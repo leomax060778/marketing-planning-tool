@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_COMPARATIVE_L4_L5" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_COMPARATIVE_L4_L5"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="BIGINT" id="HL4_ID"/>
+        <viewAttribute datatype="BIGINT" id="HL3_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="L4_ACRONYM" length="255"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET" length="19" scale="10"/>
+        <viewAttribute datatype="NVARCHAR" id="L4_STATUS_DETAIL" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="CATEGORY_NAME" length="255"/>
+        <viewAttribute datatype="NVARCHAR" id="OPTION_NAME" length="255"/>
+        <viewAttribute datatype="DECIMAL" id="L4_BUDGET_DISTRIBUTION" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="L5_BUDGET_DISTRIBUTION" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="DIFFERENCE" length="19" scale="10"/>
+        <viewAttribute datatype="NVARCHAR" id="PATH" length="255"/>
+        <viewAttribute datatype="INTEGER" id="ROW_COUNTER"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	va_hl4 = SELECT hl4.HL4_ID
+ 				 , hl4.HL3_ID
+ 				 , hl4.ACRONYM AS L4_ACRONYM
+ 				 , hl4.HL4_CRM_DESCRIPTION AS L4_DESCRIPTION
+ 				 , hl4.HL4_FNC_BUDGET_TOTAL_MKT AS L4_BUDGET
+ 				 , hl4Status.DETAIL AS L4_STATUS_DETAIL
+ 				 , category.NAME AS CATEGORY_NAME
+ 				 , (hl4.HL4_FNC_BUDGET_TOTAL_MKT * hl4CategoryOption.AMOUNT / 100) AS L4_BUDGET_DISTRIBUTION
+ 				 , options.NAME AS OPTION_NAME
+ 				 , options.ALLOCATION_OPTION_ID
+ 				 , category.ALLOCATION_CATEGORY_ID
+				FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; hl4
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_STATUS_DETAIL&quot; hl4Status ON hl4.HL4_STATUS_DETAIL_ID = hl4Status.HL4_STATUS_DETAIL_ID
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4_CATEGORY_OPTION&quot; hl4CategoryOption ON hl4.HL4_ID = hl4CategoryOption.HL4_ID
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY_OPTION_LEVEL&quot; ACOL 
+					ON hl4CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = hl4CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_OPTION&quot; options ON options.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+				INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY&quot; category ON category.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
+			 	WHERE hl4.enabled = 1 AND hl4.deleted = 0 AND hl4CategoryOption.ENABLED = 1 AND hl4CategoryOption.DELETED = 0 AND hl4CategoryOption.AMOUNT != 0;
+			 	
+			 	
+	va_hl5 = SELECT HL4_ID
+			    , SUM (BUDGET * AMOUNT / 100) AS L5_BUDGET_DISTRIBUTION
+			    , ALLOCATION_OPTION_ID
+			    , ALLOCATION_CATEGORY_ID
+			    
+			    FROM
+			    
+			    (SELECT DISTINCT hl5.HL4_ID
+			        , hl5.BUDGET 
+			        , hl5CategoryOption.AMOUNT
+			        , options.ALLOCATION_OPTION_ID
+			        , category.ALLOCATION_CATEGORY_ID
+			    FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL5&quot; hl5
+			    INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL5_CATEGORY_OPTION&quot; hl5CategoryOption ON hl5.HL5_ID = hl5CategoryOption.HL5_ID
+			    INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY_OPTION_LEVEL&quot; ACOL
+			    ON hl5CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = hl5CategoryOption.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+			    INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_OPTION&quot; options ON options.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+			    INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_ALLOCATION_CATEGORY&quot; category ON category.ALLOCATION_CATEGORY_ID = ACOL.ALLOCATION_CATEGORY_ID
+			    WHERE hl5.enabled = 1 AND hl5.deleted = 0 AND  hl5CategoryOption.ENABLED = 1 AND hl5CategoryOption.DELETED = 0 AND hl5CategoryOption.AMOUNT != 0)
+			    
+			    
+			    GROUP BY HL4_ID
+			            , ALLOCATION_OPTION_ID
+			            , ALLOCATION_CATEGORY_ID;
+			
+ 	 var_out = SELECT hl4.HL4_ID
+ 	 			, hl4.HL3_ID
+ 	 			, hl4.L4_ACRONYM
+ 	 			, hl4.L4_BUDGET
+ 	 			, hl4.L4_STATUS_DETAIL
+ 	 			, hl4.CATEGORY_NAME
+ 	 			, hl4.OPTION_NAME
+ 	 			, hl4.L4_BUDGET_DISTRIBUTION
+ 	 			, COALESCE(hl5.L5_BUDGET_DISTRIBUTION,0) AS L5_BUDGET_DISTRIBUTION
+ 	 			, (L4_BUDGET_DISTRIBUTION - COALESCE(hl5.L5_BUDGET_DISTRIBUTION,0)) AS DIFFERENCE
+ 	 			, CONCAT('CRM-', 
+				    --CONCAT(
+				        --CONCAT(
+				            CONCAT(
+				                CONCAT(
+				                    CONCAT(
+			    	                    CONCAT(
+			    	                        CONCAT(hl1.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-')
+			    	                    , hl2.ORGANIZATION_ACRONYM)
+				                    , '-')
+				                , hl3.ACRONYM)
+			              --  , '-')
+			            --, hl4.L4_ACRONYM)
+			            ) AS PATH
+	            , 1 as ROW_COUNTER
+ 	 			FROM :va_hl4 hl4
+ 	 			inner join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3
+				ON hl4.HL3_ID = hl3.HL3_ID
+				inner join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
+				ON hl2.HL2_ID = hl3.HL2_ID
+			    inner join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1
+				ON hl1.HL1_ID = hl2.HL1_ID
+				inner join &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BGY
+				ON hl1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+ 	 			LEFT JOIN :va_hl5 hl5 on hl4.HL4_ID = hl5.HL4_ID AND hl4.ALLOCATION_OPTION_ID = hl5.ALLOCATION_OPTION_ID AND hl4.ALLOCATION_CATEGORY_ID = hl5.ALLOCATION_CATEGORY_ID
+ 	 			ORDER BY hl4.L4_ACRONYM ASC, hl4.CATEGORY_NAME ASC
+ 	 			, hl4.OPTION_NAME ASC;
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="HL4_ID" order="1">
+        <descriptions defaultDescription="HL4_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL4_ID"/>
+      </attribute>
+      <attribute id="HL3_ID" order="2">
+        <descriptions defaultDescription="HL3_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="HL3_ID"/>
+      </attribute>
+      <attribute id="L4_ACRONYM" order="3">
+        <descriptions defaultDescription="L4_ACRONYM"/>
+        <keyMapping columnObjectName="Script_View" columnName="L4_ACRONYM"/>
+      </attribute>
+      <attribute id="L4_BUDGET" order="4">
+        <descriptions defaultDescription="L4_BUDGET"/>
+        <keyMapping columnObjectName="Script_View" columnName="L4_BUDGET"/>
+      </attribute>
+      <attribute id="L4_STATUS_DETAIL" order="5">
+        <descriptions defaultDescription="L4_STATUS_DETAIL"/>
+        <keyMapping columnObjectName="Script_View" columnName="L4_STATUS_DETAIL"/>
+      </attribute>
+      <attribute id="CATEGORY_NAME" order="6">
+        <descriptions defaultDescription="CATEGORY_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="CATEGORY_NAME"/>
+      </attribute>
+      <attribute id="OPTION_NAME" order="7">
+        <descriptions defaultDescription="OPTION_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="OPTION_NAME"/>
+      </attribute>
+      <attribute id="L4_BUDGET_DISTRIBUTION" order="8">
+        <descriptions defaultDescription="L4_BUDGET_DISTRIBUTION"/>
+        <keyMapping columnObjectName="Script_View" columnName="L4_BUDGET_DISTRIBUTION"/>
+      </attribute>
+      <attribute id="L5_BUDGET_DISTRIBUTION" order="9">
+        <descriptions defaultDescription="L5_BUDGET_DISTRIBUTION"/>
+        <keyMapping columnObjectName="Script_View" columnName="L5_BUDGET_DISTRIBUTION"/>
+      </attribute>
+      <attribute id="DIFFERENCE" order="10">
+        <descriptions defaultDescription="DIFFERENCE"/>
+        <keyMapping columnObjectName="Script_View" columnName="DIFFERENCE"/>
+      </attribute>
+      <attribute id="PATH" order="11">
+        <descriptions defaultDescription="PATH"/>
+        <keyMapping columnObjectName="Script_View" columnName="PATH"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="ROW_COUNTER" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="ROW_COUNTER"/>
+        <measureMapping columnObjectName="Script_View" columnName="ROW_COUNTER"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

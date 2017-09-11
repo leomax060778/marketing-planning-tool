@@ -1,0 +1,108 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL2_VERSION_BY_HL2_ID" (
+    IN in_hl2_id BIGINT
+	, OUT out_result TABLE (
+     hl2_id bigint
+     ,version integer
+     ,acronym nvarchar(25)
+     ,description nvarchar(255)
+     ,budget_year_id bigint
+     ,region_id bigint
+     ,subregion_id bigint
+     ,hl2_budget_total decimal(19,2)
+     ,organization_acronym nvarchar(25)
+     ,organization_name nvarchar(252)
+     ,team_type_id bigint
+     ,crt_related tinyint
+     ,implement_execution_level tinyint
+     ,hl1_id bigint
+     ,in_budget tinyint
+     ,allow_automatic_budget_approval tinyint
+     ,region_name nvarchar(255)
+     ,subregion_name nvarchar(255)
+     ,budget_year integer
+     ,created_date_tz timestamp
+     ,path nvarchar(255)
+	)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	aux =
+select
+hl2_id
+,version
+,acronym
+,description
+,budget_year_id
+,region_id
+,subregion_id
+,hl2_budget_total
+,organization_acronym
+,organization_name
+,team_type_id
+,crt_related
+,implement_execution_level
+,hl1_id
+,in_budget
+,allow_automatic_budget_approval
+,modified_date_tz as created_date_tz
+from hl2
+where hl2.hl2_id = in_hl2_id
+
+union
+
+select
+hl2_id
+,version
+,acronym
+,description
+,budget_year_id
+,region_id
+,subregion_id
+,hl2_budget_total
+,organization_acronym
+,organization_name
+,team_type_id
+,crt_related
+,implement_execution_level
+,hl1_id
+,in_budget
+,allow_automatic_budget_approval
+,created_date_tz
+from hl2_version
+where hl2_version.hl2_id = in_hl2_id;
+
+out_result = select
+    T.hl2_id
+    ,T.version
+    ,T.acronym
+    ,T.description
+    ,T.budget_year_id
+    ,T.region_id
+    ,T.subregion_id
+    ,T.hl2_budget_total
+    ,T.organization_acronym
+    ,T.organization_name
+    ,T.team_type_id
+    ,T.crt_related
+    ,T.implement_execution_level
+    ,T.hl1_id
+    ,T.in_budget
+    ,T.allow_automatic_budget_approval
+    ,region.region_name
+    ,subregion.subregion_name
+    ,budget_year.budget_year
+    ,T.created_date_tz
+    , CONCAT('CRM-',CONCAT(CONCAT(CONCAT(HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR.BUDGET_YEAR), 3, 2)), '-'),
+      		T.organization_acronym)) AS PATH
+    from :AUX AS T
+    INNER JOIN HL1 ON HL1.HL1_ID = T.HL1_ID
+    LEFT JOIN REGION ON T.REGION_ID = REGION.REGION_ID
+    LEFT JOIN SUBREGION ON SUBREGION.SUBREGION_ID = T.SUBREGION_ID
+    LEFT JOIN BUDGET_YEAR ON BUDGET_YEAR.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
+    ORDER BY T.VERSION ASC;
+
+END;

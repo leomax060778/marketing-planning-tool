@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_ALLOCATION_OPTION" (
+	IN in_option_id BIGINT,
+	IN in_name NVARCHAR(255),
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+        UPDATE ALLOCATION_OPTION
+        SET name = in_name,
+            modified_date_tz = CURRENT_TIMESTAMP,
+            modified_user_id = in_user_id
+        WHERE ALLOCATION_OPTION_ID = in_option_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END

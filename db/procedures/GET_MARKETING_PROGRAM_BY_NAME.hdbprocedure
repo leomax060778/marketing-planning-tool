@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_MARKETING_PROGRAM_BY_NAME"
+(
+        IN IN_NAME NVARCHAR(255),
+        OUT out_result TABLE(
+              MARKETING_PROGRAM_ID BIGINT
+            , NAME NVARCHAR(255)
+            , DESCRIPTION NVARCHAR(255)
+        )
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+	
+out_result =
+	select 
+	 MARKETING_PROGRAM_ID
+	,NAME
+	, DESCRIPTION
+	FROM MARKETING_PROGRAM
+	WHERE 
+	upper(name) = upper(IN_NAME)
+	and deleted = 0 and enabled = 1;		
+END;

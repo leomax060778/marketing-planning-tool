@@ -1,0 +1,123 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_PATH_BY_USER_ID" (
+        IN in_user_id BIGINT,
+		IN in_is_super_Admin TINYINT,
+		IN in_budget_year_id BIGINT,
+        IN in_region_id BIGINT,
+        IN in_subregion_id BIGINT,
+        OUT out_result TABLE(
+        	HL1_ID BIGINT
+        	, HL1_PATH NVARCHAR(100)
+            , HL3_ID BIGINT
+            , HL3_PATH NVARCHAR(100)
+            , HL1_DESCRIPTION NVARCHAR(100)
+            , HL3_DESCRIPTION NVARCHAR(100)
+            , HL2_ID BIGINT
+            , HL2_DESCRIPTION NVARCHAR(100)
+            , HL2_PATH NVARCHAR(100)
+        )
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+DEFAULT SCHEMA "PLANNING_TOOL"
+AS
+BEGIN
+IF in_is_super_Admin = 1 THEN
+    var_out_result =
+    SELECT
+      HL1.HL1_ID
+    , HL1.ACRONYM as hl1_acronym
+    , SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+    , hl3.hl3_ID
+    , hl3.acronym as hl3_acronym
+    , hl1.description as HL1_DESCRIPTION
+    , hl3.hl3_description
+    , HL1.region_id as REGION_ID
+    , HL2.HL2_ID
+    , HL2.ORGANIZATION_ACRONYM as H2_ACRONYM
+    , HL2.ORGANIZATION_NAME as HL2_DESCRIPTION
+    FROM HL3 hl3
+    INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
+    INNER JOIN HL1 hl1 ON hl1.hl1_id = hl2.hl1_id AND hl1.enabled=1 AND hl1.deleted=0
+    INNER JOIN BUDGET_YEAR BGY ON hl1.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
+    LEFT JOIN REGION R ON R.region_id = HL1.region_id
+    LEFT JOIN SUBREGION SR ON SR.subregion_id = HL1.subregion_id
+    where hl3.enabled=1 AND hl3.deleted=0
+    AND (BGY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0)
+    AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+    ORDER BY HL1.ACRONYM, BGY.BUDGET_YEAR, hl3.acronym;
+ELSE
+    var_out_result = SELECT
+      HL1.HL1_ID
+    , HL1.ACRONYM as hl1_acronym
+    , SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+    , hl3.hl3_ID
+    , hl3.acronym as hl3_acronym
+    , hl1.description as HL1_DESCRIPTION
+    , hl3.hl3_description
+    , HL1.region_id as REGION_ID
+    , HL2.HL2_ID
+    , HL2.ORGANIZATION_ACRONYM as H2_ACRONYM
+    , HL2.ORGANIZATION_NAME as HL2_DESCRIPTION
+    FROM HL3 hl3
+    INNER JOIN HL3_USER hl3User ON hl3.hl3_id = hl3User.hl3_id and hl3User.USER_ID = in_user_id
+    INNER JOIN HL2 hl2 ON hl2.hl2_id = hl3.hl2_id AND hl2.enabled=1 AND hl2.deleted=0
+    INNER JOIN HL1 hl1 ON hl1.hl1_id = hl2.hl1_id AND hl1.enabled=1 AND hl1.deleted=0
+    INNER JOIN BUDGET_YEAR BGY ON hl1.budget_year_id = BGY.budget_year_id AND BGY.enabled=1 AND BGY.deleted=0
+    LEFT JOIN REGION R ON R.region_id = HL1.region_id
+    LEFT JOIN SUBREGION SR ON SR.subregion_id = HL1.subregion_id
+    WHERE  hl3.enabled=1 AND hl3.deleted=0
+    AND (BGY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0)
+    AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+    ORDER BY HL1.ACRONYM, BGY.BUDGET_YEAR, hl3.acronym;
+END IF;
+
+-- this filter is necesary to filter GLOBALS, where region_id = 0
+    if in_region_id = -1 then
+        out_result =
+        SELECT
+          T.HL1_ID
+        , CONCAT(T.hl1_acronym, T.BUDGET_YEAR) AS HL1_PATH
+        , T.HL3_ID
+        ,	CONCAT(
+                   CONCAT(
+                          CONCAT(T.hl1_acronym,T.BUDGET_YEAR)
+                            ,'-')
+                        , T.hl3_acronym) AS HL3_PATH
+                        , T.HL1_DESCRIPTION
+                        , T.HL3_DESCRIPTION
+                        , T.HL2_ID
+                        , T.HL2_DESCRIPTION
+                        , CONCAT(
+                             CONCAT(
+                                    CONCAT(T.hl1_acronym,T.BUDGET_YEAR)
+                                      ,'-')
+                                  , T.H2_ACRONYM) AS HL2_PATH
+        FROM :var_out_result T
+        WHERE T.REGION_ID = 0;
+
+    else
+
+        out_result =
+        SELECT
+          T.HL1_ID
+        , CONCAT(T.hl1_acronym, T.BUDGET_YEAR) AS HL1_PATH
+        , T.HL3_ID
+        ,	CONCAT(
+                   CONCAT(
+                          CONCAT(T.hl1_acronym,T.BUDGET_YEAR)
+                            ,'-')
+                        , T.hl3_acronym) AS HL3_PATH
+                        , T.HL1_DESCRIPTION
+                        , T.HL3_DESCRIPTION
+                        , T.HL2_ID
+                        , T.HL2_DESCRIPTION
+                        , CONCAT(
+                             CONCAT(
+                                    CONCAT(T.hl1_acronym,T.BUDGET_YEAR)
+                                      ,'-')
+                                  , T.H2_ACRONYM) AS HL2_PATH
+        FROM :var_out_result T
+        WHERE (T.REGION_ID = in_region_id OR in_region_id = 0);
+
+    end if;
+END;

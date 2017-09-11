@@ -1,8 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_EXPECTED_OUTCOMES_DETAIL" ( 
     IN in_hl6_expected_outcomes_id bigint,
     IN in_outcomes_id bigint,
-    IN in_euro_value DECIMAL(19,2),
-    IN in_volume_value DECIMAL(19,2),
+    IN in_euro_value DECIMAL(19, 6),
+    IN in_volume_value DECIMAL(19, 6),
     IN in_created_user_id bigint,
     OUT out_hl6_expected_outcomes_details_id bigint
 ) 

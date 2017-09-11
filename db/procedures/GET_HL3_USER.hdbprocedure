@@ -3,9 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_USER" (
  IN in_user_id BIGINT,
  OUT out_result TABLE (hl3_user_id bigint,
 	hl3_id bigint,
-	user_id bigint,
-	created_date_tz timestamp,
-	created_user_id bigint)
+	user_id bigint)
 ) 
  LANGUAGE SQLSCRIPT
  SQL SECURITY INVOKER 
@@ -19,8 +17,6 @@ BEGIN
 	hl3_user_id
 	,hl3_id
 	,user_id
-	,created_date_tz
-	,created_user_id
 
  FROM HL3_USER
  WHERE in_hl3_id = hl3_id AND user_id = in_user_id;

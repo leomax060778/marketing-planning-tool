@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_ALLOCATION_CATEGORY_BY_HL6_ID" (
+	IN in_id BIGINT,
+	OUT out_category TABLE (
+	 category_id integer
+	, hl6_id integer
+	, category_name nvarchar(60)
+	, single_option_only TINYINT
+	, in_processing_report TINYINT
+	)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	out_category =
+	 SELECT
+	 distinct allocation_category.allocation_category_id  as category_id
+	, hl6CO.hl6_id
+	, allocation_category.name as category_name
+	, allocation_category.single_option_only
+	, ACOL.in_processing_report
+	FROM hl6_category_option hl6CO
+	inner join allocation_category_option_level ACOL on hl6CO.allocation_category_option_level_id = ACOL.allocation_category_option_level_id
+	inner join allocation_category on ACOL.allocation_category_id = allocation_category.allocation_category_id
+	WHERE hl6_id = in_id
+	  AND hl6CO.enabled = 1
+	  AND hl6CO.deleted = 0;
+END;

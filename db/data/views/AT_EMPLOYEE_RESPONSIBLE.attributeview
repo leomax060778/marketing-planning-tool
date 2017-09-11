@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_EMPLOYEE_RESPONSIBLE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_EMPLOYEE_RESPONSIBLE"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="EMPLOYEE_RESPONSIBLE_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EMPLOYEE_RESPONSIBLE_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EMPLOYEE_RESPONSIBLE" columnName="EMPLOYEE_RESPONSIBLE_ID"/>
+    </attribute>
+    <attribute id="FULL_NAME" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="FULL_NAME"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EMPLOYEE_RESPONSIBLE" columnName="FULL_NAME"/>
+    </attribute>
+    <attribute id="EMPLOYEE_NUMBER" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EMPLOYEE_NUMBER"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EMPLOYEE_RESPONSIBLE" columnName="EMPLOYEE_NUMBER"/>
+    </attribute>
+    <attribute id="ENABLED" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EMPLOYEE_RESPONSIBLE" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="DELETED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="EMPLOYEE_RESPONSIBLE" columnName="DELETED"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="EMPLOYEE_RESPONSIBLE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="EMPLOYEE_RESPONSIBLE" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

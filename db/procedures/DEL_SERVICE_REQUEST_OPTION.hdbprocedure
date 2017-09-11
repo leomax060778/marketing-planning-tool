@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_SERVICE_REQUEST_OPTION" (
+	IN in_option_id BIGINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	UPDATE SERVICE_REQUEST_OPTION
+		SET deleted = 1,
+		    enabled = 0,
+			modified_user_id = in_user_id,
+			modified_date_tz = CURRENT_TIMESTAMP
+		WHERE service_request_option_id = in_option_id;
+
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

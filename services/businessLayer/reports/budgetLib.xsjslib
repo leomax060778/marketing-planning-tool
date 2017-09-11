@@ -4,6 +4,8 @@ var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataBudget = mapper.getDataBudgetReports();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
+var userbl = mapper.getUser();
+var config = mapper.getDataConfig();
 /*************************************************/
 
 function getAllBudget(){
@@ -26,11 +28,24 @@ function getHl4ByFilter2(reqBody,userSessionID){
 	return result;	
 }
 
+function getHl2ByHl1Id(hl1Id, userId) {
+    var isSA = false;
+    if (config.getApplySuperAdminToAllInitiatives()) {
+        isSA = userbl.isSuperAdmin(userId);
+    }
+    return dataHl2.getHl2ByHl1Id(hl1Id, userId, isSA);
+}
+
 function getHl4ByFilter(reqBody,userSessionID){
 	var result = [];
 	var arrPlan = [];
 	var arrRegion = [];
 	var arrBudgetYear = [];
+	
+	var isSA = false;
+    if (config.getApplySuperAdminToAllInitiatives()) {
+        isSA = userbl.isSuperAdmin(userSessionID) ? 1 : 0;
+    }
 	
 	//if has filter plan then apply filter by parameter, else apply filter to related user plan
 	if(reqBody.arrPlan)
@@ -40,28 +55,32 @@ function getHl4ByFilter(reqBody,userSessionID){
 		
 	if(reqBody.arrRegion)
 		arrRegion = reqBody.arrRegion;
+
 	if(reqBody.arrBudgetYear)
 		arrBudgetYear = reqBody.arrBudgetYear;
+
 	
-	var myBudget = dataBudget.getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, userSessionID);
+	var myBudget = dataBudget.getHl4ByFilter(arrPlan, arrRegion, arrBudgetYear, isSA, userSessionID);
 	
 	if(myBudget){
 		var aux = {};
 		var list = Object.keys(myBudget.OUT_RESULT);
 		for (var i = 0; i < list.length; i++) {
 			var elem = myBudget.OUT_RESULT[i];
-			if (aux.plan !== elem.PLAN) {
+			if (aux.plan_id !== elem.PLAN_ID) {
 				aux = {
 						  plan: elem.PLAN
+						, plan_id: elem.PLAN_ID
+						, l2_acronym: elem.ORGANIZATION_ACRONYM
 						, budget_year:  elem.BUDGET_YEAR
-						, budget_total: elem.BUDGET_TOTAL
-						, remaining: elem.REMAINING
-						, allocated: elem.ALLOCATED
+						, budget_total: elem.HL2_BUDGET_TOTAL
+						, remaining: !elem.REMAINING ? 0 : elem.REMAINING
+						, allocated: !elem.ALLOCATED ? 0 : elem.ALLOCATED
 						, value: elem.VALUE
 			    };
 				result.push(aux);
 			}
-			aux[elem.BG_REGION_NAME] = elem.PERCENTAGE;
+			aux[elem.BUDGET_REGION_NAME] = !elem.PERCENTAGE ? 0 : elem.PERCENTAGE;
 		}
 	}
 	var myObj = {};

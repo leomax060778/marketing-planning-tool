@@ -11,10 +11,19 @@ var UPD_OBJECTIVE = "UPD_OBJECTIVE";
 var GET_OBJECTIVE_BY_ID = "GET_OBJECTIVE_BY_ID";
 var DEL_OBJECTIVE = "DEL_OBJECTIVE";
 var GET_OBJECTIVE_BY_NAME = "GET_OBJECTIVE_BY_NAME";
+var GET_COUNT_OBJECTIVES_IN_USE_BY_ID = "GET_COUNT_OBJECTIVES_IN_USE_BY_ID";
+var GET_ANSWER_FOR_ALL_OBJECTIVES = "GET_ANSWER_FOR_ALL_OBJECTIVES";
+
 
 function getAllObjectives(){
 	var parameters = {};	
 	var list = db.executeProcedureManual(GET_ALL_OBJECTIVES, parameters);
+	return db.extractArray(list.out_result);
+}
+
+function getAnswerForAllObjectives(){
+	var parameters = {};
+	var list = db.executeProcedureManual(GET_ANSWER_FOR_ALL_OBJECTIVES, parameters);
 	return db.extractArray(list.out_result);
 }
 
@@ -38,7 +47,7 @@ function updateObjective(objectiveId, name, userId){
 function deleteObjective(objectiveId, userId){
 	var parameters = {};
 	parameters.IN_OBJECTIVE_ID = objectiveId;
-	parameters.IN_MODIFIED_USER_ID = userId
+	parameters.IN_MODIFIED_USER_ID = userId;
 	return db.executeScalarManual(DEL_OBJECTIVE, parameters, "out_result");
 }
 
@@ -58,3 +67,7 @@ function getObjectiveByName(name){
 	return null;
 }
 
+function checkInUseObjectiveById(objectiveId){
+	var parameters = {'in_objecive_id': objectiveId};
+	return db.executeScalarManual(GET_COUNT_OBJECTIVES_IN_USE_BY_ID, parameters, "out_result");
+}

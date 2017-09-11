@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL6_PARTNER_BY_PARTNER_ID" (
+	IN arrPartnerToDelete TABLE(
+	    in_partner_id BIGINT,
+	    in_user_id BIGINT),
+	OUT out_result BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+		UPDATE T1
+		SET T1.deleted = 1,
+		    T1.enabled = 0,
+			T1.modified_user_id = in_user_id,
+			T1.modified_date_tz = CURRENT_TIMESTAMP
+		FROM HL6_PARTNER T1
+		INNER JOIN :arrPartnerToDelete T2 ON T1.hl6_partner_id = T2.in_partner_id;
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

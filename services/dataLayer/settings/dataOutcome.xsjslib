@@ -6,14 +6,17 @@ var ErrorLib = mapper.getErrors();
 /*************************************************/
 var spGetOutcomesByOtId = "GET_OUTCOMES_BY_OUTCOMES_TYPE_ID";
 var spGetOutcomesByOutcomesTypeId = "GET_COUNT_OUTCOMES_BY_OUTCOMES_TYPE_ID";
+var GET_KPI_WIZARD_QUESTIONS = "GET_KPI_WIZARD_QUESTIONS";
+var GET_KPI_WIZARD_ANSWER_AVERAGE = "GET_KPI_WIZARD_ANSWER_AVERAGE";
+var GET_KPI_VOLUME_VALUE = "GET_KPI_VOLUME_VALUE";
 var spInsertOutcomes = "INS_OUTCOMES";
 var spUpdateOutcomes = "UPD_OUTCOMES";
 var spDeleteOutcomes = "DEL_OUTCOMES";
 /******************************************************/
 
-function getOutcomesByOtId(outcomeTypeId){
+function getOutcomesByOtId(outcomeTypeId, hlId){
         if(outcomeTypeId){
-                var rdo = db.executeProcedure(spGetOutcomesByOtId, {'in_outcomes_type_id':outcomeTypeId});
+                var rdo = db.executeProcedure(spGetOutcomesByOtId, {'in_outcomes_type_id':outcomeTypeId, 'in_hierarchy_level_id': hlId});
                 return db.extractArray(rdo.out_outcomes);
         }
         return null;
@@ -24,6 +27,29 @@ function getOutcomesCountByOutcomesTypeId(id){
 		return db.executeScalar(spGetOutcomesByOutcomesTypeId, {'in_outcomes_type_id': id}, 'out_result');
 	}	
 	return null;
+}
+
+function getWizardQuestions(){
+    var rdo = db.executeProcedureManual(GET_KPI_WIZARD_QUESTIONS, {});
+    return db.extractArray(rdo.out_result);
+}
+
+function getAnswerAverage(answers, numberOfAnswers){
+    var parameters = {
+        in_answers: answers,
+        in_length: numberOfAnswers
+    };
+    return db.executeDecimalManual(GET_KPI_WIZARD_ANSWER_AVERAGE, parameters, 'out_result');
+}
+
+function getKpiVolumeValue(campaignTypeId,campaignSubtypeId, kpiOptionId){
+    var parameters = {
+        in_campaign_id: campaignTypeId,
+        in_campaign_subtype_id: campaignSubtypeId,
+        in_kpi_option_id: kpiOptionId
+    };
+    var rdo = db.executeProcedureManual(GET_KPI_VOLUME_VALUE, parameters);
+    return db.extractArray(rdo.out_result);
 }
 
 function insertOutcomes(parameters){
@@ -40,56 +66,3 @@ function deleteOutcomes(id, userId){
         }
         return null;
 };
-
-
-/*function getExpectedOutcomeDetailById(id){	
-	if(id){
-		var rdo = db.executeProcedure(spGetExpOutDetail, {'in_hl4_expected_outcomes_id':id});
-		return db.extractArray(rdo.out_expected_outcomes_details);
-	}	
-	return null;
-};
-
-function getExpOutById(id){
-	if(id != ""){
-		var rdo = db.executeProcedure(spGetExpOutcomeById,{'in_expected_outcome_id':id});
-		return db.extractArray(rdo.out_expOut);
-	}	
-	return null;
-};
-
-function getAllOutcomes(parametrs){
-	if(parametrs.HL_ID != ""){
-		var rdo = db.executeProcedure(spGetAllOutcome,parametrs);
-		return db.extractArray(rdo.out_outcomes);
-	}	
-	return null;
-};
-
-function getOutcomesTypeByHlId(id){
-	if(id){
-		var rdo = db.executeProcedure(spGetOutcomesTypeByHlId,{'in_hl_id': id});
-		return db.extractArray(rdo.out_outcomes_type);
-	}	
-	return null;
-};
-
-function insertHl4ExpectedOutcomes(parameters){
-		var rdo = db.executeScalarManual(spInsertExpOutcome, parameters, 'out_hl4_expected_outcomes_id');
-		return rdo;
-};
-
-function insertHl4ExpectedOutcomesDetail(parameters){
-		var rdo = db.executeScalarManual(spInsertExpOutcomeDetail, parameters, 'out_hl4_expected_outcomes_details_id');
-		return rdo;
-};
-
-function deleteHl4ExpectedOutcomes(parameters){
-	var rdo = db.executeScalarManual(spDeleteExpOutcome, parameters, 'out_result');
-	return rdo;
-};
-
-function deleteHl4ExpectedOutcomesDetail(parameters){
-	var rdo = db.executeScalarManual(spDeleteExpOutcomeDetail, parameters, 'out_result');
-	return rdo;
-};*/

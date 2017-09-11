@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::RESET_HL6_CATEGORY_OPTION_UPDATED" (
+		IN in_id BIGINT
+		,IN in_user_id BIGINT
+		,OUT out_result INTEGER
+	) 
+	LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+	UPDATE "PLANNING_TOOL"."HL6_CATEGORY_OPTION" SET
+	UPDATED = 0
+	,modified_user_id = in_user_id
+	,modified_date_tz = CURRENT_TIMESTAMP
+	WHERE HL6_ID = in_id;
+	
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

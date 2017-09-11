@@ -8,7 +8,23 @@ var mail = mapper.getMail();
 var db = mapper.getdbHelper();
 var dbUserRole = mapper.getDataUserRole();
 var config = mapper.getDataConfig();
+var businessLavel3 = mapper.getLevel3();
+var dataHl1User = mapper.getDataLevel1User();
+var dataHl2User = mapper.getDataLevel2User();
+var dataHl3User = mapper.getDataLevel3User();
+var dataHl1 = mapper.getDataLevel1();
+var dataHl2 = mapper.getDataLevel2();
+var dataHl3 = mapper.getDataLevel3();
+var userMail = mapper.getUserMail();
 /** ********************************************** */
+
+var DATA_NOT_FOUND = "Data is missing.";
+var USER_NOT_FOUND = "User was not found.";
+var PERMISSIONS_NOT_FOUND = "Permissions cannot be empty.";
+var HIERARCHY_LEVEL_NOT_FOUND = "Hierarchy level was not found.";
+var INVALID_HIERARCHY_LEVEL_NUMBER = "Invalid Hierarchy level.";
+var NOT_PERMISSION_PARENT_LEVEL = "User should have permission for parent level.";
+
 
 var defaultPassword = config.getDefaultPassword();
 
@@ -21,7 +37,13 @@ function getUserById(id) {
         throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
             "userServices/handleGet/getUserById", id);
     return dbUser.getUserById(id);
+}
 
+function getUserApproversByHL1Id(id){
+    if (!id)
+        throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
+            "userServices/handleGet/getUserApproversByHL1Id", id);
+    return dbUser.getUserApproversByHl1Id(id);
 }
 
 function getUserByUserName(userName) {
@@ -31,6 +53,17 @@ function getUserByUserName(userName) {
     return dbUser.getUserByUserName(userName);
 }
 
+function getUserByEmail(email) {
+    return dbUser.getUserByEmail(email);
+}
+
+function getUserByHl1Id(hl1Id) {
+    if (!hl1Id)
+        throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
+            "userServices/handleGet/getUserByHl1Id", hl1Id);
+    return dbUser.getUserByHl1Id(hl1Id);
+
+}
 
 function getUserByHl2Id(hl2Id) {
     if (!hl2Id)
@@ -44,8 +77,135 @@ function getUserByHl3Id(hl3Id) {
     if (!hl3Id)
         throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
             "userServices/handleGet/getUserByHl3Id", hl3Id);
-    return dbUser.getUserByHl3Id(hl3Id);
 
+    var hl3 = businessLavel3.getLevel3ById(hl3Id, null);
+    return dbUser.getUserByHl3Id(hl3Id, hl3.HL2_ID);
+
+}
+
+function getUserByHl2IdToNewL3(hl2Id) {
+    if (!hl2Id)
+        throw ErrorLib.getErrors().BadRequest("The Parameter ID is not found",
+            "userServices/handleGet/getUserByHl2IdToNelL3", hl2Id);
+    return dbUser.getUserByHl2IdToNewL3(hl2Id);
+}
+
+function userLevelPermission(data, userId) {
+    validate(data);
+
+    var arrPermissionInsertL1 = [];
+    var arrPermissionDeleteL1 = [];
+    var arrPermissionInsertL2 = [];
+    var arrPermissionDeleteL2 = [];
+    var arrPermissionInsertL3 = [];
+    var arrPermissionDeleteL3 = [];
+    data.forEach(function (PERMISSIONS) {
+        var objPerm = {};
+        var hl_id = "in_hl"+PERMISSIONS.LEVEL+"_id";
+        objPerm[hl_id] = PERMISSIONS.LEVEL_ID;
+        objPerm.in_user_id = PERMISSIONS.USER_ID;
+
+        switch(PERMISSIONS.LEVEL){
+            case 1:
+                if (PERMISSIONS.PERMISSION) {
+                    objPerm.in_created_user_id = userId;
+                    if(!dbUser.existsHlUserPair(PERMISSIONS.USER_ID, PERMISSIONS.LEVEL_ID, PERMISSIONS.LEVEL))
+                        arrPermissionInsertL1.push(objPerm);
+                } else {
+                    arrPermissionDeleteL1.push(objPerm);
+                }
+                break;
+            case 2:
+                if (PERMISSIONS.PERMISSION) {
+                    objPerm.in_created_user_id = userId;
+                    if(!dbUser.existsHlUserPair(PERMISSIONS.USER_ID, PERMISSIONS.LEVEL_ID, PERMISSIONS.LEVEL))
+                        arrPermissionInsertL2.push(objPerm);
+                } else {
+                    arrPermissionDeleteL2.push(objPerm);
+                }
+                break;
+            case 3:
+                if (PERMISSIONS.PERMISSION) {
+                    objPerm.in_created_user_id = userId;
+                    if(!dbUser.existsHlUserPair(PERMISSIONS.USER_ID, PERMISSIONS.LEVEL_ID, PERMISSIONS.LEVEL))
+                        arrPermissionInsertL3.push(objPerm);
+                } else {
+                    arrPermissionDeleteL3.push(objPerm);
+                }
+                break;
+        }
+    });
+
+    if(arrPermissionInsertL1.length > 0)
+        dbUser.insertLevelUser(arrPermissionInsertL1,1);
+    if(arrPermissionInsertL2.length > 0)
+        dbUser.insertLevelUser(arrPermissionInsertL2,2);
+    if(arrPermissionInsertL3.length > 0)
+        dbUser.insertLevelUser(arrPermissionInsertL3,3);
+
+    if(arrPermissionDeleteL1.length > 0)
+        dbUser.deleteLevelUser(arrPermissionDeleteL1, 1);
+    if(arrPermissionDeleteL2.length > 0)
+        dbUser.deleteLevelUser(arrPermissionDeleteL2, 2);
+    if(arrPermissionDeleteL3.length > 0)
+        dbUser.deleteLevelUser(arrPermissionDeleteL3, 3);
+    return data;
+}
+
+function validate(data) {
+
+    if (!data)
+        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", DATA_NOT_FOUND);
+
+    data.forEach(function (user) {
+        if (!user.USER_ID || !Number(user.USER_ID))
+            throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", USER_NOT_FOUND);
+
+
+        if (!user.LEVEL || !Number(user.LEVEL))
+            throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", INVALID_HIERARCHY_LEVEL_NUMBER);
+
+        if (!user.LEVEL_ID || !Number(user.LEVEL_ID))
+            throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", HIERARCHY_LEVEL_NOT_FOUND);
+
+
+        if (!user.LEVEL_ID || !Number(user.LEVEL_ID))
+            throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", HIERARCHY_LEVEL_NOT_FOUND);
+
+        if (!user.LEVEL || !Number(user.LEVEL) || user.LEVEL < 1 || user.LEVEL > 3)
+            throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", INVALID_HIERARCHY_LEVEL_NUMBER);
+
+        if (user.PERMISSION) {
+            var objLevel = {};
+            var level2Id = null;
+            switch (user.LEVEL) {
+                case 3:
+                    objLevel.IN_HL3_ID = user.LEVEL_ID;
+                    var hl3 = dataHl3.getLevel3ById(objLevel);
+                    var level2 = data.filter(function (permission) {
+                        return permission.LEVEL_ID == hl3.HL2_ID;
+                    });
+                    if (!level2.length) {
+                        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", NOT_PERMISSION_PARENT_LEVEL);
+                    }
+                    level2Id = hl3.HL2_ID;
+                case 2:
+                    objLevel.IN_HL2_ID = level2Id || user.LEVEL_ID;
+                    var hl2 = dataHl2.getLevel2ById(objLevel);
+
+                    var level1 = data.filter(function (permission) {
+                        return permission.LEVEL_ID == hl2.HL1_ID;
+                    });
+                    if (!level1.length) {
+                        throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePost/insertHl5", NOT_PERMISSION_PARENT_LEVEL);
+                    }
+
+                    break;
+            }
+        }
+    });
+
+    return data;
 }
 
 function insertUser(user, createUser) {
@@ -75,6 +235,11 @@ function insertUser(user, createUser) {
             if (getUserByUserName(user.USER_NAME)) {
                 throw ErrorLib.getErrors().CustomError("",
                     "userServices/handlePost/insertUser", "The User Name already exists");
+            }
+
+            if(getUserByEmail(user.EMAIL)){
+                throw ErrorLib.getErrors().CustomError("",
+                    "userServices/handlePost/insertUser", "Another user with the same email already exists");
             }
             // Hash password
             userPassword = !user.USE_DEFAULT_PASSWORD
@@ -132,6 +297,18 @@ function updateUser(user, updateUser) {
     if (!util.validateIsNumber(user.USER_ID))
         throw ErrorLib.getErrors().CustomError("",
             "userServices/handlePost/updateUser", "The USER_ID is invalid");
+
+    var userByUserName = getUserByUserName(user.USER_NAME);
+    if (userByUserName && userByUserName.USER_ID != user.USER_ID) {
+        throw ErrorLib.getErrors().CustomError("",
+            "userServices/handlePost/insertUser", "The User Name already exists");
+    }
+
+    var userByEmail = getUserByEmail(user.EMAIL);
+    if(userByEmail && userByEmail.USER_ID != user.USER_ID){
+        throw ErrorLib.getErrors().CustomError("",
+            "userServices/handlePost/insertUser", "Another user with the same email already exists");
+    }
 
     try {
         var updUserId = null;
@@ -279,10 +456,12 @@ function validatePassword(pass) {
     // letters
     // New passwords must be 6 letters (and/or numbers and/or most special
     // characters) in length
-    if (!util.validateLength(pass, 15, 6) || !util.validateIsPassword(pass))
+    /*if (!util.validateLength(pass, 15, 6, 'PASSWORD') || !util.validateIsPassword(pass))
         throw ErrorLib.getErrors()
             .CustomError("", "userServices/handlePost/insertUser",
-                "The PASSWORD is invalid");
+                "The PASSWORD is invalid");*/
+    util.validateLength(pass, 15, 6, 'PASSWORD');
+    util.validateIsPassword(pass);
 
     return true;
 }
@@ -340,13 +519,58 @@ function validateUser(user) {
 }
 
 function notifyInsertByEmail(TO, username, password) {
-    var appUrl = config.getLoginUrl();
-    var siteAdminAccount = config.getSiteAdminAccount();
-
-    var body = ' <p> Dear Colleague </p>  <p>You have been granted user rights to the Marketing Planning Tool. Your login information is as follows:</p>  <p>User ID: <span>' + username + '</span></p>  <p>Password: <span>' + password + '</span></p> <p>You may change your password after you logon to the Marketing Plan Tool. To logon to the Marketing Planning Tool use the following link ' + appUrl + '.</p> <p>If you have any questions please contact the Site Administrator ' + siteAdminAccount + '.</p> <p> Thank you</p>';
+    var basicData = {};
+    var reqBody = {};
+    
+    basicData.ENVIRONMENT = config.getMailEnvironment();
+    basicData.APP_URL = config.getLoginUrl();
+    basicData.SITE_ADMIN_ACCOUNT = config.getSiteAdminAccount();
+    
+    reqBody.USERNAME = username;
+    reqBody.PASSWORD = password;
+    
+    var userMailObj = userMail.parseNotifyCreateUser(reqBody, basicData, "Colleague");
+    
     var mailObject = mail.getJson([{
         "address": TO
-    }], "Marketing Planning Tool - Account Created", body);
+    }], userMailObj.subject, userMailObj.body);
 
     mail.sendMail(mailObject, true);
+}
+
+function isSuperAdmin(userId) {
+    var rol = dbUserRole.getUserRoleByUserId(userId);
+
+    return (rol && rol.length > 0 && rol[0].ROLE_ID == 1);
+}
+
+function getPermissionForLevelByUser(level, levelId, userId) {
+    return dbUser.getPermissionForLevelByUser(level, levelId, userId);
+}
+
+//Verify if the user is in the HL2 Budget Approver list
+function validateHL2BudgetApproverByUserId(HL2Id, userId){
+	if(!HL2Id){
+		throw ErrorLib.getErrors().BadRequest("The Parameter HL2Id is not found",
+	            "/validateHL2BudgetApprover", HL2Id);
+	}
+	
+	if(!userId){
+		throw ErrorLib.getErrors().BadRequest("The Parameter userId is not found",
+	            "/validateHL2BudgetApprover", userId);
+	}
+	
+	var userList = getUserByHl2Id(HL2Id);
+	var approversList = userList.users_in;
+	var listLengh = approversList.length;
+	
+	//Check if the HL2 has any approver
+	if(listLengh > 0){
+		//Search the user ID in the list of Approvers
+		for(var i = 0; i < listLengh; i++) {
+			if (Number(approversList[i]["USER_ID"]) === Number(userId)) return true;
+		}
+	}
+		
+	return false;
 }

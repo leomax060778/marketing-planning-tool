@@ -1,0 +1,66 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL2_VERSION" (
+	in in_hl2_id bigint,
+    in in_version integer,
+    in in_acronym nvarchar(25),
+    in in_description nvarchar(255),
+    in in_budget decimal(19,2),
+    in in_budget_year_id bigint,
+    in in_region_id bigint,
+    in in_subregion_id bigint,
+    in in_crt_related tinyint,
+    in in_implement_execution_level tinyint,
+    in in_team_type_id bigint,
+    in in_created_user_id bigint,
+    in in_organization_acronym nvarchar(25),
+    in in_organization_name nvarchar(255),
+    in in_in_budget tinyint,
+    in in_allow_automatic_budget_approval tinyint,
+    in in_hl1_id bigint,
+	out out_result bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO HL2_VERSION (
+	 hl2_id,
+     version,
+     acronym,
+     description,
+     hl2_budget_total,
+     budget_year_id,
+     region_id,
+     subregion_id,
+     crt_related,
+     implement_execution_level,
+     team_type_id,
+     created_user_id,
+     organization_acronym,
+     organization_name,
+     in_budget,
+     allow_automatic_budget_approval,
+     hl1_id
+	)
+	values (
+	in_hl2_id,
+    in_version,
+    in_acronym,
+    in_description,
+    in_budget,
+    in_budget_year_id,
+    in_region_id,
+    in_subregion_id,
+    in_crt_related,
+    in_implement_execution_level,
+    in_team_type_id,
+    in_created_user_id,
+    in_organization_acronym,
+    in_organization_name,
+    in_in_budget,
+    in_allow_automatic_budget_approval,
+    in_hl1_id
+	);
+
+	--SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM HL2_VERSION;
+	SELECT ::ROWCOUNT into out_result FROM DUMMY;
+END;

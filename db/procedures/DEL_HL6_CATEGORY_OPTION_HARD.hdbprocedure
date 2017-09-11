@@ -1,0 +1,13 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL6_CATEGORY_OPTION_HARD" (
+	IN in_hl6_id BIGINT,
+	OUT out_result BIGINT)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	delete from hl6_category_option
+	where hl6_id = in_hl6_id;
+
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

@@ -1,0 +1,61 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_SALES_BY_HL5_ID"
+(
+in in_hl_id  bigint
+,OUT out_result TABLE (
+organization_id INTEGER,
+organization_type tinyint,
+description nvarchar(255),
+amount decimal(19, 6),
+budget_spend_request_status_id bigint,
+budget_spend_request_id bigint,
+organization_name nvarchar(255),
+message nvarchar(255)
+)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+sub_out_result =
+	(select
+	    hl5_sales.hl5_sales_id,
+	    hl5_sales.organization_id,
+	    hl5_sales.organization_type,
+	    hl5_sales.description,
+	    hl5_sales.amount,
+	    region.region_name as organization_name,
+	    hl5_sales.currency_id
+	from hl5_sales
+	inner join region on region.region_id = hl5_sales.organization_id
+	where hl5_id = in_hl_id
+	and hl5_sales.enabled = 1 and hl5_sales.deleted = 0)
+
+	union all
+
+	(select
+	        hl5_sales.hl5_sales_id,
+    	    hl5_sales.organization_id,
+    	    hl5_sales.organization_type,
+    	    hl5_sales.description,
+    	    hl5_sales.amount,
+    	    hl2.organization_acronym as organization_name,
+    	    hl5_sales.currency_id
+    	from hl5_sales
+        inner join hl2 on hl2.hl2_id = hl5_sales.organization_id
+    	where hl5_id = in_hl_id
+    	and hl5_sales.enabled = 1 and hl5_sales.deleted = 0);
+
+out_result = select
+                T.ORGANIZATION_ID,
+                T.ORGANIZATION_TYPE,
+                T.DESCRIPTION,
+                T3.AMOUNT * CURRENCY.CURRENCY_VALUE as AMOUNT,
+                T3.BUDGET_SPEND_REQUEST_STATUS_ID,
+                T3.BUDGET_SPEND_REQUEST_ID,
+                T.ORGANIZATION_NAME,
+                T3.DESCRIPTION AS MESSAGE
+            from :sub_out_result T
+            INNER JOIN HL5_SALE_BUDGET_SPEND_REQUEST T2 ON T.HL5_SALES_ID = T2.HL5_SALES_ID
+            INNER JOIN CURRENCY ON CURRENCY.EURO_CONVERSION_ID = T.CURRENCY_ID
+            INNER JOIN BUDGET_SPEND_REQUEST T3 ON T2.BUDGET_SPEND_REQUEST_ID = T3.BUDGET_SPEND_REQUEST_ID;
+END;

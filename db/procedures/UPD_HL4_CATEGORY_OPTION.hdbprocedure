@@ -1,8 +1,9 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_CATEGORY_OPTION" (
     IN in_hl4_category_id bigint,
     IN in_option_id bigint,
-    IN in_amount DECIMAL(19,2),
+    IN in_amount DECIMAL(19, 2),
     IN in_user_id bigint,
+    IN in_updated TINYINT,
 	OUT out_result int
 )
 	LANGUAGE SQLSCRIPT
@@ -12,7 +13,8 @@ BEGIN
 		UPDATE HL4_CATEGORY_OPTION SET
 		amount = in_amount,
 		modified_user_id = in_user_id,
-		modified_date_tz = CURRENT_TIMESTAMP
+		modified_date_tz = CURRENT_TIMESTAMP,
+		updated = in_updated
 		where hl4_category_id = in_hl4_category_id AND option_id = in_option_id;
         
         SELECT ::ROWCOUNT INTO out_result FROM DUMMY;

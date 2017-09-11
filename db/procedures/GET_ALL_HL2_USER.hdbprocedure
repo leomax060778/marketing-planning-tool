@@ -1,0 +1,28 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL2_USER" (
+ IN in_hl2_id BIGINT,
+ OUT out_result TABLE (hl2_user_id bigint,
+	hl2_id bigint,
+	user_id bigint
+--	created_date_tz timestamp,
+--	created_user_id bigint)
+) 
+)
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER 
+ DEFAULT SCHEMA "PLANNING_TOOL"
+ READS SQL DATA AS
+BEGIN
+
+ out_result =
+ 
+ SELECT 
+	hl2_user_id
+	,hl2_id
+	,user_id
+--	,created_date_tz
+--	,created_user_id
+
+ FROM HL2_USER
+ WHERE in_hl2_id = hl2_id;
+
+END;

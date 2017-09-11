@@ -1,9 +1,9 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_CRM_BINDING" (
-	IN in_hl6_id BIGINT,
-	IN in_column_name NVARCHAR(255),
-	IN in_changed TINYINT,
-	IN in_display_name NVARCHAR(255),
-	IN in_user_id BIGINT,
+	IN CRM_BINDING_TABLE TABLE (in_hl6_id BIGINT,
+	 in_column_name NVARCHAR(255),
+	 in_changed TINYINT,
+	 in_display_name NVARCHAR(255),
+	 in_user_id BIGINT),
 	OUT out_hl6_crm_binding_id BIGINT
 	 ) 
 	LANGUAGE SQLSCRIPT
@@ -16,8 +16,8 @@ BEGIN
  *****************************/
  
  		INSERT INTO "PLANNING_TOOL"."HL6_CRM_BINDING"(hl6_id, column_name, column_changed, display_name, created_user_id)
-		VALUES(in_hl6_id, in_column_name, in_changed, in_display_name, in_user_id);
-		
+ 		SELECT in_hl6_id, in_column_name, in_changed, in_display_name, in_user_id FROM :CRM_BINDING_TABLE;
+
 		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_crm_binding_id FROM "PLANNING_TOOL"."HL6_CRM_BINDING";
 		
 END;

@@ -11,8 +11,8 @@ BEGIN
 
 	UPDATE HL5_SALES
 	SET
-	deleted = 0,
-	enabled = 1,
+	deleted = 1,
+	enabled = 0,
 	modified_user_id = in_modified_user_id,
 	modified_date_tz = CURRENT_TIMESTAMP
 	where hl5_id = in_hl5_id;

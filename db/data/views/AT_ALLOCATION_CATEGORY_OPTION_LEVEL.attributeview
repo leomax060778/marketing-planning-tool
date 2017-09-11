@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_ALLOCATION_CATEGORY_OPTION_LEVEL" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AT_ALLOCATION_CATEGORY_OPTION_LEVEL"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="DELETED" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DELETED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="DELETED"/>
+    </attribute>
+    <attribute id="ENABLED" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ENABLED"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="ENABLED"/>
+    </attribute>
+    <attribute id="IN_PROCESSING_REPORT" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IN_PROCESSING_REPORT"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="IN_PROCESSING_REPORT"/>
+    </attribute>
+    <attribute id="HIERARCHY_LEVEL_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HIERARCHY_LEVEL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="HIERARCHY_LEVEL_ID"/>
+    </attribute>
+    <attribute id="ALLOCATION_OPTION_ID" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ALLOCATION_OPTION_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="ALLOCATION_OPTION_ID"/>
+    </attribute>
+    <attribute id="ALLOCATION_CATEGORY_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ALLOCATION_CATEGORY_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="ALLOCATION_CATEGORY_ID"/>
+    </attribute>
+    <attribute id="ALLOCATION_CATEGORY_OPTION_LEVEL_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ALLOCATION_CATEGORY_OPTION_LEVEL_ID"/>
+      <keyMapping schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" columnName="ALLOCATION_CATEGORY_OPTION_LEVEL_ID"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="PLANNING_TOOL" columnObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="ALLOCATION_CATEGORY_OPTION_LEVEL" modelObjectNameSpace="PLANNING_TOOL" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

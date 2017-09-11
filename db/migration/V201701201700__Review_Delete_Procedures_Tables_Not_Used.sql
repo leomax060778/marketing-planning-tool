@@ -1,0 +1,138 @@
+CREATE PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DELETE_CONSTRAINT" (
+
+	IN IN_TABLE_NAME NVARCHAR(255),
+	IN IN_REFERENCED_TABLE_NAME NVARCHAR(255)
+
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+
+	AS
+BEGIN
+   	DECLARE VALUE_CONSTRAINT NVARCHAR(255);
+   	VALUE_CONSTRAINT := '';
+
+	SELECT COALESCE(CONSTRAINT_NAME, '') INTO VALUE_CONSTRAINT from "SYS"."REFERENTIAL_CONSTRAINTS"
+	WHERE TABLE_NAME = IN_TABLE_NAME AND REFERENCED_TABLE_NAME = IN_REFERENCED_TABLE_NAME;
+
+	IF (:VALUE_CONSTRAINT <> '' )
+	THEN
+	exec 'ALTER TABLE '||:IN_TABLE_NAME||' DROP CONSTRAINT '||:VALUE_CONSTRAINT;
+	COMMIT;
+	END IF;
+
+END;
+
+CALL "PLANNING_TOOL"."xsplanningtool.db.procedures::DELETE_CONSTRAINT"('HL3','CRM');
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DELETE_CONSTRAINT" ;
+
+--alter table type of column CRM_ID
+ALTER TABLE "PLANNING_TOOL"."HL3" ALTER (CRM_ID BIGINT NULL);
+
+--drop procedures
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CRM";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CRM";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CRM_DATA";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CRM";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CRM_BY_LONG_HL3_ID";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CRM_NEW";
+--drop table CRM
+DROP TABLE "PLANNING_TOOL"."CRM";
+
+--drop table HIERARCHY_CRM_BINDING
+DROP TABLE "PLANNING_TOOL"."HIERARCHY_CRM_BINDING";
+
+--drop procedures related to HL4_SALE_OTHER_REGION, HL4_SALE_OTHER_SUBREGION, HL4_SALE_SUBREGION
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL4_SALE_OTHER_REGION";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL4_SALE_OTHER_SUBREGION";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL4_SALE_SUBREGION";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_OTHER_REGION";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_OTHER_SUBREGION";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_SUBREGION";
+--drop table HL4_SALE_OTHER_REGION
+DROP TABLE "PLANNING_TOOL"."HL4_SALE_OTHER_REGION";
+--drop table HL4_SALE_OTHER_SUBREGION
+DROP TABLE "PLANNING_TOOL"."HL4_SALE_OTHER_SUBREGION";
+--drop table HL4_SALE_SUBREGION
+DROP TABLE "PLANNING_TOOL"."HL4_SALE_SUBREGION";
+
+--drop table HL5_FNC
+DROP TABLE "PLANNING_TOOL"."HL5_FNC";
+
+--drop procedures related to HL5_IPS
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL5_IPS";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_IPS_BY_ID";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_IPS";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL5_IPS";
+--drop table HL5_IPS
+DROP TABLE "PLANNING_TOOL"."HL5_IPS";
+
+--drop table MAIL_IMAGE
+DROP TABLE "PLANNING_TOOL"."MAIL_IMAGE";
+
+--drop procedures related to HL5_IPS
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_MARKETING_ACTIVITY";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_MARKETING_ACTIVITY_BY_ID";
+--drop table MARKETING_ACTIVITY
+DROP TABLE "PLANNING_TOOL"."MARKETING_ACTIVITY";
+
+--drop table ORIGIN_TYPE
+DROP TABLE "PLANNING_TOOL"."ORIGIN_TYPE";
+
+--drop sp´s related plan table
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_PLAN";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_PLAN";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_PLAN";
+DROP TABLE "PLANNING_TOOL"."PLAN";
+
+--drop sp´s related plan table ROUTE
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_ROUTE";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_ROUTE";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ROUTE_BY_DESCRIPTION";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ROUTE_BY_PLAN_DESCRIPTION";
+--drop table ROUTE
+DROP TABLE "PLANNING_TOOL"."ROUTE";
+
+--drop table SPEND_CATEGORY_HIERARCHY_LEVEL
+DROP TABLE "PLANNING_TOOL"."SPEND_CATEGORY_HIERARCHY_LEVEL";
+
+--alter table type of column HL4
+ALTER TABLE "PLANNING_TOOL"."HL4" ALTER (SPEND_CATEGORY_ID BIGINT NULL);
+--drop sp´s related plan table SPEND_CATEGORY
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_SPEND_CATEGORY";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_SPEND_CATEGORY";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_SPEND_CATEGORY_BY_HL_ID";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_SPEND_CATEGORY";
+DROP TABLE "PLANNING_TOOL"."SPEND_CATEGORY";
+
+--drop sp´s related plan table USER_ROLE_ORIGIN_PLAN
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_USER_ROLE_ORIGIN_PLAN";
+--drop table USER_ROLE_ORIGIN_PLAN
+DROP TABLE "PLANNING_TOOL"."USER_ROLE_ORIGIN_PLAN";
+
+--drop sp´s related plan table USER_ROUTE
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_USER_ROUTE";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_USER_ROUTE";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_USER_ROUTE";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_USER_ROUTE";
+--drop table USER_ROLE_ORIGIN_PLAN
+DROP TABLE "PLANNING_TOOL"."USER_ROUTE";
+
+--drop sp´s related plan table HL3_FNC, HL4_FNC
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_DIFFERENTIATED_BUDGET";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL3_CHANGE_IN_BUDGET";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::HL3_CHANGE_OUT_BUDGET";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL3_FNC";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL4_FNC";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_FNC";
+DROP PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL4_FNC";
+--drop table HL3_FNC, HL4_FNC
+DROP TABLE "PLANNING_TOOL"."HL3_FNC";
+DROP TABLE "PLANNING_TOOL"."HL4_FNC";
+
+-- *************************************************************************************
+-- Update schema version
+INSERT INTO SCHEMA_VERSION(VERSION, DESCRIPTION, SCRIPT)
+VALUES('V5.0.0-14', 'Review Delete Procedures Tables Not Used - Sript', 'V201701201700__Review_Delete_Procedures_Tables_Not_Used.sql');
+
+COMMIT;

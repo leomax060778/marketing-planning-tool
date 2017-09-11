@@ -1,10 +1,10 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL6_BUDGET" 
 (
-	in in_hl6_id bigint,
-	in in_organization_id bigint,
-	in in_percentage decimal(19,2),
-	in in_organization_type tinyint,
-	in in_created_user_id bigint,
+	in hl6_budget_table TABLE (in_hl6_id bigint,
+	 in_organization_id bigint,
+	 in_percentage decimal(19, 6),
+	 in_organization_type tinyint,
+	 in_created_user_id bigint),
 	out out_hl6_budget_id bigint
 ) 
 	LANGUAGE SQLSCRIPT
@@ -20,13 +20,7 @@ BEGIN
 	organization_type,
 	created_user_id
 	)
-	VALUES (
-	in_hl6_id,
-	in_organization_id,
-	in_percentage,
-	in_organization_type,
-	in_created_user_id
-	);
+	(SELECT	in_hl6_id,	in_organization_id,	in_percentage,	in_organization_type,	in_created_user_id	FROM :hl6_budget_table	);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl6_budget_id FROM "PLANNING_TOOL"."HL6_BUDGET";
 END;

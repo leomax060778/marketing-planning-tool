@@ -16,7 +16,6 @@ BEGIN
 
 --USERS IN RELATION HL2		
 users_in = select distinct u.user_id, u.USER_NAME, u.FIRST_NAME, u.LAST_NAME, u.EMAIL, u.PHONE, role.NAME as ROLE_NAME
---, hl2User.hl2_id
 from user u
 inner join HL2_USER hl2User on hl2User.user_id=u.user_id
 inner join USER_ROLE userRole ON userRole.user_id = u.user_id
@@ -27,7 +26,8 @@ and u.deleted = 0 and u.enabled = 1
 
 --USERS WITHOUT RELATION IN HL2
 users_out = select distinct u.user_id, u.USER_NAME, u.FIRST_NAME, u.LAST_NAME, u.EMAIL, u.PHONE, role.NAME as ROLE_NAME
-from user u
+from HL1_USER L1
+inner join user u on L1.user_id = u.user_id
 inner join USER_ROLE userRole ON userRole.user_id = u.user_id
 inner join ROLE role ON role.role_id = userRole.role_id
 where u.user_id not in (

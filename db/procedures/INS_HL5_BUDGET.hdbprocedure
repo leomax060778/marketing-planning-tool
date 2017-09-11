@@ -1,11 +1,11 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_BUDGET"
 (
-	in in_hl5_id bigint,
-	in in_organization_id bigint,
-	in in_percentage decimal(19,2),
-	in in_organization_type tinyint,
-	in in_created_user_id bigint,
-	out out_hl5_budget_id bigint
+	in budgetHl5 TABLE (in_hl5_id bigint,
+	                    in_organization_id bigint,
+	                    in_percentage decimal(19, 6),
+	                    in_organization_type tinyint,
+	                    in_created_user_id bigint)
+	                ,out out_hl5_budget_id bigint
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -20,13 +20,7 @@ BEGIN
 	organization_type,
 	created_user_id
 	)
-	VALUES (
-	in_hl5_id,
-	in_organization_id,
-	in_percentage,
-	in_organization_type,
-	in_created_user_id
-	);
+	(select in_hl5_id, in_organization_id, in_percentage, in_organization_type, in_created_user_id from :budgetHl5);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_budget_id FROM "PLANNING_TOOL"."HL5_BUDGET";
 END;

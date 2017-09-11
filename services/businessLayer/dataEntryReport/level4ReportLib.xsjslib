@@ -2,108 +2,153 @@ $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataL4DER = mapper.getDataLevel4Report();
 var dataHl4 = mapper.getDataLevel4();
+var dataCategory = mapper.getDataCategory();
+var dataCategoryOptionLevel = mapper.getDataCategoryOptionLevel();
 var dataPath = mapper.getDataPath();
 var ErrorLib = mapper.getErrors();
 var util = mapper.getUtil();
 /** ***********END INCLUDE LIBRARIES*************** */
-var l4ReportFields = {"ACRONYM": "ID",
-		"HL4_CRM_DESCRIPTION": "CRM Description",
-		"HL4_DETAILS": "Initiative/Campaign Details",
-		"HL4_BUSINESS_DETAILS": "Business Value",
-		"HL4_FNC_BUDGET_TOTAL_MKT": "Budget",
-		"CATEGORY": ""};
 
 function getAllL4DEReport(userId) {
-	var hl4List = dataL4DER.getAllLevel4Report(userId);
-	var allHl4 = [];
-	hl4List.forEach(function(hl4){
-		var aux = {};
-		Object.keys(hl4).forEach(function(key){
-			aux[key] = key != 'HL4_PATH' ? hl4[key]
-				: 'CRM-' + hl4[key];
-		});
-		allHl4.push(aux);
-	});
+    var hl4List = dataL4DER.getAllLevel4Report(userId);
+    var allHl4 = [];
+    hl4List.forEach(function (hl4) {
+        var aux = {};
+        Object.keys(hl4).forEach(function (key) {
+            aux[key] = key != 'HL4_PATH' ? hl4[key]
+                : 'CRM-' + hl4[key];
+        });
+        allHl4.push(aux);
+    });
 
-	return allHl4;
+    return allHl4;
+}
+
+function getL4CrmBindingFieldsByHl4Id(hl4Id) {
+    var sp_result = dataL4DER.getL4ChangedFieldsByHl4Id(hl4Id);
+    var mapL4CrmBindignFields = {};
+    for (var i = 0; i < sp_result.length; i++) {
+        var obj = sp_result[i];
+        mapL4CrmBindignFields[obj.COLUMN_NAME] = {};
+        mapL4CrmBindignFields[obj.COLUMN_NAME].HL4_CRM_BINDING_ID = obj.ID
+    }
+    return mapL4CrmBindignFields;
 }
 
 function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
-	try {
-		var data = {"hl4": [], "category": []};
-		var changedFields = dataL4DER.getL4ChangedFieldsByHl4Id(hl4Id);
-		var hl4 = dataHl4.getHl4ById(hl4Id);
-		//new refactor 04112016
-		//var hl4Fnc = dataHl4.getHl4FncByHl4Id(hl4Id);
-		
-		var hl4Categories = dataHl4.getHl4Category(hl4Id);
-		Object.keys(l4ReportFields).forEach(function(field){
-			
-			if(field == "CATEGORY"){
-				var changedFieldsByHl4Id = dataL4DER.getL4ChangedFieldsByHl4IdByField(hl4Id, field);
-				
-				hl4Categories.forEach(function(hl4Category){
-					if(hl4Category.IN_PROCESSING_REPORT){
-						var object = {};
-						object.option = [];
-						object.display_name = hl4Category.CATEGORY_NAME;
-						var hl4CategoryOptions = dataHl4.getHl4CategoryOption(hl4Category.HL4_CATEGORY_ID);
-						hl4CategoryOptions.forEach(function(hl4CategoryOption){
-							if(hl4CategoryOption.AMOUNT != 0){
-								object.option.push({"option_name": hl4CategoryOption.OPTION_NAME, "value": hl4CategoryOption.AMOUNT});
-							}
-						});
-						//throw ErrorLib.getErrors().CustomError("","level4ReportServices/handleGet/getL4ChangedFieldsByHl4Id", JSON.stringify(object));
-						object.changed = checkChangedField(changedFieldsByHl4Id, field, hl4Category.HL4_CATEGORY_ID);
-						data.category.push(object);
-					}
-				});
-				
-			} else {
-				var object = {};
-				object.display_name = l4ReportFields[field];
-				//new refactor 04112016
-				//object.value = hl4[field] || hl4Fnc[field];
-				
-				// When Acronym/ID display the CRM path for L4 entry
-				if(l4ReportFields[field] == "ID"){
-					var CRM_ACRONYM = "CRM";
-					var path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
-					if (path.length > 0) {
-						object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl4['ACRONYM'];
-					}
-				}else{
-					object.value = hl4[field];
-				}
-								
-				object.changed = checkChangedField(changedFields, field);
-				data.hl4.push(object);
-			};
-		});
-		return data;
-	} catch (e) {
-		throw e;
-	}
+    try {
+        var l4ReportFields = this.getProcessingReportFields().deReportDisplayName;
+        var data = {"hl4": [], "category": []};
+        var changedFields = dataL4DER.getL4ChangedFieldsByHl4Id(hl4Id);
+        var hl4 = dataHl4.getHl4ById(hl4Id);
+        var path = dataPath.getPathByLevelParent(4, hl4['HL3_ID'])[0];
+        var CRM_ACRONYM = "CRM";
+        var parentPath = CRM_ACRONYM + "-" + path.L1_ACRONYM + path.BUDGET_YEAR + "-" + path.L3_ACRONYM;
+        var hl4Categories = dataCategoryOptionLevel.getAllocationCategory(hl4Id, 'hl4');
+        var hl4Options = util.getAllocationOptionByCategoryAndLevelId('hl4', hl4Id);
+
+        Object.keys(l4ReportFields).forEach(function (field) {
+            if (field == "CATEGORY") {
+                hl4Categories.forEach(function (hl4Category) {
+                    //var actualCategory = dataCategory.getCategoryById(hl4Category.CATEGORY_ID);
+                    if (hl4Category.IN_PROCESSING_REPORT) {
+                        var object = {};
+                        object.option = [];
+                        object.display_name = hl4Category.CATEGORY_NAME;
+                        hl4Options[hl4Category.CATEGORY_ID].forEach(function (hl4CategoryOption) {
+                            if (hl4CategoryOption.AMOUNT != 0 || hl4CategoryOption.UPDATED) {
+                                object.option.push({
+                                    "option_name": hl4CategoryOption.OPTION_NAME,
+                                    "value": hl4CategoryOption.AMOUNT,
+                                    "changed": hl4CategoryOption.UPDATED
+                                });
+                            }
+                        });
+                        data.category.push(object);
+                    }
+                });
+            } else {
+                var object = {};
+                object.display_name = l4ReportFields[field];
+                // When Acronym/ID display the CRM path for L4 entry
+
+                switch (field) {
+                    case 'ACRONYM':
+                        object.value = parentPath + "-" + hl4['ACRONYM'];
+                        break;
+                    case 'PARENT_PATH':
+                        object.value = parentPath;
+                        break;
+                    default:
+                        object.value = hl4[field];
+                        break;
+                }
+
+                /*if(field == "ACRONYM"){
+                 path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+                 if (path.length > 0) {
+                 object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH + "-" + hl4['ACRONYM'];
+                 }
+                 }else if(field){
+                 path = dataPath.getPathByLevelParent(4, hl4['HL3_ID']);
+                 if (path.length > 0) {
+                 object.value = CRM_ACRONYM + "-" + path[0].PATH_TPH;
+                 }
+                 }else{
+                 object.value = hl4[field];
+                 }*/
+
+                object.changed = checkChangedField(changedFields, field);
+                data.hl4.push(object);
+            }
+            ;
+        });
+        data.HL4_ID = hl4Id;
+        return data;
+    } catch (e) {
+        throw e;
+    }
 }
 
-function deleteL4ChangedFieldsByHl4Id(hl4Id){
-	try {
-		return dataL4DER.deleteL4ChangedFieldsByHl4Id(hl4Id);
-	} catch (e) {
-		throw ErrorLib.getErrors().CustomError("",
-				"level4ReportServices/handleGet/deleteL4ChangedFieldsByHl4Id", e.toString());
-	}
+function deleteL4ChangedFieldsByHl4Id(hl4Id) {
+    try {
+        return dataL4DER.deleteL4ChangedFieldsByHl4Id(hl4Id);
+    } catch (e) {
+        throw ErrorLib.getErrors().CustomError("",
+            "level4ReportServices/handleGet/deleteL4ChangedFieldsByHl4Id", e.toString());
+    }
 }
 
-function checkChangedField(changedFields, field, value){
-	var hasChanged = false;
-	for(var i=0;i<changedFields.length;i++){
-		if(field == "CATEGORY"){
-			hasChanged = changedFields[i].DISPLAY_NAME == value;
-		} else {
-			hasChanged = changedFields[i].COLUMN_NAME == field;
-		}
-		if(hasChanged) break;
-	}
-	return hasChanged;
+function checkChangedField(changedFields, field, value) {
+    var hasChanged = false;
+    for (var i = 0; i < changedFields.length; i++) {
+        hasChanged = changedFields[i].COLUMN_NAME == field;
+        if (hasChanged) break;
+    }
+    return hasChanged;
+}
+
+function getProcessingReportFields() {
+    var processingReportFields = {
+        deReportDisplayName: {
+            "ACRONYM": "ID",
+            "HL4_CRM_DESCRIPTION": "CRM Description",
+            "HL4_DETAILS": "Initiative/Campaign Details",
+            "HL4_BUSINESS_DETAILS": "Business Value",
+            "HL4_FNC_BUDGET_TOTAL_MKT": "Budget",
+            "PARENT_PATH": "Parent",
+            "CATEGORY": ""
+        },
+        crmBindingFields: {hl4: [], hl4_fnc: []}
+    };
+
+    Object.keys(processingReportFields.deReportDisplayName).forEach(function (field) {
+        if(field == "HL4_FNC_BUDGET_TOTAL_MKT"){
+            processingReportFields.crmBindingFields.hl4_fnc.push(field);
+        } else {
+            processingReportFields.crmBindingFields.hl4.push(field);
+        }
+    });
+
+    return processingReportFields
 }

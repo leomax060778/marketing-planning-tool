@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_EXPECTED_OUTCOME" (
+	in in_expected_outcome_id bigint,
+	in in_user_id bigint,
+	out out_result bigint)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+		UPDATE EXPECTED_OUTCOME
+		SET deleted = 1,
+			enabled = 0,
+			modified_user_id = in_user_id,
+			modified_date_tz = CURRENT_TIMESTAMP
+		WHERE expected_outcome_id = in_expected_outcome_id;
+
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_CURRENCY" (
+	IN in_country NVARCHAR(127),
+	IN in_currency_abbreviation NVARCHAR(3),
+	IN in_currency_name NVARCHAR(255),
+	IN in_currency_value_admin DECIMAL(19, 6),
+	IN in_user_id BIGINT,
+	IN in_budget_year_id BIGINT,
+	OUT out_euro_conversion_id INTEGER
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    INSERT INTO CURRENCY(country, currency_name, currency_abbreviation, currency_value, created_user_id, budget_year_id)
+    VALUES (in_country, in_currency_name, in_currency_abbreviation, in_currency_value_admin, in_user_id, in_budget_year_id);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_euro_conversion_id FROM "PLANNING_TOOL"."CURRENCY";
+END;

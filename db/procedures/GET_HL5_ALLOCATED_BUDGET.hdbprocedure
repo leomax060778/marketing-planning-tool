@@ -12,12 +12,11 @@ BEGIN
 	
 	va_hl5_allocated_budget := 0;
 	
-	SELECT SUM(HL5.budget)
+	SELECT SUM(HL6.budget)
 	INTO va_hl5_allocated_budget
 	FROM HL6
-	INNER JOIN HL5 ON HL5.hl5_id = HL6.hl5_id
-	WHERE HL5.hl5_id = in_hl5_id
-	  AND HL6.hl5_id != in_hl6_id
+	WHERE HL6.hl5_id = in_hl5_id
+	  AND HL6.hl6_id != in_hl6_id
 	  AND HL6.deleted = 0
 	  AND HL6.enabled = 1
 	  AND HL6.in_budget = 1;

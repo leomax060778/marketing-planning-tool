@@ -2,13 +2,24 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_PARTNER_BY_HL6_
 ( 
 in in_hl6_id bigint
 ,OUT out_result TABLE (
-		partner_name nvarchar(512),
-		hl6_partner_id BIGINT,
-		partner_type_name nvarchar(100),
-		partner_type_id bigint,
-		region_name nvarchar(255),
-		region_id bigint,
-		value decimal(19,2)
+    partner_name nvarchar(512),
+    partner_id BIGINT,
+    partner_type_name nvarchar(100),
+    partner_type_id bigint,
+    region_name nvarchar(255),
+    region_id bigint,
+    currency_id INTEGER,
+    currency_value decimal(19, 6),
+    value decimal(19, 6),
+    intel_project_id nvarchar(255),
+    claim_id nvarchar(255),
+    comments nvarchar(255),
+    company_name nvarchar(255),
+    company_address nvarchar(255),
+    invoice_number nvarchar(255),
+    description nvarchar(255),
+    budget_spend_request_status_id bigint,
+    budget_spend_request_id bigint
 )
 ) 
 	LANGUAGE SQLSCRIPT
@@ -16,17 +27,69 @@ in in_hl6_id bigint
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 	
 BEGIN
-	out_result = SELECT hl6_partner.partner_name,
-       					hl6_partner.hl6_partner_id,
-						partner_type.type_name as partner_type_name,
-				        hl6_partner.partner_type_id,
-				        region.region_name,
-				        region.region_id,
-				        hl6_partner.value
-				FROM hl6_partner inner join partner_type
-				on hl6_partner.partner_type_id = partner_type.partner_type_id
-				inner join region on hl6_partner.region_id = region.region_id
-				WHERE hl6_partner.hl6_id = in_hl6_id
-				AND hl6_partner.enabled = 1
-				AND hl6_partner.deleted = 0;
+
+
+temp_out_hl6_partner =
+	    SELECT hl6_partner.partner_name,
+        hl6_partner.hl6_partner_id,
+        partner_type.type_name as partner_type_name,
+        hl6_partner.partner_type_id,
+        region.region_name,
+        region.region_id,
+        hl6_partner.value,
+        hl6_partner.budget_spend_request_id,
+        hl6_partner.currency_id,
+        hl6_partner.intel_project_id,
+        hl6_partner.claim_id,
+        hl6_partner.comments,
+        hl6_partner.company_name,
+        hl6_partner.company_address,
+        hl6_partner.invoice_number
+        FROM hl6_partner
+        inner join partner_type	on hl6_partner.partner_type_id = partner_type.partner_type_id
+        left join region on hl6_partner.region_id = region.region_id
+        WHERE hl6_partner.hl6_id = in_hl6_id
+          AND hl6_partner.enabled = 1
+          AND hl6_partner.deleted = 0;
+
+    out_result =
+        select
+        t.partner_name,
+        t.hl6_partner_id as partner_id,
+        t.partner_type_name,
+        t.partner_type_id,
+        t.region_name,
+        t.region_id,
+        t.currency_id,
+        c.currency_value,
+        coalesce(t.value, coalesce(bsr.amount,0)) * c.currency_value as value,
+        t.intel_project_id,
+        t.claim_id,
+        t.comments,
+        t.company_name,
+        t.company_address,
+        t.invoice_number,
+        bsr.description,
+        bsr.budget_spend_request_status_id,
+        bsr.budget_spend_request_id
+        from :temp_out_hl6_partner t
+        inner join currency c on c.euro_conversion_id = t.currency_id
+        left join budget_spend_request bsr on bsr.budget_spend_request_id = t.budget_spend_request_id
+        and (bsr.BUDGET_SPEND_REQUEST_STATUS_ID = 1 OR bsr.BUDGET_SPEND_REQUEST_STATUS_ID = 2);
+
+
+--	out_result = SELECT hl6_partner.partner_name,
+--       					hl6_partner.hl6_partner_id,
+--						partner_type.type_name as partner_type_name,
+--				        hl6_partner.partner_type_id,
+--				        region.region_name,
+--				        region.region_id,
+--				        hl6_partner.value
+--				FROM hl6_partner inner join partner_type
+--				on hl6_partner.partner_type_id = partner_type.partner_type_id
+--				inner join region on hl6_partner.region_id = region.region_id
+--				WHERE hl6_partner.hl6_id = in_hl6_id
+--				AND hl6_partner.enabled = 1
+--				AND hl6_partner.deleted = 0;
+
 END;

@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_BUSINESS_OWNER" (
+	OUT output_result TABLE(BUSINESS_OWNER_ID BIGINT, DESCRIPTION NVARCHAR(100)) )
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+	output_result = SELECT BUSINESS_OWNER_ID,
+						DESCRIPTION
+				 FROM BUSINESS_OWNER
+				 WHERE deleted = 0
+				 AND enabled = 1
+				 ORDER BY DESCRIPTION;
+END;

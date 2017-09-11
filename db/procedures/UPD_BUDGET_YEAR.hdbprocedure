@@ -1,22 +1,29 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_BUDGET_YEAR" (
-	IN start_date TIMESTAMP,
-	IN end_date TIMESTAMP,
-	IN default_year TINYINT,
-	IN description NVARCHAR (255),
-	IN modified_user_id BIGINT,
-	IN budget_year integer,
-	OUT out_params TIMESTAMP
+    IN in_budget_year_id BIGINT,
+	IN in_start_date TIMESTAMP,
+	IN in_end_date TIMESTAMP,
+    IN in_versioned_start_date timestamp,
+    IN in_versioned_end_date timestamp,
+	IN in_default_year TINYINT,
+	IN in_description NVARCHAR (255),
+	IN in_modified_user_id BIGINT,
+	IN in_budget_year integer,
+	OUT out_result integer
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER AS
 BEGIN
 	UPDATE "PLANNING_TOOL"."BUDGET_YEAR" SET
-		"PLANNING_TOOL"."BUDGET_YEAR"."START_DATE" = :start_date,
-        "PLANNING_TOOL"."BUDGET_YEAR"."END_DATE" = :end_date,
-        "PLANNING_TOOL"."BUDGET_YEAR"."DEFAULT_YEAR" = :default_year,
-        "PLANNING_TOOL"."BUDGET_YEAR"."DESCRIPTION" = :description,
-        "PLANNING_TOOL"."BUDGET_YEAR"."MODIFIED_USER_ID" = :modified_user_id,
+	    "PLANNING_TOOL"."BUDGET_YEAR"."BUDGET_YEAR" = in_budget_year,
+		"PLANNING_TOOL"."BUDGET_YEAR"."START_DATE" = in_start_date,
+        "PLANNING_TOOL"."BUDGET_YEAR"."END_DATE" = in_end_date,
+        "PLANNING_TOOL"."BUDGET_YEAR"."VERSIONED_START_DATE" = in_versioned_start_date,
+        "PLANNING_TOOL"."BUDGET_YEAR"."VERSIONED_END_DATE" = in_versioned_end_date,
+        "PLANNING_TOOL"."BUDGET_YEAR"."DEFAULT_YEAR" = in_default_year,
+        "PLANNING_TOOL"."BUDGET_YEAR"."DESCRIPTION" = in_description,
+        "PLANNING_TOOL"."BUDGET_YEAR"."MODIFIED_USER_ID" = in_modified_user_id,
         "PLANNING_TOOL"."BUDGET_YEAR"."MODIFIED_DATE_TZ" = CURRENT_TIMESTAMP
-	WHERE "PLANNING_TOOL"."BUDGET_YEAR"."BUDGET_YEAR" = :budget_year;
-	COMMIT;
+	WHERE "PLANNING_TOOL"."BUDGET_YEAR"."BUDGET_YEAR_ID" = in_budget_year_id;
+
+    SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

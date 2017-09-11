@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_ALLOCATION_CATEGORY" (
+	IN in_category_id BIGINT,
+	IN in_description NVARCHAR(255),
+	IN in_name NVARCHAR(255),
+	IN in_measure_id BIGINT,
+	IN in_single_option_only TINYINT,
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+        UPDATE ALLOCATION_CATEGORY
+        SET measure_id = in_measure_id,
+            name = in_name,
+            description = in_description,
+            modified_date_tz = CURRENT_TIMESTAMP,
+            modified_user_id = in_user_id,
+            single_option_only = in_single_option_only
+        WHERE ALLOCATION_CATEGORY_ID = in_category_id;
+        
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END

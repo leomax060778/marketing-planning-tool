@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_SERVICE_REQUEST_CATEGORY" (
+	IN in_category_id BIGINT,
+	IN in_description NVARCHAR(255),
+	IN in_name NVARCHAR(255),
+	IN in_user_id BIGINT,
+	OUT out_result BIGINT
+)
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "PLANNING_TOOL"
+   AS
+BEGIN
+        UPDATE SERVICE_REQUEST_CATEGORY
+        SET name = in_name,
+            description = in_description,
+            modified_date_tz = CURRENT_TIMESTAMP,
+            modified_user_id = in_user_id
+        WHERE SERVICE_REQUEST_CATEGORY_ID = in_category_id;
+
+        SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END

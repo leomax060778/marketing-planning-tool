@@ -12,7 +12,8 @@ BEGIN
 		SET deleted = 1,
 			enabled = 0,
 			modified_user_id = in_modified_user_id,
-			modified_date_tz = CURRENT_TIMESTAMP
+			modified_date_tz = CURRENT_TIMESTAMP,
+            deleted_token = (SELECT CAST(SYSUUID AS VARCHAR) AS "SYS_UNIQUE_NUMBER" FROM DUMMY)
 		WHERE hl2_id = in_hl2_id;
 		
 		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;

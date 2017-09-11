@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_AVAILABLE_SERVICE_REQUEST_OPTION_BY_CATEGORY_ID_BY_LEVEL_ID" (
+    IN in_category_id BIGINT,
+    IN in_level_id BIGINT,
+	OUT out_result TABLE (
+	service_request_option_id BIGINT
+	, name NVARCHAR(255)	)
+ 	)
+
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result =
+		SELECT AO.service_request_option_id, AO.name
+		FROM SERVICE_REQUEST_OPTION AO
+		WHERE AO.enabled = 1 AND AO.deleted = 0
+		AND AO.service_request_option_id NOT IN (
+		    SELECT AO.service_request_option_id
+                    		FROM SERVICE_REQUEST_OPTION AO
+                    		INNER JOIN SERVICE_REQUEST_CATEGORY_OPTION_LEVEL ACOL ON AO.service_request_option_id = ACOL.service_request_option_id
+                    		WHERE ACOL.service_request_category_id = in_category_id AND ACOL.hierarchy_level_id = in_level_id
+                                AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                                AND AO.enabled = 1 AND AO.deleted = 0
+                    		ORDER BY name
+		)
+		ORDER BY name;
+END;

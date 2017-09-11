@@ -1,89 +1,104 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_FILTER" ( 
 	 IN in_budget_year_id BIGINT
-	--,IN in_plan_id BIGINT -- now is hl2 id
-	,IN in_plan_id NVARCHAR(25) -- now here bringing up the acronym
-	,IN in_region_id BIGINT 
+	,IN in_region_id BIGINT
 	,IN in_subregion_id BIGINT
 	,IN in_user_id BIGINT
+	,IN in_is_super_Admin tinyint
 	,OUT out_result TABLE (
-		hl2_id BIGINT
+		hl1_id BIGINT
 		, acronym NVARCHAR(25)
 		, description NVARCHAR(255)
-		, budget_year_id INTEGER
-		, region_id BIGINT 
-		, subregion_id BIGINT 
+--		, budget_year_id INTEGER
+--		, region_id BIGINT
+--		, subregion_id BIGINT
 		, REGION_NAME NVARCHAR(255)
 		, SUBREGION_NAME NVARCHAR(255)
-		, organization_acronym NVARCHAR(25)
 		, BUDGET_YEAR INTEGER
-		, hl2_budget_total DECIMAL(19,10)
-        , hl3_total_count INTEGER
+		, budget DECIMAL(19, 2)
+        , hl2_total_count INTEGER
+        , version INTEGER
+        , IS_LOCKED TINYINT
 		)
-	, OUT out_total_budget DECIMAL(19,2)
+	, OUT out_total_budget DECIMAL(19, 2)
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	DECLARE va_total_budget DECIMAL(19,2);
-	--DECLARE va_hl3_total_count INEGER;
+	DECLARE va_total_budget DECIMAL(19, 2);
 	va_total_budget := 0;
-	--va_hl3_total_count := 0;
-	
-	out_result =	
+
+	va_subresult =
 	SELECT 
-		HL2.hl2_id 
-		, UPPER(HL2.acronym) as acronym 
-		, HL2.description 
-		, HL2.budget_year_id
-		, HL2.region_id
-		, HL2.subregion_id
+		HL1.hl1_id
+		, UPPER(HL1.acronym) as acronym
+		, HL1.description
+--		, HL1.budget_year_id
+		, HL1.region_id
+		--, HL1.subregion_id
 		, R.REGION_NAME
 		, SR.SUBREGION_NAME
-		, REPLACE(HL2.organization_acronym, 'N/A', '') AS organization_acronym
 		, BUY.BUDGET_YEAR
-		, HL2.hl2_budget_total
-		, COUNT(HL3.hl3_id) AS hl3_total_count
-	FROM HL2
-	INNER JOIN HL2_USER ON HL2_USER.HL2_ID = HL2.HL2_ID
-	INNER JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
-	LEFT JOIN REGION R ON R.region_id = HL2.region_id
-	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id
-	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID AND HL3.deleted = 0 AND HL3.enabled = 1
+		, HL1.budget
+		, COUNT(distinct HL2.hl2_id) AS hl2_total_count
+		, HL1.VERSION
+		, (CASE WHEN BUY.VERSIONED_END_DATE >= CURRENT_TIMESTAMP THEN 0 ELSE 1 END) AS IS_LOCKED
+	FROM HL1
+	--INNER JOIN HL1_USER ON HL1_USER.HL1_ID = HL1.HL1_ID
+	INNER JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL1.budget_year_id
+	LEFT JOIN REGION R ON R.region_id = HL1.region_id
+	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL1.subregion_id
+	LEFT JOIN HL2 ON HL2.HL1_ID = HL1.HL1_ID AND HL2.deleted = 0 AND HL2.enabled = 1
 	WHERE 
-		HL2_USER.USER_ID = in_user_id 
-		AND HL2.deleted = 0 
-		AND HL2.enabled = 1
-		AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
-      --  AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
-      AND (HL2.acronym = in_plan_id OR upper(in_plan_id) = 'ALL' )
-	    AND (R.REGION_ID = in_region_id OR in_region_id = 0) 
+		--(HL1_USER.USER_ID = in_user_id OR in_is_super_Admin = 1)
+		HL1.deleted = 0
+		AND HL1.enabled = 1
+		AND (BUY.BUDGET_YEAR_ID = in_budget_year_id)-- OR in_budget_year_id = 0) 
+	    --AND (R.REGION_ID = in_region_id OR in_region_id = 0)
 	    AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
-	GROUP BY GROUPING SETS ((HL2.hl2_id, HL2.acronym, HL2.description, HL2.budget_year_id
-	, HL2.region_id, HL2.subregion_id, SR.SUBREGION_NAME, HL2.organization_acronym
-	, BUY.BUDGET_YEAR, R.REGION_NAME, HL2.hl2_budget_total))
-	ORDER BY HL2.acronym ASC, HL2.organization_acronym ASC;
-	  
+	    AND HL1.HL1_ID IN (SELECT HL1_ID FROM HL1_USER WHERE USER_ID = in_user_id OR in_is_super_Admin = 1)
+	--GROUP BY GROUPING SETS ((HL1.hl1_id, HL1.acronym, HL1.description
+	--, HL1.region_id, SR.SUBREGION_NAME, BUY.BUDGET_YEAR, R.REGION_NAME, HL1.budget))
+	GROUP BY HL1.hl1_id, HL1.acronym, HL1.description
+	, HL1.region_id, SR.SUBREGION_NAME, BUY.BUDGET_YEAR
+	, R.REGION_NAME, HL1.budget, HL1.VERSION, BUY.VERSIONED_END_DATE
+	ORDER BY HL1.acronym ASC;
+
+    -- this filter is necesary to filter GLOBALS, where region_id = 0
+    if in_region_id = -1 then
+        out_result = select T.HL1_ID
+                            ,T.ACRONYM
+                            ,T.DESCRIPTION
+                            ,T.REGION_NAME
+                            ,T.SUBREGION_NAME
+                            ,T.BUDGET_YEAR
+                            ,T.BUDGET
+                            ,T.HL2_TOTAL_COUNT
+                             , T.VERSION
+                             , T.IS_LOCKED
+                              from :va_subresult T
+                    where T.REGION_ID = 0;
+    else
+        out_result = select T.HL1_ID
+                            ,T.ACRONYM
+                            ,T.DESCRIPTION
+                            ,T.REGION_NAME
+                            ,T.SUBREGION_NAME
+                            ,T.BUDGET_YEAR
+                            ,T.BUDGET
+                            ,T.HL2_TOTAL_COUNT
+                            , T.VERSION
+                            , T.IS_LOCKED from :va_subresult T
+                    where (T.REGION_ID = in_region_id OR in_region_id = 0);
+     end if;
+
 	-- Calculate the total budget
-	SELECT COALESCE(SUM(HL2.hl2_budget_total),0) 
-	INTO va_total_budget
-	FROM HL2 
-	INNER JOIN HL2_USER HU ON HL2.hl2_id = HU.hl2_id 
-	INNER JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL2.budget_year_id
-	LEFT JOIN REGION R ON R.region_id = HL2.region_id 
-	LEFT JOIN SUBREGION SR ON SR.subregion_id = HL2.subregion_id 
-	WHERE
-	HU.user_id = in_user_id 
-	AND HL2.deleted = 0
-	AND HL2.enabled = 1
-	AND (BUY.BUDGET_YEAR_ID = in_budget_year_id OR in_budget_year_id = 0) 
-   --  AND (HL2.HL2_ID = in_plan_id OR in_plan_id = 0)
-      AND (HL2.acronym = in_plan_id OR upper(in_plan_id) = 'ALL' )
-	AND (R.REGION_ID = in_region_id OR in_region_id = 0) 
-	AND (SR.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0);
-	
-	out_total_budget := va_total_budget;
+	SELECT SUM(T.budget)
+	INTO out_total_budget
+	FROM :out_result T;
+
+	--out_total_budget := va_total_budget;
 	
 END;
 

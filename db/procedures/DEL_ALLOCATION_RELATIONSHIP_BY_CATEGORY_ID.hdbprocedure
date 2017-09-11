@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_ALLOCATION_RELATIONSHIP_BY_CATEGORY_ID" (
+	IN in_category_id BIGINT,
+    	IN in_user_id bigint,
+    	OUT out_result integer
+    	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+UPDATE ALLOCATION_CATEGORY_OPTION_LEVEL ACOL
+        SET ACOL.DELETED = 1
+            , ACOL.ENABLED = 0
+            , ACOL.modified_user_id = in_user_id
+            , ACOL.modified_date_tz = CURRENT_TIMESTAMP
+        WHERE ACOL.ALLOCATION_CATEGORY_ID = in_category_id;
+
+    SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+	
+END;

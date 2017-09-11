@@ -11,7 +11,10 @@ var businessLavel2 = mapper.getLevel2();
 var blRegion = mapper.getRegion();
 var blSubRegion =  mapper.getSubRegion();
 var mail = mapper.getMail();
+var interlockMail = mapper.getInterlockMail();
 var config = mapper.getDataConfig();
+
+var userbl = mapper.getUser();
 /*************************************************/
 
 var INTERLOCK_STATUS = {
@@ -27,8 +30,14 @@ var CONTACT_TYPE = {
 };
 /*************************************************/
 
-function getInterlockReport(){
-	var interlockReport = dataInterlock.getInterlockReport();
+function getInterlockReport(userId){
+
+	var isSA = false;
+	if (config.getApplySuperAdminToAllInitiatives()) {
+		isSA = userbl.isSuperAdmin(userId) ? 1 : 0;
+	}
+
+	var interlockReport = dataInterlock.getInterlockReport(userId, isSA);
 	return interlockReport;	
 }
 
@@ -46,15 +55,17 @@ function getInterlockByHash(hash,userId){
 function setInterlockStatus(interlockData,userId){
 	var result = 0;
 	try{
+
 		if(interlockData.status_id == INTERLOCK_STATUS.NO_RESPONSE) {
 
 			var interlockComplete = dataInterlock.getInterlockById(interlockData.interlock_id);
 
 
-			if(interlockComplete.length > 0){
+			if (interlockComplete.length > 0) {
 				var contactData = dataInterlock.getContactDataByInterlockId(interlockData.interlock_id);
 
-				contactData.forEach(function(contactData){
+
+				contactData.forEach(function (contactData) {
 					var hash= config.getHash();
 
 					var updNumber = dataInterlock.updateContactData(contactData.INTERLOCK_CONTACT_DATA_ID, hash, userId);
@@ -66,12 +77,14 @@ function setInterlockStatus(interlockData,userId){
 					
 					notifyInterlockResponse(contactData.EMAIL,hash);
 				});
-				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId,config.getOriginMessageInterlock().requester);
+				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId, userId,config.getOriginMessageInterlock().requester);
 			}
 
 
 		}else{
 			var interlock = getInterlockByHash(interlockData.hash);
+
+			var objContactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
 			if(interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.APPROVED || interlock.INTERLOCK_STATUS_ID == INTERLOCK_STATUS.REJECTED)
 				throw ErrorLib.getErrors().CustomError("","interlockServices/handlePut/setInterlockStatus", "This Interlock is already " + interlock.STATUS + ".");
 
@@ -83,7 +96,7 @@ function setInterlockStatus(interlockData,userId){
 
 			dataInterlock.setInterlockStatus(interlockData.interlock_id, interlockData.status_id, requesterEmail);
 			if(interlockData.status_id == INTERLOCK_STATUS.REJECTED){
-				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, userId,config.getOriginMessageInterlock().moneyLender);
+				dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, interlock.CREATED_USER_ID, objContactData.INTERLOCK_CONTACT_DATA_ID,config.getOriginMessageInterlock().moneyLender);
 			}
 
 			var objIl = dataInterlock.getInterlockByHash(interlockData.hash);
@@ -97,8 +110,10 @@ function setInterlockStatus(interlockData,userId){
 
 
 			if(interlockData.status_id == INTERLOCK_STATUS.MORE_INFO) {
-				var contactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
-				result = dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, contactData.INTERLOCK_CONTACT_DATA_ID, config.getOriginMessageInterlock().moneyLender);
+				//var contactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
+				var objContactData = dataInterlock.getInterlockContactDataByHash(interlockData.hash);
+
+				result = dataInterlock.insertInterlockMessage(interlockData.interlock_id, interlockData.message, objIl.CREATED_USER_ID,objContactData.INTERLOCK_CONTACT_DATA_ID, config.getOriginMessageInterlock().moneyLender);
 				//Send email to requester to notifiy about messages to review
 				notifyRequester(requesterEmail,interlockData.interlock_id, objIl.REQUESTED_RESOURCE, objIl.HL3_ID, objIl.HL4_ID );
 			} else {
@@ -129,11 +144,9 @@ function getRequestedUserEmail(hash){
 
 function getInterlockByHl4Id(hl4_id){
 	var interlock = dataInterlock.getInterlockByHl4Id(hl4_id);
-	//throw ErrorLib.getErrors().CustomError("getHl4ById","Get Hl4 By Id",interlock);
 	var result = [];
 	interlock.forEach(function(il){
 		var aux = util.extractObject(il);
-		//throw ErrorLib.getErrors().CustomError("getHl4ById","Get Hl4 By Id",JSON.stringify(aux));
 		aux["organization"] = dataInterlock.getInterlockOrganizationByIlId(il.INTERLOCK_REQUEST_ID);
 		result.push(aux);
 	});
@@ -149,39 +162,67 @@ function getAllOrganizationType(){
 }
 
 function getGlobalTeam(hl3Id, userId){
-	//return dataInterlock.getGlobalTeam(hl3Id, userId);
 	var result = {};
 	var hl3 = businessLavel3.getLevel3ById(hl3Id, userId);
-	
+	var map = getContactDataMap();
 	if(hl3){
 		var objLevel2 = {};
 		objLevel2.IN_HL2_ID = hl3.HL2_ID;
 		var hl2 = businessLavel2.getLevel2ById(objLevel2);
 		if(hl2){
-			var globals = businessLavel2.getAllCentralTeam(hl3.HL2_ID);
-			result["Central teams"] = getContactData(globals,CONTACT_TYPE.CENTRAL);
-			result['Regions'] = getContactData(blRegion.getAllRegions(),CONTACT_TYPE.REGIONAL);	
-			result['Market Unit'] = getContactData(blSubRegion.getAllSubRegions(),CONTACT_TYPE.REGIONAL);
+			var globalTeams = businessLavel2.getAllCentralTeam(hl3.HL2_ID);
+			var regions = blRegion.getAllRegions();
+			var subregions = blSubRegion.getAllSubRegions();
+			result["Central teams"] = getContactData(globalTeams,CONTACT_TYPE.CENTRAL, map);
+			result['Regions'] = getContactData(regions,CONTACT_TYPE.REGIONAL, map);
+			result['Market Unit'] = getContactData(subregions,CONTACT_TYPE.REGIONAL, map);
 		}
 	}
 	return result;
 }
 
+function getContactData(data,contactType, map){
+    data = JSON.parse(JSON.stringify(data));
+    data.forEach(function(object){
+        var id = object.REGION_ID || object.HL2_ID;
+        object.contactData = map[contactType] && map[contactType][id] ? map[contactType][id] : [];
+    });
+    return data;
+}
+
+function getContactDataMap(){
+    var spResult = dataInterlock.getInterlockCentralRegionContacts();
+    var map = {};
+    for(var i = 0; i<spResult.length; i++){
+    	var contactData = spResult[i];
+    	if(!map[contactData.CONTACT_TYPE])
+            map[contactData.CONTACT_TYPE] = {};
+
+    	if(!map[contactData.CONTACT_TYPE][contactData.CONTACT_TYPE_ID])
+    		map[contactData.CONTACT_TYPE][contactData.CONTACT_TYPE_ID] = [];
+
+        map[contactData.CONTACT_TYPE][contactData.CONTACT_TYPE_ID].push(contactData.EMAIL);
+	}
+	return map;
+}
+
 
 function notifyRequester(requesterEmail,interlockId, description, idLevel3, idLevel4){
-	var appUrl = config.getAppUrl();
-	var text1 = '<p>A request for more information has been submitted to your interlock request. </p>';
-	var text2 = '<p>Please follow the link: ';
-	var linkToAppUrlL4 = appUrl + '/#TeamPlanHierarchy/Level3/edit/'+idLevel3+'/'+idLevel4;
-	var idInterlockDescription = interlockId +' - '+description;
-	var text3 = linkToAppUrlL4+' and review messages history for	Interlock Request '+idInterlockDescription+'</p>';
-	var body = text1 + text2 + text3;
-	var mailObject = mail.getJson([ {
-		"address" : requesterEmail
-	} ], "Marketing Planning Tool -  The Interlock Request has been responded", body);
-
-	var rdo = mail.sendEventMail(mailObject);
-
+	var basicData = {};
+	 basicData.APPURL = config.getAppUrl();
+	 basicData.ENVIRONMENT = config.getMailEnvironment();
+	 
+	 var reqBody = {};
+	 reqBody.HL3_ID = idLevel3;
+	 reqBody.HL4_ID = idLevel4;
+	 reqBody.INTERLOCK_ID = interlockId;
+	 reqBody.DESCRIPTION = description
+	
+	var interlockMailObject = interlockMail.parseNotifyRequester(reqBody, basicData, "Colleague");
+	var mailObject = mail.getJson([{"address" : requesterEmail}], interlockMailObject.subject, interlockMailObject.body);
+	//var mailObject = mail.getJson([{"address" : "iberon@folderit.net"}], interlockMailObject.subject, interlockMailObject.body); //For testing only
+	
+	var rdo = mail.sendMail(mailObject,true);
 }
 
 function resendRequestEmail(interlockId, userId) {
@@ -197,47 +238,35 @@ function resendRequestEmail(interlockId, userId) {
 }
 
 function notifyInterlockEmail(TO,token){
-
-	 var appUrl = config.getAppUrl();
-	 var body = '<p> Dear Colleague </p>';
-	 body += '<p>An interlock request has been created and needs your approval. Please follow the link: </p>';
-	 body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p> <p> Thank you </p>';
-	 var mailObject = mail.getJson([ {
-	  "address" : TO
-	 } ], "Marketing Planning Tool - Interlock Process", body);
-
-	 mail.sendEventMail(mailObject);
+	 var basicData = {};
+	 basicData.APPURL = config.getAppUrl();
+	 basicData.ENVIRONMENT = config.getMailEnvironment();
+	 
+	 var reqBody = {};
+	 reqBody.TOKEN = token;
+	 
+	  var interlockMailObj = interlockMail.parseNotifyInterlock(reqBody, basicData, "Colleague");
+	 
+	  var mailObject = mail.getJson([{"address" : TO}], interlockMailObj.subject, interlockMailObj.body);
+	 //var mailObject = mail.getJson([{"address" : "iberon@folderit.net"}], interlockMailObj.subject, interlockMailObj.body); //For testing only
+	 
+	 mail.sendMail(mailObject, true); 
 }
 
 function notifyInterlockResponse(TO,token){
-	var appUrl = config.getAppUrl();
-	var body = '<p> Dear Colleague </p>';
-	body += '<p>An interlock request has been sent and needs your approval. Please follow the link: </p>';
-	body += '<p>' + appUrl + '/#InterlockManagement/' + token + '</p>';
-	var mailObject = mail.getJson([ {
-		"address" : TO
-	} ], "Marketing Planning Tool - Interlock Process", body);
-
+	var basicData = {};
+	basicData.APPURL = config.getAppUrl();
+	basicData.ENVIRONMENT = config.getMailEnvironment();
+	
+	var reqBody = {};
+	reqBody.TOKEN = token;
+	 
+	var interlockMailObj = interlockMail.parseNotifyInterlockResponse(reqBody, basicData, "Colleague");
+	
+	var mailObject = mail.getJson([{"address" : TO} ], interlockMailObj.subject, interlockMailObj.body);
+	//var mailObject = mail.getJson([{"address" : "iberon@folderit.net"}], interlockMailObj.subject, interlockMailObj.body); //For testing only
+	
 	mail.sendMail(mailObject,true);
-}
-
-function getContactData(data,contactType){
-	var result = [];
-	data.forEach(function(object){
-		var resultObject = {};
-		Object.keys(object).forEach(function(key){
-			resultObject[key] = object[key];
-		});
-		var id = object.REGION_ID || object.HL2_ID;
-		var contactData = [];
-		dataInterlock.getInterlockCentralRegionContacts(contactType, id).forEach(function(contact){
-			contactData.push(contact.EMAIL);
-		});
-		var contactDataString = contactData;
-		resultObject.contactData = contactDataString;
-		result.push(resultObject);
-	});
-	return result;
 }
 
 function getMessagesByInterlockRequest(interlockRequestId){

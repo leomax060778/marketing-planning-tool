@@ -1,0 +1,29 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_AVAILABLE_OPTION_BY_CATEGORY_ID_BY_LEVEL_ID" (
+    IN in_category_id BIGINT,
+    IN in_level_id BIGINT,
+	OUT out_result TABLE (
+	allocation_option_id BIGINT
+	, name NVARCHAR(60)	)
+ 	)
+ 	
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result =
+		SELECT AO.allocation_option_id, AO.name
+		FROM ALLOCATION_OPTION AO
+		WHERE AO.enabled = 1 AND AO.deleted = 0
+		AND AO.allocation_option_id NOT IN (
+		    SELECT AO.allocation_option_id
+                    		FROM ALLOCATION_OPTION AO
+                    		INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL ON AO.allocation_option_id = ACOL.allocation_option_id
+                    		WHERE ACOL.allocation_category_id = in_category_id AND ACOL.hierarchy_level_id = in_level_id
+                                AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                                AND AO.enabled = 1 AND AO.deleted = 0
+                    		ORDER BY name
+		)
+		ORDER BY name;
+END;

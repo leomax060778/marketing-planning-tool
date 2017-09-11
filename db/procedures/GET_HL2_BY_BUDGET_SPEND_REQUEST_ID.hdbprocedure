@@ -1,0 +1,42 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_BUDGET_SPEND_REQUEST_ID" (
+	IN in_budget_spend_request_id bigint,
+	OUT out_result TABLE(HL2_ID BIGINT, BUDGET_SPEND_REQUEST_HL_ID BIGINT)
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	declare levelId INTEGER;
+	declare countRows INTEGER;
+	levelId := 0;
+	countRows := 0;
+	
+	va_out_result = SELECT BSR.HL_ID,  BSR.HIERARCHY_LEVEL_ID
+						FROM "PLANNING_TOOL"."BUDGET_SPEND_REQUEST" BSR
+						WHERE BSR.BUDGET_SPEND_REQUEST_ID = in_budget_spend_request_id;
+			
+	SELECT COUNT(*) INTO countRows FROM :va_out_result;
+	
+	if countRows > 0 then
+		SELECT HIERARCHY_LEVEL_ID INTO levelId from :va_out_result;
+	end if;
+	
+	if levelId = 2 then
+		out_result = SELECT HL3.HL2_ID, res.HL_ID as BUDGET_SPEND_REQUEST_HL_ID FROM :va_out_result res
+						INNER JOIN "PLANNING_TOOL"."HL5" HL5 ON res.HL_ID = HL5.HL5_ID
+						INNER JOIN "PLANNING_TOOL"."HL4" HL4 ON HL5.HL4_ID = HL4.HL4_ID
+						INNER JOIN "PLANNING_TOOL"."HL3" HL3 ON HL4.HL3_ID = HL3.HL3_ID;
+						
+	elseif levelId = 3 then
+		out_result = SELECT HL3.HL2_ID, res.HL_ID as BUDGET_SPEND_REQUEST_HL_ID FROM :va_out_result res
+						INNER JOIN "PLANNING_TOOL"."HL6" HL6 ON res.HL_ID = HL6.HL6_ID
+						INNER JOIN "PLANNING_TOOL"."HL5" HL5 ON HL6.HL5_ID = HL5.HL5_ID
+						INNER JOIN "PLANNING_TOOL"."HL4" HL4 ON HL5.HL4_ID = HL4.HL4_ID
+						INNER JOIN "PLANNING_TOOL"."HL3" HL3 ON HL4.HL3_ID = HL3.HL3_ID;
+		
+	elseif levelId = 0 then
+		out_result = SELECT null as HL2_ID, null as BUDGET_SPEND_REQUEST_HL_ID FROM DUMMY;
+	end if;
+END;

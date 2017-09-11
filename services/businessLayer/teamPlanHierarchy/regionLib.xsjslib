@@ -14,14 +14,11 @@ function getRegionById(regionId) {
 }
 
 function insertRegion(objRegion, userId) {
-
-	if (validateInsertRegion(objRegion)) {
-		if (!dataRegion.existRegion(objRegion))
-			return dataRegion.insertRegion(objRegion, userId);
-		else
-			throw ErrorLib.getErrors().CustomError("Region name already exist",
-					"regionLib/handlePost/insertRegion", objRegion);
-	}
+	var region = dataRegion.existRegion(objRegion);
+	if (region)
+		throw ErrorLib.getErrors().CustomError("","", "Region name already exist", objRegion);
+	else
+		return dataRegion.insertRegion(objRegion, userId);
 }
 
 function updateRegion(objRegion, userId) {
@@ -35,8 +32,8 @@ function deleteRegion(objRegion, userId) {
         return dataRegion.delRegion(objRegion, userId);
     }
 	else
-		throw ErrorLib.getErrors().CustomError("Region can not be delete",
-				"regionLib/handlePost/deleteRegion", objRegion);
+		throw ErrorLib.getErrors().CustomError("",
+				"", "Region is already used, can't be deleted.");
 }
 
 function validateDeleteRegion(objRegion) {
@@ -139,4 +136,8 @@ function validateType(key, value) {
 		break;
 	}
 	return valid;
+}
+
+function validateRegionAndMarketUnit(idRegion, idMarketUnit){
+	dataRegion.validateRegionAndMarketUnit(idRegion, idMarketUnit);
 }

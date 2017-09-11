@@ -1,0 +1,31 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_SALES_BY_HL6_ID_ORGANIZATION_ID_ORGANIZATION_TYPE"
+(
+in tSales TABLE(
+      in_hl_id INTEGER
+    , in_organization_id INTEGER
+    , in_organization_type tinyint
+    )
+    ,OUT out_result TABLE (
+        hl_sales_id INTEGER
+        ,organization_id INTEGER
+        ,organization_type_id tinyint
+        ,hl_id INTEGER
+    )
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+out_result =
+	select
+		hl6_sales.hl6_sales_id as hl_sales_id,
+	    hl6_sales.organization_id,
+	    hl6_sales.organization_type as organization_type_id,
+	    hl6_sales.hl6_id as hl_id
+	from hl6_sales
+	inner join :tSales t on hl6_sales.organization_id =     t.in_organization_id
+	                    and hl6_sales.organization_type =   t.in_organization_type
+	                    and hl6_sales.hl6_id =              t.in_hl_id
+
+	where hl6_sales.enabled = 1 and hl6_sales.deleted = 0;
+END;

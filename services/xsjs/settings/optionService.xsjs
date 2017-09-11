@@ -10,7 +10,8 @@ var permissions = mapper.getPermission();
 
 var hierarchyLevel = {
 	1: 'HL4',
-	2: 'HL5'
+	2: 'HL5',
+	3: 'HL6'
 };
 
 function processRequest(Notvalidate){
@@ -26,27 +27,15 @@ function processRequest(Notvalidate){
 		if (!reqBody || validateInput(reqBody)){
 		    switch ($.request.method ) {
 		        case $.net.http.GET:
-//		        	permissions.isAuthorized(userSessionID,
-//		        			config.getPermissionIdByName(config.ReadPermission()),
-//		        			config.getResourceIdByName(config.level3()));
 		        	handleGet();
 		            break;
 		        case $.net.http.POST:
-//		        	permissions.isAuthorized(userSessionID,
-//		        			config.getPermissionIdByName(config.CreatePermission()),
-//		        			config.getResourceIdByName(config.settings()));
 		        	handlePost(reqBody);
 		            break;
 		        case $.net.http.PUT:
-//		        	permissions.isAuthorized(userSessionID,
-//		        			config.getPermissionIdByName(config.EditPermission()),
-//		        			config.getResourceIdByName(config.settings()));
 		        	handlePut(reqBody);
 		            break;
 		        case $.net.http.DEL:
-//		        	permissions.isAuthorized(userSessionID,
-//		        			config.getPermissionIdByName(config.DeletePermission()),
-//		        			config.getResourceIdByName(config.settings()));
 		        	handleDelete(reqBody);
 		            break;
 		        default:
@@ -105,7 +94,7 @@ function validateType(key, value) {
 			break;
 		case 'CREATED_USER_ID':
 		case 'MODIFIED_USER_ID':
-			isValidDataType = true;//value === $.session.getUsername();
+			isValidDataType = true;
 			break;
 	};
 	return isValidDataType;
@@ -156,13 +145,13 @@ function handlePost(reqBody) {
 		cst.execute();
 		var optionId = cst.getBigInt(5);
 		var spResult  = Number(ctypes.Int64(optionId));
-		
+
+
 		if(spResult){
 
 			var in_category_id = category_id;
 			var connHdb = $.hdb.getConnection();
 			var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY_BY_CATEGORY_ID');
-			//var fnSell = connHdb.loadProcedure('PLANNING_TOOL', 'xsplanningtool.db.procedures::GET_HL4_CATEGORY_BY_CATEGORY_ID');
 		  	var result = fnSell(in_category_id);
 		  	var spResult = result['out_' + hierarchyLevel[hierarchy_level_id].toLowerCase() + '_category'];
 			var result = [];
@@ -171,7 +160,7 @@ function handlePost(reqBody) {
 			});
 			connHdb.close();
 			
-			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY_OPTION"(?,?,?,?,?)';
+			query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_' + hierarchyLevel[hierarchy_level_id] + '_CATEGORY_OPTION"(?,?,?,?,?,?)';
 			var changeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::' + hierarchyLevel[hierarchy_level_id] + '_CHANGE_STATUS"(?,?,?,?)';
 			var logChangeStatusQuery = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_' + hierarchyLevel[hierarchy_level_id] + '_LOG_STATUS"(?,?,?,?)';
 			var countOptionByCategoryId = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_OPTION_COUNT_BY_CATEGORY_ID"(?,?)';
@@ -183,28 +172,28 @@ function handlePost(reqBody) {
 
 			result.forEach(function(hlCategory){
 				cst = conn.prepareCall(query);
-				cst.setBigInt(1, hlCategory.HL4_CATEGORY_ID || hlCategory.HL5_CATEGORY_ID);
+				cst.setBigInt(1, hlCategory.HL4_CATEGORY_ID || hlCategory.HL5_CATEGORY_ID || hlCategory.HL6_CATEGORY_ID);
 				cst.setBigInt(2,optionId);
 				cst.setString(3,"0");
 				cst.setBigInt(4,created_user_id);
+				cst.setTinyInt(5,0);
 				cst.execute();
 				if(!countOption) {
 					cst = conn.prepareCall(changeStatusQuery);
-					cst.setBigInt(1, hlCategory.HL4_ID || hlCategory.HL5_ID);
+					cst.setBigInt(1, hlCategory.HL4_ID || hlCategory.HL5_ID || hlCategory.HL6_ID);
 					cst.setBigInt(2, 1);
 					cst.setBigInt(3, created_user_id);
 					cst.execute();
 
 					cst = conn.prepareCall(logChangeStatusQuery);
-					cst.setBigInt(1, hlCategory.HL4_ID || hlCategory.HL5_ID);
+					cst.setBigInt(1, hlCategory.HL4_ID || hlCategory.HL5_ID || hlCategory.HL6_ID);
 					cst.setBigInt(2, 1);
 					cst.setBigInt(3, created_user_id);
 					cst.execute();
 				}
 			});
 		}
-		//l4Lib.insertHl4CategoryOption(spResult, created_user_id);
-		
+
 		conn.commit();
 		conn.close();
 		handleResponse({"code": $.net.http.OK, "data": {"results": [{"OPTION_ID": spResult}]}}, $.net.http.OK);
@@ -218,9 +207,6 @@ function handlePost(reqBody) {
 function handleDelete(reqBody) {
 	var conn = $.db.getConnection();
 	try{
-		//var reqBody = JSON.parse($.request.body.asString());
-		
-		
 		var query = 'call "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_OPTION"(?,?,?)';
 		
 		var option_id = reqBody.OPTION_ID;
@@ -232,7 +218,6 @@ function handleDelete(reqBody) {
 		cst.setBigInt(2,modified_user_id);
 		
 		cst.execute();
-		//var spResult = cst.getInteger();
 		conn.commit();
 		conn.close();
 		handleResponse({"code": $.net.http.OK, "data": {"results": []}}, $.net.http.OK);
@@ -246,8 +231,6 @@ function handleDelete(reqBody) {
 function handlePut(reqBody) {
 	var conn = $.db.getConnection();
 	try{
-		//var reqBody = JSON.parse($.request.body.asString());
-		
 		var option_id = reqBody.OPTION_ID;
 		var name = reqBody.NAME;
 		var category_id = reqBody.CATEGORY_ID;

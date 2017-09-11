@@ -23,7 +23,7 @@ function getPermissionByRole(roleId) {
 
 function getPermissionByRoleAndResourceAndPermission(roleId, resourceId,
 		permissionId) {
-	var result = {};
+	var result = [];
 	if (!!roleId && !!resourceId && !!permissionId) {
 		var params = {
 			'in_role_id' : roleId,

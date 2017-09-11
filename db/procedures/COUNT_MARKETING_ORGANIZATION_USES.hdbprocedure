@@ -1,0 +1,36 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::COUNT_MARKETING_ORGANIZATION_USES" ( 
+	IN in_marketing_organization_id BIGINT,
+	OUT out_result integer
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+    SELECT SUM(COUNT) INTO out_result
+    FROM (
+        (SELECT COUNT(*) as COUNT
+        FROM COST_CENTER
+        WHERE SALE_ORGANIZATION_ID = in_marketing_organization_id
+        AND COST_CENTER.deleted = 0
+        AND COST_CENTER.enabled = 1)
+
+        UNION ALL
+
+        (SELECT COUNT(*) as COUNT
+        FROM HL5
+        WHERE SALES_ORGANIZATION_ID = in_marketing_organization_id
+        AND HL5.deleted = 0
+        AND HL5.enabled = 1)
+
+        UNION ALL
+
+        (SELECT COUNT(*) as COUNT
+        FROM HL6
+        WHERE SALES_ORGANIZATION_ID = in_marketing_organization_id
+        AND HL6.deleted = 0
+        AND HL6.enabled = 1)
+    );
+
+END;

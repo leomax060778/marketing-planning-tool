@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL3_PERMISSIONS_BY_USER" (
+    IN in_user_id bigint,
+    IN in_level_id bigint,
+	OUT out_result TABLE (
+	LEVEL integer,
+		LEVEL_ID bigint
+		, acronym nvarchar(25)
+		, permission tinyint
+		)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	out_result =
+	Select 3 as LEVEL, HL3.HL3_ID AS LEVEL_ID, HL3.ACRONYM as acronym, CASE WHEN COALESCE(HL3_USER.USER_ID,0) > 0 THEN 1 ELSE 0 END AS PERMISSION
+    FROM HL3 LEFT OUTER JOIN HL3_USER ON (HL3.HL3_ID = HL3_USER.HL3_ID AND HL3_USER.USER_ID = in_user_id)
+    WHERE HL3.ENABLED = 1 
+    AND HL3.DELETED = 0 
+    AND HL3.HL2_ID = in_level_id
+    ORDER BY HL3.ACRONYM;
+    
+END;

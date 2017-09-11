@@ -2,7 +2,7 @@
 $.import("xsplanningtool.services.commonLib", "mapper");
 var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dbError = mapper.getDataLogError();
-var businessMail = mapper.getMail();
+//var businessMail = mapper.getMail();
 var ErrorLib = mapper.getErrors();
 /** ********************************************** */
 
@@ -48,10 +48,6 @@ function log(error, user, modUser) {
 }
 
 function getMail(body) {
-	var mail = businessMail.getJson([ {
-		"address" : "support_planningtool@folderit.net"
-	} ], "MPT Production - Error Log", body);
-	return mail;
 }
 
 function notifyMail(error) {
@@ -63,7 +59,4 @@ function notifyMail(error) {
 			+ error.code + " - Stack: " + error.stack + " - Details: "
 			+ error.details;
 
-	var mail = getMail(body);
-
-	businessMail.sendMail(mail);
 }

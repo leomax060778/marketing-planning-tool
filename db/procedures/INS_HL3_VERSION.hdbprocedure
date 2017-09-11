@@ -1,0 +1,54 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL3_VERSION" (
+	in in_hl3_id bigint,
+    in in_version integer,
+    in in_acronym nvarchar(25),
+    in in_description nvarchar(255),
+    in in_budget decimal(19,2),
+    in in_created_user_id bigint,
+    in in_business_owner_id bigint,
+    in in_origin_plan_id bigint,
+    in in_hl2_id bigint,
+    in in_crm_id bigint,
+    in in_hl3_hierarchy_id bigint,
+    in in_hl3_status_detail_id bigint,
+    in in_in_budget tinyint,
+	out out_result bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO HL3_VERSION (
+    hl3_id,
+    version,
+    hl3_description,
+    business_owner_id,
+    origin_plan_id,
+    hl2_id,
+    crm_id,
+    hl3_hierarchy_id,
+    created_user_id,
+    hl3_status_detail_id,
+    acronym,
+    hl3_fnc_budget_total,
+    in_budget
+	)
+	values (
+	in_hl3_id,
+    in_version,
+    in_description,
+    in_business_owner_id,
+    in_origin_plan_id,
+    in_hl2_id,
+    in_crm_id,
+    in_hl3_hierarchy_id,
+    in_created_user_id,
+    in_hl3_status_detail_id,
+    in_acronym,
+    in_budget,
+    in_in_budget
+	);
+
+	--SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_result FROM HL3_VERSION;
+	SELECT ::ROWCOUNT into out_result FROM DUMMY;
+END;

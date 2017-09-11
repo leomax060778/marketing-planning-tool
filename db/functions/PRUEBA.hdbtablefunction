@@ -1,9 +1,0 @@
-FUNCTION "LHILDT"."xsplanningtool.db.functions::PRUEBA" ( a int) 
-	RETURNS return_table_type 
-	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER AS
-BEGIN
-/***************************** 
-	Write your function logic
- *****************************/
-END;

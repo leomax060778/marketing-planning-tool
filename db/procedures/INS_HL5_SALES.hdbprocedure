@@ -1,12 +1,13 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_SALES"
 (
-	in in_hl5_id bigint,
-	in in_organization_id bigint,
-	in in_amount decimal(19,2),
-	in in_organization_type tinyint,
-	in in_description nvarchar(255),
-	in in_created_user_id bigint,
-	out out_hl5_sales_id bigint
+	in arrSaleHl5 TABLE (in_hl5_id bigint,
+	 in_organization_id bigint,
+	 in_amount decimal(19, 6),
+	 in_organization_type tinyint,
+	 in_description nvarchar(255),
+	 in_currency_id bigint,
+	 in_created_user_id bigint)
+	,out out_hl5_sales_id bigint
 ) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -20,15 +21,18 @@ BEGIN
 	amount,
 	organization_type,
 	description,
+	currency_id,
 	created_user_id
 	)
-	VALUES (
+	(select
 	in_hl5_id,
 	in_organization_id,
 	in_amount,
 	in_organization_type,
 	in_description,
+	in_currency_id,
 	in_created_user_id
+	from :arrSaleHl5
 	);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl5_sales_id FROM "PLANNING_TOOL"."HL5_SALES";

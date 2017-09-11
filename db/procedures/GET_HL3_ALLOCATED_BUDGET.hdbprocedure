@@ -15,7 +15,6 @@ BEGIN
 	SELECT SUM(HL4.hl4_fnc_budget_total_mkt)
 	INTO va_hl3_allocated_budget
 	FROM HL4
-	--INNER JOIN HL4 ON HL4_FNC.hl4_id = HL4.hl4_id
 	INNER JOIN HL3 ON HL3.hl3_id = HL4.hl3_id
 	WHERE HL3.hl3_id = in_hl3_id
 	  AND HL4.hl4_id != in_hl4_id

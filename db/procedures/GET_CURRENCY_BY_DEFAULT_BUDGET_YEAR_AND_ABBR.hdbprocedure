@@ -1,0 +1,34 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CURRENCY_BY_DEFAULT_BUDGET_YEAR_AND_ABBR" (
+	IN in_currency_abbreviation NVARCHAR(3)
+	,OUT out_result TABLE (euro_conversion_id BIGINT,
+						  country NVARCHAR(50),
+						  currency_abbreviation NVARCHAR(50),
+						  currency_name NVARCHAR(100),
+						  currency_value DECIMAL(19, 6),
+						  currency_display NVARCHAR(255)
+						)
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+/*****************************
+	Write your procedure logic
+ *****************************/
+
+out_result = select euro_conversion_id,
+       c.country,
+       c.currency_abbreviation,
+       c.currency_name,
+       c.currency_value,
+       concat(concat(c.currency_abbreviation, ' ('),concat(c.country, ')'))  as currency_display
+from currency c
+inner join budget_year buy on buy.budget_year_id = c.budget_year_id
+where upper(c.currency_abbreviation) = upper(in_currency_abbreviation)
+and c.deleted = 0
+and c.enabled = 1
+and buy.default_year=1;
+
+
+END;

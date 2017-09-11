@@ -1,0 +1,44 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_OPTION_IN_USE_BY_OPTION_ID" (
+	IN in_option_id bigint,
+	OUT out_result TABLE (
+    	option_id BIGINT
+    	, name NVARCHAR(60)
+     	)
+)
+
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+    out_result = (SELECT AO.allocation_option_id as option_id, AO.name
+                        FROM ALLOCATION_OPTION AO
+                        INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL on AO.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+                        INNER JOIN HL4_CATEGORY_OPTION HL4CO on ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = HL4CO.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+                        WHERE HL4CO.enabled = 1 AND HL4CO.deleted = 0
+                        AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                        AND AO.ALLOCATION_OPTION_ID = in_option_id
+                        ORDER BY name)
+
+            UNION
+
+            (SELECT AO.allocation_option_id as option_id, AO.name
+                		FROM ALLOCATION_OPTION AO
+                		INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL on AO.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+                		INNER JOIN HL5_CATEGORY_OPTION HL5CO on ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = HL5CO.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+                		WHERE HL5CO.enabled = 1 AND HL5CO.deleted = 0
+                		AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                		AND AO.ALLOCATION_OPTION_ID = in_option_id
+                		ORDER BY name)
+
+            UNION
+
+            (SELECT AO.allocation_option_id as option_id, AO.name
+                		FROM ALLOCATION_OPTION AO
+                		INNER JOIN ALLOCATION_CATEGORY_OPTION_LEVEL ACOL on AO.ALLOCATION_OPTION_ID = ACOL.ALLOCATION_OPTION_ID
+                		INNER JOIN HL6_CATEGORY_OPTION HL6CO on ACOL.ALLOCATION_CATEGORY_OPTION_LEVEL_ID = HL6CO.ALLOCATION_CATEGORY_OPTION_LEVEL_ID
+                		WHERE HL6CO.enabled = 1 AND HL6CO.deleted = 0
+                		AND ACOL.enabled = 1 AND ACOL.deleted = 0
+                		AND AO.ALLOCATION_OPTION_ID = in_option_id
+                		ORDER BY name);
+END;

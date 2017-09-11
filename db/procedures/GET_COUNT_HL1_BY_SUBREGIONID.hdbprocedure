@@ -1,0 +1,17 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COUNT_HL1_BY_SUBREGIONID" (
+	IN in_subregion_id integer,
+	OUT out_result integer
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+SELECT COUNT(HL1_ID) INTO out_result
+FROM HL1
+WHERE HL1.SUBREGION_ID = in_subregion_id
+AND HL1.deleted = 0
+AND HL1.enabled = 1;
+
+END;

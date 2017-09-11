@@ -1,0 +1,28 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_CURRENCY" (
+	IN in_country NVARCHAR(127),
+	IN in_currency_abbreviation NVARCHAR(3),
+	IN in_currency_name NVARCHAR(255),
+	IN in_currency_value_admin DECIMAL(19, 6),
+	IN in_user_id BIGINT,
+	IN in_budget_year_id BIGINT,
+	OUT out_response_id integer
+ )
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	AS
+BEGIN
+
+		UPDATE CURRENCY
+		SET currency.country = in_country,
+			currency.currency_name = in_currency_name,
+			currency.currency_value = in_currency_value_admin,
+			currency.modified_date_tz = CURRENT_TIMESTAMP,
+			currency.modified_user_id = in_user_id
+		FROM "PLANNING_TOOL"."CURRENCY" currency
+		WHERE UPPER(currency.currency_abbreviation) = UPPER(in_currency_abbreviation)
+		AND currency.currency_value != in_currency_value_admin
+		AND currency.deleted = 0
+		AND currency.budget_year_id = in_budget_year_id;
+
+		SELECT ::ROWCOUNT INTO out_response_id FROM DUMMY;
+END;

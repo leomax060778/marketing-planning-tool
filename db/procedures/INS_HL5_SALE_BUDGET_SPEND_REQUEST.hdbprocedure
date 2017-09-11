@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL5_SALE_BUDGET_SPEND_REQUEST" (
+    IN arrSale TABLE(
+		  in_hl_sale_id bigint
+        , in_budget_spend_request_id bigint
+        , in_user_id bigint)
+        , OUT hl_sale_budget_spend_request_id bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+	INSERT INTO HL5_SALE_BUDGET_SPEND_REQUEST (hl5_sales_id, budget_spend_request_id, created_user_id)
+	(select in_hl_sale_id, in_budget_spend_request_id, in_user_id from :arrSale);
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO hl_sale_budget_spend_request_id FROM "PLANNING_TOOL"."HL5_SALE_BUDGET_SPEND_REQUEST";
+END;

@@ -1,0 +1,106 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_BY_HL1_ID" (
+	IN in_hl1_id BIGINT
+	,IN in_user_id BIGINT
+	,IN in_is_super_Admin Tinyint
+	,OUT out_result TABLE (
+		hl2_id BIGINT
+		, hl1_id integer
+		, organization_acronym NVARCHAR(25)
+		, hl2_budget_total DECIMAL(19, 2)
+        , hl3_total_count INTEGER
+        , QUANTITY_HL3_OUT_BUDGET INTEGER
+        , ALLOCATED DECIMAL(19, 2)
+        , REMAINING DECIMAL(19, 2)
+        , version integer
+        , IS_LOCKED Tinyint
+        , HL2_DESCRIPTION NVARCHAR(25)
+		)
+	, OUT out_total_budget DECIMAL(19, 2)
+	, OUT out_remaining_budget	DECIMAL(19, 2)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+	DECLARE va_total_budget DECIMAL(19, 2);
+	DECLARE va_remaining_budget DECIMAL(19, 2);
+	DECLARE va_hl2_assigned_budget DECIMAL(19, 2);
+	va_total_budget := 0;
+	va_remaining_budget := 0;
+	va_hl2_assigned_budget := 0;
+
+    if in_is_super_Admin = 1 then
+    va_intermidate =
+    	SELECT
+    		HL2.hl2_id
+    		, HL2.organization_acronym AS organization_acronym
+    		, HL2.hl2_budget_total
+    		, COUNT(distinct HL3.hl3_id) AS hl3_total_count
+    		, HL2.version
+    		, HL2.ORGANIZATION_NAME as HL2_DESCRIPTION
+    	FROM HL2
+    	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID AND HL3.deleted = 0 AND HL3.enabled = 1
+    	WHERE
+    		HL2.deleted = 0
+    		AND HL2.enabled = 1
+          AND HL2.HL1_ID = in_hl1_id
+    	GROUP BY GROUPING SETS ((HL2.hl2_id, HL2.organization_acronym, HL2.hl2_budget_total, HL2.version, HL2.ORGANIZATION_NAME))
+    	ORDER BY HL2.organization_acronym ASC;
+    else
+    va_intermidate =
+    	SELECT
+    		HL2.hl2_id
+    		, HL2.organization_acronym AS organization_acronym
+    		, HL2.hl2_budget_total
+    		, COUNT(distinct HL3.hl3_id) AS hl3_total_count
+    		, HL2.version
+    		, HL2.ORGANIZATION_NAME as HL2_DESCRIPTION
+    	FROM HL2
+    	INNER JOIN HL2_USER ON HL2_USER.HL2_ID = HL2.HL2_ID
+    	LEFT JOIN HL3 ON HL3.HL2_ID = HL2.HL2_ID AND HL3.deleted = 0 AND HL3.enabled = 1
+    	WHERE
+    		HL2_USER.USER_ID = in_user_id
+    		AND HL2.deleted = 0
+    		AND HL2.enabled = 1
+          AND HL2.HL1_ID = in_hl1_id
+    	GROUP BY GROUPING SETS ((HL2.hl2_id, HL2.organization_acronym, HL2.hl2_budget_total, HL2.version, HL2.ORGANIZATION_NAME))
+    	ORDER BY HL2.organization_acronym ASC;
+    end if;
+
+
+
+	out_result = SELECT T.HL2_ID
+						, in_hl1_id as hl1_id
+                          , T.ORGANIZATION_ACRONYM
+                          , T.HL2_BUDGET_TOTAL
+                          , T.HL3_TOTAL_COUNT
+            , SUM(CASE WHEN  HL3.IN_BUDGET IS NULL THEN 0 WHEN HL3.IN_BUDGET = 0 THEN 1 ELSE 0 END) QUANTITY_HL3_OUT_BUDGET --# of L6 out off budget
+            , COALESCE(SUM(HL3.HL3_FNC_BUDGET_TOTAL),0) AS ALLOCATED
+            , COALESCE((T.HL2_BUDGET_TOTAL - SUM(HL3.hl3_fnc_budget_total)), T.HL2_BUDGET_TOTAL) AS REMAINING
+            , T.VERSION
+            , (CASE WHEN BUY.VERSIONED_END_DATE >= CURRENT_TIMESTAMP THEN 0 ELSE 1 END) AS IS_LOCKED
+            , T.HL2_DESCRIPTION
+	FROM :va_intermidate T
+	INNER JOIN HL1 ON HL1.HL1_ID = in_hl1_id
+    INNER JOIN BUDGET_YEAR BUY ON BUY.budget_year_id = HL1.budget_year_id
+	LEFT JOIN HL3 ON T.HL2_ID = HL3.HL2_ID AND HL3.ENABLED = 1 AND HL3.DELETED = 0
+	GROUP BY T.HL2_ID
+           , T.ORGANIZATION_ACRONYM
+           , T.HL2_BUDGET_TOTAL
+           , T.HL3_TOTAL_COUNT
+           , T.VERSION
+           , in_hl1_id
+           , BUY.VERSIONED_END_DATE
+           , T.HL2_DESCRIPTION;
+
+	-- Calculate the total budget
+	
+	select BUDGET into va_total_budget from HL1 where HL1_ID = in_hl1_id;
+
+	select sum(hl2.hl2_budget_total) INTO va_hl2_assigned_budget from hl2 where hl2.enabled = 1 and hl2.deleted = 0 and hl2.hl1_id = in_hl1_id;
+
+	out_total_budget := va_total_budget;
+	out_remaining_budget := COALESCE(va_total_budget - va_hl2_assigned_budget, 0);
+END;
+

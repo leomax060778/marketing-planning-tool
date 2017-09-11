@@ -1,30 +1,103 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL2_FOR_SEARCH" (
-		OUT out_result TABLE (
-			id bigint,
-			BUDGET_YEAR BIGINT,
-			acronym NVARCHAR(25),
-			organization_acronym NVARCHAR(25), 
-			region_name NVARCHAR(255),
-			subregion_name NVARCHAR(255),
-			path NVARCHAR(50)
+		  IN in_user_id bigint
+		, IN in_isSA tinyint
+		, IN in_budget_year_id BIGINT
+        , IN in_region_id BIGINT
+        , IN in_subregion_id BIGINT
+    	, IN in_limit integer
+        , IN in_offset integer
+		, OUT out_result TABLE (
+			id bigint
+			, parent_id integer
+            , budget_year integer
+            , acronym nvarchar(25)
+			,organization_acronym nvarchar(25)
+			, in_budget TINYINT
 		)
-	) 
+		, OUT totalRows integer
+	)
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-	out_result = SELECT HL2.hl2_id as id
-		, BGY.BUDGET_YEAR
-		, HL2.acronym
-		, REPLACE(HL2.organization_acronym, 'N/A', '') AS organization_acronym
-		, REGION.region_name
-		, SUBREGION.subregion_name
-		, CONCAT(HL2.acronym, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)) AS path
-	FROM HL2
-	INNER JOIN BUDGET_YEAR BGY ON HL2.budget_year_id = BGY.budget_year_id
-	LEFT JOIN REGION ON HL2.region_id = REGION.region_id
-	LEFT JOIN SUBREGION ON HL2.subregion_id = SUBREGION.subregion_id
-	WHERE HL2.deleted = 0
-	  AND HL2.enabled = 1;
+
+    if in_isSA = 1 then
+    VAR_OUT_RESULT =
+        SELECT DISTINCT HL2.HL2_ID  AS ID
+    	, HL1.HL1_ID                AS PARENT_ID
+    	, BGY.BUDGET_YEAR
+    	, HL1.ACRONYM
+   		, HL2.ORGANIZATION_ACRONYM  AS ORGANIZATION_ACRONYM
+   		, HL1.REGION_ID
+   		, HL2.IN_BUDGET
+    	FROM HL2
+    	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+    	INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+    	LEFT JOIN REGION R ON R.REGION_ID = HL1.REGION_ID
+        LEFT JOIN SUBREGION SR ON SR.SUBREGION_ID = HL1.SUBREGION_ID
+    	WHERE HL2.DELETED = 0
+    	  AND HL2.ENABLED = 1
+    	  AND (BGY.BUDGET_YEAR_ID = IN_BUDGET_YEAR_ID)
+    	  AND (SR.SUBREGION_ID = IN_SUBREGION_ID OR IN_SUBREGION_ID = 0)
+    	  ORDER BY BGY.BUDGET_YEAR, HL1.ACRONYM, HL2.ORGANIZATION_ACRONYM;
+    else
+    VAR_OUT_RESULT =
+        SELECT DISTINCT HL2.HL2_ID  AS ID
+        , HL1.HL1_ID                AS PARENT_ID
+        , BGY.BUDGET_YEAR
+        , HL1.ACRONYM
+        , HL2.ORGANIZATION_ACRONYM  AS ORGANIZATION_ACRONYM
+        , HL1.REGION_ID
+        , HL2.IN_BUDGET
+    	FROM HL2
+    	INNER JOIN HL2_USER ON HL2.HL2_ID = HL2_USER.HL2_ID
+    	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+    	INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+    	LEFT JOIN REGION R ON R.REGION_ID = HL1.REGION_ID
+        LEFT JOIN SUBREGION SR ON SR.SUBREGION_ID = HL1.SUBREGION_ID
+    	WHERE HL2.DELETED = 0
+    	  AND HL2.ENABLED = 1
+    	  AND HL2_USER.USER_ID = IN_USER_ID
+    	  AND (BGY.BUDGET_YEAR_ID = IN_BUDGET_YEAR_ID)
+          AND (SR.SUBREGION_ID = IN_SUBREGION_ID OR IN_SUBREGION_ID = 0)
+    	  ORDER BY BGY.BUDGET_YEAR, HL1.ACRONYM, HL2.ORGANIZATION_ACRONYM;
+    end if;
+
+    -- this filter is necesary to filter GLOBALS, where region_id = 0
+    if in_region_id = -1 then
+        TEMP_OUT_RESULT = SELECT
+                           T.ID
+                         , T.PARENT_ID
+                         , T.BUDGET_YEAR
+                         , T.ACRONYM
+                         , T.ORGANIZATION_ACRONYM
+                         , T.IN_BUDGET
+                        FROM :VAR_OUT_RESULT T
+                        WHERE T.REGION_ID = 0;
+    else
+        TEMP_OUT_RESULT = SELECT
+                          T.ID
+                        , T.PARENT_ID
+                        , T.BUDGET_YEAR
+                        , T.ACRONYM
+                        , T.ORGANIZATION_ACRONYM
+                        , T.IN_BUDGET
+                        FROM :VAR_OUT_RESULT T
+                        WHERE (T.REGION_ID = IN_REGION_ID OR IN_REGION_ID = 0);
+     end if;
+
+    --totalRows is te total filtered registers
+     SELECT coalesce(COUNT(ID), 0) into totalRows FROM :TEMP_OUT_RESULT;
+
+if(in_limit = -1) then
+out_result =
+    SELECT ID, PARENT_ID, BUDGET_YEAR, ACRONYM, ORGANIZATION_ACRONYM, IN_BUDGET
+    FROM :TEMP_OUT_RESULT;
+else
+    out_result =
+    SELECT ID, PARENT_ID, BUDGET_YEAR, ACRONYM, ORGANIZATION_ACRONYM, IN_BUDGET
+    FROM :TEMP_OUT_RESULT
+    LIMIT :in_limit OFFSET :in_offset;
+end if;
 END;

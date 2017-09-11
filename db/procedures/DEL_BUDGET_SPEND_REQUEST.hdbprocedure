@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_BUDGET_SPEND_REQUEST" (
+    IN arrBudgetSpendRequestToDelete TABLE(
+		in_budget_spend_request_id BIGINT,
+		in_user_id BIGINT),
+		OUT out_result BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+	UPDATE T1
+	SET
+    T1.modified_user_id = T2.in_user_id,
+    T1.modified_date_tz = CURRENT_TIMESTAMP,
+    T1.budget_spend_request_status_id = 3 --3 = NoLongerRequested
+	FROM BUDGET_SPEND_REQUEST T1
+	INNER JOIN :arrBudgetSpendRequestToDelete T2 ON T1.budget_spend_request_id = T2.in_budget_spend_request_id;
+
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

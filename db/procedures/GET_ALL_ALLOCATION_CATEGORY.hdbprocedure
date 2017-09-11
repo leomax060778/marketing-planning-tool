@@ -1,0 +1,22 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_ALLOCATION_CATEGORY" (
+	OUT out_result TABLE (
+	category_id BIGINT
+	, measure_id BIGINT
+	, name NVARCHAR(60)
+	, description NVARCHAR(255)
+	)
+ 	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result = SELECT allocation_category_id as category_id,
+			   measure_id,
+			   name,
+			   description
+		FROM ALLOCATION_CATEGORY
+		ORDER BY name;
+
+END;

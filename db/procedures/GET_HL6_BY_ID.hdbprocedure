@@ -1,77 +1,118 @@
-PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_ID" ( 
-	in in_hl6_id BIGINT
-	,OUT out_result TABLE (
-		hl6_id bigint
-		,hl6_crm_description nvarchar(100)
-		,acronym nvarchar(25)
-		,budget decimal(19,2)
-		,hl5_id bigint
-		,route_to_market_id bigint
-		,campaign_objective_id bigint
-		,campaign_type_id bigint
-		,campaign_subtype_id bigint
-		,marketing_program_id bigint
-		,marketing_activity_id bigint
-		,actual_start_date timestamp
-		,actual_end_date timestamp
-		,show_on_dg_calendar tinyint
-		,business_owner_id bigint
-		,employee_responsible_id bigint
-		,cost_center_id bigint
-		,in_budget tinyint
-		,budget_spend_q1 decimal(19,2)
-		,budget_spend_q2 decimal(19,2)
-		,budget_spend_q3 decimal(19,2)
-		,budget_spend_q4 decimal(19,2)
-		,euro_conversion_id bigint
-		,hl6_status_detail_id bigint
-		,sales_organization_id bigint
-		,created_date_tz timestamp
-		,modified_date_tz timestamp
-		,created_user_id bigint
-		,modified_user_id bigint
-		,enabled tinyint
-		,deleted tinyint	
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_BY_ID"(
+		IN in_hl6_id BIGINT, 
+		OUT out_result TABLE (
+			hl6_id INTEGER,
+			hl6_crm_description NVARCHAR(100),
+			acronym NVARCHAR(25),
+			budget DECIMAL(19, 6),
+			hl5_id INTEGER,
+			route_to_market_id INTEGER,
+			campaign_objective_id INTEGER,
+			campaign_type_id INTEGER,
+			campaign_subtype_id INTEGER,
+			marketing_program_id INTEGER,
+			marketing_activity_id INTEGER,
+			actual_start_date TIMESTAMP,
+			actual_end_date TIMESTAMP,
+			show_on_dg_calendar TINYINT,
+			business_owner_id INTEGER,
+			employee_responsible_id INTEGER,
+			cost_center_id INTEGER,
+			in_budget TINYINT,
+			budget_spend_q1 DECIMAL(19, 2),
+			budget_spend_q2 DECIMAL(19, 2),
+			budget_spend_q3 DECIMAL(19, 2),
+			budget_spend_q4 DECIMAL(19, 2),
+			euro_conversion_id INTEGER,
+			hl6_status_detail_id INTEGER,
+			sales_organization_id INTEGER,
+			created_date_tz TIMESTAMP,
+			modified_date_tz TIMESTAMP,
+			created_user_id INTEGER,
+			modified_user_id INTEGER,
+			enabled TINYINT,
+			deleted TINYINT,
+			distribution_channel_id INTEGER,
+			VENUE NVARCHAR(255),
+			CITY NVARCHAR(255),
+			COUNTRY NVARCHAR(255),
+			URL NVARCHAR(255),
+			results_campaign_q1 DECIMAL(19, 2),
+			results_campaign_q2 DECIMAL(19, 2),
+			results_campaign_q3 DECIMAL(19, 2),
+			results_campaign_q4 DECIMAL(19, 2),
+			PLANNED_START_DATE TIMESTAMP,
+			PLANNED_END_DATE TIMESTAMP,
+			STREET NVARCHAR(255),
+			POSTAL_CODE NVARCHAR(20)
+			,REGION nvarchar(255)
+            ,EVENT_OWNER nvarchar(255)
+            ,NUMBER_OF_PARTICIPANTS nvarchar(255)
+            ,PRIORITY_ID bigint
+            , CO_FUNDED TINYINT
+            , ALLOW_BUDGET_ZERO TINYINT
+            , IS_POWER_USER TINYINT
 		)
-) 
+	)
 	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER 
+	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
-	READS SQL DATA AS
+	READS SQL DATA
+AS
 BEGIN
-out_result = select 
-HL6_ID,
-HL6_CRM_DESCRIPTION,
-ACRONYM,
-BUDGET,
-HL5_ID,
-ROUTE_TO_MARKET_ID,
-CAMPAIGN_OBJECTIVE_ID,
-CAMPAIGN_TYPE_ID,
-CAMPAIGN_SUBTYPE_ID,
-MARKETING_PROGRAM_ID,
-MARKETING_ACTIVITY_ID,
-ACTUAL_START_DATE,
-ACTUAL_END_DATE,
-SHOW_ON_DG_CALENDAR,
-BUSINESS_OWNER_ID,
-EMPLOYEE_RESPONSIBLE_ID,
-COST_CENTER_ID,
-IN_BUDGET,
-BUDGET_SPEND_Q1,
-BUDGET_SPEND_Q2,
-BUDGET_SPEND_Q3,
-BUDGET_SPEND_Q4,
-EURO_CONVERSION_ID,
-HL6_STATUS_DETAIL_ID,
-SALES_ORGANIZATION_ID,
-CREATED_DATE_TZ,
-MODIFIED_DATE_TZ,
-CREATED_USER_ID,
-MODIFIED_USER_ID,
-ENABLED,
-DELETED
- FROM HL6
- WHERE HL6_ID = in_hl6_id
- AND ENABLED = 1 AND DELETED = 0;
+	out_result = SELECT HL6_ID, 
+				HL6_CRM_DESCRIPTION, 
+				ACRONYM, 
+				BUDGET, 
+				HL5_ID, 
+				ROUTE_TO_MARKET_ID, 
+				CAMPAIGN_OBJECTIVE_ID, 
+				CAMPAIGN_TYPE_ID, 
+				CAMPAIGN_SUBTYPE_ID, 
+				MARKETING_PROGRAM_ID, 
+				MARKETING_ACTIVITY_ID, 
+				ACTUAL_START_DATE, 
+				ACTUAL_END_DATE, 
+				SHOW_ON_DG_CALENDAR, 
+				BUSINESS_OWNER_ID, 
+				EMPLOYEE_RESPONSIBLE_ID, 
+				COST_CENTER_ID, 
+				IN_BUDGET, 
+				BUDGET_SPEND_Q1, 
+				BUDGET_SPEND_Q2, 
+				BUDGET_SPEND_Q3, 
+				BUDGET_SPEND_Q4, 
+				EURO_CONVERSION_ID, 
+				HL6_STATUS_DETAIL_ID, 
+				SALES_ORGANIZATION_ID, 
+				CREATED_DATE_TZ, 
+				MODIFIED_DATE_TZ, 
+				CREATED_USER_ID, 
+				MODIFIED_USER_ID, 
+				ENABLED, 
+				DELETED, 
+				DISTRIBUTION_CHANNEL_ID, 
+				VENUE, 
+				CITY, 
+				COUNTRY, 
+				URL, 
+				RESULTS_CAMPAIGN_Q1, 
+				RESULTS_CAMPAIGN_Q2, 
+				RESULTS_CAMPAIGN_Q3, 
+				RESULTS_CAMPAIGN_Q4, 
+				PLANNED_START_DATE, 
+				PLANNED_END_DATE, 
+				STREET, 
+				POSTAL_CODE
+				,REGION
+                ,EVENT_OWNER
+                ,NUMBER_OF_PARTICIPANTS
+                ,PRIORITY_ID
+                , CO_FUNDED
+                , ALLOW_BUDGET_ZERO
+                , IS_POWER_USER
+			FROM HL6
+			WHERE HL6_ID = in_hl6_id
+				AND ENABLED = 1
+				AND DELETED = 0;
 END;

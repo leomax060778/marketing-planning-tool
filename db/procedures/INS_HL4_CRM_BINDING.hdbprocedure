@@ -1,9 +1,9 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_CRM_BINDING" (
-	IN in_hl4_id BIGINT,
-	IN in_column_name NVARCHAR(255),
-	IN in_changed TINYINT,
-	IN in_display_name NVARCHAR(255),
-	IN in_user_id BIGINT,
+	IN hl4Parameters TABLE(in_hl4_id BIGINT,
+	in_column_name NVARCHAR(255),
+	in_changed TINYINT,
+	in_display_name NVARCHAR(255),
+	in_user_id BIGINT),
 	OUT out_hl4_crm_binding_id BIGINT
 	 ) 
 	LANGUAGE SQLSCRIPT
@@ -16,7 +16,7 @@ BEGIN
  *****************************/
  
  		INSERT INTO "PLANNING_TOOL"."HL4_CRM_BINDING"(hl4_id, column_name, column_changed, display_name, created_user_id)
-		VALUES(in_hl4_id, in_column_name, in_changed, in_display_name, in_user_id);
+		(SELECT in_hl4_id, in_column_name, in_changed, in_display_name, in_user_id FROM :hl4Parameters);
 		
 		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_crm_binding_id FROM "PLANNING_TOOL"."HL4_CRM_BINDING";
 		

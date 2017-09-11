@@ -1,0 +1,67 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_VERSION_BY_FILTER" (
+          in in_hl2_id bigint
+		, in in_user_id bigint
+		, in in_issa tinyint
+		, out out_result table (
+			  hl3_id bigint
+			, organization_acronym nvarchar(25)
+			, hl3_description nvarchar(255)
+			, hl3_fnc_budget_total decimal(19, 2)
+            , version integer
+            , created_date_tz timestamp
+            , created_user_id integer
+			, hl2_id bigint
+		)
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+aux_hl3 =
+select
+  coalesce(hl3_version.hl3_id,hl3.hl3_id) as hl3_id
+, coalesce(upper(hl3_version.acronym), upper(hl3.acronym)) as organization_acronym
+, coalesce(hl3_version.hl3_description, hl3.hl3_description) as hl3_description
+, coalesce(hl3_version.hl3_fnc_budget_total, hl3.hl3_fnc_budget_total) as hl3_fnc_budget_total
+, coalesce(hl3_version.version, hl3.version) as version
+, coalesce(hl3_version.created_date_tz, hl3.created_date_tz) as created_date_tz
+, coalesce(hl3_version.created_user_id, hl3.created_user_id) as created_user_id
+, coalesce(hl3_version.hl2_id,hl3.hl2_id) as hl2_id
+from hl3
+left join hl3_version on hl3.hl3_id = hl3_version.hl3_id and hl3.deleted = 0 and hl3.enabled = 1
+where (hl3.version = 1 or hl3_version.version = 1) and hl3.hl2_id = in_hl2_id and hl3.deleted = 0 and hl3.enabled = 1;
+
+
+IF in_issa = 1 THEN
+out_result =
+        SELECT
+          T.hl3_id
+        , T.organization_acronym
+        , T.hl3_description
+        , T.hl3_fnc_budget_total
+        , T.version
+        , T.created_date_tz
+        , T.created_user_id
+        , T.hl2_id
+        FROM :aux_hl3 T
+        ORDER BY T.organization_acronym;
+
+ELSE
+    out_result =
+        SELECT
+          T.hl3_id
+        , T.organization_acronym
+        , T.hl3_description
+        , T.hl3_fnc_budget_total
+        , T.version
+        , T.created_date_tz
+        , T.created_user_id
+        , T.hl2_id
+        FROM :aux_hl3 T
+        INNER JOIN HL3_USER ON T.HL3_ID = HL3_USER.HL3_ID AND HL3_USER.USER_ID = in_user_id
+        ORDER BY T.organization_acronym;
+END IF;
+
+END;

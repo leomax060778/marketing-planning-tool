@@ -1,0 +1,252 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_API_WBS_BY_CRM_PATH"(
+		IN in_crm_path NVARCHAR(60), 
+		OUT out_result TABLE (
+			wbs_id INTEGER,
+			wbs_description NVARCHAR(100),
+			wbs_path NVARCHAR(255),
+			wbs_status NVARCHAR(255),
+			wbs_budget DECIMAL(19, 6),
+			budget_year INTEGER,
+			team_id INTEGER,
+			plan_acronym NVARCHAR(25),
+			organization_acronym NVARCHAR(25),
+			team_acronym NVARCHAR(25),
+			sales_organization_id INTEGER,
+			sale_organization NVARCHAR(255),
+			cost_center_id INTEGER,
+			cost_center NVARCHAR(255),
+			created_user_id INTEGER,
+			created_user NVARCHAR(255)
+		)
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA
+AS
+BEGIN
+
+	DECLARE va_hl6_total_sales DECIMAL(19, 6);
+	DECLARE va_hl6_total_partner DECIMAL(19, 6);
+	DECLARE va_hl6_budget DECIMAL(19, 6);
+	DECLARE va_out_total_budget DECIMAL(19, 6);
+	DECLARE in_hl6_id BIGINT;
+	DECLARE found INT;
+		
+	va_hl6_budget := 0;
+	va_hl6_total_sales := 0;
+	va_hl6_total_partner := 0;
+	va_out_total_budget := 0;
+	in_hl6_id := 0;
+	found := 0;
+
+	-- Get total budget to return     
+    SELECT count(*) 
+    INTO found 
+	FROM HL6
+	INNER JOIN HL5 ON HL6.HL5_ID = HL5.HL5_ID
+	INNER JOIN HL4 ON HL5.HL4_ID = HL4.HL4_ID
+	INNER JOIN HL3 ON HL3.HL3_ID = HL4.HL3_ID
+	INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
+	INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+	INNER JOIN BUDGET_YEAR AS BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+	WHERE CONCAT(
+				'CRM-', 
+				CONCAT(
+					CONCAT(
+						CONCAT(
+							CONCAT(
+								CONCAT(
+									CONCAT(
+										CONCAT(
+											HL1.ACRONYM,
+											SUBSTRING(
+												TO_NVARCHAR(BGY.BUDGET_YEAR), 
+												3, 
+												2
+											)
+										), 
+										'-'
+									), 
+									HL3.ACRONYM
+								), 
+								'-'
+							), 
+							HL4.ACRONYM
+						), 
+						HL5.ACRONYM
+					), 
+					LPAD(
+						HL6.ACRONYM, 
+						3, 
+						'0'
+					)
+				)
+			) = in_crm_path
+		AND HL6.ENABLED = 1
+		AND HL6.DELETED = 0;
+        
+    IF :found > 0
+    THEN
+    	SELECT IFNULL(HL6.HL6_ID, 0) INTO in_hl6_id
+		FROM HL6
+		INNER JOIN HL5 ON HL6.HL5_ID = HL5.HL5_ID
+		INNER JOIN HL4 ON HL5.HL4_ID = HL4.HL4_ID
+		INNER JOIN HL3 ON HL3.HL3_ID = HL4.HL3_ID
+		INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
+		INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+		INNER JOIN BUDGET_YEAR AS BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+		WHERE CONCAT(
+					'CRM-', 
+					CONCAT(
+						CONCAT(
+							CONCAT(
+								CONCAT(
+									CONCAT(
+										CONCAT(
+											CONCAT(
+												HL1.ACRONYM,
+												SUBSTRING(
+													TO_NVARCHAR(BGY.BUDGET_YEAR), 
+													3, 
+													2
+												)
+											), 
+											'-'
+										), 
+										HL3.ACRONYM
+									), 
+									'-'
+								), 
+								HL4.ACRONYM
+							), 
+							HL5.ACRONYM
+						), 
+						LPAD(
+							HL6.ACRONYM, 
+							3, 
+							'0'
+						)
+					)
+				) = in_crm_path
+			AND HL6.ENABLED = 1
+			AND HL6.DELETED = 0;
+			
+		SELECT BUDGET INTO va_hl6_budget FROM "PLANNING_TOOL"."HL6" WHERE HL6_ID = in_hl6_id;
+		SELECT COALESCE(SUM(HL6_SALES.AMOUNT),0) INTO va_hl6_total_sales FROM "PLANNING_TOOL"."HL6_SALES" WHERE HL6_ID = in_hl6_id;
+		SELECT COALESCE(SUM(HL6_PARTNER.VALUE),0) INTO va_hl6_total_partner FROM "PLANNING_TOOL"."HL6_PARTNER" WHERE HL6_ID = in_hl6_id;
+		
+		va_out_total_budget := va_hl6_budget + va_hl6_total_sales + va_hl6_total_partner;
+    END IF;
+       	
+	-- Query to return the result
+	out_result = SELECT HL6.HL6_ID AS WBS_ID, 
+				HL6.HL6_CRM_DESCRIPTION AS WBS_DESCRIPTION, 
+				CONCAT(
+					'CRM-', 
+					CONCAT(
+						CONCAT(
+							CONCAT(
+								CONCAT(
+									CONCAT(
+										CONCAT(
+											CONCAT(
+												HL1.ACRONYM,
+												SUBSTRING(
+													TO_NVARCHAR(BGY.BUDGET_YEAR), 
+													3, 
+													2
+												)
+											), 
+											'-'
+										), 
+										HL3.ACRONYM
+									), 
+									'-'
+								), 
+								HL4.ACRONYM
+							), 
+							HL5.ACRONYM
+						), 
+						LPAD(
+							HL6.ACRONYM, 
+							3, 
+							'0'
+						)
+					)
+				) AS WBS_PATH, 
+				HL6_STATUS_DETAIL.DETAIL AS wbs_status,
+				va_out_total_budget AS wbs_budget,
+				BGY.BUDGET_YEAR AS budget_year,
+				HL3.HL3_ID AS team_id,
+				HL1.ACRONYM AS plan_acronym,
+				HL2.ORGANIZATION_ACRONYM AS organization_acronym,
+				HL3.ACRONYM AS team_acronym,
+				HL6.SALES_ORGANIZATION_ID, 
+				SALE_ORG.NAME AS SALE_ORGANIZATION, 
+				HL6.COST_CENTER_ID, 
+				CC.NAME AS COST_CENTER, 
+				HL6.CREATED_USER_ID, 
+				CONCAT(
+					CONCAT(
+						USER.FIRST_NAME, 
+						' '
+					), 
+					USER.LAST_NAME
+				) AS CREATED_USER
+			FROM HL6
+			INNER JOIN SALE_ORGANIZATION AS SALE_ORG
+				ON HL6.SALES_ORGANIZATION_ID = SALE_ORG.SALES_ORGANIZATION_ID
+				LEFT OUTER JOIN COST_CENTER AS CC
+				ON HL6.COST_CENTER_ID = CC.COST_CENTER_ID
+				INNER JOIN USER
+				ON HL6.CREATED_USER_ID = USER.USER_ID
+				INNER JOIN HL5
+				ON HL6.HL5_ID = HL5.HL5_ID
+				INNER JOIN HL4
+				ON HL5.HL4_ID = HL4.HL4_ID
+				INNER JOIN HL3
+				ON HL3.HL3_ID = HL4.HL3_ID
+				INNER JOIN HL2
+				ON HL2.HL2_ID = HL3.HL2_ID
+				INNER JOIN HL1
+				ON HL1.HL1_ID = HL2.HL1_ID
+				INNER JOIN BUDGET_YEAR AS BGY
+				ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+				INNER JOIN HL6_STATUS_DETAIL ON HL6_STATUS_DETAIL.HL6_STATUS_DETAIL_ID = HL6.HL6_STATUS_DETAIL_ID
+			WHERE CONCAT(
+						'CRM-', 
+						CONCAT(
+							CONCAT(
+								CONCAT(
+									CONCAT(
+										CONCAT(
+											CONCAT(
+												CONCAT(
+													HL1.ACRONYM,
+													SUBSTRING(
+														TO_NVARCHAR(BGY.BUDGET_YEAR), 
+														3, 
+														2
+													)
+												), 
+												'-'
+											), 
+											HL3.ACRONYM
+										), 
+										'-'
+									), 
+									HL4.ACRONYM
+								), 
+								HL5.ACRONYM
+							), 
+							LPAD(
+								HL6.ACRONYM, 
+								3, 
+								'0'
+							)
+						)
+					) = in_crm_path
+				AND HL6.ENABLED = 1
+				AND HL6.DELETED = 0;
+END;

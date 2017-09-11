@@ -1,0 +1,45 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_BY_ID" (
+	IN in_hl1_id BIGINT
+	,OUT out_result TABLE (
+		hl1_id bigint
+		, acronym nvarchar(25)
+		, description nvarchar(255)
+		, budget_year_id bigint
+		, region_id integer
+		, subregion_id integer
+		, budget decimal(19, 6)
+        , team_type_id bigint
+        , implement_execution_level tinyint
+        , crt_related tinyint
+        , is_locked tinyint
+        , version integer
+		)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+	out_result =
+	SELECT
+		  hl1.hl1_id
+		, hl1.acronym
+		, hl1.description
+		, hl1.budget_year_id
+		, hl1.region_id
+		, hl1.subregion_id
+		, hl1.budget
+        , hl1.team_type_id
+        , hl1.implement_execution_level
+        , hl1.crt_related
+        , (CASE WHEN BUY.VERSIONED_END_DATE >= CURRENT_TIMESTAMP THEN 0 ELSE 1 END) AS IS_LOCKED
+        , hl1.version
+	FROM HL1
+	INNER JOIN BUDGET_YEAR BUY ON BUY.BUDGET_YEAR_ID = HL1.BUDGET_YEAR_ID
+	WHERE
+		HL1.hl1_id = in_hl1_id
+		AND HL1.deleted = 0
+		AND HL1.enabled = 1;
+
+END;

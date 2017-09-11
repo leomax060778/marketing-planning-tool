@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_BUDGET_SPEND_REQUEST_BY_HL_ID_LEVEL_TYPE" (
+        IN in_hl_id BIGINT
+        , IN in_level_id BIGINT
+        , IN in_amount DECIMAL(19,6)
+        , IN in_request_type_id BIGINT
+        , IN in_status_id BIGINT
+        , IN in_user_id BIGINT
+        , OUT out_result BIGINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+    UPDATE BUDGET_SPEND_REQUEST
+    SET AMOUNT = in_amount,
+    MODIFIED_USER_ID = in_user_id,
+    MODIFIED_DATE_TZ = CURRENT_TIMESTAMP,
+    BUDGET_SPEND_REQUEST_STATUS_ID = in_status_id
+    WHERE BUDGET_SPEND_REQUEST_TYPE_ID = in_request_type_id
+    AND HL_ID = in_hl_id
+    AND HIERARCHY_LEVEL_ID = in_level_id;
+
+    SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

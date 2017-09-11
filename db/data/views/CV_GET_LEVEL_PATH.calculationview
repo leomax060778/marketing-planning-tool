@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_GET_LEVEL_PATH" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_GET_LEVEL_PATH"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="INTEGER" id="HL_ID"/>
+        <viewAttribute datatype="NVARCHAR" id="PATH" length="255"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out = (SELECT
+ 	 			hl4.HL4_ID AS HL_ID,
+ 	 			
+ 	 			CONCAT('CRM-',
+        	         CONCAT(
+        	        	CONCAT(
+        	        		CONCAT(
+        	        		CONCAT(
+        	        				CONCAT(HL1.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))        	    					
+        	    					,'-')
+        						, hl3.acronym)
+        					,'-')
+        				,hl4.acronym))
+				 AS PATH
+		FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; hl4
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3 ON hl4.HL3_ID = hl3.HL3_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2 ON hl3.HL2_ID = hl2.HL2_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl2.HL1_ID = hl1.HL1_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BGY 
+			ON BGY.BUDGET_YEAR_ID = hl1.BUDGET_YEAR_ID
+    	WHERE HL4.ENABLED = 1 AND HL4.DELETED = 0)
+    	
+    	UNION ALL
+    	
+    	(SELECT
+ 	 			hl5.HL5_ID AS HL_ID,
+ 	 			CONCAT( 'CRM-',
+        	         CONCAT(
+        	        		CONCAT(
+        	        		
+        	        		CONCAT(
+    	        			CONCAT(
+        	        			CONCAT(
+        	        				CONCAT(HL1.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
+        	    					,'-')
+        						, hl3.acronym)
+        					,'-')
+        				,hl4.acronym)
+        				,hl5.acronym))
+				 AS PATH
+		FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL5&quot; hl5
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL4&quot; hl4 ON hl5.HL4_ID = hl4.HL4_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3 ON hl4.HL3_ID = hl3.HL3_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2 ON hl3.HL2_ID = hl2.HL2_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl2.HL1_ID = hl1.HL1_ID
+		INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; BGY 
+			ON BGY.BUDGET_YEAR_ID = hl1.BUDGET_YEAR_ID
+    	WHERE HL5.ENABLED = 1 AND HL5.DELETED = 0);
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="PATH" order="2">
+        <descriptions defaultDescription="PATH"/>
+        <keyMapping columnObjectName="Script_View" columnName="PATH"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="HL_ID" order="1" aggregationType="sum" measureType="simple">
+        <descriptions/>
+        <measureMapping columnObjectName="Script_View" columnName="HL_ID"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

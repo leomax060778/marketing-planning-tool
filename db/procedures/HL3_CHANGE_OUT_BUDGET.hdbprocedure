@@ -11,7 +11,7 @@ BEGIN
 	-- Updates the HL3 FNC given as input parameter
 	-- setting its in_budget value to 0 if its budget is
 	-- greater than 0
-	UPDATE HL3_FNC
+	UPDATE HL3
 	SET in_budget = 0
 	WHERE hl3_fnc_budget_total <> 0
 	  AND in_budget = 1

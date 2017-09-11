@@ -11,7 +11,7 @@ var INS_REGION = "INS_REGION";
 var UPD_REGION = "UPD_REGION";
 var REGION_CAN_DELETE = "REGION_CAN_DELETE";
 var DEL_REGION = "DEL_REGION";
-
+var GET_VALIDATE_REGION_AND_MARKET_UNIT = "GET_VALIDATE_REGION_AND_MARKET_UNIT";
 function getAllRegions(){
 	var parameters = {};	
 	var result = db.executeProcedureManual(GET_ALL_REGION, {});	
@@ -36,7 +36,6 @@ function getRegionById(regionId){
 
 /*EXECUTE QUERY TO INSERT NEW REGION*/
 function insertRegion(objRegion, userId){
-	var spResult = [];
 	var parameters = {};
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;
 	parameters.IN_REGION_ISO = objRegion.IN_REGION_ISO;
@@ -48,8 +47,7 @@ function insertRegion(objRegion, userId){
 
 /*EXECUTE QUERY TO UPDATE REGION*/
 function updateRegion(objRegion, userId){
-	var spResult = [];
-	
+
 	var parameters = {};
 	parameters.IN_REGION_ID = objRegion.IN_REGION_ID;
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;
@@ -62,7 +60,6 @@ function updateRegion(objRegion, userId){
 
 /*EXECUTE QUERY TO UPDATE REGION*/
 function getRegionByName(objRegion){
-	var spResult = [];
 	var parameters = {};
 	parameters.IN_REGION_NAME = objRegion.IN_REGION_NAME;	
 	var result = db.executeProcedureManual(GET_REGION_BY_NAME,parameters,"out_result");
@@ -72,8 +69,8 @@ function getRegionByName(objRegion){
 /*EXECUTE QUERY TO DELETE REGION*/
 function delRegion(objRegion, userId){
 	var parameters = {};
-	parameters.in_region_id = objRegion.IN_REGION_ID,
-	parameters.in_modified_user_id = userId
+	parameters.in_region_id = objRegion.IN_REGION_ID;
+	parameters.in_modified_user_id = userId;
 	return db.executeScalar(DEL_REGION, parameters,"out_result");
 }
 
@@ -91,4 +88,11 @@ function canDeleteRegion(objRegion){
 	parameters.in_region_id = objRegion.IN_REGION_ID;
 	var result = db.executeScalar(REGION_CAN_DELETE,parameters,"out_result");
 	return !(result > 0);
+}
+
+function validateRegionAndMarketUnit(idRegion, idMarketUnit){
+	var parameters = {};
+	parameters.in_region_id = idRegion;
+	parameters.in_market_unit_id = idMarketUnit;
+	return db.executeScalar(GET_VALIDATE_REGION_AND_MARKET_UNIT,parameters,"out_result");
 }

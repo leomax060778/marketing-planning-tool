@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_VALIDATE_DATE_RULE_BY_CAMPAIGN_TYPE_ID_CAMPAIGN_SUBTYPE_ID" (
+	IN in_campaign_type_id bigint,
+	IN in_campaign_sub_type_Id bigint,
+	OUT out_result TINYINT
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+select DISTINCT COALESCE(T.VALIDATE_DATE_RULE, 0) INTO out_result
+from OBJECTIVE_CAMPAIGN_TYPE_SUBTYPE T
+where CAMPAIGN_TYPE_ID = in_campaign_type_id
+AND CAMPAIGN_SUB_TYPE_ID = in_campaign_sub_type_Id;
+
+END;

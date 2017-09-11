@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_SERVICE_REQUEST_OPTION_BY_ID" (
+    IN in_option_id BIGINT,
+	OUT out_result TABLE (
+	service_request_option_id BIGINT
+	, name NVARCHAR(60)
+ 	)
+ 	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result = SELECT service_request_option_id, name FROM SERVICE_REQUEST_OPTION
+		WHERE service_request_option_id = in_option_id AND enabled = 1 AND deleted = 0
+		ORDER BY name;
+
+END;

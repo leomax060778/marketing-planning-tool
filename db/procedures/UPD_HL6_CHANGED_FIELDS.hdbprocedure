@@ -1,10 +1,10 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6_CHANGED_FIELDS" (
-IN in_hl6_crm_binding_id BIGINT,
-IN in_hl6_id BIGINT,
-IN in_column_name NVARCHAR(255),
-IN in_changed TINYINT,
-IN in_user_id BIGINT,
-IN in_display_name NVARCHAR(255),
+IN CRM_BINDING_TABLE TABLE ( in_hl6_crm_binding_id BIGINT,
+         in_hl6_id BIGINT,
+         in_column_name NVARCHAR(255),
+         in_changed TINYINT,
+         in_user_id BIGINT,
+         in_display_name NVARCHAR(255)),
 OUT out_result BIGINT
 ) 
 	LANGUAGE SQLSCRIPT
@@ -13,14 +13,18 @@ OUT out_result BIGINT
 BEGIN
 	UPDATE HL6_CRM_BINDING SET
 		
-		hl6_id = in_hl6_id,
-		column_name = in_column_name,
-		column_changed = in_changed,
-		display_name = in_display_name,
+		HL6_CRM_BINDING.hl6_id = T.in_hl6_id,
+		HL6_CRM_BINDING.column_name = T.in_column_name,
+		HL6_CRM_BINDING.column_changed = T.in_changed,
+		HL6_CRM_BINDING.display_name = T.in_display_name,
 		
-		modified_user_id = in_user_id,
-		modified_date_tz = CURRENT_TIMESTAMP
-		where hl6_crm_binding_id = in_hl6_crm_binding_id;
+		HL6_CRM_BINDING.modified_user_id = T.in_user_id,
+		HL6_CRM_BINDING.modified_date_tz = CURRENT_TIMESTAMP
+
+		FROM HL6_CRM_BINDING
+		INNER JOIN :CRM_BINDING_TABLE T ON HL6_CRM_BINDING.hl6_crm_binding_id = T.in_hl6_crm_binding_id;
+
+		
         
         SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

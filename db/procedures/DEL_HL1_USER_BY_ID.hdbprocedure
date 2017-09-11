@@ -1,0 +1,21 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HL1_USER_BY_ID" (
+IN arrDelHl1User TABLE (in_hl1_id BIGINT,
+	in_user_id BIGINT)
+	,OUT out_result BIGINT
+	)
+--	IN in_hl1_id BIGINT
+  --  , IN in_l1_user_id BIGINT
+--	, OUT out_result BIGINT)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		--DELETE FROM HL1_USER
+        --WHERE user_id = in_l1_user_id AND hl1_id = in_hl1_id;
+        delete from HL1_USER
+        where (HL1_USER.HL1_ID, HL1_USER.USER_ID) in (select in_hl1_id, in_user_id from :arrDelHl1User);
+
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

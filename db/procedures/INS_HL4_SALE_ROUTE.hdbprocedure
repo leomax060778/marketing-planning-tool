@@ -1,8 +1,10 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_ROUTE" ( 
-	IN in_hl4_id bigint,
-	IN in_route_id bigint,
-	IN in_amount decimal(19,2),
-	IN in_created_user_id bigint,
+	IN saleRoute TABLE(
+	    in_hl4_id bigint,
+	    in_route_id bigint,
+	    in_amount decimal(19, 6),
+	    in_created_user_id bigint
+	    ),
 	OUT out_hl4_sale_route_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
@@ -10,7 +12,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL4_SALE_ROUTE" (
 	DEFAULT SCHEMA "PLANNING_TOOL" AS
 BEGIN
 	INSERT INTO "PLANNING_TOOL"."HL4_SALE_ROUTE"(hl4_id,route_id,amount,created_user_id)
-	VALUES (in_hl4_id,in_route_id,in_amount,in_created_user_id);
+	(SELECT in_hl4_id,in_route_id,in_amount,in_created_user_id FROM :saleRoute);
 
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl4_sale_route_id FROM "PLANNING_TOOL"."HL4_SALE_ROUTE";
 END;

@@ -1,24 +1,25 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_HL6_TOTAL_BUDGET" (
         IN in_hl5_id BIGINT,
-        OUT out_result DECIMAL(19,2)
+        OUT out_result DECIMAL(19, 6)
 )
 LANGUAGE SQLSCRIPT
 SQL SECURITY INVOKER
 DEFAULT SCHEMA "PLANNING_TOOL"
 AS
 BEGIN
-	DECLARE va_total_budget DECIMAL(19,2);
+	DECLARE va_total_budget DECIMAL(19, 6);
 	va_total_budget := 0;
 
     SELECT 
-	COALESCE(SUM(HL6.BUDGET),0)
+	SUM(COALESCE(BSR.AMOUNT,HL6.BUDGET,0))
 	into va_total_budget
-	FROM HL5 
-	INNER JOIN HL6 ON HL6.HL5_ID = HL5.hl5_id AND HL6.deleted = 0 AND HL6.enabled = 1
+	FROM HL6
+	LEFT JOIN BUDGET_SPEND_REQUEST BSR ON BSR.HL_ID = HL6.HL6_ID AND BSR.BUDGET_SPEND_REQUEST_TYPE_ID = 1
+            AND (BSR.BUDGET_SPEND_REQUEST_STATUS_ID = 1 OR BSR.BUDGET_SPEND_REQUEST_STATUS_ID = 2) AND BSR.HIERARCHY_LEVEL_ID = 2
 	WHERE 
-	HL5.enabled=1 
-	AND HL5.deleted=0
-	AND HL5.hl5_id = in_hl5_id
+	HL6.enabled=1
+	AND HL6.deleted=0
+	AND HL6.hl5_id = in_hl5_id
 	GROUP BY HL6.hl5_id;
 
 	out_result:= ifnull(va_total_budget,0);

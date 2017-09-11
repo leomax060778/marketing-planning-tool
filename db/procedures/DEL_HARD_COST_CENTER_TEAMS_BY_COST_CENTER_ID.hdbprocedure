@@ -1,14 +1,27 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_HARD_COST_CENTER_TEAMS_BY_COST_CENTER_ID" (
-	IN in_cost_center_id BIGINT,
 	OUT out_result INTEGER)
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
-BEGIN
-
+BEGIN           
 		DELETE FROM COST_CENTER_TEAMS
-		WHERE cost_center_id = in_cost_center_id;
+		WHERE cost_center_teams_id not in (
+		    (select cost_center_teams.cost_center_teams_id from hl3
+		    inner join hl4 on hl4.hl3_id = hl3.hl3_id
+		    inner join hl5 on hl5.hl4_id = hl4.hl4_id
+		    inner join cost_center_teams on hl5.cost_center_id = cost_center_teams.cost_center_id
+		    where hl5.ENABLED = 1 AND hl5.DELETED = 0)
+
+		    union
+
+		    (select cost_center_teams.cost_center_teams_id from hl3
+            inner join hl4 on hl4.hl3_id = hl3.hl3_id
+            inner join hl5 on hl5.hl4_id = hl4.hl4_id
+            inner join hl6 on hl6.hl5_id = hl5.hl5_id
+            inner join cost_center_teams on hl6.cost_center_id = cost_center_teams.cost_center_id
+            where hl6.ENABLED = 1 AND hl6.DELETED = 0)
+		);
 		
 		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 

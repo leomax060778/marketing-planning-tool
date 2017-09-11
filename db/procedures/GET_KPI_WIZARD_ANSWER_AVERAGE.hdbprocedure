@@ -1,0 +1,19 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_KPI_WIZARD_ANSWER_AVERAGE" (
+    IN in_answers TABLE(KPI_ANSWER_ID BIGINT)
+    , IN in_length INTEGER
+	, OUT out_result DECIMAL(19,2)
+ 	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		sub_result = SELECT
+		                SCORE
+		FROM KPI_ANSWER
+		WHERE ENABLED = 1 AND DELETED = 0 AND KPI_ANSWER_ID IN (SELECT * FROM :in_answers);
+
+		SELECT SUM(SCORE) / in_length INTO out_result FROM :sub_result;
+
+END;

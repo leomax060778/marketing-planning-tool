@@ -1,0 +1,109 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_VERSION_BY_FILTER" (
+	 IN in_budget_year_id BIGINT
+	,IN in_region_id BIGINT
+	,IN in_subregion_id BIGINT
+	,IN in_user_id BIGINT
+	,IN in_is_super_admin tinyint
+	,OUT out_result TABLE (
+		hl1_id BIGINT
+		, acronym NVARCHAR(25)
+		, description NVARCHAR(255)
+		, REGION_NAME NVARCHAR(255)
+		, SUBREGION_NAME NVARCHAR(255)
+		, BUDGET_YEAR INTEGER
+		, budget DECIMAL(19, 2)
+        , version INTEGER
+        , crt_related integer
+        , implement_execution_level tinyint
+        , team_type_id integer
+        , created_date_tz timestamp
+        , created_user_id integer
+		)
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+aux_hl1 =
+select
+coalesce(hl1_version.hl1_id,hl1.hl1_id) as hl1_id
+, coalesce(upper(hl1_version.acronym), upper(hl1.acronym)) as acronym
+, coalesce(hl1_version.description, hl1.description) as description
+, coalesce(hl1_version.budget, hl1.budget) as budget
+, coalesce(hl1_version.region_id, hl1.region_id) as region_id
+, coalesce(hl1_version.subregion_id, hl1.subregion_id) as subregion_id
+, coalesce(hl1_version.budget_year_id, hl1.budget_year_id) as budget_year_id
+, coalesce(hl1_version.version, hl1.version) as version
+, coalesce(hl1_version.crt_related, hl1.crt_related) as crt_related
+, coalesce(hl1_version.implement_execution_level, hl1.implement_execution_level) as implement_execution_level
+, coalesce(hl1_version.team_type_id, hl1.team_type_id) as team_type_id
+, coalesce(hl1_version.created_date_tz, hl1.created_date_tz) as created_date_tz
+, coalesce(hl1_version.created_user_id, hl1.created_user_id) as created_user_id
+
+from hl1
+left join hl1_version on hl1.hl1_id = hl1_version.hl1_id and hl1.deleted = 0 and hl1.enabled = 1
+where (hl1.version = 1 or hl1_version.version = 1) and hl1.deleted = 0 and hl1.enabled = 1;
+
+	va_subresult =
+	select
+	 	  hl1.hl1_id
+		, upper(hl1.acronym) as acronym
+		, hl1.description
+		, hl1.region_id
+		, r.region_name
+		, sr.subregion_name
+		, buy.budget_year
+		, hl1.budget
+		, hl1.version
+		, hl1.crt_related
+		, hl1.implement_execution_level
+		, hl1.team_type_id
+		, hl1.created_date_tz
+		, hl1.created_user_id
+	from :aux_hl1 hl1
+	inner join budget_year buy on buy.budget_year_id = hl1.budget_year_id
+	left join region r on r.region_id = hl1.region_id
+	left join subregion sr on sr.subregion_id = hl1.subregion_id
+	where
+		buy.budget_year_id = in_budget_year_id
+	    and (sr.subregion_id = in_subregion_id or in_subregion_id = 0) 
+	    and hl1.hl1_id in (select hl1_id from hl1_user where user_id = in_user_id or in_is_super_admin = 1);
+
+    -- this filter is necesary to filter GLOBALS, where region_id = 0
+    if in_region_id = -1 then
+        out_result = select T.HL1_ID
+                            ,T.ACRONYM
+                            ,T.DESCRIPTION
+                            ,T.REGION_NAME
+                            ,T.SUBREGION_NAME
+                            ,T.BUDGET_YEAR
+                            ,T.BUDGET
+                            ,T.VERSION
+                            ,T.CRT_RELATED
+                            ,T.IMPLEMENT_EXECUTION_LEVEL
+                            ,T.TEAM_TYPE_ID
+                            ,T.CREATED_DATE_TZ
+                            ,T.CREATED_USER_ID
+                            from :va_subresult T
+                    where T.REGION_ID = 0;
+    else
+        out_result = select T.HL1_ID
+                            ,T.ACRONYM
+                            ,T.DESCRIPTION
+                            ,T.REGION_NAME
+                            ,T.SUBREGION_NAME
+                            ,T.BUDGET_YEAR
+                            ,T.BUDGET
+                            ,T.VERSION
+                            ,T.CRT_RELATED
+                            ,T.IMPLEMENT_EXECUTION_LEVEL
+                            ,T.TEAM_TYPE_ID
+                            ,T.CREATED_DATE_TZ
+                            ,T.CREATED_USER_ID
+                            from :va_subresult T
+                    where (T.REGION_ID = in_region_id OR in_region_id = 0);
+     end if;
+END;
+

@@ -1,0 +1,24 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_COUNT_CAMPAIGN_TYPE_IN_USE_BY_ID" (
+		IN in_campaign_type_id bigint,
+		OUT out_result integer
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	select sum(t.counter) into out_result
+    from(
+    select count(hl5.campaign_type_id) as counter
+    from hl5
+    where
+    hl5.enabled = 1 and hl5.deleted = 0
+    and hl5.campaign_type_id = in_campaign_type_id
+    union ALL
+    select count(hl6.campaign_type_id) as counter
+    from hl6
+    where
+    hl6.enabled = 1 and hl6.deleted = 0
+    and hl6.campaign_type_id = in_campaign_type_id
+    ) t;
+
+END;

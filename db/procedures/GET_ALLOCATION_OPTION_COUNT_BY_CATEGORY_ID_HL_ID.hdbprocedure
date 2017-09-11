@@ -1,0 +1,14 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALLOCATION_OPTION_COUNT_BY_CATEGORY_ID_HL_ID" (
+	IN in_hl_id BIGINT,
+	IN in_category_id bigint,
+	OUT out_result int
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	SELECT COUNT(DISTINCT allocation_option_id) into out_result
+	FROM allocation_category_option_level
+	where allocation_category_id = in_category_id AND hierarchy_level_id = in_hl_id
+	AND deleted = 0 and enabled = 1;
+END;

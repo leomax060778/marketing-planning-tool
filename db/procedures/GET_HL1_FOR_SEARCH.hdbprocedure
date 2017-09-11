@@ -1,0 +1,92 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL1_FOR_SEARCH" (
+		IN in_budget_year_id BIGINT
+        ,IN in_region_id BIGINT
+        ,IN in_subregion_id BIGINT
+        ,IN in_limit INTEGER
+        ,IN in_offset INTEGER
+        ,IN in_user_id bigint
+		, IN in_isSA tinyint
+		, OUT total_rows INTEGER
+		, OUT out_result TABLE (
+			id bigint,
+			budget_year bigint,
+			acronym nvarchar(25),
+			region_name nvarchar(255),
+			subregion_name nvarchar(255)
+		)
+	)
+	
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+
+    if in_isSA = 1 then
+    va_subresult = SELECT HL1.hl1_id as id
+        		, BGY.BUDGET_YEAR
+        		, HL1.acronym
+        		, region.region_name
+        		, subregion.subregion_name
+        		,HL1.region_id
+        	FROM HL1
+        	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
+        	LEFT JOIN REGION ON HL1.region_id = REGION.region_id
+        	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
+        	WHERE HL1.deleted = 0
+        	  AND HL1.enabled = 1
+        	  AND (BGY.BUDGET_YEAR_ID = in_budget_year_id)
+                AND (subregion.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+        	  ORDER BY BGY.BUDGET_YEAR, HL1.acronym;
+    else
+    va_subresult = SELECT HL1.hl1_id as id
+    		, BGY.BUDGET_YEAR
+    		, HL1.acronym
+    		, region.region_name
+    		, subregion.subregion_name
+    		,HL1.region_id
+    	FROM HL1
+    	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
+    	LEFT JOIN REGION ON HL1.region_id = REGION.region_id
+    	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
+    	WHERE HL1.deleted = 0
+    	  AND HL1.enabled = 1
+    	  AND HL1.HL1_ID IN (SELECT HL1_ID FROM HL1_USER WHERE USER_ID = in_user_id)
+    	  AND (BGY.BUDGET_YEAR_ID = in_budget_year_id)
+            AND (subregion.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+    	  ORDER BY BGY.BUDGET_YEAR, HL1.acronym;
+    end if;
+
+    if in_region_id = -1 then
+            va_subresult = SELECT T.ID
+                            , T.BUDGET_YEAR
+                            , T.ACRONYM
+                            , T.REGION_NAME
+                            , T.SUBREGION_NAME
+                            , T.REGION_ID
+                             from :va_subresult T
+                        where T.REGION_ID = 0;
+        else
+            va_subresult = SELECT T.ID
+                         , T.BUDGET_YEAR
+                         , T.ACRONYM
+                         , T.REGION_NAME
+                         , T.SUBREGION_NAME
+                         , T.REGION_ID
+                          from :va_subresult T
+                        where (T.REGION_ID = in_region_id OR in_region_id = 0);
+         end if;
+
+    SELECT COALESCE(COUNT(T.ID),0) INTO total_rows FROM :va_subresult T;
+
+    out_result = SELECT T.ID
+                  , T.BUDGET_YEAR
+                  , T.ACRONYM
+                  , T.REGION_NAME
+                  , T.SUBREGION_NAME
+                   from :va_subresult T
+                LIMIT :in_limit
+                OFFSET :in_offset;
+
+
+END;

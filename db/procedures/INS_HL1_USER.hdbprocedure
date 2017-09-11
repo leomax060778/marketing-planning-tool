@@ -1,0 +1,32 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL1_USER" (
+	in arrHl1User TABLE (
+	    in_hl1_id bigint,
+	    in_user_id bigint,
+	    in_created_user_id bigint)
+	,   OUT out_hl1_user_id integer
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+
+    --DELETE FROM "PLANNING_TOOL"."HL1_USER" hl1User
+    --WHERE hl1User.hl1_id = (select top 1 in_hl1_id from :arrHl1User);
+
+
+	INSERT INTO "PLANNING_TOOL"."HL1_USER" (
+	 hl1_id
+	,user_id
+	,created_date_tz
+	,created_user_id
+	)
+	(
+     select
+	 in_hl1_id
+	,in_user_id
+	,CURRENT_TIMESTAMP
+	,in_created_user_id
+	from :arrHl1User);
+
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl1_user_id FROM "PLANNING_TOOL"."HL1_USER";
+END;

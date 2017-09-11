@@ -1,0 +1,20 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_EXPECTED_OUTCOME_OPTION" (
+        in in_expected_outcome_option_id bigint,
+		in in_name nvarchar(255),
+		in in_user_id bigint,
+		out out_result bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS
+BEGIN
+		UPDATE EXPECTED_OUTCOME_OPTION
+		SET
+		name = in_name,
+		modified_user_id = in_user_id,
+		modified_date_tz = CURRENT_TIMESTAMP
+		where expected_outcome_option_id = in_expected_outcome_option_id;
+
+		SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+END;

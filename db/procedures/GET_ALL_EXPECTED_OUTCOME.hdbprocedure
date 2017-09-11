@@ -1,0 +1,16 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_EXPECTED_OUTCOME" (
+	out out_result table (
+	expected_outcome_id bigint,
+    name nvarchar(255)
+	))
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+		out_result =
+		SELECT expected_outcome_id, name
+		from EXPECTED_OUTCOME 
+		where deleted = 0 and enabled = 1
+		order by upper(name);
+END;

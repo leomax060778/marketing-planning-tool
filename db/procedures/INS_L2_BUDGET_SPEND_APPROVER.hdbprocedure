@@ -1,0 +1,25 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_L2_BUDGET_SPEND_APPROVER" (
+	IN l2BudgetApprover TABLE (
+        in_hl2_id bigint,
+        in_budget_approver_id bigint,
+        in_user_id bigint
+	)
+	,OUT out_hl2_user_id bigint
+	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	INSERT INTO HL2_BUDGET_SPEND_APPROVER (
+	 hl2_id
+	,user_id
+	,created_user_id
+	)
+	(select
+	 in_hl2_id
+	,in_budget_approver_id
+	,in_user_id
+	from :l2BudgetApprover);
+	
+	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl2_user_id FROM HL2_BUDGET_SPEND_APPROVER;
+END;

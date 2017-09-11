@@ -1,8 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_HL3_USER" (
-	IN in_hl3_id bigint,
-	IN in_user_id bigint,
-	IN in_created_user_id bigint,
-	OUT out_hl3_user_id bigint
+	IN arrHl3User TABLE (in_hl3_id bigint,
+	in_user_id bigint,
+	in_created_user_id bigint)
+	,OUT out_hl3_user_id bigint
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -14,11 +14,11 @@ BEGIN
 	,created_date_tz
 	,created_user_id
 	)
-	VALUES (
+	(select
 	 in_hl3_id
 	,in_user_id
 	,CURRENT_TIMESTAMP
-	,in_created_user_id);
+	,in_created_user_id from :arrHl3User);
 	
 	SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_hl3_user_id FROM "PLANNING_TOOL"."HL3_USER";
 END;

@@ -1,0 +1,18 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_APPLICATION_INFO" (
+	OUT out_result TABLE (APPLICATION_ID BIGINT, NAME nvarchar(100), DESCRIPTION NVARCHAR(255), OWNER NVARCHAR(100)
+	, APPLICATION_VERSION_ID BIGINT, VERSION nvarchar(100), RELEASE_DATE LONGDATE, RELEASE_NOTES NVARCHAR(512))
+ 	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+    out_result =
+    SELECT top 1 app.APPLICATION_ID, app.NAME, app.DESCRIPTION, app.OWNER
+    , app_vers.APPLICATION_VERSION_ID, app_vers.VERSION, app_vers.RELEASE_DATE, app_vers.RELEASE_NOTES
+    FROM APPLICATION app
+    INNER JOIN APPLICATION_VERSION app_vers
+        on app.APPLICATION_ID = app_vers.APPLICATION_ID and app.enabled = 1 and app.deleted = 0
+            and app_vers.enabled = 1 and app_vers.deleted = 0
+    ORDER BY app.NAME, app_vers.VERSION, app_vers.RELEASE_DATE desc;
+END;

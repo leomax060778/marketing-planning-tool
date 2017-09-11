@@ -9,14 +9,15 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_BY_ID" (
 	hl4_business_details NVARCHAR(3000),
 	hl4_status_detail_id bigint,
 	acronym NVARCHAR(25),
-	is_annual_plan TINYINT
+	is_annual_plan TINYINT,
+	created_user_id BIGINT
 	,euro_conversion_id integer
 	,in_budget TINYINT
-	,hl4_fnc_budget_spend_q1 DECIMAL(19,2)
-	,hl4_fnc_budget_spend_q2 DECIMAL(19,2)
-	,hl4_fnc_budget_spend_q3 DECIMAL(19,2)
-	,hl4_fnc_budget_spend_q4 DECIMAL(19,2)
-	,hl4_fnc_budget_total_mkt DECIMAL(19,2)
+	,hl4_fnc_budget_spend_q1 DECIMAL(19, 2)
+	,hl4_fnc_budget_spend_q2 DECIMAL(19, 2)
+	,hl4_fnc_budget_spend_q3 DECIMAL(19, 2)
+	,hl4_fnc_budget_spend_q4 DECIMAL(19, 2)
+	,hl4_fnc_budget_total_mkt DECIMAL(19, 2)
 	) 
 ) 
 	LANGUAGE SQLSCRIPT
@@ -33,7 +34,8 @@ out_hl4 =
 		   HL4.hl4_business_details,
 		   HL4.hl4_status_detail_id,
 		   HL4.acronym,
-		   HL4.is_annual_plan
+		   HL4.is_annual_plan,
+		   HL4.created_user_id
 		 --new refactor 04112016
 		,HL4.euro_conversion_id
 		,HL4.in_budget

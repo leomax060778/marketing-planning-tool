@@ -1,0 +1,151 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_FOR_PROCESSING_REPORT" (
+		in in_hl5_id BIGINT
+        	,OUT out_result TABLE (
+        		HL5_ID INTEGER
+                , HL4_ID INTEGER
+                , ACRONYM nvarchar(25)
+                , HL5_CRM_DESCRIPTION  nvarchar(255)
+                , SHOW_ON_DG_CALENDAR TINYINT
+                , MARKETING_PROGRAM  nvarchar(255)
+                , MARKETING_PROGRAM_DESCRIPTION  nvarchar(255)
+                , MARKETING_ACTIVITY nvarchar(255)
+                , PLANNED_START_DATE TIMESTAMP
+                , PLANNED_END_DATE TIMESTAMP
+                , ACTUAL_START_DATE TIMESTAMP
+                , ACTUAL_END_DATE TIMESTAMP
+                , DISTRIBUTION_CHANNEL NVARCHAR(255)
+                , BUDGET DECIMAL(19,2)
+                , URL NVARCHAR(255)
+                , VENUE NVARCHAR(255)
+                , STREET NVARCHAR(255)
+                , CITY NVARCHAR(255)
+                , COUNTRY NVARCHAR(255)
+                , POSTAL_CODE NVARCHAR(20)
+                , REGION NVARCHAR(255)
+                , EVENT_OWNER NVARCHAR(255)
+                , NUMBER_OF_PARTICIPANTS NVARCHAR(255)
+                , PRIORITY NVARCHAR(255)
+                , CAMPAIGN_TYPE NVARCHAR(255)
+                , CAMPAIGN_SUB_TYPE NVARCHAR(255)
+                , CAMPAIGN_OBJECTIVE NVARCHAR(255)
+                , SALE_ORGANIZATION NVARCHAR(255)
+                , COST_CENTER_CODE NVARCHAR(255)
+                , EMPLOYEE_RESPONSIBLE NVARCHAR(255)
+                , BUSINESS_OWNER NVARCHAR(255)
+                , ROUTE_TO_MARKET NVARCHAR(255)
+                , BUDGET_YEAR NVARCHAR(10)
+                , L1_ACRONYM NVARCHAR(255)
+                , L2_ACRONYM NVARCHAR(255)
+                , L3_ACRONYM NVARCHAR(255)
+                , L4_ACRONYM NVARCHAR(255)
+                , CAMPAIGN_OBJECTIVE_ID INTEGER
+                , CAMPAIGN_TYPE_ID INTEGER
+                , CAMPAIGN_SUBTYPE_ID INTEGER
+                , MARKETING_PROGRAM_ID INTEGER
+                , MARKETING_ACTIVITY_ID INTEGER
+                , PRIORITY_ID INTEGER
+                , DISTRIBUTION_CHANNEL_ID INTEGER
+                , SALES_ORGANIZATION_ID INTEGER
+                , COST_CENTER_ID INTEGER
+                , EMPLOYEE_RESPONSIBLE_ID INTEGER
+                , BUSINESS_OWNER_ID INTEGER
+                , ROUTE_TO_MARKET_ID INTEGER
+        		)
+            ,OUT out_marketing_activity_id TABLE(
+                BUDGET_YEAR NVARCHAR(20)
+                , L1_ACRONYM NVARCHAR(20)
+                , L3_ACRONYM NVARCHAR(20)
+                , L4_ACRONYM NVARCHAR(20)
+                , L5_ACRONYM NVARCHAR(20)
+        		)
+
+        )
+        	LANGUAGE SQLSCRIPT
+        	SQL SECURITY INVOKER
+        	DEFAULT SCHEMA "PLANNING_TOOL"
+        	READS SQL DATA AS
+        BEGIN
+        out_result = select
+                        HL5.hl5_id
+                        , HL5.hl4_id
+                        , HL5.acronym
+                        , HL5.hl5_crm_description
+                        , HL5.show_on_dg_calendar
+                        , MARKETING_PROGRAM.NAME AS MARKETING_PROGRAM
+                        , MARKETING_PROGRAM.DESCRIPTION AS MARKETING_PROGRAM_DESCRIPTION
+                        , MARKETING_ACTIVITY.hl5_crm_description AS MARKETING_ACTIVITY
+                        , HL5.planned_start_date
+                        , HL5.planned_end_date
+                        , HL5.actual_start_date
+                        , HL5.actual_end_date
+                        , DISTRIBUTION_CHANNEL.NAME AS DISTRIBUTION_CHANNEL
+                        , HL5.budget
+                        , HL5.url
+                        , HL5.venue
+                        , HL5.street
+                        , HL5.city
+                        , HL5.country
+                        , HL5.postal_code
+                        , HL5.region
+                        , HL5.event_owner
+                        , HL5.number_of_participants
+                        , PRIORITY.NAME AS PRIORITY
+                        , CAMPAIGN_TYPE.NAME as CAMPAIGN_TYPE
+                        , CAMPAIGN_SUB_TYPE.NAME as CAMPAIGN_SUB_TYPE
+                        , OBJECTIVE.NAME as CAMPAIGN_OBJECTIVE
+                        , SALE_ORGANIZATION.NAME as SALE_ORGANIZATION
+                        , COST_CENTER.COST_CENTER_CODE
+                        , CONCAT(CONCAT(EMPLOYEE_RESPONSIBLE.FULL_NAME, ', '), EMPLOYEE_RESPONSIBLE.EMPLOYEE_NUMBER) AS EMPLOYEE_RESPONSIBLE
+                        , BUSINESS_OWNER.DESCRIPTION AS BUSINESS_OWNER
+                        , ROUTE_TO_MARKET.NAME AS ROUTE_TO_MARKET
+                        , SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) AS BUDGET_YEAR
+                        , HL1.ACRONYM AS L1_ACRONYM
+                        , HL2.ORGANIZATION_ACRONYM AS L2_ACRONYM
+                        , HL3.ACRONYM AS L3_ACRONYM
+                        , HL4.ACRONYM AS L4_ACRONYM
+                        , HL5.campaign_objective_id
+                        , HL5.campaign_type_id
+                        , HL5.campaign_subtype_id
+                        , HL5.marketing_program_id
+                        , HL5.marketing_activity_id
+                        , HL5.priority_id
+                        , HL5.distribution_channel_id
+                        , HL5.sales_organization_id
+                        , HL5.cost_center_id
+                        , HL5.employee_responsible_id
+                        , HL5.business_owner_id
+                        , HL5.route_to_market_id
+                         FROM HL5
+                         INNER JOIN HL4 ON HL4.HL4_ID = HL5.HL4_ID
+                         INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
+                         INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
+                         INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+                         INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                         LEFT JOIN MARKETING_PROGRAM ON MARKETING_PROGRAM.MARKETING_PROGRAM_ID = HL5.MARKETING_PROGRAM_ID
+                         LEFT JOIN HL5 MARKETING_ACTIVITY ON MARKETING_ACTIVITY.HL5_ID = HL5.MARKETING_ACTIVITY_ID
+                         LEFT JOIN DISTRIBUTION_CHANNEL ON DISTRIBUTION_CHANNEL.DISTRIBUTION_CHANNEL_ID = HL5.DISTRIBUTION_CHANNEL_ID
+                         LEFT JOIN PRIORITY ON PRIORITY.PRIORITY_ID = HL5.PRIORITY_ID
+                         LEFT JOIN CAMPAIGN_TYPE ON CAMPAIGN_TYPE.CAMPAIGN_TYPE_ID = HL5.CAMPAIGN_TYPE_ID
+                         LEFT JOIN CAMPAIGN_SUB_TYPE ON CAMPAIGN_SUB_TYPE.CAMPAIGN_SUB_TYPE_ID = HL5.CAMPAIGN_SUBTYPE_ID
+                         LEFT JOIN OBJECTIVE ON OBJECTIVE.OBJECTIVE_ID = HL5.CAMPAIGN_OBJECTIVE_ID
+                         LEFT JOIN SALE_ORGANIZATION ON SALE_ORGANIZATION.SALES_ORGANIZATION_ID = HL5.SALES_ORGANIZATION_ID
+                         LEFT JOIN COST_CENTER ON COST_CENTER.COST_CENTER_ID = HL5.COST_CENTER_ID
+                         LEFT JOIN EMPLOYEE_RESPONSIBLE ON EMPLOYEE_RESPONSIBLE.EMPLOYEE_RESPONSIBLE_ID = HL5.EMPLOYEE_RESPONSIBLE_ID
+                         LEFT JOIN BUSINESS_OWNER ON BUSINESS_OWNER.BUSINESS_OWNER_ID = HL5.BUSINESS_OWNER_ID
+                         LEFT JOIN ROUTE_TO_MARKET ON ROUTE_TO_MARKET.ROUTE_TO_MARKET_ID = HL5.ROUTE_TO_MARKET_ID
+
+                         WHERE HL5.HL5_ID = in_hl5_id;
+
+        out_marketing_activity_id = SELECT SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) AS BUDGET_YEAR
+                                       , HL1.ACRONYM AS L1_ACRONYM
+                                       , HL3.ACRONYM AS L3_ACRONYM
+                                       , HL4.ACRONYM AS L4_ACRONYM
+                                       , HL5.ACRONYM AS L5_ACRONYM
+                                       FROM HL5
+                INNER JOIN HL4 ON HL4.HL4_ID = HL5.HL4_ID
+                INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
+                INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
+                INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+                INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                WHERE HL5.HL5_ID IN (select marketing_activity_id from :out_result);
+        END;

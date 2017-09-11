@@ -7,6 +7,7 @@ var blCampaignType = mapper.getCampaignTypeLib();
 /** *************************************** */
 var GET_BY_ID = "GET_BY_ID";
 var OBJECTIVE_ID = "OBJECTIVE_ID";
+var CONFIRM_OK = "CONFIRM_OK";
 
 function processRequest() {
     return httpUtil.processRequest(handleGet, handlePost, handlePut, handleDelete, false, "", true);
@@ -41,7 +42,9 @@ function handlePut(reqBody, userId) {
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 function handleDelete(reqBody, userId) {
-    var rdo = blCampaignType.deleteCampaignType(reqBody, userId);
+    var confirm = httpUtil.getUrlParameters().get("CONFIRM_OK");
+    var rdo = blCampaignType.deleteCampaignType(reqBody, userId, confirm);
+
     httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 processRequest();

@@ -1,0 +1,13 @@
+{
+    "description": "Update interlocks report",
+    "action": "xsplanningtool.services.job:updInterlocksReport.xsjs::updateReportTable",
+    "schedules": [
+       { 
+          "description": "Update records in table used for Interlock Reporting",
+          "xscron": "* * * * * 30 0",
+          "parameter": {
+                "app": "MPT"
+             }
+       }
+    ]
+}

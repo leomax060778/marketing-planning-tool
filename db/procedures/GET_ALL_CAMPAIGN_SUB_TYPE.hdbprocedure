@@ -1,6 +1,8 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_CAMPAIGN_SUB_TYPE" (
 	OUT out_result TABLE (CAMPAIGN_SUB_TYPE_ID BIGINT, 
-						  NAME NVARCHAR(255)
+						  NAME NVARCHAR(255),
+						  ROLLOVER_TEXT NVARCHAR(1000),
+                                      			EXAMPLE NVARCHAR(1000)
 						)
 	) 
 	LANGUAGE SQLSCRIPT
@@ -11,6 +13,8 @@ BEGIN
 out_result = select 
 CAMPAIGN_SUB_TYPE_ID
 ,NAME
+,ROLLOVER_TEXT
+,EXAMPLE
 from CAMPAIGN_SUB_TYPE
 where ENABLED = 1 AND DELETED = 0
 ORDER BY NAME ASC;

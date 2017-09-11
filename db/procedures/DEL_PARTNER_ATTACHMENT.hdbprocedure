@@ -1,0 +1,23 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::DEL_PARTNER_ATTACHMENT" (
+ 	IN in_modified_user_id bigint,
+	IN in_attachment_id bigint,
+	IN in_budget_spend_request_id bigint,
+	OUT out_result bigint
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	AS 
+BEGIN
+  UPDATE partnerAttachment
+  SET 	partnerAttachment.deleted = 1,
+   		partnerAttachment.enabled = 0,
+   		partnerAttachment.modified_user_id = in_modified_user_id,
+   		partnerAttachment.modified_date_tz = CURRENT_TIMESTAMP
+   		
+   FROM "PLANNING_TOOL"."PARTNER_ATTACHMENT" partnerAttachment
+  WHERE partnerAttachment.attachment_id = in_attachment_id
+  	AND partnerAttachment.budget_spend_request_id = in_budget_spend_request_id;
+ 
+ SELECT ::ROWCOUNT into out_result FROM DUMMY;
+END;

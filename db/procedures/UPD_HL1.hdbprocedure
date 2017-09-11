@@ -1,0 +1,37 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL1" (
+	IN in_hl1_id bigint,
+	IN in_acronym nvarchar(25),
+	IN in_description nvarchar(255),
+	IN in_budget_year_id bigint,
+	IN in_modified_user_id bigint,
+	IN in_budget DECIMAL(19, 2),
+	IN in_region_id bigint,
+	IN in_subregion_id bigint,
+	IN in_team_type_id bigint,
+	IN in_implement_execution_level tinyint,
+	IN in_crt_related tinyint,
+	IN in_version integer,
+	OUT out_result bigint
+	)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL" AS
+BEGIN
+	UPDATE HL1 SET
+	HL1.acronym = in_acronym
+	,HL1.description = in_description
+	,HL1.modified_date_tz = CURRENT_TIMESTAMP
+    ,HL1.modified_user_id = in_modified_user_id
+    ,HL1.budget = in_budget
+    ,HL1.region_id = in_region_id
+	,HL1.subregion_id = in_subregion_id
+	,HL1.team_type_id = in_team_type_id
+	,HL1.implement_execution_level = in_implement_execution_level
+	,HL1.crt_related = in_crt_related
+	,HL1.budget_year_id = in_budget_year_id
+	,HL1.version = in_version
+	WHERE HL1.hl1_id = in_hl1_id;
+
+	SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
+
+END;

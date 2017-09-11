@@ -1,0 +1,30 @@
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_KPI_VOLUME_VALUE" (
+    IN in_campaign_id BIGINT
+    , IN in_campaign_subtype_id BIGINT
+    , IN in_kpi_option_id BIGINT
+	, OUT out_result TABLE (
+        TYPE TINYINT, --0 FOR VALUE OR 1 FOR VOLUME
+        SMALL_SCALE_CAMPAIGN DECIMAL(19,2),
+        MEDIUM_SCALE_CAMPAIGN DECIMAL(19,2),
+        LARGE_SCALE_CAMPAIGN DECIMAL(19,2),
+        X_LARGE_SCALE_CAMPAIGN DECIMAL(19,2)
+	)
+ 	) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "PLANNING_TOOL"
+	READS SQL DATA AS
+BEGIN
+
+		out_result = SELECT
+                        TYPE
+                        , SMALL_SCALE_CAMPAIGN
+                        , MEDIUM_SCALE_CAMPAIGN
+                        , LARGE_SCALE_CAMPAIGN
+                        , X_LARGE_SCALE_CAMPAIGN
+		FROM KPI_BENCHMARK
+		WHERE CAMPAIGN_TYPE_ID = in_campaign_id
+              AND CAMPAIGN_SUB_TYPE_ID = in_campaign_subtype_id
+              AND EXPECTED_OUTCOME_OPTION_ID = in_kpi_option_id;
+
+END;

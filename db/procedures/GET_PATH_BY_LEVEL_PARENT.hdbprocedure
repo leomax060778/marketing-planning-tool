@@ -1,86 +1,96 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_PATH_BY_LEVEL_PARENT" ( 
 	  IN in_lh BIGINT  		--IS DE CURRENT LEVEL
 	, IN in_parent_id BIGINT 	--IS THE PARENT LEVEL ID OF HL
-	, OUT out_result TABLE (path_tph NVARCHAR(255))) 
+	, OUT out_result TABLE (
+	         BUDGET_YEAR INTEGER
+	        , L1_ACRONYM NVARCHAR(25)
+	        , L2_ACRONYM NVARCHAR(25)
+	        , L3_ACRONYM NVARCHAR(25)
+	        , L4_ACRONYM NVARCHAR(25)
+	        , L5_ACRONYM NVARCHAR(25)
+	        , GRANDPARENT_ID INTEGER
+	    )
+	)
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
-	 
-	
-	IF in_lh = 4 THEN
-		out_result = SELECT TOP 1
-	      CONCAT(
-			CONCAT(
-				CONCAT(
-					HL2.ACRONYM, 
-					SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)
-					),
-				'-')	
-	        , HL3.ACRONYM)
-		 AS path_tph
-		FROM HL3 
-		INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
-		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
-		WHERE 
-		HL3.HL3_ID = in_parent_id;
-	
-	ELSEIF in_lh = 5 THEN
-		out_result = SELECT
-        	         CONCAT(
-        	        	CONCAT(
-        	        		CONCAT(
-        	        			CONCAT(
-        	        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
-        	    					,'-')
-        						, hl3.acronym)
-        					,'-')
-        				,hl4.acronym)
-				 AS path_tph
-		FROM HL4
-		INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
-		INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
-		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
-    	WHERE HL4.HL4_ID= in_parent_id;
 
-	ELSEIF in_lh = 6 THEN
-	out_result = SELECT
-            	     CONCAT(
-            	         CONCAT(
-            	        	CONCAT(
-            	        		CONCAT(
-            	        			CONCAT(
-            	        				CONCAT(HL2.ACRONYM,SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2))
-            	    					,'-')
-            						, hl3.acronym)
-            					,'-')
-            				,hl4.acronym)
-    				,hl5.acronym)
-    				 AS path_tph
-    		FROM HL5
-    		INNER JOIN HL4 ON HL5.HL4_ID = HL4.HL4_ID
-    		INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
-    		INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
-    		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
-        	WHERE HL5.HL5_ID = in_parent_id;
-
-	ELSEIF in_lh = 3 THEN
-    	out_result = SELECT TOP 1
-        --		CONCAT(CONCAT(CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.ACRONYM) AS path_tph
-        		CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)) AS path_tph
-        		--INTO out_result
-        		FROM HL2
-        		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
-            	WHERE
-        		HL2.HL2_ID = in_parent_id;
-		/*
-	ELSEIF in_lh = 2 THEN
+	IF in_lh = 2 THEN
 		out_result = SELECT TOP 1
-		CONCAT(HL2.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)) AS path_tph
-		FROM HL2 
-		INNER JOIN BUDGET_YEAR BGY ON HL2.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID;
-		*/
+		 SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+		, HL1.ACRONYM AS L1_ACRONYM
+		, NULL AS L2_ACRONYM
+		, NULL AS L3_ACRONYM
+		, NULL AS L4_ACRONYM
+		, NULL AS L5_ACRONYM
+		, null as GRANDPARENT_ID
+		FROM HL1
+		INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+		where hl1.hl1_id = in_parent_id;
+		ELSEIF in_lh = 3 THEN
+            	out_result = SELECT TOP 1
+                		SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+                		, HL1.ACRONYM AS L1_ACRONYM
+                        		, HL2.ORGANIZATION_ACRONYM AS L2_ACRONYM
+                        		, NULL AS L3_ACRONYM
+                        		, NULL AS L4_ACRONYM
+                        		, NULL AS L5_ACRONYM
+                		, HL2.HL1_ID as GRANDPARENT_ID
+                		FROM HL2
+                		INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+        				INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                    	WHERE
+                		HL2.HL2_ID = in_parent_id;
+        ELSEIF in_lh = 4 THEN
+                out_result = SELECT
+                  SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+                		, HL1.ACRONYM AS L1_ACRONYM
+                        		, HL2.ORGANIZATION_ACRONYM AS L2_ACRONYM
+                        		, HL3.ACRONYM AS L3_ACRONYM
+                        		, NULL AS L4_ACRONYM
+                        		, NULL AS L5_ACRONYM
+                		, HL3.HL2_ID as GRANDPARENT_ID
+                FROM HL3
+                INNER JOIN HL2 ON HL2.HL2_ID = HL3.HL2_ID
+                INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+                INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                WHERE
+                HL3.HL3_ID = in_parent_id;
+
+            ELSEIF in_lh = 5 THEN
+                out_result = SELECT
+                             SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+                		, HL1.ACRONYM AS L1_ACRONYM
+                        		, HL2.ORGANIZATION_ACRONYM AS L2_ACRONYM
+                        		, HL3.ACRONYM AS L3_ACRONYM
+                        		, HL4.ACRONYM AS L4_ACRONYM
+                        		, NULL AS L5_ACRONYM
+                		, HL4.HL3_ID as GRANDPARENT_ID
+                FROM HL4
+                INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
+                INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
+                INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+                INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                WHERE HL4.HL4_ID= in_parent_id;
+
+            ELSEIF in_lh = 6 THEN
+            out_result = SELECT
+                                SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2) as BUDGET_YEAR
+                		, HL1.ACRONYM AS L1_ACRONYM
+                        		, HL2.ORGANIZATION_ACRONYM AS L2_ACRONYM
+                        		, HL3.ACRONYM AS L3_ACRONYM
+                        		, HL4.ACRONYM AS L4_ACRONYM
+                        		, HL5.ACRONYM AS L5_ACRONYM
+                		, HL5.HL4_ID as GRANDPARENT_ID
+                    FROM HL5
+                    INNER JOIN HL4 ON HL5.HL4_ID = HL4.HL4_ID
+                    INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
+                    INNER JOIN HL2 ON HL3.HL2_ID = HL2.HL2_ID
+                    INNER JOIN HL1 ON HL1.HL1_ID = HL2.HL1_ID
+                INNER JOIN BUDGET_YEAR BGY ON HL1.BUDGET_YEAR_ID = BGY.BUDGET_YEAR_ID
+                    WHERE HL5.HL5_ID = in_parent_id;
 	END IF;	
 END;
 

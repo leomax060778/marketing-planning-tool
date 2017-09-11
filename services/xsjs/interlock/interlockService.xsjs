@@ -12,14 +12,12 @@ var GET_MESSAGE = "GET_MESSAGE";
 var saveInterlockMessage = "ADDMESSAGE";
 
 function processRequest(){
-	//return httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,true, config.getResourceIdByName(config.level3()));
 	httpUtil.processRequest(handleGet,handlePost,handlePut,handleDelete,false,"",true);
 }
 
 function handleGet(parameters, userId){
 	var rdo = {};
 	
-	//rdo.organizationType = interlockLib.getAllOrganizationType();
 	var method = httpUtil.getUrlParameters().get("METHOD");
 	if(parameters.length > 0){
 		if (parameters[0].name == METHOD){

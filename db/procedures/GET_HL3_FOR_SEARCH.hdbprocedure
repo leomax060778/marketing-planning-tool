@@ -1,13 +1,20 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FOR_SEARCH" (
-		OUT out_result TABLE (
+        IN in_budget_year_id BIGINT
+        , IN in_region_id BIGINT
+        , IN in_subregion_id BIGINT
+		, IN in_user_id bigint
+		, IN in_isSA tinyint
+		, IN in_offset integer
+		, IN in_limit integer
+		, OUT total_row integer
+		, OUT out_result TABLE (
 			id bigint,
 			parent_id bigint,
-			BUDGET_YEAR BIGINT,
-			acronym NVARCHAR(25),
-			organization_acronym NVARCHAR(25), 
+			organization_acronym NVARCHAR(25),
 			region_name NVARCHAR(255),
 			subregion_name NVARCHAR(255),
 			path NVARCHAR(50)
+            , in_budget TINYINT
 		)
 	) 
 	LANGUAGE SQLSCRIPT
@@ -15,19 +22,109 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL3_FOR_SEARCH" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	AS
 BEGIN
-	out_result = SELECT HL3.hl3_id as id
+
+
+IF in_isSA = 1 THEN
+temp_out_result = SELECT DISTINCT HL3.hl3_id as id
 		, HL3.hl2_id as parent_id
-		, BGY.BUDGET_YEAR
-		, HL2.acronym
-		, REPLACE(HL2.organization_acronym, 'N/A', '') AS organization_acronym
+		, HL2.organization_acronym
 		, REGION.region_name
 		, SUBREGION.subregion_name
-		, CONCAT(CONCAT(CONCAT(HL2.acronym, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'), HL3.acronym) AS path
+        ,HL1.acronym as hl1_acronym
+        ,BGY.BUDGET_YEAR
+        ,HL3.acronym as hl3_acronym
+        ,HL1.region_id as REGION_ID
+        , HL3.IN_BUDGET
 	FROM HL3
 	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
-	INNER JOIN BUDGET_YEAR BGY ON HL2.budget_year_id = BGY.budget_year_id
-	LEFT JOIN REGION ON HL2.region_id = REGION.region_id
-	LEFT JOIN SUBREGION ON HL2.subregion_id = SUBREGION.subregion_id
+	INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id
+	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
+	LEFT JOIN REGION ON HL1.region_id = REGION.region_id
+	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
 	WHERE HL3.deleted = 0
-	  AND HL3.enabled = 1;
+	  AND HL3.enabled = 1
+                    AND (BGY.BUDGET_YEAR_ID = in_budget_year_id)
+                    AND (SUBREGION.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+	  ORDER BY
+		HL1.acronym
+		, BGY.BUDGET_YEAR
+		, HL3.acronym
+	    , organization_acronym;
+ELSE
+    temp_out_result = SELECT DISTINCT HL3.hl3_id as id
+    		, HL3.hl2_id as parent_id
+    		, HL2.organization_acronym
+    		, REGION.region_name
+    		, SUBREGION.subregion_name
+            ,HL1.acronym as hl1_acronym
+            ,BGY.BUDGET_YEAR
+            ,HL3.acronym as hl3_acronym
+            ,HL1.region_id as REGION_ID
+            , HL3.IN_BUDGET
+    	FROM HL3
+    	INNER JOIN HL3_USER ON HL3.HL3_ID = HL3_USER.HL3_ID AND HL3_USER.USER_ID = in_user_id
+    	INNER JOIN HL2 ON HL3.hl2_id = HL2.hl2_id
+    	INNER JOIN HL1 ON HL2.hl1_id = HL1.hl1_id
+    	INNER JOIN BUDGET_YEAR BGY ON HL1.budget_year_id = BGY.budget_year_id
+    	LEFT JOIN REGION ON HL1.region_id = REGION.region_id
+    	LEFT JOIN SUBREGION ON HL1.subregion_id = SUBREGION.subregion_id
+    	WHERE HL3.deleted = 0
+    	  AND HL3.enabled = 1
+    	                      AND (BGY.BUDGET_YEAR_ID = in_budget_year_id)
+                              AND (SUBREGION.SUBREGION_ID = in_subregion_id OR in_subregion_id = 0)
+    	  --AND HL3.HL3_ID IN (SELECT HL3_ID FROM HL3_USER WHERE USER_ID = in_user_id)
+    	  ORDER BY
+    		HL1.acronym
+    		, BGY.BUDGET_YEAR
+    		, HL3.acronym
+    	    , organization_acronym;
+END IF;
+
+
+if in_region_id = -1 then
+            temp_out_result = SELECT T.ID
+                            , T.parent_id
+                            , T.organization_acronym
+                            , T.region_name
+                            , T.subregion_name
+                            , T.hl1_acronym
+                            , T.BUDGET_YEAR
+                            , T.hl3_acronym
+                            , T.REGION_ID
+                            , T.IN_BUDGET
+                             from :temp_out_result T
+                        where T.REGION_ID = 0;
+        else
+            temp_out_result = SELECT T.ID
+                              , T.parent_id
+                              , T.organization_acronym
+                              , T.region_name
+                              , T.subregion_name
+                              , T.hl1_acronym
+                              , T.BUDGET_YEAR
+                              , T.hl3_acronym
+                              , T.REGION_ID
+                              , T.IN_BUDGET
+                               from :temp_out_result T
+                        where (T.REGION_ID = in_region_id OR in_region_id = 0);
+         end if;
+
+
+my_results =
+SELECT  id
+		, parent_id
+		, organization_acronym
+		, region_name
+		, subregion_name
+		, CONCAT(CONCAT(CONCAT(hl1_acronym, SUBSTRING(TO_NVARCHAR(BUDGET_YEAR), 3, 2)), '-'), hl3_acronym) AS path
+		, in_budget
+from :temp_out_result;
+
+SELECT COALESCE(COUNT(T.ID),0) INTO total_row FROM :my_results T;
+
+if(in_limit = -1) then
+out_result = select * from :my_results;
+else
+out_result = select * from :my_results limit :in_limit offset :in_offset;
+end if;
 END;

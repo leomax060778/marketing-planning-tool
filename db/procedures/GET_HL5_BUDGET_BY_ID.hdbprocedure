@@ -3,7 +3,7 @@ in in_hl5_id  bigint
 ,OUT out_result TABLE (
 hl5_budget_id INTEGER,
 organization_id INTEGER,
-percentage decimal(19,2),
+percentage decimal(19, 6),
 organization_type tinyint,
 organization_name nvarchar(255)
 )
