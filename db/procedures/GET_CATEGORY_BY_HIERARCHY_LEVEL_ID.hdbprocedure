@@ -2,7 +2,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_HIERARC
 	IN in_hierarchy_level_id BIGINT,
 	OUT out_result TABLE (category_id integer, hierarchy_level_id integer,
 							measure_id integer, name nvarchar(60),
-							description nvarchar(255), in_processing_report tinyint)
+							description nvarchar(255), single_option_only tinyint, in_processing_report tinyint)
 	) 
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
@@ -15,6 +15,7 @@ BEGIN
     ,ac.measure_id
     ,ac.name
     ,ac.description
+    ,ac.single_option_only
     ,acol.in_processing_report
     from allocation_category ac
     inner join allocation_category_option_level acol on acol.allocation_category_id = ac.allocation_category_id

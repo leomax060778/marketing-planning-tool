@@ -4,6 +4,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_ALLOCATION_CATE
 	 category_id integer
 	, hl5_id integer
 	, category_name nvarchar(60)
+	, single_option_only TINYINT
 	, in_processing_report TINYINT
 	)
 ) 
@@ -17,6 +18,7 @@ BEGIN
 	 distinct allocation_category.allocation_category_id as category_id
 	, hl5CO.hl5_id
 	, allocation_category.name as category_name
+	, allocation_category.single_option_only
 	, ACOL.in_processing_report
 	FROM hl5_category_option hl5CO
 	inner join allocation_category_option_level ACOL on hl5CO.allocation_category_option_level_id = ACOL.allocation_category_option_level_id

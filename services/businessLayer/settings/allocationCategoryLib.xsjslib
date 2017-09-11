@@ -21,6 +21,7 @@ function insertAllocationCategory(data, userId) {
 	var result = dbCategory.insertAllocationCategory(data.DESCRIPTION,
 		data.NAME,
 		data.MEASURE_ID,
+		data.SINGLE_OPTION_ONLY ? 1 : 0,
 		userId);
 	return result;
 }
@@ -51,7 +52,7 @@ function getCategoryByHierarchyLevelId(hierarchy_level_id){
 
 function updateAllocationCategory(data, userId) {
 	return dbCategory.updateAllocationCategory(data.CATEGORY_ID,
-		data.DESCRIPTION, data.NAME, data.MEASURE_ID,
+		data.DESCRIPTION, data.NAME, data.MEASURE_ID, data.SINGLE_OPTION_ONLY ? 1 : 0,
 		userId);
 
 }

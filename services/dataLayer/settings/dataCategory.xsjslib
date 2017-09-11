@@ -152,11 +152,12 @@ function delCategory(categoryId, userId, autoCommit){
 }
 
 /*********************************************************************************************************/
-function insertAllocationCategory(description, name, measureId, userId, autoCommit) {
+function insertAllocationCategory(description, name, measureId, singleOptionOnly, userId, autoCommit) {
 	var params = {
 		'in_description': description,
 		'in_name': name,
 		'in_measure_id': measureId,
+		'in_single_option_only': singleOptionOnly,
 		'in_user_id': userId
 	};
 	var rdo;
@@ -208,12 +209,13 @@ function getAllocationCategoryCountByHlId(hl){
 	return null;
 }
 
-function updateAllocationCategory(categoryId,description, name, measureId, userId, autoCommit) {
+function updateAllocationCategory(categoryId,description, name, measureId, singleOptionOnly, userId, autoCommit) {
 	var params = {
 		'in_category_id': categoryId,
 		'in_description': description,
 		'in_name': name,
 		'in_measure_id': measureId,
+        'in_single_option_only': singleOptionOnly,
 		'in_user_id': userId
 	};
 	var rdo;

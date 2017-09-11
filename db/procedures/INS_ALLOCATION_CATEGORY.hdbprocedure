@@ -2,6 +2,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_ALLOCATION_CATEGORY
 	IN in_description NVARCHAR(255),
 	IN in_name NVARCHAR(255),
 	IN in_measure_id BIGINT,
+	IN in_single_option_only TINYINT,
 	IN in_user_id BIGINT,
 	OUT out_category_id BIGINT
 ) 
@@ -9,8 +10,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::INS_ALLOCATION_CATEGORY
 	SQL SECURITY INVOKER 
 	AS
 BEGIN
-		INSERT INTO "PLANNING_TOOL"."ALLOCATION_CATEGORY"(measure_id, name, description,created_user_id)
-		VALUES(in_measure_id, in_name, in_description, in_user_id);
+		INSERT INTO "PLANNING_TOOL"."ALLOCATION_CATEGORY"(measure_id, name, description, single_option_only, created_user_id)
+		VALUES(in_measure_id, in_name, in_description, in_single_option_only, in_user_id);
 		
 		SELECT TOP 1 CURRENT_IDENTITY_VALUE() INTO out_category_id FROM "PLANNING_TOOL"."ALLOCATION_CATEGORY";
 END;
