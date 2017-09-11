@@ -63,7 +63,8 @@
 			 	LEFT JOIN  &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2 ON hl1.hl1_id = hl2.hl1_id
 			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; region ON hl1.REGION_ID = region.REGION_ID
 			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_SUBREGION&quot; subregion ON hl1.SUBREGION_ID = subregion.SUBREGION_ID
-			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0;
+			 	WHERE hl2.ENABLED = 1 AND hl2.DELETED = 0
+			 	AND  hl1.ENABLED = 1 AND hl1.DELETED = 0;
 			 	
  	va_hl3 = SELECT hl3.HL3_ID, hl3.HL2_ID, hl3.HL3_DESCRIPTION AS L3_DESCRIPTION, hl3.ACRONYM
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL3&quot; hl3
