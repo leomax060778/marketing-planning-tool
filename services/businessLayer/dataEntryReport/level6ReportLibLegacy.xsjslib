@@ -143,16 +143,16 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                         object.value = hl6.DISTRIBUTION_CHANNEL;
                         break;
                     case "PLANNED_START_DATE":
-                        object.value = (new Date(hl6.PLANNED_START_DATE)).toLocaleDateString();
+                        object.value = hl6.PLANNED_START_DATE;
                         break;
                     case "PLANNED_END_DATE":
-                        object.value = (new Date(hl6.PLANNED_END_DATE)).toLocaleDateString();
+                        object.value = hl6.PLANNED_END_DATE;
                         break;
                     case "ACTUAL_START_DATE":
-                        object.value = (new Date(hl6.ACTUAL_START_DATE)).toLocaleDateString();
+                        object.value = hl6.ACTUAL_START_DATE;
                         break;
                     case "ACTUAL_END_DATE":
-                        object.value = (new Date(hl6.ACTUAL_END_DATE)).toLocaleDateString();
+                        object.value = hl6.ACTUAL_END_DATE;
                         break;
                     case "PARENT_PATH":
                         object.value = parentPath;
@@ -164,6 +164,11 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
                         object.value = hl6[field];
                         break;
                 }
+
+                object.type = field == "PLANNED_START_DATE" ||
+                                field == "PLANNED_END_DATE" ||
+                                field == "ACTUAL_START_DATE" ||
+                                field == "ACTUAL_END_DATE" ? "DATE" : undefined;
 
                 var fieldToCheck = field == "DISTRIBUTION_CHANNEL_DESC" ? "DISTRIBUTION_CHANNEL_ID"
                     : field == "MARKETING_PROGRAM_DESC" ? "MARKETING_PROGRAM_ID"

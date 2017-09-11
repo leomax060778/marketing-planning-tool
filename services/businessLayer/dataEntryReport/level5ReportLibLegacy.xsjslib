@@ -149,16 +149,16 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
                         object.value = hl5.DISTRIBUTION_CHANNEL;
                         break;
                     case "PLANNED_START_DATE":
-                        object.value = (new Date(hl5.PLANNED_START_DATE)).toLocaleDateString();
+                        object.value = hl5.PLANNED_START_DATE;
                         break;
                     case "PLANNED_END_DATE":
-                        object.value = (new Date(hl5.PLANNED_END_DATE)).toLocaleDateString();
+                        object.value = hl5.PLANNED_END_DATE;
                         break;
                     case "ACTUAL_START_DATE":
-                        object.value = (new Date(hl5.ACTUAL_START_DATE)).toLocaleDateString();
+                        object.value = hl5.ACTUAL_START_DATE;
                         break;
                     case "ACTUAL_END_DATE":
-                        object.value = (new Date(hl5.ACTUAL_END_DATE)).toLocaleDateString();
+                        object.value = hl5.ACTUAL_END_DATE;
                         break;
                     case "PARENT_PATH":
                         object.value = parentPath;
@@ -170,6 +170,12 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
                         object.value = hl5[field];
                         break;
                 }
+
+                object.type = field == "PLANNED_START_DATE" ||
+                                field == "PLANNED_END_DATE" ||
+                                field == "ACTUAL_START_DATE" ||
+                                field == "ACTUAL_END_DATE" ? "DATE" : undefined;
+
                 var fieldToCheck = field == "DISTRIBUTION_CHANNEL_DESC" ? "DISTRIBUTION_CHANNEL_ID"
                     : field == "MARKETING_PROGRAM_DESC" ? "MARKETING_PROGRAM_ID"
                         : field == "MARKETING_ACTIVITY_DESC" ? "MARKETING_ACTIVITY_ID"

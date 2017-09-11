@@ -121,8 +121,8 @@ function getHl6ByHl5Id(hl5Id) {
                     }
                 } else {
                     aux.CRM_ID = 'CRM-' + hl6[key] + (hl6.HL6_ACRONYM.length === 1 ? '00' + hl6.HL6_ACRONYM
-                            : hl6.HL6_ACRONYM.length === 2 ? '0' + hl6.HL6_ACRONYM
-                                : hl6.HL6_ACRONYM);
+                        : hl6.HL6_ACRONYM.length === 2 ? '0' + hl6.HL6_ACRONYM
+                            : hl6.HL6_ACRONYM);
                 }
             });
             allHl6.push(aux);
@@ -231,7 +231,7 @@ function getLevel6ForSearch(userSessionID) {
         aux.REGION_NAME = object.REGION_NAME;
         aux.SUBREGION_NAME = object.SUBREGION_NAME;
         aux.PATH = "CRM-" + object.PATH;
-        aux.IN_BUDGET= object.IN_BUDGET;
+        aux.IN_BUDGET = object.IN_BUDGET;
         resultRefactor.push(aux);
     });
     return resultRefactor;
@@ -244,13 +244,14 @@ function insertHl6(data, userId) {
 
     var validationResult = validateHl6(data, userId);
 
-    var newAcronym = getNewHl6Id(data.hl6.HL5_ID);
+    /*-----deprecated---------------*/
+    /*var newAcronym = getNewHl6Id(data.hl6.HL5_ID);
     var newAcronymFormated = "00".substr(-1 + (newAcronym + "").length) + (newAcronym + "");
     if (data.hl6.HL5_ID && data.hl6.ACRONYM != newAcronym) {
         var error = ErrorLib.getErrors().Hl6AcronymError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_CRM_ACRONYM + newAcronymFormated);
         error.data = newAcronym;
         throw error;
-    }
+    }*/
 
     data.hl6.HL6_STATUS_DETAIL_ID = validationResult.statusId;
 
@@ -272,50 +273,58 @@ function insertHl6(data, userId) {
         data.hl6.CREATED_USER_ID = userId;
         data.hl6.CO_FUNDED = null;
         data.hl6.ALLOW_BUDGET_ZERO = null;
-
-        hl6_id = dataHl6.insertHl6(
-            data.hl6.HL6_CRM_DESCRIPTION,
-            data.hl6.ACRONYM,
-            data.hl6.BUDGET,
-            data.hl6.HL5_ID,
-            data.hl6.ROUTE_TO_MARKET_ID,
-            data.hl6.CAMPAIGN_OBJECTIVE_ID,
-            data.hl6.CAMPAIGN_TYPE_ID,
-            data.hl6.CAMPAIGN_SUBTYPE_ID,
-            data.hl6.ACTUAL_START_DATE,
-            data.hl6.ACTUAL_END_DATE,
-            data.hl6.EMPLOYEE_RESPONSIBLE_ID,//for now just save cost_center_id
-            data.hl6.COST_CENTER_ID,
-            data.hl6.IN_BUDGET,
-            data.hl6.BUDGET_SPEND_Q1 || 0,
-            data.hl6.BUDGET_SPEND_Q2 || 0,
-            data.hl6.BUDGET_SPEND_Q3 || 0,
-            data.hl6.BUDGET_SPEND_Q4 || 0,
-            data.hl6.EURO_CONVERSION_ID,
-            data.hl6.HL6_STATUS_DETAIL_ID,
-            data.hl6.SALES_ORGANIZATION_ID, //MARKETING ORGANIZATION
-            data.hl6.CREATED_USER_ID,
-            data.hl6.DISTRIBUTION_CHANNEL_ID
-            , data.hl6.CO_FUNDED
-            , data.hl6.ALLOW_BUDGET_ZERO
-            , data.hl6.MARKETING_PROGRAM_ID//
-            , data.hl6.MARKETING_ACTIVITY_ID//
-            , showOnCalendar//
-            , data.hl6.BUSINESS_OWNER_ID//
-            , data.hl6.VENUE //
-            , data.hl6.CITY //
-            , data.hl6.COUNTRY //
-            , data.hl6.URL //
-            , data.hl6.PLANNED_START_DATE //
-            , data.hl6.PLANNED_END_DATE //
-            , data.hl6.STREET //
-            , data.hl6.POSTAL_CODE //
-            , data.hl6.REGION //
-            , data.hl6.EVENT_OWNER //
-            , data.hl6.NUMBER_OF_PARTICIPANTS //
-            , data.hl6.PRIORITY_ID //
-        );
-
+        try {
+            hl6_id = dataHl6.insertHl6(
+                data.hl6.HL6_CRM_DESCRIPTION,
+                data.hl6.ACRONYM,
+                data.hl6.BUDGET,
+                data.hl6.HL5_ID,
+                data.hl6.ROUTE_TO_MARKET_ID,
+                data.hl6.CAMPAIGN_OBJECTIVE_ID,
+                data.hl6.CAMPAIGN_TYPE_ID,
+                data.hl6.CAMPAIGN_SUBTYPE_ID,
+                data.hl6.ACTUAL_START_DATE,
+                data.hl6.ACTUAL_END_DATE,
+                data.hl6.EMPLOYEE_RESPONSIBLE_ID,//for now just save cost_center_id
+                data.hl6.COST_CENTER_ID,
+                data.hl6.IN_BUDGET,
+                data.hl6.BUDGET_SPEND_Q1 || 0,
+                data.hl6.BUDGET_SPEND_Q2 || 0,
+                data.hl6.BUDGET_SPEND_Q3 || 0,
+                data.hl6.BUDGET_SPEND_Q4 || 0,
+                data.hl6.EURO_CONVERSION_ID,
+                data.hl6.HL6_STATUS_DETAIL_ID,
+                data.hl6.SALES_ORGANIZATION_ID, //MARKETING ORGANIZATION
+                data.hl6.CREATED_USER_ID,
+                data.hl6.DISTRIBUTION_CHANNEL_ID
+                , data.hl6.CO_FUNDED
+                , data.hl6.ALLOW_BUDGET_ZERO
+                , data.hl6.MARKETING_PROGRAM_ID//
+                , data.hl6.MARKETING_ACTIVITY_ID//
+                , showOnCalendar//
+                , data.hl6.BUSINESS_OWNER_ID//
+                , data.hl6.VENUE //
+                , data.hl6.CITY //
+                , data.hl6.COUNTRY //
+                , data.hl6.URL //
+                , data.hl6.PLANNED_START_DATE //
+                , data.hl6.PLANNED_END_DATE //
+                , data.hl6.STREET //
+                , data.hl6.POSTAL_CODE //
+                , data.hl6.REGION //
+                , data.hl6.EVENT_OWNER //
+                , data.hl6.NUMBER_OF_PARTICIPANTS //
+                , data.hl6.PRIORITY_ID //
+            );
+        } catch (e) {
+            if (e.name == "CRM Constraint Error") {
+                var newAcronym = getNewHl6Id(data.hl6.HL5_ID);
+                var newAcronymFormated = "00".substr(-1 + (newAcronym + "").length) + (newAcronym + "");
+                var error = ErrorLib.getErrors().Hl6AcronymError("", "hl6Services/handlePost/insertHl6", L6_MSG_INITIATIVE_CRM_ACRONYM + newAcronymFormated);
+                error.data = newAcronym;
+                throw error;
+            }
+        }
         if (hl6_id > 0) {
             data.hl6.HL6_ID = hl6_id;
 
@@ -389,6 +398,7 @@ function insertHl6(data, userId) {
         return pathHl6;
     }
 }
+
 function insertInCrmBinding(crmBindingChangedFields, crmBindingChangedFieldsUpdate, hl6Id) {
     if (hl6Id) {
         for (var i = 0; i < crmBindingChangedFields.length; i++) {
@@ -741,6 +751,7 @@ function validateHl6(data, userId) {
         , crmBindingChangedFieldsUpdate: crmFieldsHasChangedResult.crmBindingChangedFieldsUpdate
     };
 }
+
 function categoryChanged(data, existInCrm) {
     var optionChange;
     //obtain the CATEGORY options in bd
@@ -977,7 +988,7 @@ function changeHl6StatusOnDemand(hl6_id, userId) {
     var hl5 = dataHl5.getHl5ById(hl6.HL5_ID);
     var hl5StatusList = level5Lib.getHl5StatusList();
 
-    if(hl5.HL5_STATUS_DETAIL_ID == hl5StatusList.IN_PROGRESS)
+    if (hl5.HL5_STATUS_DETAIL_ID == hl5StatusList.IN_PROGRESS)
         throw ErrorLib.getErrors().CustomError("", "hl5Services/handlePut/changeHl5Status", L6_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L5_STATUS);
 
     if (!hl6.EMPLOYEE_RESPONSIBLE_ID || !hl6.COST_CENTER_ID)
@@ -998,10 +1009,10 @@ function resetHl6CategoryOptionUpdated(hl6Id, userId) {
 
 /* Set hl6 status to In CRM */
 function setHl6StatusInCRM(hl6_id, userId) {
-	var result = setHl6Status(hl6_id, HL6_STATUS.IN_CRM, userId);
-	if(result){
-		mail.sendInCRMMail(hl6_id, "hl6");
-	}
+    var result = setHl6Status(hl6_id, HL6_STATUS.IN_CRM, userId);
+    if (result) {
+        mail.sendInCRMMail(hl6_id, "hl6");
+    }
     return result;
 }
 
@@ -1205,8 +1216,6 @@ var map = {
     "number_of_participants": "NUMBER_OF_PARTICIPANTS",
     "priority_id": "PRIORITY_ID",
     "in_category_id": "CATEGORY_ID"
-
-
 
 
 };

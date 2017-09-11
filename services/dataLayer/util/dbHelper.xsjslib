@@ -185,6 +185,8 @@ function closeConnection(){
 function validateErrorCode(error, spName){
 	var str = error.toString();
 	var regexCode = /server error code: (274|359)/;
+    var regexCode301 = /server error code: 301/;
+    var regexCode301Const = /Index\(UK_HL[1-6]_CRM_ID\)/;
 	var regexCol = /Failed in "([^"]*)/;
 	var column = str.match(regexCol);
 	if(regexCode.test(str)) /*server error code: 274. inserted value too large for column */
@@ -199,8 +201,9 @@ function validateErrorCode(error, spName){
 			var errorText = str.match(regex359);
 			if(errorText) throw errors.getErrors().CustomError("",spName +" "+error.toString(),"The value "+errorText[1]+" is too long.");
 		}
-
-	}
+	} else if(regexCode301.test(str) && regexCode301Const.test(str)){
+        throw errors.getErrors().CRMConstraintError("",spName +" "+error.toString(),"");
+    }
 
 
 }

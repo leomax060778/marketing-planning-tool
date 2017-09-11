@@ -181,6 +181,19 @@ function getErrors(){
             e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
     }
+
+    Errors.CRMConstraintError  = function(message,stack, details){
+        var e={};
+        e.name = "CRM Constraint Error";
+        e.message = message || "THE CRM IS ALREADY IN USE. PLEASE TRY TO SAVE THE RECORD AGAIN.";
+        e.code = 458;
+        e.stack = stack || commonStack;
+        e.details = details || "THE CRM IS ALREADY IN USE. PLEASE TRY TO SAVE THE RECORD AGAIN.";
+        e.row = {};
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
     /******************* 500 **********************************************/
     Errors.InternalServerError  = function(message,stack, details){
     	var e={};
@@ -262,6 +275,7 @@ function getErrors(){
         '455':  Errors.NoCurrencyForBudgetYear(),
         '456':  Errors.ImportError(),
         '457':  Errors.ConfirmDelete(),
+        '458':  Errors.CRMConstraintError(),
         '500':  Errors.InternalServerError(),
         '501':  Errors.NotImplemented(),
         '503':  Errors.ServiceUnavailable(),
