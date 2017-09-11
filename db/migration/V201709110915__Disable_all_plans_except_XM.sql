@@ -46,7 +46,7 @@ HL4.DELETED = 1);
 
 -- *************************************************************************************
 -- Update schema version
-INSERT INTO SCHEMA_VERSION(VERSION, DESCRIPTION, SCRIPT)
-VALUES('V5.0.0-59', 'Disable all plans except XM', 'V201709110915__Disable_all_plans_except_XM.sql');
+INSERT INTO "PLANNING_TOOL".SCHEMA_VERSION(VERSION, DESCRIPTION, SCRIPT)
+VALUES('V5.0.0-60', 'Disable all plans except XM', 'V201709110915__Disable_all_plans_except_XM.sql');
 
 COMMIT;

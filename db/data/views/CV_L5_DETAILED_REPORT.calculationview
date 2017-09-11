@@ -27,8 +27,8 @@
         <viewAttribute datatype="NVARCHAR" id="L4_ACRONYM" length="25"/>
         <viewAttribute datatype="NVARCHAR" id="L4_DESCRIPTION" length="100"/>
         <viewAttribute datatype="DECIMAL" id="L4_BUDGET" length="19" scale="10"/>
-        <viewAttribute id="HL4_KPI_PROP_EUR" datatype="DECIMAL" length="19" scale="10"/>
-        <viewAttribute id="HL4_KPI_PROP_VOL" datatype="DECIMAL" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="HL4_KPI_PROP_EUR" length="19" scale="10"/>
+        <viewAttribute datatype="DECIMAL" id="HL4_KPI_PROP_VOL" length="19" scale="10"/>
         <viewAttribute datatype="BIGINT" id="L5_ID"/>
         <viewAttribute datatype="NVARCHAR" id="L5_ACRONYM" length="255"/>
         <viewAttribute datatype="NVARCHAR" id="L5_CRM_DESCRIPTION" length="255"/>
@@ -109,7 +109,7 @@
 				IFNULL(subregion.SUBREGION_NAME,'REGIONAL') AS SUBREGION_NAME,hl1.BUDGET_YEAR_ID,
 				hl2.HL2_BUDGET_TOTAL AS L2_BUDGET, hl2.ORGANIZATION_ACRONYM AS L2_ACRONYM, hl2.ORGANIZATION_NAME AS L2_NAME, hl1.BUDGET as L1_BUDGET
 			 	FROM &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL2&quot; hl2
-			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl2.HL1_ID = hl1.HL1_ID
+			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_HL1&quot; hl1 ON hl2.HL1_ID = hl1.HL1_ID AND HL1.ENABLED = 1 AND HL1.DELETED = 0
 			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_BUDGET_YEAR&quot; budgetYear ON budgetYear.BUDGET_YEAR_ID = hl1.BUDGET_YEAR_ID
 			 	INNER JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_TEAM_TYPE&quot; teamType ON teamType.TEAM_TYPE_ID = hl1.TEAM_TYPE_ID
 			 	LEFT JOIN &quot;_SYS_BIC&quot;.&quot;xsplanningtool.db.data.views/AT_REGION&quot; region ON region.REGION_ID = hl1.REGION_ID
