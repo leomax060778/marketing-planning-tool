@@ -13,5 +13,5 @@ BEGIN
 				 FROM BUSINESS_OWNER
 				 WHERE deleted = 0
 				 AND enabled = 1
-				 ORDER BY DESCRIPTION;
+				 ORDER BY default DESC;
 END;
