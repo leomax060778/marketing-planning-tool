@@ -1,11 +1,11 @@
-PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_HIERARCHY_LEVEL_ID" ( 
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_CATEGORY_BY_HIERARCHY_LEVEL_ID" (
 	IN in_hierarchy_level_id BIGINT,
 	OUT out_result TABLE (category_id integer, hierarchy_level_id integer,
 							measure_id integer, name nvarchar(60),
 							description nvarchar(255), single_option_only tinyint, in_processing_report tinyint)
-	) 
+	)
 	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER 
+	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
@@ -24,6 +24,7 @@ BEGIN
     and ac.enabled = 1
     and ac.deleted = 0
     and acol.enabled = 1
-    and acol.deleted = 0;
+    and acol.deleted = 0
+    ORDER BY ac.allocation_category_id;
 
 END;
