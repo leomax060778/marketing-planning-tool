@@ -252,15 +252,15 @@ function sendInCRMMail(hlId, hierarchyLevel){
 	var mailObj = null;
 	var reqBody = {};
 	var env = config.getMailEnvironment();
-	
+
 	switch(hierarchyLevel){
 	case "hl4":
 		hlInformation = dataHl4.getHl4ById(hlId);
-		
+
 		userData = userLib.getUserById(hlInformation.CREATED_USER_ID);
 		reqBody.REQUESTER_NAME = userData[0].FIRST_NAME+" "+userData[0].LAST_NAME;
 		reqBody.PATH = pathLib.getFullPathByLevelParent(hierarchyLevel, Number(hlInformation.HL3_ID)).PATH_TPH + "-" + hlInformation.ACRONYM;
-		
+
 		mailObj = mailHL4.parseInCRM(reqBody, {"ENVIRONMENT": env}, reqBody.REQUESTER_NAME);
 		break;
 	case "hl5":
@@ -268,7 +268,7 @@ function sendInCRMMail(hlId, hierarchyLevel){
 		userData = userLib.getUserById(hlInformation.CREATED_USER_ID);
 		reqBody.REQUESTER_NAME = userData[0].FIRST_NAME+" "+userData[0].LAST_NAME;
 		reqBody.PATH = pathLib.getFullPathByLevelParent(hierarchyLevel, Number(hlInformation.HL4_ID)).PATH_TPH + hlInformation.ACRONYM;
-		
+
 		mailObj = mailHL5.parseInCRM(reqBody, {"ENVIRONMENT": env}, reqBody.REQUESTER_NAME);
 		break;
 	case "hl6":
@@ -276,14 +276,14 @@ function sendInCRMMail(hlId, hierarchyLevel){
 		userData = userLib.getUserById(hlInformation.CREATED_USER_ID);
 		reqBody.REQUESTER_NAME = userData[0].FIRST_NAME+" "+userData[0].LAST_NAME;
 		reqBody.PATH = pathLib.getFullPathByLevelParent(hierarchyLevel, Number(hlInformation.HL5_ID)).PATH_TPH + hlInformation.ACRONYM;
-		
+
 		mailObj = mailHL6.parseInCRM(reqBody, {"ENVIRONMENT": env}, reqBody.REQUESTER_NAME);
 		break;
 	}
 	if(hlInformation && userData && userData.length > 0 && mailObj){
 		var mailObject = getJson([{"address": userData[0].EMAIL}], mailObj.subject, mailObj.body);
 		//var mailObject = getJson([{"address": "iberon@folderit.net"}], mailObj.subject, mailObj.body);  //For testing only
-		
+
 		sendMail(mailObject,true);
 	} else{
 		 throw ErrorLib.getErrors().CustomError("", "hl6Services/handlePut/sendInCRMMail", L6_COULDNT_SEND_EMAIL_IN_CRM);

@@ -3,7 +3,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::UPD_HL6_ALLOCATION_CATE
     	    IN_CATEGORY_OPTION_LEVEL_ID bigint,
     	    IN_AMOUNT DECIMAL(19, 2),
     	    IN_USER_ID bigint,
-    	    IN_UPDATED TINYINT
+    	    IN_UPDATED TINYINT,
+    	    IN_HL6_ID BIGINT
     		),
 	OUT out_result int
 )
@@ -17,9 +18,10 @@ BEGIN
 		modified_date_tz = CURRENT_TIMESTAMP,
     		updated = T.IN_UPDATED
     		from HL6_CATEGORY_OPTION, (
-    		    select IN_AMOUNT, IN_USER_ID, IN_UPDATED, IN_CATEGORY_OPTION_LEVEL_ID from :myTable
+    		    select IN_AMOUNT, IN_USER_ID, IN_UPDATED, IN_CATEGORY_OPTION_LEVEL_ID, IN_HL6_ID from :myTable
     		) T
-    		where allocation_category_option_level_id = T.IN_CATEGORY_OPTION_LEVEL_ID;
+    		where allocation_category_option_level_id = T.IN_CATEGORY_OPTION_LEVEL_ID
+    		AND hl6_id = T.IN_HL6_ID;
         
         SELECT ::ROWCOUNT INTO out_result FROM DUMMY;
 END;

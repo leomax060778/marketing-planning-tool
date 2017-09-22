@@ -693,6 +693,7 @@ function updateHl5(data1, userId) {
                     , in_amount: hl5CategoryOption.AMOUNT
                     , in_user_id: userId
                     , in_updated: hl5CategoryOption.UPDATED || 0
+                    , in_hl5_id: hl5_id
                 });
             });
         });
