@@ -668,6 +668,7 @@ function updateHl4(data, userId) {
                             , in_amount: hl4CategoryOption.in_amount
                             , in_user_id: userId
                             , in_updated: hl4CategoryOption.in_updated
+                            , in_hl4_id: hl4_id
                         });
                     });
                 });

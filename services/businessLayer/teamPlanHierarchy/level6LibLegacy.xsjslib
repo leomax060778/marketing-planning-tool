@@ -68,7 +68,7 @@ var L6_CAMPAIGN_FORECASTING_KPIS_NOT_VALID = "Campaign Forecasting / KPIS is not
 var L6_MSG_RESULTS_CAMPAIGN = "The Marketing Sub Tactic, Results/Campaign Forecasting must be set.";
 var L6_MSG_RESULTS_CAMPAIGN_PERCENT = "The Marketing Sub Tactic, Results/Campaign Forecasting must be 100%.";
 var L6_MSG_COULDNT_CHANGE_STATUS = "Couldn´t change Sub tactic/Campaign status due to incomplete data. Please review Budget and Options information";
-var L6_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L5_STATUS = "You cannot send Marketing Sub Tactic/Campaign to Processing Report because Marketing Tactic is 'In Progress' status.";
+var L6_MSG_COULDNT_CHANGE_STATUS_DUE_TO_L5_STATUS = "Could not send Sub Tactic/Campaign to Processing Report until parent level is 'In CRM' status.";
 var L6_CAMPAIGN_FORECASTING_KPIS_COMMENT = "Please enter a comment to explain expected outcomes as you didn't select any KPI type.";
 var L6_MSG_INITIATIVE_PROPERTIES_CANNOT_UPDATE = "Once Marketing Sub Tactic is already in CRM, properties CRM ID, Cost Center and Markting Organization cannot be modified.";
 var L6_MY_BUDGET_COMPLETE = "My Budget should be 100% complete.";
@@ -559,6 +559,7 @@ function updateCategoryOptions(data, userId) {
                 , in_amount: hl6CategoryOption.AMOUNT
                 , in_user_id: userId
                 , in_updated: hl6CategoryOption.UPDATED || 0
+                , in_hl6_id: data.hl6.HL6_ID
             });
         });
     });
