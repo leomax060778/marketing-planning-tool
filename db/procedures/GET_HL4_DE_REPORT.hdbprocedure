@@ -6,7 +6,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_DE_REPORT" (
 		budget DECIMAL(19, 6),
 		hl4_modified_date TIMESTAMP,
 		hl4_path NVARCHAR(255),
-		STATUS_NAME NVARCHAR(255)		
+		STATUS_NAME NVARCHAR(255),
+		CHANGE_STATUS_DATE TIMESTAMP
 	 ) 
 	)
 	LANGUAGE SQLSCRIPT
@@ -19,7 +20,7 @@ BEGIN
  to move the status selection into the service.
  STATUS to be considered are
  */
- out_result =       SELECT HL4.HL4_ID,
+ va_out_result =       SELECT HL4.HL4_ID,
               		HL4.HL4_CRM_DESCRIPTION,
               		HL4.HL4_FNC_BUDGET_TOTAL_MKT AS BUDGET,
 					HL4.MODIFIED_DATE_TZ AS hl4_modified_date,
@@ -39,5 +40,23 @@ BEGIN
              		HL4.ENABLED = 1 AND
              		HL4.DELETED = 0
              		ORDER BY hl4_modified_date ASC, hl4_path ASC;
+
+ va_status_history = SELECT HL4_STATUS_HISTORY.HL4_ID
+                    , MAX(HL4_STATUS_HISTORY.CREATED_DATE_TZ) AS CHANGE_STATUS_DATE
+                    FROM HL4_STATUS_HISTORY
+                    WHERE HL4_ID IN (SELECT HL4_ID FROM :va_out_result)
+                    GROUP BY HL4_STATUS_HISTORY.HL4_ID;
+
+ out_result = SELECT
+                VOR.HL4_ID
+                , VOR.HL4_CRM_DESCRIPTION
+                , VOR.BUDGET
+                , VOR.HL4_MODIFIED_DATE
+                , VOR.HL4_PATH
+                , VOR.STATUS_NAME
+                , VST.CHANGE_STATUS_DATE
+                FROM :va_out_result VOR
+                INNER JOIN :va_status_history VST
+                    ON VOR.HL4_ID = VST.HL4_ID;
 		
 END;

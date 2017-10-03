@@ -393,6 +393,11 @@ function getAttachment(){
     return $.xsplanningtool.services.businessLayer.attachment.attachmentLib;
 }
 
+function getProcessingReportMailLib(){
+    $.import("xsplanningtool.services.mails","processingReportMailLib");
+    return $.xsplanningtool.services.mails.processingReportMailLib;
+}
+
 /************Data Layer Mapper*****************/
 
 function getdbHelper(){
