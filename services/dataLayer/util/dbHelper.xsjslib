@@ -159,7 +159,9 @@ function getHDBConnection(){
 function setConnection() {
 	if (!HDB_CONNECTION || HDB_CONNECTION.isClosed()) {
 		HDB_CONNECTION = $.hdb.getConnection();
-        HDB_CONNECTION.MPTSerial = $.request.path;
+        if($.request) {
+            HDB_CONNECTION.MPTSerial = $.request.path;
+        }
 	}
 
 	return HDB_CONNECTION;

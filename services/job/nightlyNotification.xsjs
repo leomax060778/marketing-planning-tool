@@ -1,5 +1,5 @@
-$.import("mktgplanningtool.services.commonLib", "mapper");
-var mapper = $.mktgplanningtool.services.commonLib.mapper;
+$.import("xsplanningtool.services.commonLib", "mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
 var mail = mapper.getMail();
 
 function sendNightlyNotification() {

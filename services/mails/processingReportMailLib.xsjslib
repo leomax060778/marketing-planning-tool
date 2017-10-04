@@ -4,7 +4,7 @@ var config = mapper.getDataConfig();
 
 function parseNightlyReport(list, basicData){
 	var mailObj = {};
-	var appUrl = config.getAppUrl();
+	var appUrl = config.getLoginUrl();
 	var tableStyle = ' id="content-table"';
 	var thStyle = ' class="content-table-header"';
 	var tdStyle = ' class="content-table-description-column"';
