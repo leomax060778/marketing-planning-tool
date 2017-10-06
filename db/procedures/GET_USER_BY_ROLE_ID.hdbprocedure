@@ -15,5 +15,6 @@ BEGIN
  		FROM "USER_ROLE" userRole 
  		JOIN "USER" u ON userRole.USER_ID = u.USER_ID
  		JOIN "ROLE" role ON role.ROLE_ID = userRole.ROLE_ID
- 		WHERE userRole.ROLE_ID = in_role_id;
+ 		WHERE userRole.ROLE_ID = in_role_id
+ 		    AND U.ENABLED = 1 AND U.DELETED = 0;
 END;
