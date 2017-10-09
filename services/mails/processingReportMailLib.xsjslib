@@ -36,6 +36,9 @@ function parseNightlyReport(list, basicData){
 		});
 	});
 	mailObj.body = body;
-	mailObj.subject = basicData.ENVIRONMENT+' MPT - Processing Report';
+	mailObj.subject = 'MPT - Processing Report';
+	if(basicData.ENVIRONMENT !== "Production"){
+	    mailObj.subject = basicData.ENVIRONMENT+' MPT - Processing Report';
+	}
 	return mailObj;
 }
