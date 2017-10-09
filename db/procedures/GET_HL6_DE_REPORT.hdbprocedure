@@ -7,7 +7,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_DE_REPORT" (
 		hl6_modified_date TIMESTAMP,
 		hl6_path NVARCHAR(255),
 		route_to_market NVARCHAR(255),
-        status_name NVARCHAR(255)
+        status_name NVARCHAR(255),
+        CHANGE_STATUS_DATE TIMESTAMP
 	 ) 
 	)
 	LANGUAGE SQLSCRIPT
@@ -15,7 +16,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_DE_REPORT" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
- out_result = SELECT HL6.HL6_ID,
+ va_out_result = SELECT HL6.HL6_ID,
  		HL6.HL6_CRM_DESCRIPTION,
  		HL6.BUDGET,
   		HL6.MODIFIED_DATE_TZ AS hl6_modified_date,
@@ -41,5 +42,23 @@ BEGIN
 		HL6.ENABLED = 1 AND
 		HL6.DELETED = 0
 		ORDER BY hl6_modified_date ASC, hl6_path ASC;
-		
+
+ va_status_history = SELECT HL6_STATUS_HISTORY.HL6_ID
+                      , MAX(HL6_STATUS_HISTORY.CREATED_DATE_TZ) AS CHANGE_STATUS_DATE
+                      FROM HL6_STATUS_HISTORY
+                      WHERE HL6_ID IN (SELECT HL6_ID FROM :va_out_result)
+                      GROUP BY HL6_STATUS_HISTORY.HL6_ID;
+
+   out_result = SELECT
+                  VOR.HL6_ID
+                  , VOR.HL6_CRM_DESCRIPTION
+                  , VOR.BUDGET
+                  , VOR.HL6_MODIFIED_DATE
+                  , VOR.HL6_PATH
+                  , VOR.route_to_market
+                  , VOR.STATUS_NAME
+                  , VST.CHANGE_STATUS_DATE
+                  FROM :va_out_result VOR
+                  INNER JOIN :va_status_history VST
+                      ON VOR.HL6_ID = VST.HL6_ID;
 END;

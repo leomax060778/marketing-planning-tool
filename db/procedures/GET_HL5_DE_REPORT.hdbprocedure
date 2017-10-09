@@ -6,7 +6,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_DE_REPORT" (
 		budget DECIMAL(19, 6),
 		hl5_modified_date TIMESTAMP,
 		hl5_path NVARCHAR(255),
-		status_name NVARCHAR(255)
+		status_name NVARCHAR(255),
+        CHANGE_STATUS_DATE TIMESTAMP
 	 ) 
 	)
 	LANGUAGE SQLSCRIPT
@@ -14,7 +15,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_DE_REPORT" (
 	DEFAULT SCHEMA "PLANNING_TOOL"
 	READS SQL DATA AS
 BEGIN
- out_result = SELECT HL5.HL5_ID,
+ va_out_result = SELECT HL5.HL5_ID,
  		HL5.HL5_CRM_DESCRIPTION,
  		HL5.BUDGET,
   		--TO_DATE(TO_CHAR(HL5.MODIFIED_DATE_TZ, 'MMDDYYYY'), 'MMDDYYYY') AS hl5_modified_date,
@@ -36,5 +37,23 @@ BEGIN
 		HL5.ENABLED = 1 AND
 		HL5.DELETED = 0
 		ORDER BY hl5_modified_date ASC, hl5_path ASC;
+
+ va_status_history = SELECT HL5_STATUS_HISTORY.HL5_ID
+                     , MAX(HL5_STATUS_HISTORY.CREATED_DATE_TZ) AS CHANGE_STATUS_DATE
+                     FROM HL5_STATUS_HISTORY
+                     WHERE HL5_ID IN (SELECT HL5_ID FROM :va_out_result)
+                     GROUP BY HL5_STATUS_HISTORY.HL5_ID;
+
+  out_result = SELECT
+                 VOR.HL5_ID
+                 , VOR.HL5_CRM_DESCRIPTION
+                 , VOR.BUDGET
+                 , VOR.HL5_MODIFIED_DATE
+                 , VOR.HL5_PATH
+                 , VOR.STATUS_NAME
+                 , VST.CHANGE_STATUS_DATE
+                 FROM :va_out_result VOR
+                 INNER JOIN :va_status_history VST
+                     ON VOR.HL5_ID = VST.HL5_ID;
 		
 END;
