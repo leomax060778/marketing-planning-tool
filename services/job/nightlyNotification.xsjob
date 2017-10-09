@@ -1,9 +1,9 @@
 {
-    "description": "Send daily notifications by email",
-    "action": "xsplanningtool.services.businessLayer:nightlyNotificationLib.xsjs::sendDailyNotification",
+    "description": "Send nightly notifications by email",
+    "action": "xsplanningtool.services.job:nightlyNotification.xsjs::sendNightlyNotification",
     "schedules": [
        {
-          "description": "Send daily notifications by email",
+          "description": "Send nightly notifications by email",
           "xscron": "* * * * 22 0 0",
           "parameter": {
                 "app": "MPT"
