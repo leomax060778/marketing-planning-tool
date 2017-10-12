@@ -39,8 +39,6 @@ function handleGet(params, userId) {
 		result = hl5.getHl5ById(in_hl5_id);
 	} else if (param_section && param_section == section){
 		result = hl5.getLevel5ForSearch(userId);
-	} else if (dataType && dataType == "DISTRIBUTION_CHANNEL"){
-		result = hl5.getAllDistributionChannel();
 	} else if (dataType && dataType == "MARKETING_PROGRAM"){
 		result = hl5.getAllMarketingProgram();
 	} else if (dataType && dataType == "MARKETING_ACTIVITY"){

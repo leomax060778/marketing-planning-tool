@@ -1,5 +1,5 @@
 PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ALL_DISTRIBUTION_CHANNEL" ( 
-OUT out_result TABLE(DISTRIBUTION_CHANNEL_ID bigint, NAME nvarchar(25)))
+OUT out_result TABLE(DISTRIBUTION_CHANNEL_ID bigint, NAME nvarchar(25), CRM_KEY nvarchar(255)))
 	LANGUAGE SQLSCRIPT
 	SQL SECURITY INVOKER 
 	DEFAULT SCHEMA "PLANNING_TOOL"
@@ -8,7 +8,7 @@ BEGIN
 /***************************** 
 	Write your procedure logic 
  *****************************/
- out_result = SELECT DISTRIBUTION_CHANNEL_ID, NAME
+ out_result = SELECT DISTRIBUTION_CHANNEL_ID, NAME, CRM_KEY
 	FROM "DISTRIBUTION_CHANNEL"
  	WHERE ENABLED = 1 AND
  	DELETED = 0

@@ -27,6 +27,7 @@ BEGIN
              		CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(HL1.ACRONYM, SUBSTRING(TO_NVARCHAR(BGY.BUDGET_YEAR), 3, 2)), '-'),
              		HL3.ACRONYM),'-'), HL4.ACRONYM) AS hl4_path
              		, SD.DETAIL as STATUS_NAME
+             		, SD.HL4_STATUS_DETAIL_ID as STATUS_ID
              		FROM "PLANNING_TOOL".HL4
              		INNER JOIN "PLANNING_TOOL".HL3 ON HL3.HL3_ID = HL4.HL3_ID
              		INNER JOIN "PLANNING_TOOL".HL2 ON HL2.HL2_ID = HL3.HL2_ID
@@ -57,6 +58,7 @@ BEGIN
                 , VST.CHANGE_STATUS_DATE
                 FROM :va_out_result VOR
                 INNER JOIN :va_status_history VST
-                    ON VOR.HL4_ID = VST.HL4_ID;
+                    ON VOR.HL4_ID = VST.HL4_ID
+                    ORDER BY STATUS_ID;
 		
 END;

@@ -706,11 +706,6 @@ function deleteHl5CategoryOption(hl5Id, userId, autoCommit){
 	return rdo;
 }
 
-function getAllDistributionChannel(){
-	var rdo = db.executeProcedureManual(spGetAllDistributionChannel, {});
-	return db.extractArray(rdo.out_result);
-}
-
 function getDistributionChannelById(distributionChannelId){
 	if(distributionChannelId){
 		var params = {

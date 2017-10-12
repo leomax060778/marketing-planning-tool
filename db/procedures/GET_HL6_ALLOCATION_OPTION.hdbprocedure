@@ -1,35 +1,36 @@
-PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_ALLOCATION_OPTION" (
-	--IN in_allocation_category_id bigint,
-	IN in_hl_id bigint,
-	OUT out_option TABLE (
-	    option_id BIGINT
-	    , option_name nvarchar(255)
-	    , category_option_level_id integer
-	    , amount decimal(19, 6)
-	    , category_name NVARCHAR(60)
-	    , updated TINYINT
-	    , allocation_category_id bigint
-	    )
-	) 
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_ALLOCATION_OPTION"(
+		IN in_hl_id BIGINT, 
+		OUT out_option TABLE (
+			option_id BIGINT,
+			option_name NVARCHAR(255),
+			category_option_level_id INTEGER,
+			amount DECIMAL(19, 6),
+			category_name NVARCHAR(60),
+			updated TINYINT,
+			allocation_category_id BIGINT
+		)
+	)
 	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER 
-	DEFAULT SCHEMA "PLANNING_TOOL" AS
+	SQL SECURITY INVOKER
+	DEFAULT SCHEMA "PLANNING_TOOL"
+AS
 BEGIN
-	out_option =
-    SELECT option.allocation_option_id as option_id
-	, option.name as option_name
-	, ACOL.allocation_category_option_level_id as category_option_level_id
-	, hl6CO.amount
-	, category.name as category_name
-	, hl6CO.updated
-	, ACOL.allocation_category_id
-
-	FROM hl6_category_option hl6CO
-	inner join allocation_category_option_level ACOL ON ACOL.allocation_category_option_level_id = hl6CO.allocation_category_option_level_id
-	inner join allocation_option option on ACOL.allocation_option_id = option.allocation_option_id
-	inner join allocation_category category on category.allocation_category_id = ACOL.allocation_category_id
-	where
-	--ACOL.allocation_category_id = in_allocation_category_id
-	hl6_id = in_hl_id
-	AND hl6CO.deleted = 0 and hl6CO.enabled = 1;
+	out_option = SELECT option.allocation_option_id AS option_id, 
+				option.name AS option_name, 
+				ACOL.allocation_category_option_level_id AS category_option_level_id, 
+				hl6CO.amount, 
+				category.name AS category_name, 
+				hl6CO.updated, 
+				ACOL.allocation_category_id
+			FROM hl6_category_option AS hl6CO
+				INNER JOIN allocation_category_option_level AS ACOL
+				ON ACOL.allocation_category_option_level_id = hl6CO.allocation_category_option_level_id
+				INNER JOIN allocation_option AS option
+				ON ACOL.allocation_option_id = option.allocation_option_id
+				INNER JOIN allocation_category AS category
+				ON category.allocation_category_id = ACOL.allocation_category_id
+			WHERE hl6_id = in_hl_id
+				AND hl6CO.deleted = 0
+				AND hl6CO.enabled = 1
+			ORDER BY option.allocation_option_id ASC;
 END;

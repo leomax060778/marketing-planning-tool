@@ -197,10 +197,6 @@ function getLevel5ForSearch(userSessionID) {
     return resultRefactor;
 }
 
-function getAllDistributionChannel() {
-    return dataHl5.getAllDistributionChannel();
-}
-
 function insertHl5(data, userId) {
 
     var mapCOL = util.getMapCategoryOption('hl5');//Set Map for Category Option Level
