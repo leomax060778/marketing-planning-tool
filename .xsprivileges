@@ -1,4 +1,0 @@
-{ "privileges" :
-       [ { "name" : "Basic", "description" : "Basic usage privilege" },
-       { "name" : "Execute", "description" : "Basic execution privilege" },
-	  { "name" : "Admin", "description" : "Administration privilege"} ]}

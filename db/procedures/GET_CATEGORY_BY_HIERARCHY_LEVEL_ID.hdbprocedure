@@ -14,8 +14,8 @@ BEGIN
     ,acol.hierarchy_level_id
     ,ac.measure_id
     ,ac.name
-    ,ac.description
     ,ac.single_option_only
+    ,ac.description
     ,acol.in_processing_report
     from allocation_category ac
     inner join allocation_category_option_level acol on acol.allocation_category_id = ac.allocation_category_id

@@ -194,6 +194,19 @@ function getErrors(){
             e.code+" -stack:"+e.stack+" -details:"+e.details};
         return e;
     }
+
+    Errors.CRMKEYConstraintError  = function(message,stack, details){
+        var e={};
+        e.name = "CRM KEY Constraint Error";
+        e.message = message || "THE CRM KEY IS ALREADY IN USE. PLEASE TRY TO SAVE THE RECORD AGAIN.";
+        e.code = 550;
+        e.stack = stack || commonStack;
+        e.details = details || "THE CRM KEY IS ALREADY IN USE. PLEASE TRY TO SAVE THE RECORD AGAIN.";
+        e.row = {};
+        e.toString = function (){return "name:"+e.name+" -message:"+e.message+" -code:"+
+            e.code+" -stack:"+e.stack+" -details:"+e.details};
+        return e;
+    }
     /******************* 500 **********************************************/
     Errors.InternalServerError  = function(message,stack, details){
     	var e={};

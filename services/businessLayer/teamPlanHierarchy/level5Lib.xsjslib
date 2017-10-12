@@ -266,10 +266,6 @@ function getLevel5ForSearch(budgetYearId, regionId, subRegionId, limit, offset, 
     return {result: resultRefactor, total_rows: total_rows};
 }
 
-function getAllDistributionChannel() {
-    return dataHl5.getAllDistributionChannel();
-}
-
 function insertHl5(data, userId) {
 
     var mapCOL = util.getMapCategoryOption('hl5');//Set Map for Category Option Level

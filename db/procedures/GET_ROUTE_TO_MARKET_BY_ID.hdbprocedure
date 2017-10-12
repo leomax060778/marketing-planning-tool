@@ -3,6 +3,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ROUTE_TO_MARKET_BY_
     ,OUT out_result TABLE(
     	ROUTE_TO_MARKET_ID BIGINT,
     	NAME nvarchar(255),
+    	CRM_KEY nvarchar(15),
     	CREATED_DATE_TZ TIMESTAMP,
     	MODIFIED_DATE_TZ TIMESTAMP,
     	CREATED_USER_ID BIGINT,
@@ -20,6 +21,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_ROUTE_TO_MARKET_BY_
     	SELECT
     	ROUTE_TO_MARKET_ID,
     	NAME,
+    	CRM_KEY,
     	CREATED_DATE_TZ,
     	MODIFIED_DATE_TZ,
     	CREATED_USER_ID,

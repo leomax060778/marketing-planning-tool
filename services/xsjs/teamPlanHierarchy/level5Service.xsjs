@@ -43,8 +43,6 @@ function handleGet(params, userId) {
         var limit = httpUtil.getUrlParameters().get("LIMIT") || null;
         var offset = httpUtil.getUrlParameters().get("OFFSET") || null;
 		result = hl5.getLevel5ForSearch(budgetYearId, regionId, subRegionId, limit, offset, userId);
-	} else if (dataType && dataType == "DISTRIBUTION_CHANNEL"){
-		result = hl5.getAllDistributionChannel();
 	} else if (dataType && dataType == "MARKETING_PROGRAM"){
 		result = hl5.getAllMarketingProgram();
 	} else if (dataType && dataType == "MARKETING_ACTIVITY"){

@@ -398,6 +398,16 @@ function getProcessingReportMailLib(){
     return $.xsplanningtool.services.mails.processingReportMailLib;
 }
 
+function getDistributionChannel(){
+    $.import("xsplanningtool.services.businessLayer.settings","distributionChannelLib");
+    return $.xsplanningtool.services.businessLayer.settings.distributionChannelLib;
+}
+
+function getDataDistributionChannel(){
+    $.import("xsplanningtool.services.dataLayer.settings","dataDistributionChannel");
+    return $.xsplanningtool.services.dataLayer.settings.dataDistributionChannel;
+}
+
 /************Data Layer Mapper*****************/
 
 function getdbHelper(){

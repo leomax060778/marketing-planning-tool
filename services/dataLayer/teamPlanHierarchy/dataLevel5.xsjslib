@@ -747,11 +747,6 @@ function deleteHl5RequestCategoryOption(hl5Id, userId){
     return db.executeScalar(spDelHl5RequestCategoryOption,params,'out_result');
 }
 
-function getAllDistributionChannel(){
-	var rdo = db.executeProcedureManual(spGetAllDistributionChannel, {});
-	return db.extractArray(rdo.out_result);
-}
-
 function getDistributionChannelById(distributionChannelId){
 	if(distributionChannelId){
 		var params = {

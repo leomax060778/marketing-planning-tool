@@ -1,29 +1,31 @@
-PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_ALLOCATION_CATEGORY_BY_HL5_ID" (
-	IN in_id BIGINT,
-	OUT out_category TABLE (
-	 category_id integer
-	, hl5_id integer
-	, category_name nvarchar(60)
-	, single_option_only TINYINT
-	, in_processing_report TINYINT
+PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_ALLOCATION_CATEGORY_BY_HL5_ID"(
+		IN in_id BIGINT, 
+		OUT out_category TABLE (
+			category_id INTEGER,
+			hl5_id INTEGER,
+			category_name NVARCHAR(60),
+			single_option_only TINYINT,
+			in_processing_report TINYINT
+		)
 	)
-) 
 	LANGUAGE SQLSCRIPT
-	SQL SECURITY INVOKER 
+	SQL SECURITY INVOKER
 	DEFAULT SCHEMA "PLANNING_TOOL"
-	READS SQL DATA AS
+	READS SQL DATA
+AS
 BEGIN
-	out_category =
-	SELECT
-	 distinct allocation_category.allocation_category_id as category_id
-	, hl5CO.hl5_id
-	, allocation_category.name as category_name
-	, allocation_category.single_option_only
-	, ACOL.in_processing_report
-	FROM hl5_category_option hl5CO
-	inner join allocation_category_option_level ACOL on hl5CO.allocation_category_option_level_id = ACOL.allocation_category_option_level_id
-	inner join allocation_category on ACOL.allocation_category_id = allocation_category.allocation_category_id
-	WHERE hl5_id = in_id
-	  AND hl5CO.enabled = 1
-	  AND hl5CO.deleted = 0;
+	out_category = SELECT DISTINCT allocation_category.allocation_category_id AS category_id, 
+				hl5CO.hl5_id, 
+				allocation_category.name AS category_name, 
+				allocation_category.single_option_only, 
+				ACOL.in_processing_report
+			FROM hl5_category_option AS hl5CO
+				INNER JOIN allocation_category_option_level AS ACOL
+				ON hl5CO.allocation_category_option_level_id = ACOL.allocation_category_option_level_id
+				INNER JOIN allocation_category
+				ON ACOL.allocation_category_id = allocation_category.allocation_category_id
+			WHERE hl5_id = in_id
+				AND hl5CO.enabled = 1
+				AND hl5CO.deleted = 0
+			ORDER BY allocation_category.allocation_category_id ASC;
 END;
