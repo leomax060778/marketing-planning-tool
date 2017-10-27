@@ -7,7 +7,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL4_DE_REPORT" (
 		hl4_modified_date TIMESTAMP,
 		hl4_path NVARCHAR(255),
 		STATUS_NAME NVARCHAR(255),
-		CHANGE_STATUS_DATE TIMESTAMP
+		CHANGE_STATUS_DATE TIMESTAMP,
+		CREATED_USER_ID BIGINT
 	 ) 
 	)
 	LANGUAGE SQLSCRIPT
@@ -28,6 +29,7 @@ BEGIN
              		HL3.ACRONYM),'-'), HL4.ACRONYM) AS hl4_path
              		, SD.DETAIL as STATUS_NAME
              		, SD.HL4_STATUS_DETAIL_ID as STATUS_ID
+             		, HL4.CREATED_USER_ID
              		FROM "PLANNING_TOOL".HL4
              		INNER JOIN "PLANNING_TOOL".HL3 ON HL3.HL3_ID = HL4.HL3_ID
              		INNER JOIN "PLANNING_TOOL".HL2 ON HL2.HL2_ID = HL3.HL2_ID
@@ -56,6 +58,7 @@ BEGIN
                 , VOR.HL4_PATH
                 , VOR.STATUS_NAME
                 , VST.CHANGE_STATUS_DATE
+                , VOR.CREATED_USER_ID
                 FROM :va_out_result VOR
                 INNER JOIN :va_status_history VST
                     ON VOR.HL4_ID = VST.HL4_ID

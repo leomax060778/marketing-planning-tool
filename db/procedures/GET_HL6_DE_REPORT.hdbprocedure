@@ -8,7 +8,8 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL6_DE_REPORT" (
 		hl6_path NVARCHAR(255),
 		route_to_market NVARCHAR(255),
         status_name NVARCHAR(255),
-        CHANGE_STATUS_DATE TIMESTAMP
+        CHANGE_STATUS_DATE TIMESTAMP,
+        CREATED_USER_ID BIGINT
 	 ) 
 	)
 	LANGUAGE SQLSCRIPT
@@ -26,7 +27,8 @@ BEGIN
 		, HL6.ACRONYM) AS hl6_path
 		,ROUTE_TO_MARKET.NAME as route_to_market,
 		SD.DETAIL as STATUS_NAME,
-		SD.HL6_STATUS_DETAIL_ID as STATUS_ID
+		SD.HL6_STATUS_DETAIL_ID as STATUS_ID,
+        HL6.CREATED_USER_ID
         FROM "PLANNING_TOOL".HL6
 		INNER JOIN "PLANNING_TOOL".ROUTE_TO_MARKET ON HL6.ROUTE_TO_MARKET_ID = ROUTE_TO_MARKET.ROUTE_TO_MARKET_ID
 		INNER JOIN "PLANNING_TOOL".HL5 ON HL6.HL5_ID = HL5.HL5_ID
@@ -59,6 +61,7 @@ BEGIN
                   , VOR.route_to_market
                   , VOR.STATUS_NAME
                   , VST.CHANGE_STATUS_DATE
+                 , VOR.CREATED_USER_ID
                   FROM :va_out_result VOR
                   INNER JOIN :va_status_history VST
                       ON VOR.HL6_ID = VST.HL6_ID
