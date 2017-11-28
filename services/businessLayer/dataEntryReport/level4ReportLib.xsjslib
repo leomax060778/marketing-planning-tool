@@ -104,6 +104,7 @@ function getL4ChangedFieldsByHl4Id(hl4Id, userId) {
             ;
         });
         data.HL4_ID = hl4Id;
+        data.CREATED_USER_ID = hl4.CREATED_USER_ID;
         return data;
     } catch (e) {
         throw e;

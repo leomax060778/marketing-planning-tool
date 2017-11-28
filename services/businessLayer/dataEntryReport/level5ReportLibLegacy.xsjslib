@@ -189,6 +189,7 @@ function getL5ChangedFieldsByHl5Id(hl5Id, userId) {
         }
     });
     data.HL5_ID = hl5Id;
+    data.CREATED_USER_ID = hl5.CREATED_USER_ID;
     return data;
 }
 

@@ -25,9 +25,12 @@ function handleDelete(){
 
 
 //Implementation of POST call
-function handlePost(reqBody) {
-	var rdo = businessMail.sendMail(reqBody,true);
-	httpUtil.handleResponsePlain(rdo);	
+function handlePost(reqBody, userId) {
+    var sendProcessingReportRequesterMail = httpUtil.getUrlParameters().get("REQUESTER_EMAIL");
+
+	var rdo = sendProcessingReportRequesterMail ? businessMail.sendProcessingReportRequesterMail(reqBody,userId)
+		: businessMail.sendMail(reqBody,true);
+    httpUtil.handleResponse(rdo, httpUtil.OK, httpUtil.AppJson);
 }
 
 

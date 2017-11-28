@@ -183,6 +183,7 @@ function getL6ChangedFieldsByHl6Id(hl6Id, userId) {
         }
     });
     data.HL6_ID = hl6Id;
+    data.CREATED_USER_ID = hl6.CREATED_USER_ID;
     return data;
 }
 

@@ -50,6 +50,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_FOR_PROCESSING_
                 , EMPLOYEE_RESPONSIBLE_ID INTEGER
                 , BUSINESS_OWNER_ID INTEGER
                 , ROUTE_TO_MARKET_ID INTEGER
+                , CREATED_USER_ID INTEGER
         		)
             ,OUT out_marketing_activity_id TABLE(
                 BUDGET_YEAR NVARCHAR(20)
@@ -115,6 +116,7 @@ PROCEDURE "PLANNING_TOOL"."xsplanningtool.db.procedures::GET_HL5_FOR_PROCESSING_
                         , HL5.employee_responsible_id
                         , HL5.business_owner_id
                         , HL5.route_to_market_id
+                        , HL5.created_user_id
                          FROM HL5
                          INNER JOIN HL4 ON HL4.HL4_ID = HL5.HL4_ID
                          INNER JOIN HL3 ON HL4.HL3_ID = HL3.HL3_ID
