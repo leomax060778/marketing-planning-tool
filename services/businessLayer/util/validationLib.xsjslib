@@ -1,4 +1,5 @@
 $.import("xsplanningtool.services.commonLib", "mapper");
+var mapper = $.xsplanningtool.services.commonLib.mapper;
 var dataValidation = mapper.getDataValidation();
 
 /** ***********END INCLUDE LIBRARIES*************** */
